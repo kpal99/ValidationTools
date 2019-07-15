@@ -27,10 +27,9 @@ class _Collection(object):
         self._sizeBranch = sizeBranch
         self._objclass = objclass
         self._prefix = prefix
-
     def size(self):
         """Number of objects in the collection."""
-        return int(getattr(self._tree, self._sizeBranch).size())
+        return len(getattr(self._tree, self._sizeBranch))
 
     def __len__(self):
         """Number of objects in the collection."""
@@ -103,12 +102,12 @@ class Ntuple(object):
     itertools.izip() instead.
     """
 
-    def __init__(self, fileName, tree="myana/"):
+    def __init__(self, fileName, tree="myana/mytree"):
         """Constructor.
 
         Arguments:
         fileName -- String for path to the ROOT file
-        tree     -- Name of the TTree object inside the ROOT file (default: 'ana/hgc')
+        tree     -- Name of the TTree object inside the ROOT file (default: 'myana/mytree')
         """
         super(Ntuple, self).__init__()
         self._file = ROOT.TFile.Open(fileName)
