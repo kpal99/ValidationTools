@@ -199,6 +199,11 @@ class Event(object):
         """Returns generator particles object."""
         return GenParticles(self._tree, prefix)
 
+    def muons(self, prefix="muon"):
+        """Returns muon object."""
+        return Muons(self._tree, prefix)
+    
+
     def getDataFrame(self, prefix):
         branches = [br.GetName() for br in self._tree.GetListOfBranches() if br.GetName().startswith(prefix+'_')]
         names = ['_'.join(br.split('_')[1:]) for br in branches]
@@ -235,3 +240,31 @@ class GenParticles(_Collection):
         """
         # self.prefix = prefix
         super(GenParticles, self).__init__(tree, prefix + "_pt", GenParticle, prefix)
+
+##########
+class Muon(_Object):
+    """Class representing a Muon."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the GenParticle
+        prefix -- TBranch prefix
+        """
+        super(Muon, self).__init__(tree, index, prefix)
+
+
+class Muons(_Collection):
+    """Class presenting a collection of Muons."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(Muons, self).__init__(tree, prefix + "_pt", Muon, prefix)
