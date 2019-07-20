@@ -16,7 +16,13 @@ def main():
 
     tot_nevents = 0
     tot_genpart = 0
+    tot_genjet = 0
+    tot_electron = 0
+    tot_gamma = 0
     tot_muon = 0
+    tot_jet = 0
+    tot_tau = 0
+    tot_met = 0
 
     for event in ntuple:
         if event.entry() >= maxEvents:
@@ -33,9 +39,9 @@ def main():
         print '  -- gen parts --'
         print ''
         
-        genParts = event.genParticles()
+        genparts = event.genparticles()
         i=0
-        for p in genParts:
+        for p in genparts:
         
             eta = p.eta()
 
@@ -62,15 +68,29 @@ def main():
 
 
         tot_nevents += 1
-        tot_genpart += len(genParts)
-        tot_muon += len(muons)
+        tot_genpart += len(event.genparticles())
+        tot_genjet += len(event.genjets()) 
+        tot_electron += len(event.electrons()) 
+        tot_gamma += len(event.gammas())   
+        tot_muon += len(event.muons())   
+        tot_jet += len(event.jets())   
+        tot_tau += len(event.taus())   
+        tot_met += len(event.mets())   
+
+
 
         # for genPart in genParts:
         #     print(tot_nevents, "genPart pt:", genPart.pt()
 
     print("Processed %d events" % tot_nevents)
     print("On average %f generator particles" % (float(tot_genpart) / tot_nevents))
+    print("On average %f generated jets" % (float(tot_genjet) / tot_nevents))
+    print("On average %f electrons" % (float(tot_electron) / tot_nevents))
+    print("On average %f photons" % (float(tot_gamma) / tot_nevents))
     print("On average %f muons" % (float(tot_muon) / tot_nevents))
+    print("On average %f jets" % (float(tot_jet) / tot_nevents))
+    print("On average %f taus" % (float(tot_tau) / tot_nevents))
+    print("On average %f met" % (float(tot_met) / tot_nevents))
 
 if __name__ == "__main__":
     main()

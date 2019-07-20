@@ -195,14 +195,38 @@ class Event(object):
         """Returns 'run:lumi:event' string."""
         return "%d:%d:%d" % self.eventId()
 
-    def genParticles(self, prefix="genpart"):
+    def genparticles(self, prefix="genpart"):
         """Returns generator particles object."""
         return GenParticles(self._tree, prefix)
+  
+    def genjets(self, prefix="genjet"):
+        """Returns GenJet object."""
+        return GenJets(self._tree, prefix)
+
+    def electrons(self, prefix="elec"):
+        """Returns electron object."""
+        return Electrons(self._tree, prefix)
+
+    def gammas(self, prefix="gamma"):
+        """Returns photon object."""
+        return Gammas(self._tree, prefix)
 
     def muons(self, prefix="muon"):
         """Returns muon object."""
         return Muons(self._tree, prefix)
     
+    def jets(self, prefix="jet"):
+        """Returns Jet object."""
+        return Jets(self._tree, prefix)
+
+    def taus(self, prefix="tau"):
+        """Returns Tau object."""
+        return Taus(self._tree, prefix)
+
+    def mets(self, prefix="met"):
+        """Returns MET object."""
+        return Mets(self._tree, prefix)
+
 
     def getDataFrame(self, prefix):
         branches = [br.GetName() for br in self._tree.GetListOfBranches() if br.GetName().startswith(prefix+'_')]
@@ -242,6 +266,90 @@ class GenParticles(_Collection):
         super(GenParticles, self).__init__(tree, prefix + "_pt", GenParticle, prefix)
 
 ##########
+class GenJet(_Object):
+    """Class representing a GenJet."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the GenJet
+        prefix -- TBranch prefix
+        """
+        super(GenJet, self).__init__(tree, index, prefix)
+
+
+class GenJets(_Collection):
+    """Class presenting a collection of GenJets."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(GenJets, self).__init__(tree, prefix + "_pt", GenJet, prefix)
+
+##########
+class Gamma(_Object):
+    """Class representing a Gamma."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the Gamma
+        prefix -- TBranch prefix
+        """
+        super(Gamma, self).__init__(tree, index, prefix)
+
+
+class Gammas(_Collection):
+    """Class presenting a collection of Gammas."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(Gammas, self).__init__(tree, prefix + "_pt", GenParticle, prefix)
+
+##########
+class Electron(_Object):
+    """Class representing a Electron."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the Electron
+        prefix -- TBranch prefix
+        """
+        super(Electron, self).__init__(tree, index, prefix)
+
+
+class Electrons(_Collection):
+    """Class presenting a collection of Electrons."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(Electrons, self).__init__(tree, prefix + "_pt", Electron, prefix)
+
+##########
 class Muon(_Object):
     """Class representing a Muon."""
 
@@ -268,3 +376,88 @@ class Muons(_Collection):
         """
         # self.prefix = prefix
         super(Muons, self).__init__(tree, prefix + "_pt", Muon, prefix)
+
+##########
+class Tau(_Object):
+    """Class representing a Tau."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the Tau
+        prefix -- TBranch prefix
+        """
+        super(Tau, self).__init__(tree, index, prefix)
+
+
+class Taus(_Collection):
+    """Class presenting a collection of Taus."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(Taus, self).__init__(tree, prefix + "_pt", Tau, prefix)
+
+##########
+class Jet(_Object):
+    """Class representing a Jet."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the Jet
+        prefix -- TBranch prefix
+        """
+        super(Jet, self).__init__(tree, index, prefix)
+
+
+class Jets(_Collection):
+    """Class presenting a collection of Jets."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(Jets, self).__init__(tree, prefix + "_pt", Jet, prefix)
+
+##########
+class Met(_Object):
+    """Class representing a Met."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the Met
+        prefix -- TBranch prefix
+        """
+        super(Met, self).__init__(tree, index, prefix)
+
+
+class Mets(_Collection):
+    """Class presenting a collection of Mets."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(Mets, self).__init__(tree, prefix + "_pt", Met, prefix)
+
