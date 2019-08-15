@@ -203,6 +203,10 @@ class Event(object):
         """Returns GenJet object."""
         return GenJets(self._tree, prefix)
 
+    def genjetsAK8(self, prefix="genjetAK8"):
+        """Returns GenJetAK8 object."""
+        return GenJetsAK8(self._tree, prefix)
+
     def electrons(self, prefix="elec"):
         """Returns electron object."""
         return Electrons(self._tree, prefix)
@@ -218,6 +222,10 @@ class Event(object):
     def jets(self, prefix="jet"):
         """Returns Jet object."""
         return Jets(self._tree, prefix)
+
+    def jetsAK8(self, prefix="jetAK8"):
+        """Returns JetAK8 object."""
+        return JetsAK8(self._tree, prefix)
 
     def taus(self, prefix="tau"):
         """Returns Tau object."""
@@ -292,6 +300,35 @@ class GenJets(_Collection):
         """
         # self.prefix = prefix
         super(GenJets, self).__init__(tree, prefix + "_pt", GenJet, prefix)
+
+class GenJetAK8(_Object):
+    """Class representing a GenJetAK8."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the GenJetAK8
+        prefix -- TBranch prefix
+        """
+        super(GenJetAK8, self).__init__(tree, index, prefix)
+
+
+class GenJetsAK8(_Collection):
+    """Class presenting a collection of GenJetsAK8."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(GenJetsAK8, self).__init__(tree, prefix + "_pt", GenJetAK8, prefix)
+
+
 
 ##########
 class Gamma(_Object):
@@ -432,6 +469,35 @@ class Jets(_Collection):
         """
         # self.prefix = prefix
         super(Jets, self).__init__(tree, prefix + "_pt", Jet, prefix)
+
+
+class JetAK8(_Object):
+    """Class representing a JetAK8."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the JetAK8
+        prefix -- TBranch prefix
+        """
+        super(JetAK8, self).__init__(tree, index, prefix)
+
+
+class JetsAK8(_Collection):
+    """Class presenting a collection of JetsAK8."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(JetsAK8, self).__init__(tree, prefix + "_pt", JetAK8, prefix)
+
 
 ##########
 class Met(_Object):
