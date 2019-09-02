@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# USER wenyu
+
+DELPHESVERSION="delphes3.4.2pre17"
+DELPHESCARD="CMS_PhaseII_200PU_v04VAL.tcl"
+
+FULLSIMCAMP="PhaseIIMTDTDRAutumn18MiniAOD"
+SAMPLE="QCD..."
+
+WWWDIR=/eos/user/w/wenyu/www/delphes_validation
+CURDIR=20190830
+
+while getopts "o:s:" opt; do
+    case "$opt" in
+        o) COMMAND=$OPTARG
+            ;;
+        s) STORAGE=$OPTARG
+            ;;
+    esac
+done
+
+WORKDIR=${STORAGE}
+if [ -z ${WORKDIR} ]; then
+    WORKDIR=${PWD}
+fi    
+
+
+case ${COMMAND} in 
+
+    post)
+
+      POSTDIR=${WWWDIR}/${CURDIR}
+      if [ ! -d "${POSTDIR}" ]; then
+        mkdir ${POSTDIR}
+      fi
+
+      cp ${WWWDIR}/index.php ${POSTDIR}
+      cp ${WORKDIR}/plots/*.png ${POSTDIR}
+
+      echo $(date) >> ${POSTDIR}/postlog.txt
+      echo ${USER} >> ${POSTDIR}/postlog.txt
+      echo " " >> ${POSTDIR}/postlog.txt
+      echo ${DELPHESVERSION} >> ${POSTDIR}/postlog.txt
+      echo ${DELPHESCARD} >> ${POSTDIR}/postlog.txt
+      echo "FullSim  ${FULLSIMCAMP}" >> ${POSTDIR}/postlog.txt
+      echo ${SAMPLE} >>  ${POSTDIR}/postlog.txt
+
+      echo "Plots posted in ${POSTDIR} "
+
+      ;;
+
+esac
