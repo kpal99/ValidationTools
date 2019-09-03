@@ -68,52 +68,52 @@ def runJet(event, hists):
         genjets = event.genjets()
         if len(jets) < 1 or len(genjets) <1 : 
 	  return hists
-      #  jet_multi = {}
-      #  for cutname in ["nocut",
-      #                  "0to1p3", "1p3to2p5", "2p5to3","3up",
-      #                  "20to50", "50to100", "100to200", "200to400", "400up",
-      #                  ]:
-      #    jet_multi[cutname] = 0
+        jet_multi = {}
+        for cutname in ["nocut",
+                        "0to1p3", "1p3to2p5", "2p5to3","3up",
+                        "20to50", "50to100", "100to200", "200to400", "400up",
+                        ]:
+          jet_multi[cutname] = 0
 
-      #  for g in genjets:  # match reco to gen
-      #    if abs(g.eta()) > 5 or g.pt() <20 : continue
-      #    match = 0
-      #    gjet = ROOT.TVector3()
-      #    gjet.SetPtEtaPhi(g.pt(), g.eta(), g.phi())
+        for g in genjets:  # match reco to gen
+          if abs(g.eta()) > 5 or g.pt() <20 : continue
+          match = 0
+          gjet = ROOT.TVector3()
+          gjet.SetPtEtaPhi(g.pt(), g.eta(), g.phi())
 
-      #    for p in jets:
-      #      if abs(p.eta()) > 5 or p.pt() <20 : continue
-      #      jet = ROOT.TVector3()
-      #      jet.SetPtEtaPhi(p.pt(), p.eta(), p.phi())
-      #      if jet.DeltaR(gjet) < 0.2 and ( g.pt()/2 < p.pt() < g.pt()*2) :  # match found
-      #        match = 1
+          for p in jets:
+            if abs(p.eta()) > 5 or p.pt() <20 : continue
+            jet = ROOT.TVector3()
+            jet.SetPtEtaPhi(p.pt(), p.eta(), p.phi())
+            if jet.DeltaR(gjet) < 0.2 and ( g.pt()/2 < p.pt() < g.pt()*2) :  # match found
+              match = 1
 
-      #    hists["jet_matchefficiency_to_eta"].Fill(g.eta(), match)
-      #    hists["jet_matchefficiency_to_pt"].Fill(g.pt(), match)
-      #    for ptcut1, ptcut2 in [[20, 50], [50, 100], [100, 200], [200,400]]:
-      #      if ( g.pt() >= ptcut1 and g.pt() < ptcut2 ):
-      #        hists["jet_matchefficiency_to_eta_" + str(ptcut1) + "to" +str(ptcut2)].Fill(g.eta(), match)
-      #    if g.pt() >= 400 :
-      #      hists["jet_matchefficiency_to_eta_400up"].Fill(g.eta(), match)
-      #    if abs(g.eta()) <= 1.3 : hists["jet_matchefficiency_to_pt_0to1p3"].Fill(g.pt(), match)
-      #    elif 1.3< abs(g.eta()) <= 2.5 : hists["jet_matchefficiency_to_pt_1p3to2p5"].Fill(g.pt(), match)
-      #    elif 2.5< abs(g.eta()) <= 3 : hists["jet_matchefficiency_to_pt_2p5to3"].Fill(g.pt(), match)
-      #    elif abs(g.eta()) > 3 : hists["jet_matchefficiency_to_pt_3up"].Fill(g.pt(), match)
+          hists["jet_matchefficiency_to_eta"].Fill(g.eta(), match)
+          hists["jet_matchefficiency_to_pt"].Fill(g.pt(), match)
+          for ptcut1, ptcut2 in [[20, 50], [50, 100], [100, 200], [200,400]]:
+            if ( g.pt() >= ptcut1 and g.pt() < ptcut2 ):
+              hists["jet_matchefficiency_to_eta_" + str(ptcut1) + "to" +str(ptcut2)].Fill(g.eta(), match)
+          if g.pt() >= 400 :
+            hists["jet_matchefficiency_to_eta_400up"].Fill(g.eta(), match)
+          if abs(g.eta()) <= 1.3 : hists["jet_matchefficiency_to_pt_0to1p3"].Fill(g.pt(), match)
+          elif 1.3< abs(g.eta()) <= 2.5 : hists["jet_matchefficiency_to_pt_1p3to2p5"].Fill(g.pt(), match)
+          elif 2.5< abs(g.eta()) <= 3 : hists["jet_matchefficiency_to_pt_2p5to3"].Fill(g.pt(), match)
+          elif abs(g.eta()) > 3 : hists["jet_matchefficiency_to_pt_3up"].Fill(g.pt(), match)
 
         for p in jets: # match gen to reco
           if abs(p.eta()) > 5 or p.pt() <20 : continue
 	  ## jet multiplicity
-       #   if p.pt() > 25 :
-       #     jet_multi["nocut"] += 1
-       #     if abs(p.eta()) <= 1.3 : jet_multi["0to1p3"] += 1
-       #     elif 1.3< abs(p.eta()) <= 2.5 : jet_multi["1p3to2p5"] += 1
-       #     elif 2.5< abs(p.eta()) <= 3 : jet_multi["2p5to3"] += 1
-       #     elif abs(p.eta()) > 3 : jet_multi["3up"] += 1
-       #     for ptcut1, ptcut2 in [[20, 50], [50, 100], [100, 200], [200,400]]:
-       #       if ( p.pt() >= ptcut1 and p.pt() < ptcut2 ):
-       #         jet_multi[str(ptcut1) + "to" +str(ptcut2)] += 1
-       #       if p.pt() >= 400 :
-       #         jet_multi["400up"] += 1
+          if p.pt() > 25 :
+            jet_multi["nocut"] += 1
+            if abs(p.eta()) <= 1.3 : jet_multi["0to1p3"] += 1
+            elif 1.3< abs(p.eta()) <= 2.5 : jet_multi["1p3to2p5"] += 1
+            elif 2.5< abs(p.eta()) <= 3 : jet_multi["2p5to3"] += 1
+            elif abs(p.eta()) > 3 : jet_multi["3up"] += 1
+            for ptcut1, ptcut2 in [[20, 50], [50, 100], [100, 200], [200,400]]:
+              if ( p.pt() >= ptcut1 and p.pt() < ptcut2 ):
+                jet_multi[str(ptcut1) + "to" +str(ptcut2)] += 1
+              if p.pt() >= 400 :
+                jet_multi["400up"] += 1
 
           jet = ROOT.TVector3()
           jet.SetPtEtaPhi(p.pt(), p.eta(), p.phi())
@@ -125,32 +125,32 @@ def runJet(event, hists):
             if jet.DeltaR(gjet) < 0.2 and ( g.pt()/2 < p.pt() < g.pt()*2) :  # match found
 
             # fill for each matched jet
-#              hists["jet_ptresponse_to_eta"].Fill(g.eta(), p.pt()/g.pt())
-#              hists["jet_ptresponse_to_pt"].Fill(g.pt(), p.pt()/g.pt())
-#              for ptcut1, ptcut2 in [[20, 50], [50, 100], [100, 200], [200,400]]:
-#                if ( g.pt() >= ptcut1 and g.pt() < ptcut2 ):
-#                  hists["jet_ptresponse_to_eta_" + str(ptcut1) + "to" +str(ptcut2)].Fill(g.eta(), p.pt()/g.pt())
-#
-#              if g.pt() >= 400 :
-#                  hists["jet_ptresponse_to_eta_400up"].Fill(g.eta(), p.pt()/g.pt())
+              hists["jet_ptresponse_to_eta"].Fill(g.eta(), p.pt()/g.pt())
+              hists["jet_ptresponse_to_pt"].Fill(g.pt(), p.pt()/g.pt())
+              for ptcut1, ptcut2 in [[20, 50], [50, 100], [100, 200], [200,400]]:
+                if ( g.pt() >= ptcut1 and g.pt() < ptcut2 ):
+                  hists["jet_ptresponse_to_eta_" + str(ptcut1) + "to" +str(ptcut2)].Fill(g.eta(), p.pt()/g.pt())
+
+              if g.pt() >= 400 :
+                  hists["jet_ptresponse_to_eta_400up"].Fill(g.eta(), p.pt()/g.pt())
 
               hists["jet_pt"].Fill(p.pt())
               hists["jet_eta"].Fill(p.eta())
               hists["jet_phi"].Fill(p.phi())
               hists["jet_mass"].Fill(p.mass())
-#              hists["genjet_pt"].Fill(g.pt())
-#              hists["genjet_eta"].Fill(g.eta())
-#              hists["genjet_phi"].Fill(g.phi())
-#              hists["genjet_mass"].Fill(g.mass())
-#
-#
-#        # fill for each evt
-#        hists["jet_multiplicity"].Fill(jet_multi["nocut"])
-#        for cutname in [
-#                        "0to1p3", "1p3to2p5", "2p5to3","3up",
-#                        "20to50", "50to100", "100to200", "200to400", "400up"
-#                        ]:
-#          hists["jet_multiplicity_" + cutname ].Fill(jet_multi[cutname])
+              hists["genjet_pt"].Fill(g.pt())
+              hists["genjet_eta"].Fill(g.eta())
+              hists["genjet_phi"].Fill(g.phi())
+              hists["genjet_mass"].Fill(g.mass())
+
+
+        # fill for each evt
+        hists["jet_multiplicity"].Fill(jet_multi["nocut"])
+        for cutname in [
+                        "0to1p3", "1p3to2p5", "2p5to3","3up",
+                        "20to50", "50to100", "100to200", "200to400", "400up"
+                        ]:
+          hists["jet_multiplicity_" + cutname ].Fill(jet_multi[cutname])
 
         return hists
 
@@ -206,22 +206,22 @@ def main():
 		]:
       hists[obj+"_"+hname] = createHist(obj+"_"+hname)
 
-#    for hname in ["genjet_pt", "genjet_eta", "genjet_phi", "genjet_mass", 
-#		  "jet_multiplicity", "jet_multiplicity_0to1p3", "jet_multiplicity_1p3to2p5", "jet_multiplicity_2p5to3", "jet_multiplicity_3up",
-#		  "jet_multiplicity_20to50", "jet_multiplicity_50to100", "jet_multiplicity_100to200", 
-#		  "jet_multiplicity_200to400", "jet_multiplicity_400up"
-#		]:
-#      hists[hname] = createHist(hname)
+    for hname in ["genjet_pt", "genjet_eta", "genjet_phi", "genjet_mass", 
+		  "jet_multiplicity", "jet_multiplicity_0to1p3", "jet_multiplicity_1p3to2p5", "jet_multiplicity_2p5to3", "jet_multiplicity_3up",
+		  "jet_multiplicity_20to50", "jet_multiplicity_50to100", "jet_multiplicity_100to200", 
+		  "jet_multiplicity_200to400", "jet_multiplicity_400up"
+		]:
+      hists[hname] = createHist(hname)
 
-#    for hname in ["jet_matchefficiency_to_eta",
-#                  "jet_matchefficiency_to_eta_20to50", "jet_matchefficiency_to_eta_50to100", "jet_matchefficiency_to_eta_100to200",
-#                  "jet_matchefficiency_to_eta_200to400", "jet_matchefficiency_to_eta_400up",
-#		  "jet_matchefficiency_to_pt", "jet_matchefficiency_to_pt_0to1p3", "jet_matchefficiency_to_pt_1p3to2p5", "jet_matchefficiency_to_pt_2p5to3", "jet_matchefficiency_to_pt_3up",
-#		  "jet_ptresponse_to_eta", "jet_ptresponse_to_eta_20to50", "jet_ptresponse_to_eta_50to100",
-#		  "jet_ptresponse_to_eta_100to200", "jet_ptresponse_to_eta_200to400", "jet_ptresponse_to_eta_400up",
-#		  "jet_ptresponse_to_pt"
-#		]:
-#      hists[hname] = create2dHist(hname)
+   for hname in ["matchefficiency_to_eta",
+                  "matchefficiency_to_eta_20to50", "matchefficiency_to_eta_50to100", "matchefficiency_to_eta_100to200",
+                  "matchefficiency_to_eta_200to400", "matchefficiency_to_eta_400up",
+		  "matchefficiency_to_pt", "matchefficiency_to_pt_0to1p3", "matchefficiency_to_pt_1p3to2p5", "matchefficiency_to_pt_2p5to3", "matchefficiency_to_pt_3up",
+		  "ptresponse_to_eta", "ptresponse_to_eta_20to50", "ptresponse_to_eta_50to100",
+		  "ptresponse_to_eta_100to200", "ptresponse_to_eta_200to400", "ptresponse_to_eta_400up",
+		  "ptresponse_to_pt"
+		]:
+      hists[obj+"_"+hname] = create2dHist(obj+"_"+hname)
 
     for event in ntuple:
         if maxEvents > 0 and event.entry() >= maxEvents:
