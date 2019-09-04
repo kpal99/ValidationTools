@@ -9,7 +9,7 @@ import optparse
 # that are in the HGCalNtuple
 
 
-def createHist(varname):
+def createHist(opt, varname):
     if "pt" in varname:
       h = ROOT.TH1D(varname, "", 100, 0, 1500)
       h.GetXaxis().SetTitle("pT[GeV]")
@@ -27,7 +27,7 @@ def createHist(varname):
       h.GetXaxis().SetTitle("mass[GeV]")
       h.GetYaxis().SetTitle("N_{jet}")
     if "multi" in varname:
-      if "full" in outputDir:
+      if "full" in opt.outFile:
          h = ROOT.TH1D(varname, "", 50, 0, 50) 
       else:
 	 h = ROOT.TH1D(varname, "", 20, 0, 20)
@@ -62,7 +62,7 @@ def create2dHist(varname):
 
     return h
 
-def runJet(event, hists):
+def runJet(opt, event, hists):
 
         jets = event.jets()
         genjets = event.genjets()
@@ -204,16 +204,16 @@ def main():
     hists = {} 
     for hname in ["pt", "eta", "phi", "mass",
 		]:
-      hists[obj+"_"+hname] = createHist(obj+"_"+hname)
+      hists[obj+"_"+hname] = createHist(opt, obj+"_"+hname)
 
     for hname in ["genjet_pt", "genjet_eta", "genjet_phi", "genjet_mass", 
 		  "jet_multiplicity", "jet_multiplicity_0to1p3", "jet_multiplicity_1p3to2p5", "jet_multiplicity_2p5to3", "jet_multiplicity_3up",
 		  "jet_multiplicity_20to50", "jet_multiplicity_50to100", "jet_multiplicity_100to200", 
 		  "jet_multiplicity_200to400", "jet_multiplicity_400up"
 		]:
-      hists[hname] = createHist(hname)
+      hists[hname] = createHist(opt, hname)
 
-   for hname in ["matchefficiency_to_eta",
+    for hname in ["matchefficiency_to_eta",
                   "matchefficiency_to_eta_20to50", "matchefficiency_to_eta_50to100", "matchefficiency_to_eta_100to200",
                   "matchefficiency_to_eta_200to400", "matchefficiency_to_eta_400up",
 		  "matchefficiency_to_pt", "matchefficiency_to_pt_0to1p3", "matchefficiency_to_pt_1p3to2p5", "matchefficiency_to_pt_2p5to3", "matchefficiency_to_pt_3up",
@@ -241,7 +241,7 @@ def main():
         tot_genjetAK8 += len(event.genjetsAK8())
         tot_jetAK8 += len(event.jetsAK8())
 
-	if obj=="jet":	hists = runJet(event, hists)
+	if obj=="jet":	hists = runJet(opt, event, hists)
 
         # end of one event
 

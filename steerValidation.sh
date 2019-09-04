@@ -28,6 +28,16 @@ fi
 
 case ${COMMAND} in 
 
+    jet)
+
+      input=../DelphesNtuplizer/ntuples/QCD_Pt-15To7000_Autumn18_1et2.root
+      output=histo_delp/val.root
+
+      echo "Running jet analyer on ${input}, output file ${output} "
+      python ntuple_analyser.py -i ${input} -o ${output} -p jet --maxEvents 100
+
+      ;;
+
     post)
 
       POSTDIR=${WWWDIR}/${CURDIR}
