@@ -12,26 +12,26 @@ import optparse
 def createHist(opt, varname):
     if "pt" in varname:
       h = ROOT.TH1D(varname, "", 100, 0, 1500)
-      h.GetXaxis().SetTitle("pT[GeV]")
-      h.GetYaxis().SetTitle("N_{jet}")
+      h.GetXaxis().SetTitle("p_{T}[GeV]")
+      h.GetYaxis().SetTitle("N")
     if "eta" in varname:
       h = ROOT.TH1D(varname, "", 100, -5, -5)
-      h.GetXaxis().SetTitle("eta")
-      h.GetYaxis().SetTitle("N_{jet}")
+      h.GetXaxis().SetTitle("#eta")
+      h.GetYaxis().SetTitle("N")
     if "phi" in varname:
       h = ROOT.TH1D(varname, "", 100, -5, -5)
-      h.GetXaxis().SetTitle("phi")
-      h.GetYaxis().SetTitle("N_{jet}")
+      h.GetXaxis().SetTitle("#phi")
+      h.GetYaxis().SetTitle("N")
     if "mass" in varname:
       h = ROOT.TH1D(varname, "", 100, 0, 500)
       h.GetXaxis().SetTitle("mass[GeV]")
-      h.GetYaxis().SetTitle("N_{jet}")
+      h.GetYaxis().SetTitle("N")
     if "multi" in varname:
       if "full" in opt.outFile:
          h = ROOT.TH1D(varname, "", 50, 0, 50) 
       else:
 	 h = ROOT.TH1D(varname, "", 20, 0, 20)
-      h.GetXaxis().SetTitle("jet multiplicity")
+      h.GetXaxis().SetTitle("multiplicity")
       h.GetYaxis().SetTitle("Events")
 
 
@@ -42,20 +42,20 @@ def createHist(opt, varname):
 def create2dHist(varname):
     if "to_pt" in varname and "response" in varname:
       h = ROOT.TProfile(varname, "", 100, 0, 1500)
-      h.GetXaxis().SetTitle("pT[GeV]")
-      h.GetYaxis().SetTitle("Jet.pt/GenJet.pt")
+      h.GetXaxis().SetTitle("p_{T}[GeV]")
+      h.GetYaxis().SetTitle("Reco_pt/Gen_pt")
     if "to_eta" in varname and "response" in varname:
       h = ROOT.TProfile(varname, "", 100, -5, 5)
-      h.GetXaxis().SetTitle("eta")
-      h.GetYaxis().SetTitle("Jet.pt/GenJet.pt")
+      h.GetXaxis().SetTitle("#eta")
+      h.GetYaxis().SetTitle("Reco_pt/Gen_pt")
     if "to_pt" in varname and "efficiency" in varname:
       h = ROOT.TProfile(varname, "", 100, 0, 1500)
-      h.GetXaxis().SetTitle("pT[GeV]")
-      h.GetYaxis().SetTitle("genjet matching efficiency")
+      h.GetXaxis().SetTitle("p_{T}[GeV]")
+      h.GetYaxis().SetTitle("gen object matching efficiency")
     if "to_eta" in varname and "efficiency" in varname:
       h = ROOT.TProfile(varname, "", 100, -5, 5)
-      h.GetXaxis().SetTitle("eta")
-      h.GetYaxis().SetTitle("genjet matching efficiency")
+      h.GetXaxis().SetTitle("#eta")
+      h.GetYaxis().SetTitle("gen object matching efficiency")
 
 
     h.Sumw2()
@@ -209,18 +209,7 @@ def main():
 	  for ivec in range(0, len(p_tvectors)):
 
 	    if g_vec.DeltaR(p_tvectors[ivec]) < 0.2 and (g.pt()/2 < p_tvectors[ivec].Pt() < g.pt()*2) : # matched
-	      match = 1
-              hists[obj+"_matchefficiency_to_eta"].Fill(g.eta(), match)
-              hists[obj+"_matchefficiency_to_pt"].Fill(g.pt(), match)
-              for ptcut1, ptcut2 in [[20, 50], [50, 100], [100, 200], [200,400]]:
-                if ( g.pt() >= ptcut1 and g.pt() < ptcut2 ):
-                  hists[obj+"_matchefficiency_to_eta_" + str(ptcut1) + "to" +str(ptcut2)].Fill(g.eta(), match)
-              if g.pt() >= 400 :
-                hists[obj+"_matchefficiency_to_eta_400up"].Fill(g.eta(), match)
-              if abs(g.eta()) <= 1.3 : hists[obj+"_matchefficiency_to_pt_0to1p3"].Fill(g.pt(), match)
-              elif 1.3< abs(g.eta()) <= 2.5 : hists[obj+"_matchefficiency_to_pt_1p3to2p5"].Fill(g.pt(), match)
-              elif 2.5< abs(g.eta()) <= 3 : hists[obj+"_matchefficiency_to_pt_2p5to3"].Fill(g.pt(), match)
-              elif abs(g.eta()) > 3 : hists[obj+"_matchefficiency_to_pt_3up"].Fill(g.pt(), match)
+	      match = 1  # assumed only one possible match for each genobj
 
               hists[obj+"_matched_pt"].Fill(p_tvectors[ivec].Pt())
               hists[obj+"_matched_eta"].Fill(p_tvectors[ivec].Eta())
@@ -239,6 +228,18 @@ def main():
               if g.pt() >= 400 :
                   hists[obj+"_ptresponse_to_eta_400up"].Fill(g.eta(), p_tvectors[ivec].Pt()/g.pt())
 
+	  # for each gen obj
+          hists[obj+"_matchefficiency_to_eta"].Fill(g.eta(), match)
+          hists[obj+"_matchefficiency_to_pt"].Fill(g.pt(), match)
+          for ptcut1, ptcut2 in [[20, 50], [50, 100], [100, 200], [200,400]]:
+            if ( g.pt() >= ptcut1 and g.pt() < ptcut2 ):
+              hists[obj+"_matchefficiency_to_eta_" + str(ptcut1) + "to" +str(ptcut2)].Fill(g.eta(), match)
+          if g.pt() >= 400 :
+            hists[obj+"_matchefficiency_to_eta_400up"].Fill(g.eta(), match)
+          if abs(g.eta()) <= 1.3 : hists[obj+"_matchefficiency_to_pt_0to1p3"].Fill(g.pt(), match)
+          elif 1.3< abs(g.eta()) <= 2.5 : hists[obj+"_matchefficiency_to_pt_1p3to2p5"].Fill(g.pt(), match)
+          elif 2.5< abs(g.eta()) <= 3 : hists[obj+"_matchefficiency_to_pt_2p5to3"].Fill(g.pt(), match)
+          elif abs(g.eta()) > 3 : hists[obj+"_matchefficiency_to_pt_3up"].Fill(g.pt(), match)
 
         # end of one event
 
