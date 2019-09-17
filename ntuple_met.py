@@ -1,4 +1,4 @@
-import ROOT as r 
+import ROOT as r #needs 6.14 or greater
 
 FindZ=\
 "for(int i=0;i<genpart_size;i++){\
@@ -11,7 +11,14 @@ FindZ=\
 Sum=\
 "float sum=0.0;\
 for(int i=0;i<OBJECT_size;i++){\
+if(OBJECT_pt[i]>PTCUT && fabs(OBJECT_eta[i])<ETACUT)\
 sum+=OBJECT_pt[i];} return sum;"
+
+Count=\
+"int count=0;\
+for(int i=0;i<OBJECT_size;i++){\
+if(OBJECT_pt[i]>PTCUT && fabs(OBJECT_eta[i])<ETACUT)\
+count++;} return count;"
 
 def compare(name,file_list,name_list,legend_list,normalize=False,drawoption='hE',xtitle='',ytitle='',minx=0,maxx=0,rebin=1,miny=0,maxy=0,textsizefactor=1,logy=False):
   c=TCanvas(name,'',600,600)
@@ -78,24 +85,34 @@ def dostudy(path,suffix):
 	d = r.RDataFrame("myana/mytree",path)
 	df=d\
 	.Define('z',FindZ).Define('z_pt','z.Mod()')\
-	.Define('ht',Sum.replace("OBJECT","jet"))\
+	.Define('ht',Sum.replace("OBJECT","jet").replace("PTCUT","0.0").replace("ETACUT","5000.0"))\
+	.Define('ht_pt30_eta4',Sum.replace("OBJECT","jet").replace("PTCUT","30.0").replace("ETACUT","4.0"))\
+	.Define('ht_pt30_eta3',Sum.replace("OBJECT","jet").replace("PTCUT","30.0").replace("ETACUT","3.0"))\
 	.Define('met_v','TVector2 v(0,0);v.SetMagPhi(met_pt[0],met_phi[0]);return v;')\
 	.Define('met','met_pt[0]')\
 	.Define('met_p','met_v.Proj(z).Mod()')\
 	.Define('met_t','met_v.Norm(z).Mod()')\
 	.Define('u_p','(z+met_v).Proj(z).Mod()')\
+	.Define('jet_size_pt30_eta4',Count.replace("OBJECT","jet").replace("PTCUT","30.0").replace("ETACUT","4.0"))\
+	.Define('jet_size_pt30_eta3',Count.replace("OBJECT","jet").replace("PTCUT","30.0").replace("ETACUT","3.0"))\
+	.Define('vtx_size_psq900',Count.replace("OBJECT_pt[i]>PTCUT","vtx_pt2[i]>900.0").replace(" && fabs(OBJECT_eta[i])<ETACUT",""))\
 
 	var={}
 	var['ht']=(";H_{T} [GeV];Events", 50, 0, 500)
+	var['ht_pt30_eta4']=(";H_{T} [GeV];Events", 50, 0, 500)
+	var['ht_pt30_eta3']=(";H_{T} [GeV];Events", 50, 0, 500)
 	var['vtx_size']=(";N_{PV};Events", 180, 90, 270)
+	var['vtx_size_psq900']=(";N_{PV};Events", 180, 90, 270)
 	var['jet_size']=(";N_{jet};Events", 15, 0, 15)
+	var['jet_size_pt30_eta4']=(";N_{jet};Events", 15, 0, 15)
+	var['jet_size_pt30_eta3']=(";N_{jet};Events", 15, 0, 15)
 	var['z_pt']=(";p_{T}(Z) [GeV];Events", 150, 0, 150)
 	var['met']=(";p_{T,miss} [GeV];Events", 300, 0, 300)
 	var['met_p']=(";parallel p_{T,miss} [GeV];Events", 150, 0, 150)
 	var['met_t']=(";transverse p_{T,miss} [GeV];Events", 150, 0, 150)
 	var['u_p']=(";u_{p} [GeV];Events", 150, 0, 150)
 
-	twod_vars=['ht','vtx_size','jet_size','z_pt']
+	twod_vars=['ht','ht_pt30_eta4','ht_pt30_eta3','vtx_size','vtx_size_psq900','jet_size','jet_size_pt30_eta4','jet_size_pt30_eta3','z_pt']
 
 	hists=[]
 	for v in var:
@@ -107,6 +124,29 @@ def dostudy(path,suffix):
 	outfile=r.TFile('outfile_met_'+suffix+'.root','RECREATE')
 	for h in hists:
 		h.Write()
+
+	for i in twod_vars:
+		up_over_qt=outfile.Get("").Copy()
+		up_over_qt.Divide(outfile.Get(""))
+		up_over_qt.Write("")
+
+		ut=outfile.Get("").Copy()
+		ut_rms=r.TH1F(*var[i])
+
+		ut_rms.Write("")
+
+		ut_plus_qt=outfile.Get("").Copy()
+		ut_plus_qt_rms=r.TH1F(*var[i])
+
+		ut_plus_qt_rms.Write("")
+
+
+# -<u_p>/<qt>
+
+# Rms(u_p+qT==-Met_p)
+# Rms(u_t)
+
+
 	outfile.Close()
 
 dostudy("/eos/user/w/wenyu/TDRFullsim_ntuple/DYToMuMuorEleEle_M-20_14TeV_pythia8/crab_DYToMuMuorEleEle_M-20_14TeV_pythia8_200PU/190807_164128/0000/*.root","fullsim")
@@ -119,5 +159,19 @@ for i in ['delphes','fullsim']:
 hnames=[key.GetName() for key in f["fullsim"].GetListOfKeys()]
 
 for i in hnames:
+	
+	compare(
+		name=i+'_comp',
+#		normalize=True,
+#		rebin=rebin,
 
+		file_list=[f['delphes'],f['fullsim']],
+		name_list=[i]*2,
+		legend_list=['Delphes','Full Sim'],
+#		drawoption=drawoption,
+		# ytitle='A.U.',
+		# xtitle='m_{g} gen level [GeV]',
+		# minx=200,maxx=7000,
+#		miny=miny,maxy=maxy,
+		textsizefactor=0.7)
 
