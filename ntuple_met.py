@@ -152,7 +152,7 @@ hnames=[[key.GetName(),key.GetClassName()] for key in f["fullsim"].GetListOfKeys
 for i in hnames:
 	compare(
 		name=i[0]+'_comp',
-		normalize= (not (i[1]=='TProfile')) and ('rms' not in i[1]),
+		normalize= (not (i[1]=='TProfile')) and ('rms' not in i[0]),
 		file_list=[f['fullsim'],f['delphes']],
 		name_list=[i[0]]*2,
 		legend_list=['Full Sim','Delphes'],
