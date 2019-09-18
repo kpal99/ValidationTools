@@ -173,11 +173,11 @@ def main():
 	p_tvectors = []
 
         for p in objs: # match gen to reco
-          if p.eta() > 5 or p.pt() <20 : continue
-	    hists[obj+"_pt"].Fill(p.pt())
-	    hists[obj+"_eta"].Fill(p.eta())
-	    hists[obj+"_phi"].Fill(p.phi())
-	    hists[obj+"_mass"].Fill(p.mass())
+          if abs(p.eta()) > 5 or p.pt() <20 : continue
+	  hists[obj+"_pt"].Fill(p.pt())
+	  hists[obj+"_eta"].Fill(p.eta())
+	  hists[obj+"_phi"].Fill(p.phi())
+	  hists[obj+"_mass"].Fill(p.mass())
 
           if p.pt() > 25 :
             multiplicity["nocut"] += 1
@@ -201,7 +201,7 @@ def main():
 	  hists["gen"+obj+"_pt"].Fill(g.pt())
 	  hists["gen"+obj+"_eta"].Fill(g.eta())
           hists["gen"+obj+"_phi"].Fill(g.phi())
-          hists["gen"+pbj+"_mass"].Fill(g.mass())
+          hists["gen"+obj+"_mass"].Fill(g.mass())
 	  g_vec = ROOT.TVector3()
 	  g_vec.SetPtEtaPhi(g.pt(), g.eta(), g.phi())
 	  match = 0
@@ -240,6 +240,15 @@ def main():
           elif 1.3< abs(g.eta()) <= 2.5 : hists[obj+"_matchefficiency_to_pt_1p3to2p5"].Fill(g.pt(), match)
           elif 2.5< abs(g.eta()) <= 3 : hists[obj+"_matchefficiency_to_pt_2p5to3"].Fill(g.pt(), match)
           elif abs(g.eta()) > 3 : hists[obj+"_matchefficiency_to_pt_3up"].Fill(g.pt(), match)
+
+
+	# for each evt
+        hists[obj+"_multiplicity"].Fill(multiplicity["nocut"])
+        for cutname in [
+                        "0to1p3", "1p3to2p5", "2p5to3","3up",
+                        "20to50", "50to100", "100to200", "200to400", "400up"
+                        ]:
+          hists[obj+"_multiplicity_" + cutname ].Fill(multiplicity[cutname])
 
         # end of one event
 
