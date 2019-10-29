@@ -8,29 +8,49 @@ import optparse
 # The purpose of this file is to demonstrate mainly the objects
 # that are in the HGCalNtuple
 
+params = {
+"dR": 0.2,
+"ptRatio": 2.0,
+"ptMin": 20,
+"etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3] ],
+"ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400] ],
+"plotPtRange": [0, 1500],
+"plotEtaRange": [-5, 5],
+"plotPhiRange": [-5, 5],
+"plotMassRange": [0, 500],
+"plotNObjRange_Delp": [0, 20],
+"plotNObjRange_Full": [0, 50],
+}
+
+pdgid = {
+"photon": 22,
+"electron": 11,
+"muon": 13,
+
+}
 
 def createHist(opt, varname):
     if "pt" in varname:
-      h = ROOT.TH1D(varname, "", 100, 0, 1500)
+      h = ROOT.TH1D(varname, "", 100, params["plotPtRange"][0], params["plotPtRange"][1])
       h.GetXaxis().SetTitle("p_{T}[GeV]")
       h.GetYaxis().SetTitle("N")
     if "eta" in varname:
-      h = ROOT.TH1D(varname, "", 100, -5, -5)
+      h = ROOT.TH1D(varname, "", 100, params["plotEtaRange"][0], params["plotEtaRange"][1])
       h.GetXaxis().SetTitle("#eta")
       h.GetYaxis().SetTitle("N")
     if "phi" in varname:
-      h = ROOT.TH1D(varname, "", 100, -5, -5)
+      h = ROOT.TH1D(varname, "", 100, params["plotPhiRange"][0], params["plotPhiRange"][1])
       h.GetXaxis().SetTitle("#phi")
       h.GetYaxis().SetTitle("N")
     if "mass" in varname:
-      h = ROOT.TH1D(varname, "", 100, 0, 500)
+      h = ROOT.TH1D(varname, "", 100, params["plotMassRange"][0], params["plotMassRange"][1])
       h.GetXaxis().SetTitle("mass[GeV]")
       h.GetYaxis().SetTitle("N")
     if "multi" in varname:
       if "full" in opt.outFile:
-         h = ROOT.TH1D(varname, "", 50, 0, 50) 
+         h = ROOT.TH1D(varname, "", 50, params["plotNObjRange_Full"][0], params["plotNObjRange_Full"][1]) 
       else:
-	 h = ROOT.TH1D(varname, "", 20, 0, 20)
+	 h = ROOT.TH1D(varname, "", 20, params["plotNObjRange_Delp"][0], params["plotNObjRange_Delp"][1])
       h.GetXaxis().SetTitle("multiplicity")
       h.GetYaxis().SetTitle("Events")
 
@@ -41,19 +61,19 @@ def createHist(opt, varname):
 
 def create2dHist(varname):
     if "to_pt" in varname and "response" in varname:
-      h = ROOT.TProfile(varname, "", 100, 0, 1500)
+      h = ROOT.TProfile(varname, "", 100, params["plotPtRange"][0], params["plotPtRange"][1])
       h.GetXaxis().SetTitle("p_{T}[GeV]")
       h.GetYaxis().SetTitle("Reco_pt/Gen_pt")
     if "to_eta" in varname and "response" in varname:
-      h = ROOT.TProfile(varname, "", 100, -5, 5)
+      h = ROOT.TProfile(varname, "", 100, params["plotEtaRange"][0], params["plotEtaRange"][1])
       h.GetXaxis().SetTitle("#eta")
       h.GetYaxis().SetTitle("Reco_pt/Gen_pt")
     if "to_pt" in varname and "efficiency" in varname:
-      h = ROOT.TProfile(varname, "", 100, 0, 1500)
+      h = ROOT.TProfile(varname, "", 100, params["plotPtRange"][0], params["plotPtRange"][1])
       h.GetXaxis().SetTitle("p_{T}[GeV]")
       h.GetYaxis().SetTitle("gen object matching efficiency")
     if "to_eta" in varname and "efficiency" in varname:
-      h = ROOT.TProfile(varname, "", 100, -5, 5)
+      h = ROOT.TProfile(varname, "", 100, params["plotEtaRange"][0], params["plotEtaRange"][1])
       h.GetXaxis().SetTitle("#eta")
       h.GetYaxis().SetTitle("gen object matching efficiency")
 
@@ -118,22 +138,34 @@ def main():
       hists[obj+"_matched_"+hname] = createHist(opt, obj+"_matched_"+hname)
       hists["gen"+obj+"_matched_"+hname] = createHist(opt, "gen"+obj+"_matched_"+hname)
 
-    for hname in [
-		  "multiplicity", "multiplicity_0to1p3", "multiplicity_1p3to2p5", "multiplicity_2p5to3", "multiplicity_3up",
-		  "multiplicity_20to50", "multiplicity_50to100", "multiplicity_100to200", 
-		  "multiplicity_200to400", "multiplicity_400up"
-		]:
+    cutList = ["nocut"]+params["etaSlices"]+params["ptSlices"]
+
+    for cut in cutList:
+      hname = "multiplicity"
+      if len(cut)==2:
+        hname += "_"+ str(cut[0]) + "to" + str(cut[1])
+      elif len(cut)==1:
+        hname += "_"+ str(cut[0]) + "up" 
+      hname = hname.replace('.', 'p')
       hists[obj+"_"+hname] = createHist(opt, obj+"_"+hname)
 
-    for hname in ["matchefficiency_to_eta",
-                  "matchefficiency_to_eta_20to50", "matchefficiency_to_eta_50to100", "matchefficiency_to_eta_100to200",
-                  "matchefficiency_to_eta_200to400", "matchefficiency_to_eta_400up",
-		  "matchefficiency_to_pt", "matchefficiency_to_pt_0to1p3", "matchefficiency_to_pt_1p3to2p5", "matchefficiency_to_pt_2p5to3", "matchefficiency_to_pt_3up",
-		  "ptresponse_to_eta", "ptresponse_to_eta_20to50", "ptresponse_to_eta_50to100",
-		  "ptresponse_to_eta_100to200", "ptresponse_to_eta_200to400", "ptresponse_to_eta_400up",
-		  "ptresponse_to_pt"
-		]:
-      hists[obj+"_"+hname] = create2dHist(obj+"_"+hname)
+    for cut in ["nocut"]+params["etaSlices"]:
+      for hname in ["matchefficiency_to_pt", "ptresponse_to_pt"]:
+        if len(cut)==2:
+          hname += "_"+ str(cut[0]) + "to" + str(cut[1])
+        elif len(cut)==1:
+          hname += "_"+ str(cut[0]) + "up"
+        hname = hname.replace('.', 'p')
+        hists[obj+"_"+hname] = create2dHist(obj+"_"+hname)
+
+    for cut in ["nocut"]+params["ptSlices"]:
+      for hname in ["matchefficiency_to_eta", "ptresponse_to_eta"]:
+        if len(cut)==2:
+	  hname += "_"+ str(cut[0]) + "to" + str(cut[1])
+	elif len(cut)==1:
+	  hname += "_"+ str(cut[0]) + "up"
+        hname = hname.replace('.', 'p')
+	hists[obj+"_"+hname] = create2dHist(obj+"_"+hname)
 
 
     for event in ntuple:
@@ -155,41 +187,54 @@ def main():
         tot_jetAK8 += len(event.jetsAK8())
 
 	if obj=="jet":
-	   objs = event.jets()
+	   recoobjs = event.jets()
            genobjs = event.genjets()
 	elif obj == "photon" :
-	   objs = event.gammas()
+	   recoobjs = event.gammas()
            genobjs = event.genparticles()
+        if len(recoobjs) < 1 or len(genobjs) <1 : continue
 
-        if len(objs) < 1 or len(genobjs) <1 : continue
         multiplicity = {}
-        for cutname in ["nocut",
-                        "0to1p3", "1p3to2p5", "2p5to3","3up",
-                        "20to50", "50to100", "100to200", "200to400", "400up",
-                        ]:
+        for cut in cutList:
+          cutname = cut
+          if len(cut)==2:
+            cutname = str(cut[0]) + "to" + str(cut[1])
+          elif len(cut)==1:
+            cutname = str(cut[0]) + "up"
+	  cutname = cutname.replace('.','p')
           multiplicity[cutname] = 0
 
 
 	p_tvectors = []
 
-        for p in objs: # match gen to reco
-          if abs(p.eta()) > 5 or p.pt() <20 : continue
+        for p in recoobjs: # match gen to reco
+          if abs(p.eta()) > 5 or p.pt() < params["ptMin"] : continue
 	  hists[obj+"_pt"].Fill(p.pt())
 	  hists[obj+"_eta"].Fill(p.eta())
 	  hists[obj+"_phi"].Fill(p.phi())
 	  hists[obj+"_mass"].Fill(p.mass())
 
-          if p.pt() > 25 :
-            multiplicity["nocut"] += 1
-            if abs(p.eta()) <= 1.3 : multiplicity["0to1p3"] += 1
-            elif 1.3< abs(p.eta()) <= 2.5 : multiplicity["1p3to2p5"] += 1
-            elif 2.5< abs(p.eta()) <= 3 : multiplicity["2p5to3"] += 1
-            elif abs(p.eta()) > 3 : multiplicity["3up"] += 1
-            for ptcut1, ptcut2 in [[20, 50], [50, 100], [100, 200], [200,400]]:
-              if ( p.pt() >= ptcut1 and p.pt() < ptcut2 ):
-                multiplicity[str(ptcut1) + "to" +str(ptcut2)] += 1
-            if p.pt() >= 400 :
-              multiplicity["400up"] += 1
+          if p.pt() < 25 : continue  # for jets
+          multiplicity["nocut"] += 1
+          for cut in params["etaSlices"]:
+            if len(cut) ==2:
+	      cutname = str(cut[0]) + "to" + str(cut[1])
+	      cutname = cutname.replace('.','p')
+              if cut[0] < abs(p.eta()) <= cut[1] : multiplicity[cutname] += 1
+            elif len(cut) == 1:
+              cutname = str(cut[0]) + "up"
+              cutname = cutname.replace('.','p')
+              if abs(p.eta()) > cut[0] : multiplicity[cutname] += 1
+
+          for cut in params["ptSlices"]:
+            if len(cut) ==2:
+              cutname = str(cut[0]) + "to" + str(cut[1])
+              cutname = cutname.replace('.','p')
+              if  cut[0] <= p.pt() < cut[1]: multiplicity[cutname] += 1
+            elif len(cut) == 1:
+              cutname = str(cut[0]) + "up"
+              cutname = cutname.replace('.','p')
+              if p.pt() >= cut[0]: multiplicity[cutname] += 1
 
           p_vec = ROOT.TVector3()
           p_vec.SetPtEtaPhi(p.pt(), p.eta(), p.phi())
@@ -197,7 +242,9 @@ def main():
 
 
 	for g in genobjs:  # match reco to gen
-          if abs(g.eta()) > 5 or g.pt() <20 : continue
+	  if obj in pdgid:
+	     if g.pid() != pdgid[obj]: continue  # check genparticle pid  
+          if abs(g.eta()) > 5 or g.pt() < params["ptMin"] : continue
 	  hists["gen"+obj+"_pt"].Fill(g.pt())
 	  hists["gen"+obj+"_eta"].Fill(g.eta())
           hists["gen"+obj+"_phi"].Fill(g.phi())
@@ -208,7 +255,7 @@ def main():
 
 	  for ivec in range(0, len(p_tvectors)):
 
-	    if g_vec.DeltaR(p_tvectors[ivec]) < 0.2 and (g.pt()/2 < p_tvectors[ivec].Pt() < g.pt()*2) : # matched
+	    if g_vec.DeltaR(p_tvectors[ivec]) < params["dR"] and ( 1./params["ptRatio"] < p_tvectors[ivec].Pt()/g.pt() < params["ptRatio"]) : # matched
 	      match = 1  # assumed only one possible match for each genobj
 
               hists[obj+"_matched_pt"].Fill(p_tvectors[ivec].Pt())
@@ -222,33 +269,65 @@ def main():
 	
               hists[obj+"_ptresponse_to_eta"].Fill(g.eta(), p_tvectors[ivec].Pt()/g.pt())
               hists[obj+"_ptresponse_to_pt"].Fill(g.pt(), p_tvectors[ivec].Pt()/g.pt())
-              for ptcut1, ptcut2 in [[20, 50], [50, 100], [100, 200], [200,400]]:
-                if ( g.pt() >= ptcut1 and g.pt() < ptcut2 ):
-                  hists[obj+"_ptresponse_to_eta_" + str(ptcut1) + "to" +str(ptcut2)].Fill(g.eta(), p_tvectors[ivec].Pt()/g.pt())
-              if g.pt() >= 400 :
-                  hists[obj+"_ptresponse_to_eta_400up"].Fill(g.eta(), p_tvectors[ivec].Pt()/g.pt())
+	      for cut in params["ptSlices"]:
+                if len(cut) ==2:
+                  cutname = str(cut[0]) + "to" + str(cut[1])
+                  cutname = cutname.replace('.','p')
+	          if cut[0] <= g.pt() < cut[1]: hists[obj+"_ptresponse_to_eta_"+cutname].Fill(g.eta(), p_tvectors[ivec].Pt()/g.pt())
+                elif len(cut) == 1:
+                  cutname = str(cut[0]) + "up"
+                  cutname = cutname.replace('.','p')
+                  if g.pt() >= cut[0] : hists[obj+"_ptresponse_to_eta_"+cutname].Fill(g.eta(), p_tvectors[ivec].Pt()/g.pt())
+
+              for cut in params["etaSlices"]:
+                if len(cut) ==2:
+                  cutname = str(cut[0]) + "to" + str(cut[1])
+                  cutname = cutname.replace('.','p')
+                  if cut[0] < abs(g.eta()) <= cut[1]: hists[obj+"_ptresponse_to_pt_"+cutname].Fill(g.pt(), p_tvectors[ivec].Pt()/g.pt())
+                elif len(cut) == 1:
+                  cutname = str(cut[0]) + "up"
+                  cutname = cutname.replace('.','p')
+                  if abs(g.eta()) > cut[0] : hists[obj+"_ptresponse_to_pt_"+cutname].Fill(g.pt(), p_tvectors[ivec].Pt()/g.pt())
+
 
 	  # for each gen obj
           hists[obj+"_matchefficiency_to_eta"].Fill(g.eta(), match)
           hists[obj+"_matchefficiency_to_pt"].Fill(g.pt(), match)
-          for ptcut1, ptcut2 in [[20, 50], [50, 100], [100, 200], [200,400]]:
-            if ( g.pt() >= ptcut1 and g.pt() < ptcut2 ):
-              hists[obj+"_matchefficiency_to_eta_" + str(ptcut1) + "to" +str(ptcut2)].Fill(g.eta(), match)
-          if g.pt() >= 400 :
-            hists[obj+"_matchefficiency_to_eta_400up"].Fill(g.eta(), match)
-          if abs(g.eta()) <= 1.3 : hists[obj+"_matchefficiency_to_pt_0to1p3"].Fill(g.pt(), match)
-          elif 1.3< abs(g.eta()) <= 2.5 : hists[obj+"_matchefficiency_to_pt_1p3to2p5"].Fill(g.pt(), match)
-          elif 2.5< abs(g.eta()) <= 3 : hists[obj+"_matchefficiency_to_pt_2p5to3"].Fill(g.pt(), match)
-          elif abs(g.eta()) > 3 : hists[obj+"_matchefficiency_to_pt_3up"].Fill(g.pt(), match)
+	  for cut in params["ptSlices"]:
+            if len(cut) ==2:
+              cutname = str(cut[0]) + "to" + str(cut[1])
+              cutname = cutname.replace('.','p')
+	      if cut[0] <= g.pt() < cut[1]: hists[obj+"_matchefficiency_to_eta_" + cutname].Fill(g.eta(), match)
+	    elif len(cut) == 1:
+              cutname = str(cut[0]) + "up"
+              cutname = cutname.replace('.','p')
+              if g.pt() >= cut[0] : hists[obj+"_matchefficiency_to_eta_" +cutname].Fill(g.eta(), match)
+
+          for cut in params["etaSlices"]:
+            if len(cut) ==2:
+              cutname = str(cut[0]) + "to" + str(cut[1])
+              cutname = cutname.replace('.','p')
+              if cut[0] < abs(g.eta()) <= cut[1]: hists[obj+"_matchefficiency_to_pt_"+cutname].Fill(g.pt(), match)
+            elif len(cut) == 1:
+              cutname = str(cut[0]) + "up"
+              cutname = cutname.replace('.','p')          
+	      if abs(g.eta()) > cut[0] : hists[obj+"_matchefficiency_to_pt_"+cutname].Fill(g.pt(), match)
 
 
 	# for each evt
-        hists[obj+"_multiplicity"].Fill(multiplicity["nocut"])
-        for cutname in [
-                        "0to1p3", "1p3to2p5", "2p5to3","3up",
-                        "20to50", "50to100", "100to200", "200to400", "400up"
-                        ]:
-          hists[obj+"_multiplicity_" + cutname ].Fill(multiplicity[cutname])
+        for cut in cutList:
+          cutname = cut
+          hname = "multiplicity" # cut == "nocut"
+          if len(cut)==2:
+	    cutname = str(cut[0]) + "to" + str(cut[1])
+	    cutname = cutname.replace('.','p')
+	    hname += "_"+ cutname
+          elif len(cut)==1:
+	    cutname = str(cut[0]) + "up"
+	    cutname = cutname.replace('.','p')
+	    hname += "_"+ cutname
+
+          hists[obj+"_" + hname].Fill(multiplicity[cutname])
 
         # end of one event
 
