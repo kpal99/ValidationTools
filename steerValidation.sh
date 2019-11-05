@@ -24,7 +24,7 @@ WORKDIR=${STORAGE}
 if [ -z ${WORKDIR} ]; then
     WORKDIR=${PWD}
 fi    
-
+PLOTDIR=plots
 
 case ${COMMAND} in 
 
@@ -33,8 +33,14 @@ case ${COMMAND} in
       input=../DelphesNtuplizer/ntuples/QCD_Pt-15To7000_Autumn18_1et2.root
       output=histo_delp/val.root
 
-      echo "Running jet analyer on ${input}, output file ${output} "
+      echo "Running jet analyser on ${input}, output file ${output} "
       python ntuple_analyser.py -i ${input} -o ${output} -p jet --maxEvents 100
+
+      ;;
+
+    plot)
+
+      python doPlot.py ${PLOTDIR}
 
       ;;
 
@@ -46,7 +52,7 @@ case ${COMMAND} in
       fi
 
       cp ${WWWDIR}/index.php ${POSTDIR}
-      cp ${WORKDIR}/plots/*.png ${POSTDIR}
+      cp ${WORKDIR}/${PLOTDIR}/*.png ${POSTDIR}
 
       echo $(date) >> ${POSTDIR}/postlog.txt
       echo ${USER} >> ${POSTDIR}/postlog.txt
