@@ -12,23 +12,23 @@ hists = {}
 outputDir = "."#histo_delphes"
 
 def createHist(varname):
-    if "pt" in varname:
+    if "_pt" in varname or "_pt-eta" in varname:
         h = ROOT.TH1D(varname, varname, 50, 0., 250.)
         h.GetXaxis().SetTitle("p_{T} [GeV]")
         h.GetYaxis().SetTitle("N_{#gamma}")
-    if "DR" in varname:
+    elif "DR" in varname:
         h = ROOT.TH1D(varname, varname, 50, 0., 2*math.pi)
         h.GetXaxis().SetTitle("min #Delta(R) [GeV]")
         h.GetYaxis().SetTitle("N_{#gamma}")
-    if "eta" in varname:
+    elif ("_eta" in varname or "_eta-pt" in varname):
         h = ROOT.TH1D(varname, varname, 50, -4., 4.)
         h.GetXaxis().SetTitle("#eta")
         h.GetYaxis().SetTitle("N_{#gamma}")
-    if "phi" in varname:
+    elif "phi" in varname:
         h = ROOT.TH1D(varname, varname, 50, -4., 4.)
         h.GetXaxis().SetTitle("#phi")
         h.GetYaxis().SetTitle("N_{#gamma}")
-    if "mass" in varname:
+    elif "mass" in varname:
         h = ROOT.TH1D(varname, varname, 50, -2., 2.)
         h.GetXaxis().SetTitle("mass [GeV]")
         h.GetYaxis().SetTitle("N_{#gamma}")
@@ -60,7 +60,7 @@ def main():
     mystatus = 1 ## photon flat statuses are all 1
     # if 'GluGluH' in inFile: mystatus = 23  ## wayyy too few :(
 
-    maxEvents = 50000
+    maxEvents = 500000
 
     tot_nevents = 0
     tot_genpart = 0
@@ -76,98 +76,132 @@ def main():
 
 
     outputF = ROOT.TFile(outputDir + "/" + outFile + ".root","RECREATE")
+
+    print("Starting!")
+    ## efficiency denominators
+    hists["gamma_gen_eta"] = createHist("gamma_gen_eta")
+    hists["gamma_gen_eta-pt8to20"] = createHist("gamma_gen_eta-pt8to20") 
+    hists["gamma_gen_eta-pt20to50"] = createHist("gamma_gen_eta-pt20to50")
+    hists["gamma_gen_eta-pt50to100"] = createHist("gamma_gen_eta-pt50to100")
+    hists["gamma_gen_eta-pt100up"] = createHist("gamma_gen_eta-pt100up") 
+    hists["gamma_gen_pt"] = createHist("gamma_gen_pt")
+    hists["gamma_gen_pt-eta0to1p5"] = createHist("gamma_gen_pt-eta0to1p5")
+    hists["gamma_gen_pt-eta1p5to3p0"] = createHist("gamma_gen_pt-eta1p5to3p0")
+    ## efficiency numerators
+    hists["gamma_genmatched_eta"] = createHist("gamma_genmatched_eta")
+    hists["gamma_genmatched_eta-pt8to20"] = createHist("gamma_genmatched_eta-pt8to20") 
+    hists["gamma_genmatched_eta-pt20to50"] = createHist("gamma_genmatched_eta-pt20to50")
+    hists["gamma_genmatched_eta-pt50to100"] = createHist("gamma_genmatched_eta-pt50to100")
+    hists["gamma_genmatched_eta-pt100up"] = createHist("gamma_genmatched_eta-pt100up") 
+    hists["gamma_genmatched_pt"] = createHist("gamma_genmatched_pt")
+    hists["gamma_genmatched_pt-eta0to1p5"] = createHist("gamma_genmatched_pt-eta0to1p5")
+    hists["gamma_genmatched_pt-eta1p5to3p0"] = createHist("gamma_genmatched_pt-eta1p5to3p0")
+    hists["gamma_Loose_genmatched_eta"] = createHist("gamma_Loose_genmatched_eta")
+    hists["gamma_Loose_genmatched_eta-pt8to20"] = createHist("gamma_Loose_genmatched_eta-pt8to20") 
+    hists["gamma_Loose_genmatched_eta-pt20to50"] = createHist("gamma_Loose_genmatched_eta-pt20to50")
+    hists["gamma_Loose_genmatched_eta-pt50to100"] = createHist("gamma_Loose_genmatched_eta-pt50to100")
+    hists["gamma_Loose_genmatched_eta-pt100up"] = createHist("gamma_Loose_genmatched_eta-pt100up") 
+    hists["gamma_Loose_genmatched_pt"] = createHist("gamma_Loose_genmatched_pt")
+    hists["gamma_Loose_genmatched_pt-eta0to1p5"] = createHist("gamma_Loose_genmatched_pt-eta0to1p5")
+    hists["gamma_Loose_genmatched_pt-eta1p5to3p0"] = createHist("gamma_Loose_genmatched_pt-eta1p5to3p0")
+    hists["gamma_Tight_genmatched_eta"] = createHist("gamma_Tight_genmatched_eta")
+    hists["gamma_Tight_genmatched_eta-pt8to20"] = createHist("gamma_Tight_genmatched_eta-pt8to20") 
+    hists["gamma_Tight_genmatched_eta-pt20to50"] = createHist("gamma_Tight_genmatched_eta-pt20to50")
+    hists["gamma_Tight_genmatched_eta-pt50to100"] = createHist("gamma_Tight_genmatched_eta-pt50to100")
+    hists["gamma_Tight_genmatched_eta-pt100up"] = createHist("gamma_Tight_genmatched_eta-pt100up") 
+    hists["gamma_Tight_genmatched_pt"] = createHist("gamma_Tight_genmatched_pt")
+    hists["gamma_Tight_genmatched_pt-eta0to1p5"] = createHist("gamma_Tight_genmatched_pt-eta0to1p5")
+    hists["gamma_Tight_genmatched_pt-eta1p5to3p0"] = createHist("gamma_Tight_genmatched_pt-eta1p5to3p0")
+
+    ## reco extra info
     hists["gamma_reco_phi"] = createHist("gamma_reco_phi")
     hists["gamma_reco_mass"] = createHist("gamma_reco_mass")
     hists["gamma_reco_minDR"] = createHist("gamma_reco_minDR")
-    hists["gamma_gen_eta"] = createHist("gamma_gen_eta")
-    hists["gamma_gen_pt"] = createHist("gamma_gen_pt")
-    hists["gamma_genmatched_eta"] = createHist("gamma_genmatched_eta")
-    hists["gamma_genmatched_pt"] = createHist("gamma_genmatched_pt")
-
-    ## all, no criteria
-    hists["gamma_reco_eta"] = createHist("gamma_reco_eta")
-    hists["gamma_reco_pt"] = createHist("gamma_reco_pt")
     hists["gamma_recomatched_eta"] = createHist("gamma_recomatched_eta")
     hists["gamma_recomatched_pt"] = createHist("gamma_recomatched_pt")
+    hists["gamma_Loose_recomatched_eta"] = createHist("gamma_Loose_recomatched_eta")
+    hists["gamma_Loose_recomatched_pt"] = createHist("gamma_Loose_recomatched_pt")
+    hists["gamma_Tight_recomatched_eta"] = createHist("gamma_Tight_recomatched_eta")
+    hists["gamma_Tight_recomatched_pt"] = createHist("gamma_Tight_recomatched_pt")
+
+    ## fakerate denominators
+    hists["gamma_reco_eta"] = createHist("gamma_reco_eta")
+    hists["gamma_reco_eta-pt8to20"] = createHist("gamma_reco_eta-pt8to20") 
+    hists["gamma_reco_eta-pt20to50"] = createHist("gamma_reco_eta-pt20to50")
+    hists["gamma_reco_eta-pt50to100"] = createHist("gamma_reco_eta-pt50to100")
+    hists["gamma_reco_eta-pt100up"] = createHist("gamma_reco_eta-pt100up") 
+    hists["gamma_reco_pt"] = createHist("gamma_reco_pt")
+    hists["gamma_reco_pt-eta0to1p5"] = createHist("gamma_reco_pt-eta0to1p5")
+    hists["gamma_reco_pt-eta1p5to3p0"] = createHist("gamma_reco_pt-eta1p5to3p0")
+    hists["gamma_Loose_reco_eta"] = createHist("gamma_Loose_reco_eta")
+    hists["gamma_Loose_reco_eta-pt8to20"] = createHist("gamma_Loose_reco_eta-pt8to20") 
+    hists["gamma_Loose_reco_eta-pt20to50"] = createHist("gamma_Loose_reco_eta-pt20to50")
+    hists["gamma_Loose_reco_eta-pt50to100"] = createHist("gamma_Loose_reco_eta-pt50to100")
+    hists["gamma_Loose_reco_eta-pt100up"] = createHist("gamma_Loose_reco_eta-pt100up") 
+    hists["gamma_Loose_reco_pt"] = createHist("gamma_Loose_reco_pt")
+    hists["gamma_Loose_reco_pt-eta0to1p5"] = createHist("gamma_Loose_reco_pt-eta0to1p5")
+    hists["gamma_Loose_reco_pt-eta1p5to3p0"] = createHist("gamma_Loose_reco_pt-eta1p5to3p0")
+    hists["gamma_Tight_reco_eta"] = createHist("gamma_Tight_reco_eta")
+    hists["gamma_Tight_reco_eta-pt8to20"] = createHist("gamma_Tight_reco_eta-pt8to20") 
+    hists["gamma_Tight_reco_eta-pt20to50"] = createHist("gamma_Tight_reco_eta-pt20to50")
+    hists["gamma_Tight_reco_eta-pt50to100"] = createHist("gamma_Tight_reco_eta-pt50to100")
+    hists["gamma_Tight_reco_eta-pt100up"] = createHist("gamma_Tight_reco_eta-pt100up") 
+    hists["gamma_Tight_reco_pt"] = createHist("gamma_Tight_reco_pt")
+    hists["gamma_Tight_reco_pt-eta0to1p5"] = createHist("gamma_Tight_reco_pt-eta0to1p5")
+    hists["gamma_Tight_reco_pt-eta1p5to3p0"] = createHist("gamma_Tight_reco_pt-eta1p5to3p0")
+    ## fakerate numerators
     hists["gamma_recounmatched_eta"] = createHist("gamma_recounmatched_eta")
+    hists["gamma_recounmatched_eta-pt8to20"] = createHist("gamma_recounmatched_eta-pt8to20") 
+    hists["gamma_recounmatched_eta-pt20to50"] = createHist("gamma_recounmatched_eta-pt20to50")
+    hists["gamma_recounmatched_eta-pt50to100"] = createHist("gamma_recounmatched_eta-pt50to100")
+    hists["gamma_recounmatched_eta-pt100up"] = createHist("gamma_recounmatched_eta-pt100up") 
     hists["gamma_recounmatched_pt"] = createHist("gamma_recounmatched_pt")
+    hists["gamma_recounmatched_pt-eta0to1p5"] = createHist("gamma_recounmatched_pt-eta0to1p5")
+    hists["gamma_recounmatched_pt-eta1p5to3p0"] = createHist("gamma_recounmatched_pt-eta1p5to3p0")
+    hists["gamma_Loose_recounmatched_eta"] = createHist("gamma_Loose_recounmatched_eta")
+    hists["gamma_Loose_recounmatched_eta-pt8to20"] = createHist("gamma_Loose_recounmatched_eta-pt8to20") 
+    hists["gamma_Loose_recounmatched_eta-pt20to50"] = createHist("gamma_Loose_recounmatched_eta-pt20to50")
+    hists["gamma_Loose_recounmatched_eta-pt50to100"] = createHist("gamma_Loose_recounmatched_eta-pt50to100")
+    hists["gamma_Loose_recounmatched_eta-pt100up"] = createHist("gamma_Loose_recounmatched_eta-pt100up") 
+    hists["gamma_Loose_recounmatched_pt"] = createHist("gamma_Loose_recounmatched_pt")
+    hists["gamma_Loose_recounmatched_pt-eta0to1p5"] = createHist("gamma_Loose_recounmatched_pt-eta0to1p5")
+    hists["gamma_Loose_recounmatched_pt-eta1p5to3p0"] = createHist("gamma_Loose_recounmatched_pt-eta1p5to3p0")
+    hists["gamma_Tight_recounmatched_eta"] = createHist("gamma_Tight_recounmatched_eta")
+    hists["gamma_Tight_recounmatched_eta-pt8to20"] = createHist("gamma_Tight_recounmatched_eta-pt8to20") 
+    hists["gamma_Tight_recounmatched_eta-pt20to50"] = createHist("gamma_Tight_recounmatched_eta-pt20to50")
+    hists["gamma_Tight_recounmatched_eta-pt50to100"] = createHist("gamma_Tight_recounmatched_eta-pt50to100")
+    hists["gamma_Tight_recounmatched_eta-pt100up"] = createHist("gamma_Tight_recounmatched_eta-pt100up") 
+    hists["gamma_Tight_recounmatched_pt"] = createHist("gamma_Tight_recounmatched_pt")
+    hists["gamma_Tight_recounmatched_pt-eta0to1p5"] = createHist("gamma_Tight_recounmatched_pt-eta0to1p5")
+    hists["gamma_Tight_recounmatched_pt-eta1p5to3p0"] = createHist("gamma_Tight_recounmatched_pt-eta1p5to3p0")
+
+    ## ptresponses
     hists["gamma_ptresponse_to_eta"] = create2dHist("gamma_ptresponse_to_eta")
+    hists["gamma_ptresponse_to_eta-pt8to20"] = create2dHist("gamma_ptresponse_to_eta-pt8to20") 
+    hists["gamma_ptresponse_to_eta-pt20to50"] = create2dHist("gamma_ptresponse_to_eta-pt20to50")
+    hists["gamma_ptresponse_to_eta-pt50to100"] = create2dHist("gamma_ptresponse_to_eta-pt50to100")
+    hists["gamma_ptresponse_to_eta-pt100up"] = create2dHist("gamma_ptresponse_to_eta-pt100up") 
     hists["gamma_ptresponse_to_pt"] = create2dHist("gamma_ptresponse_to_pt")
+    hists["gamma_ptresponse_to_pt-eta0to1p5"] = create2dHist("gamma_ptresponse_to_pt-eta0to1p5")
+    hists["gamma_ptresponse_to_pt-eta1p5to3p0"] = create2dHist("gamma_ptresponse_to_pt-eta1p5to3p0")
+    hists["gamma_Loose_ptresponse_to_eta"] = create2dHist("gamma_Loose_ptresponse_to_eta")
+    hists["gamma_Loose_ptresponse_to_eta-pt8to20"] = create2dHist("gamma_Loose_ptresponse_to_eta-pt8to20") 
+    hists["gamma_Loose_ptresponse_to_eta-pt20to50"] = create2dHist("gamma_Loose_ptresponse_to_eta-pt20to50")
+    hists["gamma_Loose_ptresponse_to_eta-pt50to100"] = create2dHist("gamma_Loose_ptresponse_to_eta-pt50to100")
+    hists["gamma_Loose_ptresponse_to_eta-pt100up"] = create2dHist("gamma_Loose_ptresponse_to_eta-pt100up") 
+    hists["gamma_Loose_ptresponse_to_pt"] = create2dHist("gamma_Loose_ptresponse_to_pt")
+    hists["gamma_Loose_ptresponse_to_pt-eta0to1p5"] = create2dHist("gamma_Loose_ptresponse_to_pt-eta0to1p5")
+    hists["gamma_Loose_ptresponse_to_pt-eta1p5to3p0"] = create2dHist("gamma_Loose_ptresponse_to_pt-eta1p5to3p0")
+    hists["gamma_Tight_ptresponse_to_eta"] = create2dHist("gamma_Tight_ptresponse_to_eta")
+    hists["gamma_Tight_ptresponse_to_eta-pt8to20"] = create2dHist("gamma_Tight_ptresponse_to_eta-pt8to20") 
+    hists["gamma_Tight_ptresponse_to_eta-pt20to50"] = create2dHist("gamma_Tight_ptresponse_to_eta-pt20to50")
+    hists["gamma_Tight_ptresponse_to_eta-pt50to100"] = create2dHist("gamma_Tight_ptresponse_to_eta-pt50to100")
+    hists["gamma_Tight_ptresponse_to_eta-pt100up"] = create2dHist("gamma_Tight_ptresponse_to_eta-pt100up") 
+    hists["gamma_Tight_ptresponse_to_pt"] = create2dHist("gamma_Tight_ptresponse_to_pt")
+    hists["gamma_Tight_ptresponse_to_pt-eta0to1p5"] = create2dHist("gamma_Tight_ptresponse_to_pt-eta0to1p5")
+    hists["gamma_Tight_ptresponse_to_pt-eta1p5to3p0"] = create2dHist("gamma_Tight_ptresponse_to_pt-eta1p5to3p0")
 
-    ## loose photon ID, dummy iso
-    hists["gamma_LD_reco_eta"] = createHist("gamma_LD_reco_eta")
-    hists["gamma_LD_reco_pt"] = createHist("gamma_LD_reco_pt")
-    hists["gamma_LD_recomatched_eta"] = createHist("gamma_LD_recomatched_eta")
-    hists["gamma_LD_recomatched_pt"] = createHist("gamma_LD_recomatched_pt")
-    hists["gamma_LD_recounmatched_eta"] = createHist("gamma_LD_recounmatched_eta")
-    hists["gamma_LD_recounmatched_pt"] = createHist("gamma_LD_recounmatched_pt")
-    hists["gamma_LD_ptresponse_to_eta"] = create2dHist("gamma_LD_ptresponse_to_eta")
-    hists["gamma_LD_ptresponse_to_pt"] = create2dHist("gamma_LD_ptresponse_to_pt")
-
-    ## loose photon ID, loose+ iso
-    hists["gamma_LL_reco_eta"] = createHist("gamma_LL_reco_eta")
-    hists["gamma_LL_reco_pt"] = createHist("gamma_LL_reco_pt")
-    hists["gamma_LL_recomatched_eta"] = createHist("gamma_LL_recomatched_eta")
-    hists["gamma_LL_recomatched_pt"] = createHist("gamma_LL_recomatched_pt")
-    hists["gamma_LL_recounmatched_eta"] = createHist("gamma_LL_recounmatched_eta")
-    hists["gamma_LL_recounmatched_pt"] = createHist("gamma_LL_recounmatched_pt")
-
-    ## loose photon ID, medium+ iso
-    hists["gamma_LM_reco_eta"] = createHist("gamma_LM_reco_eta")
-    hists["gamma_LM_reco_pt"] = createHist("gamma_LM_reco_pt")
-    hists["gamma_LM_recomatched_eta"] = createHist("gamma_LM_recomatched_eta")
-    hists["gamma_LM_recomatched_pt"] = createHist("gamma_LM_recomatched_pt")
-    hists["gamma_LM_recounmatched_eta"] = createHist("gamma_LM_recounmatched_eta")
-    hists["gamma_LM_recounmatched_pt"] = createHist("gamma_LM_recounmatched_pt")
-
-    ## tight photon ID, dummy iso
-    hists["gamma_TD_reco_eta"] = createHist("gamma_TD_reco_eta")
-    hists["gamma_TD_reco_pt"] = createHist("gamma_TD_reco_pt")
-    hists["gamma_TD_recomatched_eta"] = createHist("gamma_TD_recomatched_eta")
-    hists["gamma_TD_recomatched_pt"] = createHist("gamma_TD_recomatched_pt")
-    hists["gamma_TD_recounmatched_eta"] = createHist("gamma_TD_recounmatched_eta")
-    hists["gamma_TD_recounmatched_pt"] = createHist("gamma_TD_recounmatched_pt")
-    hists["gamma_TD_ptresponse_to_eta"] = create2dHist("gamma_TD_ptresponse_to_eta")
-    hists["gamma_TD_ptresponse_to_pt"] = create2dHist("gamma_TD_ptresponse_to_pt")
-
-    ## tight photon ID, loose+ iso
-    hists["gamma_TL_reco_eta"] = createHist("gamma_TL_reco_eta")
-    hists["gamma_TL_reco_pt"] = createHist("gamma_TL_reco_pt")
-    hists["gamma_TL_recomatched_eta"] = createHist("gamma_TL_recomatched_eta")
-    hists["gamma_TL_recomatched_pt"] = createHist("gamma_TL_recomatched_pt")
-    hists["gamma_TL_recounmatched_eta"] = createHist("gamma_TL_recounmatched_eta")
-    hists["gamma_TL_recounmatched_pt"] = createHist("gamma_TL_recounmatched_pt")
-
-    ## tight photon ID, medium+ iso
-    hists["gamma_TM_reco_eta"] = createHist("gamma_TM_reco_eta")
-    hists["gamma_TM_reco_pt"] = createHist("gamma_TM_reco_pt")
-    hists["gamma_TM_recomatched_eta"] = createHist("gamma_TM_recomatched_eta")
-    hists["gamma_TM_recomatched_pt"] = createHist("gamma_TM_recomatched_pt")
-    hists["gamma_TM_recounmatched_eta"] = createHist("gamma_TM_recounmatched_eta")
-    hists["gamma_TM_recounmatched_pt"] = createHist("gamma_TM_recounmatched_pt")
-
-    ## tight photon ID, tight+ iso
-    hists["gamma_TT_reco_eta"] = createHist("gamma_TT_reco_eta")
-    hists["gamma_TT_reco_pt"] = createHist("gamma_TT_reco_pt")
-    hists["gamma_TT_recomatched_eta"] = createHist("gamma_TT_recomatched_eta")
-    hists["gamma_TT_recomatched_pt"] = createHist("gamma_TT_recomatched_pt")
-    hists["gamma_TT_recounmatched_eta"] = createHist("gamma_TT_recounmatched_eta")
-    hists["gamma_TT_recounmatched_pt"] = createHist("gamma_TT_recounmatched_pt")
-
-    ## tight photon ID, verytight iso
-    hists["gamma_TV_reco_eta"] = createHist("gamma_TV_reco_eta")
-    hists["gamma_TV_reco_pt"] = createHist("gamma_TV_reco_pt")
-    hists["gamma_TV_recomatched_eta"] = createHist("gamma_TV_recomatched_eta")
-    hists["gamma_TV_recomatched_pt"] = createHist("gamma_TV_recomatched_pt")
-    hists["gamma_TV_recounmatched_eta"] = createHist("gamma_TV_recounmatched_eta")
-    hists["gamma_TV_recounmatched_pt"] = createHist("gamma_TV_recounmatched_pt")
-
-
-    # hists["gamma_ptresponse_to_eta_0to50"] = create2dHist("gamma_ptresponse_to_eta_0to50")
-    # hists["gamma_ptresponse_to_eta_50to100"] = create2dHist("gamma_ptresponse_to_eta_50to100")
-    # hists["gamma_ptresponse_to_eta_100to200"] = create2dHist("gamma_ptresponse_to_eta_100to200")
-    # hists["gamma_ptresponse_to_eta_200to400"] = create2dHist("gamma_ptresponse_to_eta_200to400")
-    # hists["gamma_ptresponse_to_eta_400up"] = create2dHist("gamma_ptresponse_to_eta_400up")
+    print("Booked histograms, looping...")
 
     for event in ntuple:
         if maxEvents > 0 and event.entry() >= maxEvents:
@@ -181,11 +215,21 @@ def main():
         gengammacount = 0
         tvecs_gengamma = []
         for igen in genparts:
-            if igen.pid() != 22 or igen.status() != mystatus or igen.pt() == 0 or abs(igen.eta()) > 5: continue
+            if igen.pid() != 22 or igen.status() != mystatus or igen.pt() < 8 or abs(igen.eta()) > 5: continue
             gengammacount += 1
 
             hists["gamma_gen_pt"].Fill(igen.pt())
             hists["gamma_gen_eta"].Fill(igen.eta())
+
+            ## efficiency denominators
+            for ptcut1, ptcut2 in [[8, 20], [20, 50], [50, 100]]:
+                if ( igen.pt() >= ptcut1 and igen.pt() < ptcut2 ): 
+                    hists["gamma_gen_eta-pt" + str(ptcut1) + "to" +str(ptcut2)].Fill(igen.eta())
+            if igen.pt() >= 100 :
+                hists["gamma_gen_eta-pt100up"].Fill(igen.eta())
+            for etacut1, etacut2 in [[0,1.5],[1.5,3.0]]:
+                if ( abs(igen.eta()) >= etacut1 and abs(igen.eta()) < etacut2 ):
+                    hists["gamma_gen_pt-eta"+str(etacut1).replace('.','p')+"to"+str(etacut2).replace('.','p')].Fill(igen.pt())            
 
             tvec = ROOT.TVector3()
             tvec.SetPtEtaPhi(igen.pt(), igen.eta(), igen.phi()) 
@@ -201,58 +245,41 @@ def main():
             minDRindex = -1
 
             for ivec in range(0,len(tvecs_gengamma)):
-
                 if tvec_gamma.DeltaR(tvecs_gengamma[ivec]) < minDR:
                     minDR = tvec_gamma.DeltaR(tvecs_gengamma[ivec])
                     minDRindex = ivec
-
-            # for igen in genparts:
-            #     gencounter += 1
-            #     if igen.pid() != 22 or igen.status() != mystatus or igen.pt() == 0 or abs(igen.eta()) > 5: continue
-
-            #     tvec_gengamma = ROOT.TVector3()
-            #     tvec_gengamma.SetPtEtaPhi(igen.pt(), igen.eta(), igen.phi()) 
-
-            #     if tvec_gamma.DeltaR(tvec_gengamma) < minDR:
-            #         minDR = tvec_gamma.DeltaR(tvec_gengamma)
-            #         minDRindex = gencounter
-            #         #print "DR =",minDR,"and pt",igen.pt()
                     
             if minDR < 0.2: matched = True 
-            #if matched: print "Mathced with minDR",minDR,"and index",minDRindex,"and pt",genparts[minDRindex].pt()
+            #if matched: print "Mathced with minDR",minDR,"and index",minDRindex,"and pt",genparts[minDRindex].Pt()
 
             hists["gamma_reco_pt"].Fill(igamma.pt())
             hists["gamma_reco_eta"].Fill(igamma.eta())
             hists["gamma_reco_phi"].Fill(igamma.phi())
             hists["gamma_reco_mass"].Fill(igamma.mass())
             hists["gamma_reco_minDR"].Fill(minDR)
-
             if igamma.idpass() > 0:
-                hists["gamma_LD_reco_pt"].Fill(igamma.pt())
-                hists["gamma_LD_reco_eta"].Fill(igamma.eta())
-                if igamma.isopass() > 0:
-                    hists["gamma_LL_reco_pt"].Fill(igamma.pt())
-                    hists["gamma_LL_reco_eta"].Fill(igamma.eta())
-                if igamma.isopass() > 8:
-                    hists["gamma_LM_reco_pt"].Fill(igamma.pt())
-                    hists["gamma_LM_reco_eta"].Fill(igamma.eta())
-
+                hists["gamma_Loose_reco_pt"].Fill(igamma.pt())
+                hists["gamma_Loose_reco_eta"].Fill(igamma.eta())
             if igamma.idpass() > 3:
-                hists["gamma_TD_reco_pt"].Fill(igamma.pt())
-                hists["gamma_TD_reco_eta"].Fill(igamma.eta())
-                if igamma.isopass() > 0:
-                    hists["gamma_TL_reco_pt"].Fill(igamma.pt())
-                    hists["gamma_TL_reco_eta"].Fill(igamma.eta())
-                if igamma.isopass() > 9:
-                    hists["gamma_TM_reco_pt"].Fill(igamma.pt())
-                    hists["gamma_TM_reco_eta"].Fill(igamma.eta())
-                if igamma.isopass() > 13:
-                    hists["gamma_TT_reco_pt"].Fill(igamma.pt())
-                    hists["gamma_TT_reco_eta"].Fill(igamma.eta())
-                if igamma.isopass() == 15:
-                    hists["gamma_TV_reco_pt"].Fill(igamma.pt())
-                    hists["gamma_TV_reco_eta"].Fill(igamma.eta())
-                
+                hists["gamma_Tight_reco_pt"].Fill(igamma.pt())
+                hists["gamma_Tight_reco_eta"].Fill(igamma.eta())                
+
+            ## fakerate denominators
+            for ptcut1, ptcut2 in [[8, 20], [20, 50], [50, 100]]:
+                if ( igamma.pt() >= ptcut1 and igamma.pt() < ptcut2 ): 
+                    hists["gamma_reco_eta-pt" + str(ptcut1) + "to" +str(ptcut2)].Fill(igamma.eta())
+                    if igamma.idpass() > 0: hists["gamma_Loose_reco_eta-pt" + str(ptcut1) + "to" +str(ptcut2)].Fill(igamma.eta())
+                    if igamma.idpass() > 3: hists["gamma_Tight_reco_eta-pt" + str(ptcut1) + "to" +str(ptcut2)].Fill(igamma.eta())
+            if igamma.pt() >= 100 :
+                hists["gamma_reco_eta-pt100up"].Fill(igamma.eta())
+                if igamma.idpass() > 0: hists["gamma_Loose_reco_eta-pt100up"].Fill(igamma.eta())
+                if igamma.idpass() > 3: hists["gamma_Tight_reco_eta-pt100up"].Fill(igamma.eta())
+            for etacut1, etacut2 in [[0,1.5],[1.5,3.0]]:
+                if ( abs(igamma.eta()) >= etacut1 and abs(igamma.eta()) < etacut2 ):
+                    hists["gamma_reco_pt-eta"+str(etacut1).replace('.','p')+"to"+str(etacut2).replace('.','p')].Fill(igamma.pt())            
+                    if igamma.idpass() > 0: hists["gamma_Loose_reco_pt-eta"+str(etacut1).replace('.','p')+"to"+str(etacut2).replace('.','p')].Fill(igamma.pt())            
+                    if igamma.idpass() > 3: hists["gamma_Tight_reco_pt-eta"+str(etacut1).replace('.','p')+"to"+str(etacut2).replace('.','p')].Fill(igamma.pt())            
+
 
             if matched:
                 hists["gamma_recomatched_pt"].Fill(igamma.pt())
@@ -261,70 +288,79 @@ def main():
                 hists["gamma_genmatched_eta"].Fill(tvecs_gengamma[minDRindex].Eta())
                 hists["gamma_ptresponse_to_eta"].Fill(tvecs_gengamma[minDRindex].Eta(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
                 hists["gamma_ptresponse_to_pt"].Fill(tvecs_gengamma[minDRindex].Pt(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
-
                 if igamma.idpass() > 0:
-                    hists["gamma_LD_recomatched_pt"].Fill(igamma.pt())
-                    hists["gamma_LD_recomatched_eta"].Fill(igamma.eta())
-                    hists["gamma_LD_ptresponse_to_eta"].Fill(tvecs_gengamma[minDRindex].Eta(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
-                    hists["gamma_LD_ptresponse_to_pt"].Fill(tvecs_gengamma[minDRindex].Pt(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
-                    if igamma.isopass() > 0:
-                        hists["gamma_LL_recomatched_pt"].Fill(igamma.pt())
-                        hists["gamma_LL_recomatched_eta"].Fill(igamma.eta())
-                    if igamma.isopass() > 8:
-                        hists["gamma_LM_recomatched_pt"].Fill(igamma.pt())
-                        hists["gamma_LM_recomatched_eta"].Fill(igamma.eta())
-
+                    hists["gamma_Loose_recomatched_pt"].Fill(igamma.pt())
+                    hists["gamma_Loose_recomatched_eta"].Fill(igamma.eta())
+                    hists["gamma_Loose_genmatched_pt"].Fill(tvecs_gengamma[minDRindex].Pt())
+                    hists["gamma_Loose_genmatched_eta"].Fill(tvecs_gengamma[minDRindex].Eta())
+                    hists["gamma_Loose_ptresponse_to_eta"].Fill(tvecs_gengamma[minDRindex].Eta(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
+                    hists["gamma_Loose_ptresponse_to_pt"].Fill(tvecs_gengamma[minDRindex].Pt(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
                 if igamma.idpass() > 3:
-                    hists["gamma_TD_recomatched_pt"].Fill(igamma.pt())
-                    hists["gamma_TD_recomatched_eta"].Fill(igamma.eta())
-                    hists["gamma_TD_ptresponse_to_eta"].Fill(tvecs_gengamma[minDRindex].Eta(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
-                    hists["gamma_TD_ptresponse_to_pt"].Fill(tvecs_gengamma[minDRindex].Pt(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
-                    if igamma.isopass() > 0:
-                        hists["gamma_TL_recomatched_pt"].Fill(igamma.pt())
-                        hists["gamma_TL_recomatched_eta"].Fill(igamma.eta())
-                    if igamma.isopass() > 9:
-                        hists["gamma_TM_recomatched_pt"].Fill(igamma.pt())
-                        hists["gamma_TM_recomatched_eta"].Fill(igamma.eta())
-                    if igamma.isopass() > 13:
-                        hists["gamma_TT_recomatched_pt"].Fill(igamma.pt())
-                        hists["gamma_TT_recomatched_eta"].Fill(igamma.eta())
-                    if igamma.isopass() == 15:
-                        hists["gamma_TV_recomatched_pt"].Fill(igamma.pt())
-                        hists["gamma_TV_recomatched_eta"].Fill(igamma.eta())
+                    hists["gamma_Tight_recomatched_pt"].Fill(igamma.pt())
+                    hists["gamma_Tight_recomatched_eta"].Fill(igamma.eta())
+                    hists["gamma_Tight_genmatched_pt"].Fill(tvecs_gengamma[minDRindex].Pt())
+                    hists["gamma_Tight_genmatched_eta"].Fill(tvecs_gengamma[minDRindex].Eta())
+                    hists["gamma_Tight_ptresponse_to_eta"].Fill(tvecs_gengamma[minDRindex].Eta(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
+                    hists["gamma_Tight_ptresponse_to_pt"].Fill(tvecs_gengamma[minDRindex].Pt(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
 
-                # for ptcut1, ptcut2 in [[0, 50], [50, 100], [100, 200], [200,400]]:
-                #     if ( tvecs_gengamma[minDRindex].Pt() >= ptcut1 and tvecs_gengamma[minDRindex].Pt() < ptcut2 ): 
-                #         hists["gamma_ptresponse_to_eta_" + str(ptcut1) + "to" +str(ptcut2)].Fill(tvecs_gengamma[minDRindex].Eta(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
-                #     if igen.pt() >= 400 :
-                #         hists["gamma_ptresponse_to_eta_400up"].Fill(tvecs_gengamma[minDRindex].Eta(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())              
+                ## efficiency numerators, ptresponses
+                for ptcut1, ptcut2 in [[8, 20], [20, 50], [50, 100]]:
+                    if ( tvecs_gengamma[minDRindex].Pt() >= ptcut1 and tvecs_gengamma[minDRindex].Pt() < ptcut2 ): 
+                        hists["gamma_genmatched_eta-pt" + str(ptcut1) + "to" +str(ptcut2)].Fill(tvecs_gengamma[minDRindex].Eta())
+                        hists["gamma_ptresponse_to_eta-pt" + str(ptcut1) + "to" +str(ptcut2)].Fill(tvecs_gengamma[minDRindex].Eta(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
+                        if igamma.idpass() > 0: 
+                            hists["gamma_Loose_genmatched_eta-pt" + str(ptcut1) + "to" +str(ptcut2)].Fill(tvecs_gengamma[minDRindex].Eta())
+                            hists["gamma_Loose_ptresponse_to_eta-pt" + str(ptcut1) + "to" +str(ptcut2)].Fill(tvecs_gengamma[minDRindex].Eta(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
+                        if igamma.idpass() > 3: 
+                            hists["gamma_Tight_genmatched_eta-pt" + str(ptcut1) + "to" +str(ptcut2)].Fill(tvecs_gengamma[minDRindex].Eta())
+                            hists["gamma_Tight_ptresponse_to_eta-pt" + str(ptcut1) + "to" +str(ptcut2)].Fill(tvecs_gengamma[minDRindex].Eta(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
+
+                if tvecs_gengamma[minDRindex].Pt() >= 100 :
+                    hists["gamma_genmatched_eta-pt100up"].Fill(tvecs_gengamma[minDRindex].Eta())
+                    hists["gamma_ptresponse_to_eta-pt100up"].Fill(tvecs_gengamma[minDRindex].Eta(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
+                    if igamma.idpass() > 0: 
+                        hists["gamma_Loose_genmatched_eta-pt100up"].Fill(tvecs_gengamma[minDRindex].Eta())
+                        hists["gamma_Loose_ptresponse_to_eta-pt100up"].Fill(tvecs_gengamma[minDRindex].Eta(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
+                    if igamma.idpass() > 3: 
+                        hists["gamma_Tight_genmatched_eta-pt100up"].Fill(tvecs_gengamma[minDRindex].Eta())
+                        hists["gamma_Tight_ptresponse_to_eta-pt100up"].Fill(tvecs_gengamma[minDRindex].Eta(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
+                for etacut1, etacut2 in [[0,1.5],[1.5,3.0]]:
+                    if ( abs(tvecs_gengamma[minDRindex].Eta()) >= etacut1 and abs(tvecs_gengamma[minDRindex].Eta()) < etacut2 ):
+                        hists["gamma_genmatched_pt-eta"+str(etacut1).replace('.','p')+"to"+str(etacut2).replace('.','p')].Fill(tvecs_gengamma[minDRindex].Pt())            
+                        hists["gamma_ptresponse_to_pt-eta"+str(etacut1).replace('.','p')+"to"+str(etacut2).replace('.','p')].Fill(tvecs_gengamma[minDRindex].Pt(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
+                        if igamma.idpass() > 0: 
+                            hists["gamma_Loose_genmatched_pt-eta"+str(etacut1).replace('.','p')+"to"+str(etacut2).replace('.','p')].Fill(tvecs_gengamma[minDRindex].Pt())            
+                            hists["gamma_Loose_ptresponse_to_pt-eta"+str(etacut1).replace('.','p')+"to"+str(etacut2).replace('.','p')].Fill(tvecs_gengamma[minDRindex].Pt(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
+                        if igamma.idpass() > 3: 
+                            hists["gamma_Tight_genmatched_pt-eta"+str(etacut1).replace('.','p')+"to"+str(etacut2).replace('.','p')].Fill(tvecs_gengamma[minDRindex].Pt())            
+                            hists["gamma_Tight_ptresponse_to_pt-eta"+str(etacut1).replace('.','p')+"to"+str(etacut2).replace('.','p')].Fill(tvecs_gengamma[minDRindex].Pt(), igamma.pt()/tvecs_gengamma[minDRindex].Pt())
+
+              
             else:
                 hists["gamma_recounmatched_pt"].Fill(igamma.pt())
                 hists["gamma_recounmatched_eta"].Fill(igamma.eta())
                 if igamma.idpass() > 0:
-                    hists["gamma_LD_recounmatched_pt"].Fill(igamma.pt())
-                    hists["gamma_LD_recounmatched_eta"].Fill(igamma.eta())
-                    if igamma.isopass() > 0:
-                        hists["gamma_LL_recounmatched_pt"].Fill(igamma.pt())
-                        hists["gamma_LL_recounmatched_eta"].Fill(igamma.eta())
-                    if igamma.isopass() > 8:
-                        hists["gamma_LM_recounmatched_pt"].Fill(igamma.pt())
-                        hists["gamma_LM_recounmatched_eta"].Fill(igamma.eta())
-
+                    hists["gamma_Loose_recounmatched_pt"].Fill(igamma.pt())
+                    hists["gamma_Loose_recounmatched_eta"].Fill(igamma.eta())
                 if igamma.idpass() > 3:
-                    hists["gamma_TD_recounmatched_pt"].Fill(igamma.pt())
-                    hists["gamma_TD_recounmatched_eta"].Fill(igamma.eta())
-                    if igamma.isopass() > 0:
-                        hists["gamma_TL_recounmatched_pt"].Fill(igamma.pt())
-                        hists["gamma_TL_recounmatched_eta"].Fill(igamma.eta())
-                    if igamma.isopass() > 9:
-                        hists["gamma_TM_recounmatched_pt"].Fill(igamma.pt())
-                        hists["gamma_TM_recounmatched_eta"].Fill(igamma.eta())
-                    if igamma.isopass() > 13:
-                        hists["gamma_TT_recounmatched_pt"].Fill(igamma.pt())
-                        hists["gamma_TT_recounmatched_eta"].Fill(igamma.eta())
-                    if igamma.isopass() == 15:
-                        hists["gamma_TV_recounmatched_pt"].Fill(igamma.pt())
-                        hists["gamma_TV_recounmatched_eta"].Fill(igamma.eta())
+                    hists["gamma_Tight_recounmatched_pt"].Fill(igamma.pt())
+                    hists["gamma_Tight_recounmatched_eta"].Fill(igamma.eta())
+
+                ## fakerate numerators
+                for ptcut1, ptcut2 in [[8, 20], [20, 50], [50, 100]]:
+                    if ( igamma.pt() >= ptcut1 and igamma.pt() < ptcut2 ): 
+                        hists["gamma_recounmatched_eta-pt" + str(ptcut1) + "to" +str(ptcut2)].Fill(igamma.eta())
+                        if igamma.idpass() > 0: hists["gamma_Loose_recounmatched_eta-pt" + str(ptcut1) + "to" +str(ptcut2)].Fill(igamma.eta())
+                        if igamma.idpass() > 3: hists["gamma_Tight_recounmatched_eta-pt" + str(ptcut1) + "to" +str(ptcut2)].Fill(igamma.eta())
+                if igamma.pt() >= 100 :
+                    hists["gamma_recounmatched_eta-pt100up"].Fill(igamma.eta())
+                    if igamma.idpass() > 0: hists["gamma_Loose_recounmatched_eta-pt100up"].Fill(igamma.eta())
+                    if igamma.idpass() > 3: hists["gamma_Tight_recounmatched_eta-pt100up"].Fill(igamma.eta())
+                for etacut1, etacut2 in [[0,1.5],[1.5,3.0]]:
+                    if ( abs(igamma.eta()) >= etacut1 and abs(igamma.eta()) < etacut2 ):
+                        hists["gamma_recounmatched_pt-eta"+str(etacut1).replace('.','p')+"to"+str(etacut2).replace('.','p')].Fill(igamma.pt())            
+                        if igamma.idpass() > 0: hists["gamma_Loose_recounmatched_pt-eta"+str(etacut1).replace('.','p')+"to"+str(etacut2).replace('.','p')].Fill(igamma.pt()) 
+                        if igamma.idpass() > 3: hists["gamma_Tight_recounmatched_pt-eta"+str(etacut1).replace('.','p')+"to"+str(etacut2).replace('.','p')].Fill(igamma.pt()) 
 
             # remove this matched gen photon so that future reco photons can't match to it. 
             # would be better to find the closest reco photon to each gen photon maybe...
