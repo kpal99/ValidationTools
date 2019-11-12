@@ -17,26 +17,26 @@ pdgid = {
 }
 def createHist(opt, varname, params):
     if "pt" in varname:
-        h = ROOT.TH1D(varname, "", 100, params["plotPtRange"][0], params["plotPtRange"][1])
+        h = ROOT.TH1D(varname, "", 50, params["plotPtRange"][0], params["plotPtRange"][1])
         h.GetXaxis().SetTitle("p_{T} [GeV]")
         h.GetYaxis().SetTitle("N")
     if "eta" in varname:
-        h = ROOT.TH1D(varname, "", 100, params["plotEtaRange"][0], params["plotEtaRange"][1])
+        h = ROOT.TH1D(varname, "", 50, params["plotEtaRange"][0], params["plotEtaRange"][1])
         h.GetXaxis().SetTitle("#eta")
         h.GetYaxis().SetTitle("N")
     if "phi" in varname:
-        h = ROOT.TH1D(varname, "", 100, params["plotPhiRange"][0], params["plotPhiRange"][1])
+        h = ROOT.TH1D(varname, "", 50, params["plotPhiRange"][0], params["plotPhiRange"][1])
         h.GetXaxis().SetTitle("#phi")
         h.GetYaxis().SetTitle("N")
     if "mass" in varname:
-        h = ROOT.TH1D(varname, "", 100, params["plotMassRange"][0], params["plotMassRange"][1])
+        h = ROOT.TH1D(varname, "", 50, params["plotMassRange"][0], params["plotMassRange"][1])
         h.GetXaxis().SetTitle("mass [GeV]")
         h.GetYaxis().SetTitle("N")
     if "multi" in varname:
         if "full" in opt.outFile:
-            h = ROOT.TH1D(varname, "", 50, params["plotNObjRange_Full"][0], params["plotNObjRange_Full"][1]) 
+            h = ROOT.TH1D(varname, "", params["plotNObjRange_Full"][1], params["plotNObjRange_Full"][0], params["plotNObjRange_Full"][1]) 
         else:
-            h = ROOT.TH1D(varname, "", 20, params["plotNObjRange_Delp"][0], params["plotNObjRange_Delp"][1])
+            h = ROOT.TH1D(varname, "", params["plotNObjRange_Delp"][1], params["plotNObjRange_Delp"][0], params["plotNObjRange_Delp"][1])
         h.GetXaxis().SetTitle("multiplicity")
         h.GetYaxis().SetTitle("Events")
 
@@ -47,27 +47,27 @@ def createHist(opt, varname, params):
 
 def create2dHist(varname, params):
     if "to_pt" in varname and "response" in varname:
-        h = ROOT.TProfile(varname, "", 100, params["plotPtRange"][0], params["plotPtRange"][1])
+        h = ROOT.TProfile(varname, "", 50, params["plotPtRange"][0], params["plotPtRange"][1])
         h.GetXaxis().SetTitle("gen p_{T} [GeV]")
         h.GetYaxis().SetTitle("Reco_pt/Gen_pt")
     if "to_eta" in varname and "response" in varname:
-        h = ROOT.TProfile(varname, "", 100, params["plotEtaRange"][0], params["plotEtaRange"][1])
+        h = ROOT.TProfile(varname, "", 50, params["plotEtaRange"][0], params["plotEtaRange"][1])
         h.GetXaxis().SetTitle("gen #eta")
         h.GetYaxis().SetTitle("Reco_pt/Gen_pt")
     if "to_pt" in varname and "efficiency" in varname:
-        h = ROOT.TProfile(varname, "", 100, params["plotPtRange"][0], params["plotPtRange"][1])
+        h = ROOT.TProfile(varname, "", 50, params["plotPtRange"][0], params["plotPtRange"][1])
         h.GetXaxis().SetTitle("gen p_{T} [GeV]")
         h.GetYaxis().SetTitle("gen object matching efficiency")
     if "to_eta" in varname and "efficiency" in varname:
-        h = ROOT.TProfile(varname, "", 100, params["plotEtaRange"][0], params["plotEtaRange"][1])
+        h = ROOT.TProfile(varname, "", 50, params["plotEtaRange"][0], params["plotEtaRange"][1])
         h.GetXaxis().SetTitle("gen #eta")
         h.GetYaxis().SetTitle("gen object matching efficiency")
     if "to_pt" in varname and "fakerate" in varname:
-        h = ROOT.TProfile(varname, "", 100, params["plotPtRange"][0], params["plotPtRange"][1])
+        h = ROOT.TProfile(varname, "", 50, params["plotPtRange"][0], params["plotPtRange"][1])
         h.GetXaxis().SetTitle("reco p_{T} [GeV]")
         h.GetYaxis().SetTitle("reco object fakerate")
     if "to_eta" in varname and "fakerate" in varname:
-        h = ROOT.TProfile(varname, "", 100, params["plotEtaRange"][0], params["plotEtaRange"][1])
+        h = ROOT.TProfile(varname, "", 50, params["plotEtaRange"][0], params["plotEtaRange"][1])
         h.GetXaxis().SetTitle("reco #eta")
         h.GetYaxis().SetTitle("reco object fakerate")
 
@@ -78,11 +78,11 @@ def create2dHist(varname, params):
 
 def create2Dmap(varname, params):
     if "efficiency" in varname:
-        h = ROOT.TProfile2D(varname, "", 50, params["plotPtRange"][0], params["plotPtRange"][1], 50, params["plotEtaRange"][0], params["plotEtaRange"][1])
+        h = ROOT.TProfile2D(varname, "", 10, params["plotPtRange"][0], params["plotPtRange"][1], 10, params["plotEtaRange"][0], params["plotEtaRange"][1])
         h.GetXaxis().SetTitle("gen p_{T} [GeV]")
         h.GetYaxis().SetTitle("gen #eta")
     if "fakerate" in varname:
-        h = ROOT.TProfile2D(varname, "", 50, params["plotPtRange"][0], params["plotPtRange"][1], 50, params["plotEtaRange"][0], params["plotEtaRange"][1])
+        h = ROOT.TProfile2D(varname, "", 10, params["plotPtRange"][0], params["plotPtRange"][1], 10, params["plotEtaRange"][0], params["plotEtaRange"][1])
         h.GetXaxis().SetTitle("reco p_{T} [GeV]")
         h.GetYaxis().SetTitle("reco #eta")
         
@@ -111,7 +111,7 @@ def main():
     parser.add_option('--maxEvents',          
                       dest='maxEvts',
                       help='max number of events [%default]',
-                      default=4976,
+                      default=500000,
                       type=int)
     (opt, args) = parser.parse_args()
 
@@ -359,6 +359,7 @@ def main():
             p_tvectors.append(p_vec)
             p_idpass.append(p.idpass())
 
+        #print "I found",len(p_tvectors),"reco objects and stored ",len(p_idpass),"id values"
         
         ## LOOP over the GEN objects
         for g in genobjs:
@@ -388,6 +389,8 @@ def main():
                     minDR = deltaR
                     match = 1
                     matchindex = ivec
+
+            #print "This gen object is matched?",match," to index",matchindex
 
             ## Work with only matched pairs first:
             if matchindex > -1:
@@ -511,18 +514,17 @@ def main():
                                         hists[obj+"_fakerate_to_pt_"+params["ids"][iqual]+"_"+cutname].Fill(p_tvectors[matchindex].Pt(), 0)
                             else: hists[obj+"_fakerate_to_pt_"+cutname].Fill(p_tvectors[matchindex].Pt(), 0)
 
-                ## remove this matched reco object so later gen objects can't be matched to it
-                p_tvectors.pop(matchindex)
-                p_idpass.pop(matchindex)
-
                 ## end of matched object stuff
 
             ## working with matched AND unmatched: fill match status into efficiency TProfiles
             if len(params["ids"]) > 0:
                 for iqual in range(len(params["ids"])):
-                    try: idpass = (p_idpass[matchindex] > params["idvals"][iqual])
+                    try: 
+                        idpass = (p_idpass[matchindex] > params["idvals"][iqual])
+                        #print "testing id: p_idpass[match] = ",p_idpass[matchindex]," > cut ",params["idvals"][iqual]
                     except IndexError: idpass = False
-                    if match == 0 or idpass:
+                    #print "filling efficiencies with match = ",match,", or idpass = ",idpass
+                    if match == 0 or idpass:                        
                         hists[obj+"_matchefficiency_to_eta_"+params["ids"][iqual]].Fill(g.eta(), match)
                         hists[obj+"_matchefficiency_to_pt_"+params["ids"][iqual]].Fill(g.pt(), match)
                         hists[obj+"_efficiency2D_"+params["ids"][iqual]].Fill(g.pt(),g.eta(), match)
@@ -578,9 +580,15 @@ def main():
                                     hists[obj+"_matchefficiency_to_pt_"+params["ids"][iqual]+"_"+cutname].Fill(g.pt(), match)
                         else: hists[obj+"_matchefficiency_to_pt_"+cutname].Fill(g.pt(), match)
 
+            ## remove this matched reco object so later gen objects can't be matched to it
+            if matchindex > -1:
+                p_tvectors.pop(matchindex)
+                p_idpass.pop(matchindex)
+                #print "Removed a reco: length now",len(p_tvectors)
             ## end of gen object loop
 
         ## All the matched reco objects should have been removed from p_tvectors and p_idpass, fill 1 in fakerate for others
+        #print "now filling the fakes:",len(p_tvectors)
         for ip in range(len(p_tvectors)):
             if len(params["ids"]) > 0:
                 for iqual in range(len(params["ids"])):
