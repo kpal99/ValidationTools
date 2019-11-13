@@ -8,6 +8,7 @@ Table of contents
   * [Clone](#clone)
   * [Initialisation](#initilisation)
   * [Run examples](#run-examples)
+  * [Use steer script to do validation for any objects, plot and post](#steerValidation)
 
 
 Clone 
@@ -51,3 +52,15 @@ NtupleDataFormat.py provides a wrapper to the ntuple such that it can be used as
 python ntuple_example.py tree.root
 
 ```
+
+Use steer script to do validation for any objects, plot and post
+================================================================
+
+steerValidation.sh does analysing, plotting, or posting based on given option. Options can be choose from physics objects ```jet```, ```muon```, ```electron```, ```photon```, or ```plot```, ```post```.
+Instruction for setting up cernbox personal webpage can be found here
+<https://cernbox-manual.web.cern.ch/cernbox-manual/en/web/personal_website_content.html#create_personal_space>
+
+Run steer script example:
+```
+./steerValidation.sh -o jet 
+``` 
