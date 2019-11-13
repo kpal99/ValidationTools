@@ -375,10 +375,10 @@ def main():
                 if len(params["ids"]) > 0:
                     for iqual in range(len(params["ids"])):
                         if p_idpass[matchindex] > params["idvals"][iqual]:
-                            hists[obj+"_matched_pt_"+params["ids"][iqual]].Fill(p.pt())
-                            hists[obj+"_matched_eta_"+params["ids"][iqual]].Fill(p.eta())
-                            hists[obj+"_matched_phi_"+params["ids"][iqual]].Fill(p.phi())
-                            hists[obj+"_matched_mass_"+params["ids"][iqual]].Fill(p.mass())
+                            hists[obj+"_matched_pt_"+params["ids"][iqual]].Fill(p_tvectors[matchindex].pt())
+                            hists[obj+"_matched_eta_"+params["ids"][iqual]].Fill(p_tvectors[matchindex].eta())
+                            hists[obj+"_matched_phi_"+params["ids"][iqual]].Fill(p_tvectors[matchindex].phi())
+                            hists[obj+"_matched_mass_"+params["ids"][iqual]].Fill(p_tvectors[matchindex].mass())
                 else:
                     hists[obj+"_matched_pt"].Fill(p_tvectors[matchindex].Pt())
                     hists[obj+"_matched_eta"].Fill(p_tvectors[matchindex].Eta())
