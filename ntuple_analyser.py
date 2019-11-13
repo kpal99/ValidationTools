@@ -32,6 +32,10 @@ def createHist(opt, varname, params):
         h = ROOT.TH1D(varname, "", 50, params["plotMassRange"][0], params["plotMassRange"][1])
         h.GetXaxis().SetTitle("mass [GeV]")
         h.GetYaxis().SetTitle("N")
+    if "idpass" in varname:
+        h = ROOT.TH1D(varname, "", 20, 0, 20)
+        h.GetXaxis().SetTitle("id pass")
+        h.GetYaxis().SetTitle("N")
     if "multi" in varname:
         if "full" in opt.outFile:
             h = ROOT.TH1D(varname, "", params["plotNObjRange_Full"][1], params["plotNObjRange_Full"][0], params["plotNObjRange_Full"][1]) 
@@ -132,6 +136,7 @@ def main():
     tot_genjetAK8 = 0
     tot_jetAK8 = 0
 
+    ## Set plotting parameters according to physics object
     params = {}
     outputF = ROOT.TFile(opt.outFile, "RECREATE")
     obj = opt.physobject
@@ -140,8 +145,8 @@ def main():
             "dR": 0.2,
             "ptRatio": 2.0,
             "ptMin": 20,
-            "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3] ],
-            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400] ],
+            "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5] ], ## use 1e5 as "Inf"
+            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5] ],
             "plotPtRange": [0, 1500],
             "plotEtaRange": [-5, 5],
             "plotPhiRange": [-5, 5],
@@ -154,26 +159,26 @@ def main():
     elif obj == "photon": 
         params = {
             "dR": 0.2,
-            "ptRatio": 3.0,
+            "ptRatio": 100.0,
             "ptMin": 8,
             "etaSlices": [[0, 1.5], [1.5, 3]],
-            "ptSlices": [[8, 20], [20, 50], [50, 100], [100]],
-            "plotPtRange": [0, 200],
+            "ptSlices": [[8, 20], [20, 50], [50, 100], [100, 1e5]],
+            "plotPtRange": [0, 250],
             "plotEtaRange": [-4, 4],
             "plotPhiRange": [-4, 4],
             "plotMassRange": [-1, 1],
             "plotNObjRange_Delp": [0, 4],
             "plotNObjRange_Full": [0, 4],
-            "ids": ["loose","tight"],
-            "idvals": [0, 3],
+            "ids": ["incl","loose","tight"],
+            "idvals": [-9, 0, 3],
             }
     elif obj == "electron" or obj == "muon":
         params = {
             "dR": 0.2,
             "ptRatio": 2.0,
             "ptMin": 20,
-            "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3] ],
-            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400] ],
+            "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5] ],
+            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5] ],
             "plotPtRange": [0, 1500],
             "plotEtaRange": [-5, 5],
             "plotPhiRange": [-5, 5],
@@ -187,10 +192,9 @@ def main():
         print 'Physics object not recognized! Choose jet, photon, electron, or muon.'            
         exit()
 
-    #print "Plot parameters:", params
-
+    ## BOOK HISTOGRAMS
     hists = {} 
-    hnames = ["pt", "eta", "phi", "mass"]
+    hnames = ["pt", "eta", "phi", "mass", "idpass"]
     for hname in hnames:
         hists["gen"+obj+"_"+hname] = createHist(opt, "gen"+obj+"_"+hname,params)
         hists["gen"+obj+"_matched_"+hname] = createHist(opt, "gen"+obj+"_matched_"+hname,params)
@@ -201,39 +205,30 @@ def main():
         hists[obj+"_matched_"+hname] = createHist(opt, obj+"_matched_"+hname,params)
         
     cutList = ["nocut"]+params["etaSlices"]+params["ptSlices"]
-    #print "list for plots:",cutList
 
     for cut in cutList:
         hnames = ["multiplicity"]
         if len(params["ids"]) > 0: hnames = ['_'.join (strlist) for strlist in list(itertools.product(hnames,params["ids"]))]
         for hname in hnames:
-            if len(cut)==2:
-                hname += "_"+ str(cut[0]) + "to" + str(cut[1])
-            elif len(cut)==1:
-                hname += "_"+ str(cut[0]) + "up" 
-            hname = hname.replace('.', 'p')
+            hname += "_"+ str(cut[0]) + "to" + str(cut[1])
+            hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
             hists[obj+"_"+hname] = createHist(opt, obj+"_"+hname,params)
 
     for cut in ["nocut"]+params["etaSlices"]:
         hnames = ["matchefficiency_to_pt", "ptresponse_to_pt", "fakerate_to_pt"]
         if len(params["ids"]) > 0: hnames = ['_'.join (strlist) for strlist in list(itertools.product(hnames,params["ids"]))]
         for hname in hnames:
-            if len(cut)==2:
-                hname += "_"+ str(cut[0]) + "to" + str(cut[1])
-            elif len(cut)==1:
-                hname += "_"+ str(cut[0]) + "up"
-            hname = hname.replace('.', 'p')
+            hname += "_"+ str(cut[0]) + "to" + str(cut[1])
+            hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
             hists[obj+"_"+hname] = create2dHist(obj+"_"+hname,params)
 
     for cut in ["nocut"]+params["ptSlices"]:
+        print 'cut = ',cut
         hnames = ["matchefficiency_to_eta", "ptresponse_to_eta", "fakerate_to_eta"]
         if len(params["ids"]) > 0: hnames = ['_'.join (strlist) for strlist in list(itertools.product(hnames,params["ids"]))]
         for hname in hnames:
-            if len(cut)==2:
-                hname += "_"+ str(cut[0]) + "to" + str(cut[1])
-            elif len(cut)==1:
-                hname += "_"+ str(cut[0]) + "up"
-            hname = hname.replace('.', 'p')
+            hname += "_"+ str(cut[0]) + "to" + str(cut[1])
+            hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
             hists[obj+"_"+hname] = create2dHist(obj+"_"+hname,params)
 
     hnames = ["efficiency2D", "fakerate2D"]
@@ -242,10 +237,11 @@ def main():
         hists[obj+"_"+hname] = create2Dmap(obj+"_"+hname,params)
    
 
+    ## LOOP over events
     for event in ntuple:
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
-        if (tot_nevents %100) == 0 :
+        if (tot_nevents %1000) == 0 :
             print '... processed {} events ...'.format(event.entry()+1)
 
         tot_nevents += 1
@@ -260,6 +256,7 @@ def main():
         #tot_genjetAK8 += len(event.genjetsAK8())
         #tot_jetAK8 += len(event.jetsAK8())
 
+        ## Set the reco and generated object collections
 	if obj=="jet":
             recoobjs = event.jets()
             genobjs = event.genjets()
@@ -275,16 +272,11 @@ def main():
         else: 
             print 'Physics object not recognized! Choose jet, photon, electron, or muon.'            
 
-        if len(recoobjs) < 1 or len(genobjs) <1 : continue
-
+        ## Initialize multiplicity counters
         multiplicity = {}
         for cut in cutList:
-            cutname = cut
-            if len(cut)==2:
-                cutname = str(cut[0]) + "to" + str(cut[1])
-            elif len(cut)==1:
-                cutname = str(cut[0]) + "up"
-            cutname = cutname.replace('.','p')
+            cutname = str(cut[0]) + "to" + str(cut[1])
+            cutname = ((cutname.replace('.','p')).replace('100000p0','Inf')).replace('ntoo','nocut')
             if len(params["ids"]) > 0:
                 for qual in params["ids"]: multiplicity[cutname+"_"+qual] = 0                    
             else: multiplicity[cutname] = 0
@@ -304,63 +296,46 @@ def main():
                         hists[obj+"_eta_"+params["ids"][iqual]].Fill(p.eta())
                         hists[obj+"_phi_"+params["ids"][iqual]].Fill(p.phi())
                         hists[obj+"_mass_"+params["ids"][iqual]].Fill(p.mass())
+                        hists[obj+"_idpass_"+params["ids"][iqual]].Fill(p.idpass())
             else:
                 hists[obj+"_pt"].Fill(p.pt())
                 hists[obj+"_eta"].Fill(p.eta())
                 hists[obj+"_phi"].Fill(p.phi())
                 hists[obj+"_mass"].Fill(p.mass())
+                hists[obj+"_idpass"].Fill(p.idpass())
 
 
             if obj == "jet" and p.pt() < 25 : continue  # for jets
-
+            
+            ## Increment multiplicity counters
             if len(params["ids"]) > 0:
                 for iqual in range(len(params["ids"])):
                     if p.idpass() > params["idvals"][iqual]: multiplicity["nocut_"+params["ids"][iqual]] += 1
             else: multiplicity["nocut"] += 1
             for cut in params["etaSlices"]:
-                if len(cut) ==2:
-                    cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = cutname.replace('.','p')
-                    if cut[0] < abs(p.eta()) <= cut[1] : 
-                        if len(params["ids"]) > 0:
-                            for iqual in range(len(params["ids"])): 
-                                if p.idpass() > params["idvals"][iqual]: multiplicity[cutname+"_"+params["ids"][iqual]] += 1
-                        else: multiplicity[cutname] += 1
-                elif len(cut) == 1:
-                    cutname = str(cut[0]) + "up"
-                    cutname = cutname.replace('.','p')
-                    if abs(p.eta()) > cut[0] : 
-                        if len(params["ids"]) > 0:
-                            for iqual in range(len(params["ids"])): 
-                                if p.idpass() > params["idvals"][iqual]: multiplicity[cutname+"_"+params["ids"][iqual]] += 1
-                        else: multiplicity[cutname] += 1
+                cutname = str(cut[0]) + "to" + str(cut[1])
+                cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
+                if cut[0] < abs(p.eta()) <= cut[1] : 
+                    if len(params["ids"]) > 0:
+                        for iqual in range(len(params["ids"])): 
+                            if p.idpass() > params["idvals"][iqual]: multiplicity[cutname+"_"+params["ids"][iqual]] += 1
+                    else: multiplicity[cutname] += 1
 
             for cut in params["ptSlices"]:
-                if len(cut) ==2:
-                    cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = cutname.replace('.','p')
-                    if  cut[0] <= p.pt() < cut[1]: 
-                        if len(params["ids"]) > 0:
-                            for iqual in range(len(params["ids"])): 
-                                if p.idpass() > params["idvals"][iqual]: multiplicity[cutname+"_"+params["ids"][iqual]] += 1
-                        else: multiplicity[cutname] += 1
-                elif len(cut) == 1:
-                    cutname = str(cut[0]) + "up"
-                    cutname = cutname.replace('.','p')
-                    if p.pt() >= cut[0]: 
-                        if len(params["ids"]) > 0:
-                            for iqual in range(len(params["ids"])): 
-                                if p.idpass() > params["idvals"][iqual]: multiplicity[cutname+"_"+params["ids"][iqual]] += 1
-                        else: multiplicity[cutname] += 1
+                cutname = str(cut[0]) + "to" + str(cut[1])
+                cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
+                if  cut[0] <= p.pt() < cut[1]: 
+                    if len(params["ids"]) > 0:
+                        for iqual in range(len(params["ids"])): 
+                            if p.idpass() > params["idvals"][iqual]: multiplicity[cutname+"_"+params["ids"][iqual]] += 1
+                    else: multiplicity[cutname] += 1
 
             ## STORE all reco objects passing basic thresholds (25 hardcoded for jets)
             p_vec = ROOT.TVector3()
             p_vec.SetPtEtaPhi(p.pt(), p.eta(), p.phi())
             p_tvectors.append(p_vec)
             p_idpass.append(p.idpass())
-
-        #print "I found",len(p_tvectors),"reco objects and stored ",len(p_idpass),"id values"
-        
+            
         ## LOOP over the GEN objects
         for g in genobjs:
 
@@ -380,20 +355,21 @@ def main():
             match = 0
             matchindex = -1
             minDR = 999
-            matchedidpass = -1
+            minDRindex = -1
 
             ## Find matched reco object with minimum DR
             for ivec in range(0, len(p_tvectors)):
                 deltaR = g_vec.DeltaR(p_tvectors[ivec])
-                if deltaR < params["dR"] and deltaR < minDR and ( 1./params["ptRatio"] < p_tvectors[ivec].Pt()/g.pt() < params["ptRatio"]) : # matched
+                if deltaR < minDR:
                     minDR = deltaR
-                    match = 1
-                    matchindex = ivec
+                    minDRindex = ivec
 
-            #print "This gen object is matched?",match," to index",matchindex
+            if minDR < params["dR"] and ( 1./params["ptRatio"] < p_tvectors[ivec].Pt()/g.pt() < params["ptRatio"]) : # matched
+                match = 1
+                matchindex = minDRindex
 
             ## Work with only matched pairs first:
-            if matchindex > -1:
+            if match == 1:
                 
                 ## Fill matched reco and gen hists
                 if len(params["ids"]) > 0:
@@ -413,7 +389,7 @@ def main():
                 hists["gen"+obj+"_matched_phi"].Fill(g.phi())
                 hists["gen"+obj+"_matched_mass"].Fill(g.mass())
 	
-                ## Fill ptresponse hists
+                ## Fill ptresponse hists                
                 if len(params["ids"]) > 0:
                     for iqual in range(len(params["ids"])):
                         if p_idpass[matchindex] > params["idvals"][iqual]:
@@ -424,39 +400,19 @@ def main():
                     hists[obj+"_ptresponse_to_pt"].Fill(g.pt(), p_tvectors[matchindex].Pt()/g.pt())
 
                 for cut in params["ptSlices"]:
-                    if len(cut) ==2:
-                        cutname = str(cut[0]) + "to" + str(cut[1])
-                        cutname = cutname.replace('.','p')
-                        if cut[0] <= g.pt() < cut[1]: 
-                            if len(params["ids"]) > 0:
-                                for iqual in range(len(params["ids"])):
-                                    if p_idpass[matchindex] > params["idvals"][iqual]: 
-                                        hists[obj+"_ptresponse_to_eta_"+params["ids"][iqual]+"_"+cutname].Fill(g.eta(), p_tvectors[matchindex].Pt()/g.pt())
-                            else: hists[obj+"_ptresponse_to_eta_"+cutname].Fill(g.eta(), p_tvectors[matchindex].Pt()/g.pt())
-                    elif len(cut) == 1:
-                        cutname = str(cut[0]) + "up"
-                        cutname = cutname.replace('.','p')
-                        if g.pt() >= cut[0] : 
-                            if len(params["ids"]) > 0:
-                                for iqual in range(len(params["ids"])):
-                                    if p_idpass[matchindex] > params["idvals"][iqual]:
-                                        hists[obj+"_ptresponse_to_eta_"+params["ids"][iqual]+"_"+cutname].Fill(g.eta(), p_tvectors[matchindex].Pt()/g.pt())
-                            else: hists[obj+"_ptresponse_to_eta_"+cutname].Fill(g.eta(), p_tvectors[matchindex].Pt()/g.pt())
+                    cutname = str(cut[0]) + "to" + str(cut[1])
+                    cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
+                    if cut[0] <= g.pt() < cut[1]: 
+                        if len(params["ids"]) > 0:
+                            for iqual in range(len(params["ids"])):
+                                if p_idpass[matchindex] > params["idvals"][iqual]: 
+                                    hists[obj+"_ptresponse_to_eta_"+params["ids"][iqual]+"_"+cutname].Fill(g.eta(), p_tvectors[matchindex].Pt()/g.pt())
+                        else: hists[obj+"_ptresponse_to_eta_"+cutname].Fill(g.eta(), p_tvectors[matchindex].Pt()/g.pt())
                 
                 for cut in params["etaSlices"]:
-                    if len(cut) ==2:
                         cutname = str(cut[0]) + "to" + str(cut[1])
-                        cutname = cutname.replace('.','p')
+                        cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
                         if cut[0] < abs(g.eta()) <= cut[1]: 
-                            if len(params["ids"]) > 0:
-                                for iqual in range(len(params["ids"])):
-                                    if p_idpass[matchindex] > params["idvals"][iqual]:
-                                        hists[obj+"_ptresponse_to_pt_"+params["ids"][iqual]+"_"+cutname].Fill(g.pt(), p_tvectors[matchindex].Pt()/g.pt())
-                            else: hists[obj+"_ptresponse_to_pt_"+cutname].Fill(g.pt(), p_tvectors[matchindex].Pt()/g.pt())
-                    elif len(cut) == 1:
-                        cutname = str(cut[0]) + "up"
-                        cutname = cutname.replace('.','p')
-                        if abs(g.eta()) > cut[0] : 
                             if len(params["ids"]) > 0:
                                 for iqual in range(len(params["ids"])):
                                     if p_idpass[matchindex] > params["idvals"][iqual]:
@@ -464,6 +420,8 @@ def main():
                             else: hists[obj+"_ptresponse_to_pt_"+cutname].Fill(g.pt(), p_tvectors[matchindex].Pt()/g.pt())
                 
                 ## fill 0 into fakerate TProfiles for the matched reco object
+                ## fakerate: denominator = all reco objects with given quality (0's here for matched, 1's later for unmatched)
+                ##           numerator = all unmatched reco objects with given quality (1's later for unmatched)
                 if len(params["ids"]) > 0:
                     for iqual in range(len(params["ids"])):
                         if p_idpass[matchindex] > params["idvals"][iqual]:
@@ -475,39 +433,19 @@ def main():
                     hists[obj+"_fakerate_to_pt"].Fill(p_tvectors[matchindex].Pt(), 0)
                     hists[obj+"_fakerate2D"].Fill(p_tvectors[matchindex].Pt(),p_tvectors[matchindex].Eta(),0)
                 for cut in params["ptSlices"]:
-                    if len(cut) ==2:
-                        cutname = str(cut[0]) + "to" + str(cut[1])
-                        cutname = cutname.replace('.','p')
-                        if cut[0] <= p_tvectors[matchindex].Pt() < cut[1]: 
-                            if len(params["ids"]) > 0:
-                                for iqual in range(len(params["ids"])):
-                                    if p_idpass[matchindex] > params["idvals"][iqual]:
-                                        hists[obj+"_fakerate_to_eta_"+params["ids"][iqual]+"_" + cutname].Fill(p_tvectors[matchindex].Eta(), 0)
-                            else: hists[obj+"_fakerate_to_eta_" + cutname].Fill(p_tvectors[matchindex].Eta(), 0)
-                    elif len(cut) == 1:
-                        cutname = str(cut[0]) + "up"
-                        cutname = cutname.replace('.','p')
-                        if p_tvectors[matchindex].Pt() >= cut[0] : 
-                            if len(params["ids"]) > 0:
-                                for iqual in range(len(params["ids"])):
-                                    if p_idpass[matchindex] > params["idvals"][iqual]:
-                                        hists[obj+"_fakerate_to_eta_"+params["ids"][iqual]+"_" +cutname].Fill(p_tvectors[matchindex].Eta(), 0)
-                            else: hists[obj+"_fakerate_to_eta_" +cutname].Fill(p_tvectors[matchindex].Eta(), 0)
+                    cutname = str(cut[0]) + "to" + str(cut[1])
+                    cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
+                    if cut[0] <= p_tvectors[matchindex].Pt() < cut[1]: 
+                        if len(params["ids"]) > 0:
+                            for iqual in range(len(params["ids"])):
+                                if p_idpass[matchindex] > params["idvals"][iqual]:
+                                    hists[obj+"_fakerate_to_eta_"+params["ids"][iqual]+"_" + cutname].Fill(p_tvectors[matchindex].Eta(), 0)
+                        else: hists[obj+"_fakerate_to_eta_" + cutname].Fill(p_tvectors[matchindex].Eta(), 0)
 
                 for cut in params["etaSlices"]:
-                    if len(cut) ==2:
                         cutname = str(cut[0]) + "to" + str(cut[1])
-                        cutname = cutname.replace('.','p')
+                        cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
                         if cut[0] < abs(p_tvectors[matchindex].Eta()) <= cut[1]: 
-                            if len(params["ids"]) > 0:
-                                for iqual in range(len(params["ids"])):
-                                    if p_idpass[matchindex] > params["idvals"][iqual]:
-                                        hists[obj+"_fakerate_to_pt_"+params["ids"][iqual]+"_"+cutname].Fill(p_tvectors[matchindex].Pt(), 0)
-                            else: hists[obj+"_fakerate_to_pt_"+cutname].Fill(p_tvectors[matchindex].Pt(), 0)
-                    elif len(cut) == 1:
-                        cutname = str(cut[0]) + "up"
-                        cutname = cutname.replace('.','p')          
-                        if abs(p_tvectors[matchindex].Eta()) > cut[0] : 
                             if len(params["ids"]) > 0:
                                 for iqual in range(len(params["ids"])):
                                     if p_idpass[matchindex] > params["idvals"][iqual]:
@@ -517,74 +455,46 @@ def main():
                 ## end of matched object stuff
 
             ## working with matched AND unmatched: fill match status into efficiency TProfiles
+            ## efficiency: denominator = all gen objects (0's for unmatched, 0's for matched and reco obj fails quality)
+            ##             numerator = all gen objects matched to reco object of given quality (1's for matched and reco obj passes quality) 
             if len(params["ids"]) > 0:
-                for iqual in range(len(params["ids"])):
-                    try: 
-                        idpass = (p_idpass[matchindex] > params["idvals"][iqual])
-                        #print "testing id: p_idpass[match] = ",p_idpass[matchindex]," > cut ",params["idvals"][iqual]
+                for iqual in range(len(params["ids"])):                    
+                    try: idpass = (p_idpass[matchindex] > params["idvals"][iqual])
                     except IndexError: idpass = False
-                    #print "filling efficiencies with match = ",match,", or idpass = ",idpass
-                    if match == 0 or idpass:                        
-                        hists[obj+"_matchefficiency_to_eta_"+params["ids"][iqual]].Fill(g.eta(), match)
-                        hists[obj+"_matchefficiency_to_pt_"+params["ids"][iqual]].Fill(g.pt(), match)
-                        hists[obj+"_efficiency2D_"+params["ids"][iqual]].Fill(g.pt(),g.eta(), match)
+                    hists[obj+"_matchefficiency_to_eta_"+params["ids"][iqual]].Fill(g.eta(), match*idpass) #0 if either fails, 1 if both
+                    hists[obj+"_matchefficiency_to_pt_"+params["ids"][iqual]].Fill(g.pt(), match*idpass)
+                    hists[obj+"_efficiency2D_"+params["ids"][iqual]].Fill(g.pt(),g.eta(), match*idpass)
             else:
                 hists[obj+"_matchefficiency_to_eta"].Fill(g.eta(), match)
                 hists[obj+"_matchefficiency_to_pt"].Fill(g.pt(), match)
                 hists[obj+"_efficiency2D"].Fill(g.pt(),g.eta(), match)
             for cut in params["ptSlices"]:
-                if len(cut) ==2:
-                    cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = cutname.replace('.','p')
-                    if cut[0] <= g.pt() < cut[1]: 
-                        if len(params["ids"]) > 0:
-                            for iqual in range(len(params["ids"])):
-                                try: idpass = (p_idpass[matchindex] > params["idvals"][iqual])
-                                except IndexError: idpass = False
-                                if match == 0 or idpass:
-                                    hists[obj+"_matchefficiency_to_eta_"+params["ids"][iqual]+"_" + cutname].Fill(g.eta(), match)
-                        else: hists[obj+"_matchefficiency_to_eta_" + cutname].Fill(g.eta(), match)
-                elif len(cut) == 1:
-                    cutname = str(cut[0]) + "up"
-                    cutname = cutname.replace('.','p')
-                    if g.pt() >= cut[0] : 
-                        if len(params["ids"]) > 0:
-                            for iqual in range(len(params["ids"])):
-                                try: idpass = (p_idpass[matchindex] > params["idvals"][iqual])
-                                except IndexError: idpass = False
-                                if match == 0 or idpass:
-                                    hists[obj+"_matchefficiency_to_eta_"+params["ids"][iqual]+"_" +cutname].Fill(g.eta(), match)
-                        else: hists[obj+"_matchefficiency_to_eta_" +cutname].Fill(g.eta(), match)
+                cutname = str(cut[0]) + "to" + str(cut[1])
+                cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
+                if cut[0] <= g.pt() < cut[1]: 
+                    if len(params["ids"]) > 0:
+                        for iqual in range(len(params["ids"])):
+                            try: idpass = (p_idpass[matchindex] > params["idvals"][iqual])
+                            except IndexError: idpass = False
+                            hists[obj+"_matchefficiency_to_eta_"+params["ids"][iqual]+"_" + cutname].Fill(g.eta(), match*idpass)
+                    else: hists[obj+"_matchefficiency_to_eta_" + cutname].Fill(g.eta(), match)
 
             for cut in params["etaSlices"]:
-                if len(cut) ==2:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = cutname.replace('.','p')
+                    cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
                     if cut[0] < abs(g.eta()) <= cut[1]: 
                         if len(params["ids"]) > 0:
                             for iqual in range(len(params["ids"])):
                                 try: idpass = (p_idpass[matchindex] > params["idvals"][iqual])
                                 except IndexError: idpass = False
-                                if match == 0 or idpass:
-                                    hists[obj+"_matchefficiency_to_pt_"+params["ids"][iqual]+"_"+cutname].Fill(g.pt(), match)
-                        else: hists[obj+"_matchefficiency_to_pt_"+cutname].Fill(g.pt(), match)
-                elif len(cut) == 1:
-                    cutname = str(cut[0]) + "up"
-                    cutname = cutname.replace('.','p')          
-                    if abs(g.eta()) > cut[0] : 
-                        if len(params["ids"]) > 0:
-                            for iqual in range(len(params["ids"])):
-                                try: idpass = (p_idpass[matchindex] > params["idvals"][iqual])
-                                except IndexError: idpass = False
-                                if match == 0 or idpass:
-                                    hists[obj+"_matchefficiency_to_pt_"+params["ids"][iqual]+"_"+cutname].Fill(g.pt(), match)
+                                hists[obj+"_matchefficiency_to_pt_"+params["ids"][iqual]+"_"+cutname].Fill(g.pt(), match*idpass)
                         else: hists[obj+"_matchefficiency_to_pt_"+cutname].Fill(g.pt(), match)
 
             ## remove this matched reco object so later gen objects can't be matched to it
             if matchindex > -1:
                 p_tvectors.pop(matchindex)
                 p_idpass.pop(matchindex)
-                #print "Removed a reco: length now",len(p_tvectors)
+
             ## end of gen object loop
 
         ## All the matched reco objects should have been removed from p_tvectors and p_idpass, fill 1 in fakerate for others
@@ -601,57 +511,30 @@ def main():
                 hists[obj+"_fakerate_to_pt"].Fill(p_tvectors[ip].Pt(), 1)
                 hists[obj+"_fakerate2D"].Fill(p_tvectors[ip].Pt(),p_tvectors[ip].Eta(),1)
             for cut in params["ptSlices"]:
-                if len(cut) ==2:
-                    cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = cutname.replace('.','p')
-                    if cut[0] <= p_tvectors[ip].Pt() < cut[1]: 
-                        if len(params["ids"]) > 0:
-                            for iqual in range(len(params["ids"])):
-                                if p_idpass[ip] > params["idvals"][iqual]:
-                                    hists[obj+"_fakerate_to_eta_"+params["ids"][iqual]+"_" + cutname].Fill(p_tvectors[ip].Eta(), 1)
-                        else: hists[obj+"_fakerate_to_eta_" + cutname].Fill(p_tvectors[ip].Eta(), 1)
-                elif len(cut) == 1:
-                    cutname = str(cut[0]) + "up"
-                    cutname = cutname.replace('.','p')
-                    if p_tvectors[ip].Pt() >= cut[0] : 
-                        if len(params["ids"]) > 0:
-                            for iqual in range(len(params["ids"])):
-                                if p_idpass[ip] > params["idvals"][iqual]:
-                                    hists[obj+"_fakerate_to_eta_"+params["ids"][iqual]+"_" +cutname].Fill(p_tvectors[ip].Eta(), 1)
-                        else: hists[obj+"_fakerate_to_eta_" +cutname].Fill(p_tvectors[ip].Eta(), 1)
+                cutname = str(cut[0]) + "to" + str(cut[1])
+                cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
+                if cut[0] <= p_tvectors[ip].Pt() < cut[1]: 
+                    if len(params["ids"]) > 0:
+                        for iqual in range(len(params["ids"])):
+                            if p_idpass[ip] > params["idvals"][iqual]:
+                                hists[obj+"_fakerate_to_eta_"+params["ids"][iqual]+"_" + cutname].Fill(p_tvectors[ip].Eta(), 1)
+                    else: hists[obj+"_fakerate_to_eta_" + cutname].Fill(p_tvectors[ip].Eta(), 1)
 
             for cut in params["etaSlices"]:
-                if len(cut) ==2:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = cutname.replace('.','p')
+                    cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
                     if cut[0] < abs(p_tvectors[ip].Eta()) <= cut[1]: 
                         if len(params["ids"]) > 0:
                             for iqual in range(len(params["ids"])):
                                 if p_idpass[ip] > params["idvals"][iqual]:
                                     hists[obj+"_fakerate_to_pt_"+params["ids"][iqual]+"_"+cutname].Fill(p_tvectors[ip].Pt(), 1)
                         else: hists[obj+"_fakerate_to_pt_"+cutname].Fill(p_tvectors[ip].Pt(), 1)
-                elif len(cut) == 1:
-                    cutname = str(cut[0]) + "up"
-                    cutname = cutname.replace('.','p')          
-                    if abs(p_tvectors[ip].Eta()) > cut[0] : 
-                        if len(params["ids"]) > 0:
-                            for iqual in range(len(params["ids"])):
-                                if p_idpass[ip] > params["idvals"][iqual]:
-                                    hists[obj+"_fakerate_to_pt_"+params["ids"][iqual]+"_"+cutname].Fill(p_tvectors[ip].Pt(), 1)
-                        else: hists[obj+"_fakerate_to_pt_"+cutname].Fill(p_tvectors[ip].Pt(), 1)
-
 
         ## for each evt
         for cut in cutList:
             hname = "multiplicity"
-            cutname = cut
-            if len(cut)==2:
-                cutname = str(cut[0]) + "to" + str(cut[1])
-                cutname = cutname.replace('.','p')
-            elif len(cut)==1:
-                cutname = str(cut[0]) + "up"
-                cutname = cutname.replace('.','p')
-
+            cutname = str(cut[0]) + "to" + str(cut[1])
+            cutname = ((cutname.replace('.','p')).replace('100000p0','Inf')).replace('ntoo','nocut')
             if len(params["ids"]) > 0: 
                 for qual in params["ids"]:
                     hname = "multiplicity_"+qual
