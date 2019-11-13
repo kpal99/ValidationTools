@@ -40,6 +40,7 @@ Initialisation
 This package requires python, ROOT and pandas:
 
 ```
+source /cvmfs/sft.cern.ch/lcg/views/LCG_92/x86_64-centos7-gcc7-opt/setup.sh 
 ./init.sh
 ```
 
@@ -56,7 +57,7 @@ python ntuple_example.py tree.root
 Use steer script to do validation for any objects, plot and post
 ================================================================
 
-steerValidation.sh does analysing, plotting, or posting based on given option. Options can be choose from physics objects ```jet```, ```muon```, ```electron```, ```photon```, or ```plot```, ```post```. When running ```post```, the plots will be copied to the user's cernbox www page. 
+steerValidation.sh does analysing, plotting, or posting based on given option. Options can be chosen from physics objects ```jet```, ```muon```, ```electron```, ```photon```, or ```plot```, ```post```. When running ```post```, the plots will be copied to the user's cernbox www page. 
 
 Instruction for setting up cernbox personal webpage can be found here \
 <https://cernbox-manual.web.cern.ch/cernbox-manual/en/web/personal_website_content.html#create_personal_space>
