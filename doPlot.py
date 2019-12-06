@@ -62,9 +62,15 @@ for name in hist_names:
     if 'efficiency2D' in name or 'fakerate2D' in name:
         rt.gStyle.SetPaintTextFormat("1.2f")
         hd.SetStats(rt.kFALSE)
+        if 'efficiency' in name: 
+            hd.GetZaxis().SetRangeUser(0,1)
+            hf.GetZaxis().SetRangeUser(0,1)
+        else: 
+            hd.GetZaxis().SetRangeUser(0,0.2)
+            hf.GetZaxis().SetRangeUser(0,0.2)
         hd.Draw("colz texte")
         canv.Print(printoutdir+"/"+canv_name+"_delphes.png")
-        hf.SetStats(rt.kFALSE)
+        hf.SetStats(rt.kFALSE)        
         hf.Draw("colz texte")
         canv.Print(printoutdir+"/"+canv_name+"_fullsim.png")
     else:
@@ -72,13 +78,21 @@ for name in hist_names:
         hf.SetMarkerStyle(21)
         hf.SetMarkerColor(rt.kBlue)
         hf.SetStats(rt.kFALSE)
-        hf.SetMaximum(max(hd.GetMaximum(),hf.GetMaximum())*1.1)
-        hf.SetMinimum(min(hd.GetMinimum(),hf.GetMinimum())*0.9)
-        hf.Draw("same")
         hd.SetLineColor(rt.kRed)
         hd.SetMarkerStyle(20)
         hd.SetMarkerColor(rt.kRed)
-        hd.SetStats(rt.kFALSE)
+        hd.SetStats(rt.kFALSE)        
+        if 'efficiency' not in name and 'fakerate' not in name and 'ptresponse' not in name:
+            hf.Scale(1.0/hf.Integral())
+            hd.Scale(1.0/hd.Integral())
+
+        if 'efficiency' in name or 'fakerake' in name:
+            hf.SetMaximum(1)
+        else:
+            hf.SetMaximum(max(hd.GetMaximum(),hf.GetMaximum())*1.1)
+
+        hf.SetMinimum(0)
+        hf.Draw()
         hd.Draw("same")
         legend = rt.TLegend(.9,.9,.99,.99)
         legend.SetTextSize(0.03)
