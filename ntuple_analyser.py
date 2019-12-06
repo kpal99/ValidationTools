@@ -212,26 +212,26 @@ def main():
         params = {
             "dR": 0.2,
             "ptRatio": 2.0,
-            "ptMin": 20,
+            "ptMin": 10,
             "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5] ],
-            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5] ],
+            "ptSlices": [[10, 20], [20, 50], [50, 100], [100, 150], [150, 1e5] ],
             "sliceSplit": 1,
-            "plotPtRange": [0, 1500],
+            "plotPtRange": [0, 500],
             "plotEtaRange": [-5, 5],
             "plotPhiRange": [-5, 5],
-            "plotMassRange": [0, 500],
-            "plotNObjRange_Delp": [0, 20],
-            "plotNObjRange_Full": [0, 50],
+            "plotMassRange": [-1, 1],
+            "plotNObjRange_Delp": [0, 8],
+            "plotNObjRange_Full": [0, 8],
             "ids": [  ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, denominator: 0(all)/1(reco matched)/2(reco+id)]
                 ## NOTE: only efficiency plots get anything with value [3] > 0 
                 ["reco",-9,-9,0],                                      ## reco (eff, fakerate, response)
                 ["looseID",0,-9,0], ["tightID",3,-9,0],                ## IDs on all gen (eff), matched gen (response), all reco (FR)
-                ["looseISO",-9,0,0], ["tightISO",-9,3,0],              ## ISOs on all gen (eff), matched gen (response), all reco (FR)
-                ["looseIDISO",0,0,0], ["tightIDISO",3,3,0],            ## ID+ISOs on all gen (eff), matched gen (response), all reco (FR)
+                ["looseISO",-9,0,0], ["tightISO",-9,14,0],              ## ISOs on all gen (eff), matched gen (response), all reco (FR)
+                ["looseIDISO",0,0,0], ["tightIDISO",3,14,0],            ## ID+ISOs on all gen (eff), matched gen (response), all reco (FR)
                 ["looseIDifReco",0,-9,1], ["tightIDifReco",3,-9,1],    ## IDs on reco-matched gen (eff only)
-                ["looseISOifReco",-9,0,1], ["tightISOifReco",-9,3,1],  ## ISOs on reco-matched gen (eff only) 
-                ["looseIDISOifReco",0,0,1], ["tightIDISOifReco",3,3,1],## ID+ISOs on reco-matched gen (eff only)
-                ["looseISOifRecoLooseID",0,0,2], ["tightISOifRecoLooseID",0,3,2] ## ISOs on reco+id-matched gen (eff only)
+                ["looseISOifReco",-9,0,1], ["tightISOifReco",-9,14,1],  ## ISOs on reco-matched gen (eff only) 
+                ["looseIDISOifReco",0,0,1], ["tightIDISOifReco",3,14,1],## ID+ISOs on reco-matched gen (eff only)
+                ["looseISOifRecoLooseID",0,0,2], ["tightISOifRecoLooseID",0,14,2] ## ISOs on reco+id-matched gen (eff only)
                 ## NOTE: still to-do = looseISOifRecoLooseID, looseISOifRecoTightID, etc. 
                 ], 
             }                
@@ -394,8 +394,8 @@ def main():
                     else: multiplicity[cutname] += 1
 
             ## STORE all reco objects passing basic thresholds (25 hardcoded for jets)
-            p_vec = ROOT.TVector3()
-            p_vec.SetPtEtaPhi(p.pt(), p.eta(), p.phi())
+            p_vec = ROOT.TLorentzVector()
+            p_vec.SetPtEtaPhiM(p.pt(), p.eta(), p.phi(), p.mass())
             p_tvectors.append(p_vec)
             p_idpass.append(p.idpass())
             p_isopass.append(isopass)
@@ -414,8 +414,8 @@ def main():
             hists["gen"+obj+"_phi"].Fill(g.phi())
             hists["gen"+obj+"_mass"].Fill(g.mass())
 
-            g_vec = ROOT.TVector3()
-            g_vec.SetPtEtaPhi(g.pt(), g.eta(), g.phi())
+            g_vec = ROOT.TLorentzVector()
+            g_vec.SetPtEtaPhiM(g.pt(), g.eta(), g.phi(), g.mass())
             match = 0
             matchindex = -1
             minDR = 999
@@ -444,11 +444,13 @@ def main():
                             hists[obj+"_matched_eta_"+idnames[iqual]].Fill(p_tvectors[matchindex].Eta())
                             hists[obj+"_matched_phi_"+idnames[iqual]].Fill(p_tvectors[matchindex].Phi())
                             hists[obj+"_matched_mass_"+idnames[iqual]].Fill(p_tvectors[matchindex].Mag())
+			    hists[obj+"_matched_idpass_"+idnames[iqual]].Fill(p_idpass[matchindex])
                 else:
                     hists[obj+"_matched_pt"].Fill(p_tvectors[matchindex].Pt())
                     hists[obj+"_matched_eta"].Fill(p_tvectors[matchindex].Eta())
                     hists[obj+"_matched_phi"].Fill(p_tvectors[matchindex].Phi())
-                    hists[obj+"_matched_mass"].Fill(p_tvectors[matchindex].Mag()) 
+                    hists[obj+"_matched_mass"].Fill(p_tvectors[matchindex].Mag())
+		    hists[obj+"_matched_idpass_"+idnames[iqual]].Fill(p_idpass[matchindex]) 
                 hists["gen"+obj+"_matched_pt"].Fill(g.pt())
                 hists["gen"+obj+"_matched_eta"].Fill(g.eta())
                 hists["gen"+obj+"_matched_phi"].Fill(g.phi())
