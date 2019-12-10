@@ -122,6 +122,8 @@ def create2Dmap(varname, params, title):
         h.GetXaxis().SetTitle("gen p_{T} [GeV]")
         h.GetYaxis().SetTitle("gen #eta")
     if "fakerate" in varname:
+        title = title.replace(")*#varepsilon(#","+")
+        title = title.replace("#varepsilon","fakerate")
         h = ROOT.TProfile2D(varname, title, 10, params["plotPtRange"][0], params["plotPtRange"][1], 10, params["plotEtaRange"][0], params["plotEtaRange"][1])
         h.GetXaxis().SetTitle("reco p_{T} [GeV]")
         h.GetYaxis().SetTitle("reco #eta")
@@ -223,10 +225,10 @@ def main():
             "dR": 0.2,
             "ptRatio": 2.0,
             "ptMin": 10,
-            "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5] ],
-            "ptSlices": [[10, 20], [20, 50], [50, 100], [100, 150], [150, 1e5] ],
-            "sliceSplit": 1,
-            "plotPtRange": [0, 500],
+            "etaSlices": [[0, 1.5], [1.5, 3], [3, 1e5] ],
+            "ptSlices": [[10, 20], [20, 50], [50, 100], [100, 1e5] ],
+            "sliceSplit": 2,
+            "plotPtRange": [0, 250],
             "plotEtaRange": [-5, 5],
             "plotPhiRange": [-5, 5],
             "plotMassRange": [-1, 1],
