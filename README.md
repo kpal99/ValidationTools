@@ -72,7 +72,7 @@ python -u doPlot.py -f path/to/fullsimplots.root -d path/to/delphesplots.root -o
 ```
 If you have run steps 1 and 2 on a computer network other than LXPLUS, copy your plot directories to lxplus and run step 3 from there. 
 
-3. Post (must be run on LXPLUS!). Pass arguments for the directory of plots to be copied, the destination on CERN EOS, and the sample name. The EOS path will be automatically prepended with: /eos/user/<initial>/<username>/www/. Instruction for setting up cernbox personal webpage can be found here <https://cernbox-manual.web.cern.ch/cernbox-manual/en/web/personal_website_content.html#create_personal_space>
+3. Post (must be run on LXPLUS!). Pass arguments for the directory of plots to be copied, the destination on CERN EOS, and the sample name. The EOS path will be automatically prepended with: /eos/user/userinitial/username/www/. Instruction for setting up cernbox personal webpage can be found here <https://cernbox-manual.web.cern.ch/cernbox-manual/en/web/personal_website_content.html#create_personal_space>
 
 
 ```
