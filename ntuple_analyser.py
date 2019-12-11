@@ -450,6 +450,7 @@ def main():
             ## Cuts on the gen object
             if obj in pdgid:
                 if g.pid() != pdgid[obj]: continue  # check genparticle pid  
+                if g.status() != 1: continue ## hardcoding -- ever a different status?
             if abs(g.eta()) > 5 or g.pt() < params["ptMin"] : continue
 
             ## Fill gen object hists
