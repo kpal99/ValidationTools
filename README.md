@@ -40,9 +40,11 @@ Initialisation
 This package requires python, ROOT and pandas:
 
 ```
-source /cvmfs/sft.cern.ch/lcg/views/LCG_92/x86_64-centos7-gcc7-opt/setup.sh 
+source /cvmfs/sft.cern.ch/lcg/views/LCG_92/x86_64-centos7-gcc7-opt/setup.(c)sh 
 ./init.sh
 ```
+
+Setting up a CMSSW environment via cmsenv also works.
 
 Run examples
 ============
@@ -54,10 +56,33 @@ python ntuple_example.py tree.root
 
 ```
 
+Analyze, plot, and post
+=======================
+
+1. Analyze. Pass arguments for the input file (an nutple) and output file (histograms). The particle can be "jet", "photon", "muon", or "electron". 
+
+```
+python -u ntuple_analyzer.py -i path/to/input/ntuple.root -o outputplotfile.root -p particle --maxEvents NNNNNNN
+```
+
+2. Plot. Pass arguments for the two input files (delphes and fullsim), and the output plot directory
+
+```
+python -u doPlot.py -f path/to/fullsimplots.root -d path/to/delphesplots.root -o mynewplotdir/
+```
+If you have run steps 1 and 2 on a computer network other than LXPLUS, copy your plot directories to lxplus and run step 3 from there. 
+
+3. Post (must be run on LXPLUS!). Pass arguments for the directory of plots to be copied, the destination on CERN EOS, and the sample name. The EOS path will be automatically prepended with: /eos/user/userinitial/username/www/. Instruction for setting up cernbox personal webpage can be found here <https://cernbox-manual.web.cern.ch/cernbox-manual/en/web/personal_website_content.html#create_personal_space>
+
+
+```
+sh postPlots.sh -i mynewplotdir/ -o delphes_validation/mynewplotdir/ -s PhotonFlat0to150_0PU
+```
+
 Use steer script to do validation for any objects, plot and post
 ================================================================
 
-steerValidation.sh does analysing, plotting, or posting based on given option. Options can be chosen from physics objects ```jet```, ```muon```, ```electron```, ```photon```, or ```plot```, ```post```. When running ```post```, the plots will be copied to the user's cernbox www page. 
+steerValidation.sh does analysing, plotting, or posting based on given option. Options can be chosen from physics objects ```jet```, or ```plot```, ```post```. When running ```post```, the plots will be copied to the user's cernbox www page.
 
 Instruction for setting up cernbox personal webpage can be found here \
 <https://cernbox-manual.web.cern.ch/cernbox-manual/en/web/personal_website_content.html#create_personal_space>
