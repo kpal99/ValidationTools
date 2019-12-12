@@ -451,7 +451,8 @@ def main():
 
             ## Cuts on the gen object
             if obj in pdgid:
-                if g.pid() != pdgid[obj]: continue  # check genparticle pid  
+                if abs(g.pid()) != pdgid[obj]: continue  # check genparticle pid  
+                if g.status() != 1: continue
             if abs(g.eta()) > 5 or g.pt() < params["ptMin"] : continue
 
             ## Fill gen object hists
