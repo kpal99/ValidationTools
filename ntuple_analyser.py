@@ -475,7 +475,7 @@ def main():
                     minDR = deltaR
                     minDRindex = ivec
 
-            if minDR < params["dR"] and ( 1./params["ptRatio"] < p_tvectors[ivec].Pt()/g.pt() < params["ptRatio"]) : # matched
+            if minDR < params["dR"] and ( 1./params["ptRatio"] < p_tvectors[minDRindex].Pt()/g.pt() < params["ptRatio"]) : # matched
                 match = 1
                 matchindex = minDRindex
 
