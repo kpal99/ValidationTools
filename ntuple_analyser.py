@@ -478,12 +478,8 @@ def main():
 
             ## Cuts on the gen object
             if obj in pdgid:
-                # if abs(g.pid()) == 11 and g.status() == 1 and g.pt() > params["ptMin"] and printgen:
-                #     print "gen electron:",g.pt(),g.eta(),g.phi()
-                # if abs(g.pid()) != 11 and abs(g.pid()) != 13 and g.pt() > 100 and g.status() == 1 and printgen:
-                #     print "gen particle high pt (pid last):",g.pt(),g.eta(),g.phi(),g.pid()
                 if abs(g.pid()) != pdgid[obj]: continue  # check genparticle pid  
-                if g.status() != 1: continue ## hardcoding -- ever a different status?
+                if g.status() != 1: continue
             if abs(g.eta()) > 5 or g.pt() < params["ptMin"] : continue
 
             ## Fill gen object hists
