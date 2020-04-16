@@ -91,3 +91,12 @@ Run steer script example:
 ```
 ./steerValidation.sh -o jet 
 ``` 
+
+
+
+Run script to check compatibility between Reco and Delphes flatTrees
+=====================================================================
+
+```
+python compare_trees.py delphes_flat_tree.root reco_flat_tree.root
+```

@@ -20,11 +20,17 @@ parser.add_option('-o', '--outDir',
                   help='output dir for plots [%default]',  
                   default=None,       
                   type='string')
+parser.add_option('-t','--tcl',
+                  action="store_true",
+                  dest='dumptcl',
+                  default=False,
+                  help='true/false dump a tcl parameterization file')
 (opt, args) = parser.parse_args()
 
 inFileD = opt.inFileD
 inFileF = opt.inFileF
 printoutdir = opt.printoutdir
+dumptcl = opt.dumptcl
 
 if not os.path.exists(printoutdir):
     os.system('mkdir -p %s'%printoutdir)
@@ -107,3 +113,45 @@ for name in hist_names:
         canv.Print(printoutdir+ "/" + canv_name +".png")
 
 
+if dumptcl:
+    dumpme = ['efficiency2D_looseID','efficiency2D_tightID']
+    for dumpname in dumpme:
+        quality = dumpname.split('_')[-1]
+        particle = (hist_names[0].split('_')[0]).replace('gen','')
+        name = particle+'_'+dumpname
+        print 'useing hist name',name
+
+        useIso = True
+        if particle == 'gamma' or particle == 'jet_': useIso = False;
+
+        id2D_f = inputFile_f.Get(name).ProjectionXY("id_"+name)
+        if useIso:
+            iso2D_d = inputFile_d.Get(name.replace('ID','ISOifReco')).ProjectionXY("isoD_"+name)
+            iso2D_f = inputFile_f.Get(name.replace('ID','ISOifReco')).ProjectionXY("isoF_"+name)
+
+        f = open(printoutdir+'/'+particle+quality+'Efficiency.tcl','w')
+        f.write('## Fullsim Efficiency for '+name+', multiplying ISO Fullsim/Delphes?'+str(useIso)+'\n\n')
+        f.write('set EfficiencyFormula{\n')
+        for ybin in range(0,id2D_f.GetNbinsY()): ## eta
+            if id2D_f.GetYaxis().GetBinWidth(ybin+1) == 0: continue
+            etalow = id2D_f.GetYaxis().GetBinLowEdge(ybin+1)
+            etahigh = id2D_f.GetYaxis().GetBinUpEdge(ybin+1)
+            for xbin in range (0,id2D_f.GetNbinsX()): ##pt
+                if id2D_f.GetXaxis().GetBinWidth(xbin+1) == 0: continue
+                ptlow = id2D_f.GetXaxis().GetBinLowEdge(xbin+1)
+                pthigh = id2D_f.GetXaxis().GetBinUpEdge(xbin+1)
+
+                ratio = id2D_f.GetBinContent(xbin+1,ybin+1)
+                if useIso: 
+                    delpheseff = iso2D_d.GetBinContent(xbin+1,ybin+1)
+                    if delpheseff > 0: 
+                        ratio = ratio * iso2D_f.GetBinContent(xbin+1,ybin+1)/delpheseff
+                    else: ratio = ratio * iso2D_f.GetBinContent(xbin+1,ybin+1)
+
+                string = "(abs(eta) > "+str(etalow)+" && abs(eta) <= "+str(etahigh)+") * (pt > "+str(ptlow)+" && pt <= "+str(pthigh)+") * ("+str(ratio)+") + \\"
+                if xbin == id2D_f.GetNbinsX()-1 and ybin == id2D_f.GetNbinsY()-1: string = string[:-3]
+
+                f.write('\t'+string+'\n')
+        f.write('}\n')
+        f.close()
+    
