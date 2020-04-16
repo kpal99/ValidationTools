@@ -168,7 +168,8 @@ def main():
     tot_electron = 0
     tot_gamma = 0
     tot_muon = 0
-    tot_jet = 0
+    tot_jetchs = 0
+    tot_jetpuppi = 0
     tot_tau = 0
     tot_met = 0
     tot_genjetAK8 = 0
@@ -178,7 +179,10 @@ def main():
     params = {}
     outputF = ROOT.TFile(opt.outFile, "RECREATE")
     obj = opt.physobject
-    if obj=="jet":
+    if obj=="jet": 
+        print "You entered jet as the particle type -- please specify jetchs or jetpuppi"
+        exit()
+    elif obj=="jetchs" or obj=="jetpuppi":
         params = {
             "dR": 0.2,
             "ptRatio": 2.0,
@@ -256,7 +260,7 @@ def main():
                 ], 
             }                
     else: 
-        print 'Physics object not recognized! Choose jet, photon, electron, or muon.'            
+        print 'Physics object not recognized! Choose jetchs, jetpuppi, photon, electron, or muon.'            
         exit()
 
     ## BOOK HISTOGRAMS
@@ -348,15 +352,19 @@ def main():
         tot_electron += len(event.electrons())
         tot_gamma += len(event.gammas())
         tot_muon += len(event.muons())
-        tot_jet += len(event.jets())
+        tot_jetchs += len(event.jetschs())
+        tot_jetpuppi += len(event.jetspuppi())
         tot_tau += len(event.taus())
-        tot_met += len(event.mets())
+        tot_met += len(event.metspuppi())
         #tot_genjetAK8 += len(event.genjetsAK8())
         #tot_jetAK8 += len(event.jetsAK8())
 
         ## Set the reco and generated object collections
-	if obj=="jet":
-            recoobjs = event.jets()
+	if obj=="jetpuppi":
+            recoobjs = event.jetspuppi()
+            genobjs = event.genjets()
+	elif obj=="jetchs":
+            recoobjs = event.jetschs()
             genobjs = event.genjets()
 	elif obj == "photon": 
             recoobjs = event.gammas()
@@ -383,6 +391,8 @@ def main():
 	p_tvectors = []
         p_idpass = []
         p_isopass = []
+
+        #printgen = False
 
         ## Loop over reco objects
         for p in recoobjs:
@@ -445,13 +455,31 @@ def main():
             p_tvectors.append(p_vec)
             p_idpass.append(p.idpass())
             p_isopass.append(isopass)
+
+            # if p.pt() > 96:
+            #     print '------------------------'
+            #     print "HIGHTPT reco muon:",p.pt(),p.eta(),p.phi(),p.idpass(),p.isopass()
+            #     printgen = True
+
+        # for genjet in event.genjets():
+        #     if printgen: 
+        #         print "gen jet:",genjet.pt(),genjet.eta(),genjet.phi()
+
+        # for jet in event.jets():
+        #     if printgen:
+        #         print "reco jet:",jet.pt(),jet.eta(),jet.phi()
             
+        # for electron in event.electrons():
+        #     if printgen:
+        #         print "reco electron:",electron.pt(),electron.eta(),electron.phi()
+
         ## LOOP over the GEN objects
         for g in genobjs:
 
             ## Cuts on the gen object
             if obj in pdgid:
-                if g.pid() != pdgid[obj]: continue  # check genparticle pid  
+                if abs(g.pid()) != pdgid[obj]: continue  # check genparticle pid  
+                if g.status() != 1: continue
             if abs(g.eta()) > 5 or g.pt() < params["ptMin"] : continue
 
             ## Fill gen object hists
@@ -474,9 +502,18 @@ def main():
                     minDR = deltaR
                     minDRindex = ivec
 
-            if minDR < params["dR"] and ( 1./params["ptRatio"] < p_tvectors[ivec].Pt()/g.pt() < params["ptRatio"]) : # matched
+            if minDR < params["dR"] and ( 1./params["ptRatio"] < p_tvectors[minDRindex].Pt()/g.pt() < params["ptRatio"]) : # matched
                 match = 1
                 matchindex = minDRindex
+
+            # if g.pt() > 100:
+            #     print "HIGHPT gen muon:",g.pt(),g.eta(),g.phi(),minDR
+            #     if match:
+            #         print "\t MATCH to reco:",p_tvectors[matchindex].Pt(),p_tvectors[matchindex].Eta(),p_tvectors[matchindex].Phi()
+            #     else:
+            #         print "\t MATCH FAIL:",minDR,p_tvectors[minDRindex].Pt()/g.pt()
+            # else:
+            #     if printgen: print "gen muon:",g.pt(),g.eta(),g.phi(),minDR
 
             ## Work with only matched pairs first:
             if match == 1:
@@ -651,6 +688,10 @@ def main():
         ## All the matched reco objects should have been removed from p_tvectors and p_idpass, fill 1 in fakerate for others
         #print "now filling the fakes:",len(p_tvectors)
         for ip in range(len(p_tvectors)):
+
+            # if p_tvectors[ip].Pt() > 100:
+            #     print "HIGHPT unmatched reco:",p_tvectors[ip].Pt(),p_tvectors[ip].Eta(),p_tvectors[ip].Phi()
+
             if len(params["ids"]) > 0:
                 for quality in params["ids"]:
                     if quality[3] >= 1: continue
@@ -712,11 +753,12 @@ def main():
     print("On average %f electrons" % (float(tot_electron) / tot_nevents))
     print("On average %f photons" % (float(tot_gamma) / tot_nevents))
     print("On average %f muons" % (float(tot_muon) / tot_nevents))
-    print("On average %f jets" % (float(tot_jet) / tot_nevents))
+    print("On average %f chs jets" % (float(tot_jetchs) / tot_nevents))
+    print("On average %f puppi jets" % (float(tot_jetpuppi) / tot_nevents))
     print("On average %f taus" % (float(tot_tau) / tot_nevents))
     print("On average %f met" % (float(tot_met) / tot_nevents))
-    print("On average %f generated AK8 jets" % (float(tot_genjetAK8) / tot_nevents))
-    print("On average %f jetsAK8" % (float(tot_jetAK8) / tot_nevents))
+    #print("On average %f generated AK8 jets" % (float(tot_genjetAK8) / tot_nevents))
+    #print("On average %f jetsAK8" % (float(tot_jetAK8) / tot_nevents))
 
 if __name__ == "__main__":
     main()

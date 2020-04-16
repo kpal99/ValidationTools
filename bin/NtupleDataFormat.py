@@ -219,7 +219,11 @@ class Event(object):
         """Returns muon object."""
         return Muons(self._tree, prefix)
     
-    def jets(self, prefix="jet"):
+    def jetspuppi(self, prefix="jetpuppi"):
+        """Returns Jet object."""
+        return Jets(self._tree, prefix)
+
+    def jetschs(self, prefix="jetchs"):
         """Returns Jet object."""
         return Jets(self._tree, prefix)
 
@@ -231,7 +235,11 @@ class Event(object):
         """Returns Tau object."""
         return Taus(self._tree, prefix)
 
-    def mets(self, prefix="met"):
+    def metspf(self, prefix="metpf"):
+        """Returns MET object."""
+        return Mets(self._tree, prefix)
+
+    def metspuppi(self, prefix="metpuppi"):
         """Returns MET object."""
         return Mets(self._tree, prefix)
 

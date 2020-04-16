@@ -83,8 +83,12 @@ for name in hist_names:
         hd.SetMarkerColor(rt.kRed)
         hd.SetStats(rt.kFALSE)        
         if 'efficiency' not in name and 'fakerate' not in name and 'ptresponse' not in name:
-            hf.Scale(1.0/hf.Integral())
-            hd.Scale(1.0/hd.Integral())
+	    try:
+              hf.Scale(1.0/hf.Integral())
+              hd.Scale(1.0/hd.Integral())
+	    except:
+              print hf, hd
+              pass
 
         if 'efficiency' in name or 'fakerake' in name:
             hf.SetMaximum(1)
