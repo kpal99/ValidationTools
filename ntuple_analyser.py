@@ -428,7 +428,7 @@ def main():
                 hists[obj+"_idpass"].Fill(p.idpass())
 
 
-            if obj == "jet" and p.pt() < 25 : continue  # for jets
+            if "jet" in obj and p.pt() < 25 : continue  # for jets
             
             ## Increment multiplicity counters
             if len(params["ids"]) > 0:
