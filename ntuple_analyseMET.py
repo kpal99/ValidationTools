@@ -13,6 +13,9 @@ def findZ(genparts):
     for g in genparts:
         if abs(g.pid())==23: 
 	    d1 = g.d1()
+	    if d1<0: 
+#		print "d1 ", d1, " gd1 ", gd1
+		continue
 	    gd1 = genparts[d1]
  	    if ( abs(gd1.pid())==11 or abs(gd1.pid()==13) ):
 	        v.SetMagPhi(g.pt(),g.phi())
@@ -93,15 +96,15 @@ def main():
     varAllList = varList +twodvarList
     for v in varList:
         for twodv in twodvarList:
-            metHists[v+'_VS_'+twodv] = ROOT.TProfile(v+'_VS_'+twodv, "", metHists[v].GetNbinsX(), 0, metHists[v].GetXaxis().GetBinUpEdge(metHists[v].GetNbinsX()))
-	    metHists[v+'_VS_'+twodv].GetXaxis().SetTitle(metHists[v].GetXaxis().GetTitle())
-	    metHists[v+'_VS_'+twodv].GetYaxis().SetTitle(metHists[twodv].GetXaxis().GetTitle())
+            metHists[v+'_VS_'+twodv] = ROOT.TProfile(v+'_VS_'+twodv, "", metHists[twodv].GetNbinsX(), 0, metHists[twodv].GetXaxis().GetBinUpEdge(metHists[twodv].GetNbinsX()))
+	    metHists[v+'_VS_'+twodv].GetXaxis().SetTitle(metHists[twodv].GetXaxis().GetTitle())
+	    metHists[v+'_VS_'+twodv].GetYaxis().SetTitle(metHists[v].GetXaxis().GetTitle())
 
     ## study
     for event in ntuple:
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
-        if (tot_nevents %2) == 0 :
+        if (tot_nevents %1000) == 0 :
             print '... processed {} events ...'.format(event.entry()+1)
 
 	tot_nevents += 1
@@ -148,13 +151,35 @@ def main():
 
 	for v in varList:
             for twodv in twodvarList:
-	        metHists[v+'_VS_'+twodv].Fill(var[v], var[twodv])
+	        metHists[v+'_VS_'+twodv].Fill(var[twodv], var[v])
 	    
     ## write event level var hists
     outputF.cd()
     for h in metHists.keys():
 	metHists[h].Write()
 
+    for i in twodvarList:
+	up_over_qt=outputF.Get("u_p_VS_"+i).Clone()
+	up_over_qt.Divide(outputF.Get("z_pt_VS_"+i))
+	up_over_qt.Write("up_over_qt_VS_"+i)
+
+	ut=outputF.Get("met_t_VS_"+i).Clone()
+	ut_rms= ROOT.TH1F("ut_rms_VS_"+i, "", metHists[i].GetNbinsX(), 0, metHists[i].GetXaxis().GetBinUpEdge(metHists[i].GetNbinsX()))
+	ut_rms.GetXaxis().SetTitle(metHists[i].GetXaxis().GetTitle())
+	ut_rms.GetYaxis().SetTitle("RMS u_{T}")
+	for imtt in range(1,ut.GetNbinsX()+1):
+	    ut_rms.SetBinContent(imtt, ut.GetBinError(imtt)*math.sqrt(ut.GetBinEntries(imtt)))
+	ut_rms.Write()
+
+	up_plus_qt =outputF.Get("met_p_VS_"+i).Clone()
+	up_plus_qt_rms = ROOT.TH1F("up_plus_qt_rms_VS_"+i, "", metHists[i].GetNbinsX(),0,metHists[i].GetXaxis().GetBinUpEdge(metHists[i].GetNbinsX()))
+	up_plus_qt_rms.GetXaxis().SetTitle(metHists[i].GetXaxis().GetTitle())
+	up_plus_qt_rms.GetYaxis().SetTitle("RMS u_{P}+q_{T}")
+	for imtt in range(1,up_plus_qt.GetNbinsX()+1):
+	    up_plus_qt_rms.SetBinContent(imtt, up_plus_qt.GetBinError(imtt)*math.sqrt(up_plus_qt.GetBinEntries(imtt)))
+	up_plus_qt_rms.Write()
+
+    outputF.Close()
 
 if __name__ == "__main__":
     main()
