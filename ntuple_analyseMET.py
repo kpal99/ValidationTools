@@ -78,20 +78,17 @@ def main():
 
     ## create histo
     metHists = {}
-    metHists['ht'] = createMetHist('ht', "H_{T} [GeV]", 50, 0, 500)
-    metHists['ht_pt30_eta4'] = createMetHist('ht_pt30_eta4', "H_{T} [GeV]", 50, 0, 500)
-    metHists['ht_pt30_eta3'] = createMetHist('ht_pt30_eta3', "H_{T} [GeV]", 50, 0, 500)
-    metHists['vtx_size'] = createMetHist('vtx_size', "N_{PV}", 180, 90, 270)
-    metHists['jet_size'] = createMetHist('jet_size', "N_{jet}", 15, 0, 15)
-    metHists['jet_size_pt30_eta4'] = createMetHist('jet_size_pt30_eta4', "N_{jet}", 15, 0, 15)
-    metHists['jet_size_pt30_eta3'] = createMetHist('jet_size_pt30_eta3', "N_{jet}", 15, 0, 15)
+    metHists['genht_pt30_eta5'] = createMetHist('genht_pt30_eta5', "H_{T} gen [GeV]", 50, 0, 500)
+    metHists['npuVtx'] = createMetHist('npuVtx', "npuVertices", 180, 0, 400)
+    metHists['genjet_size_pt30_eta5'] = createMetHist('genjet_size_pt30_eta5', "N_{genjet}", 15, 0, 15)
     metHists['z_pt'] = createMetHist('z_pt', "p_{T}(Z) [GeV]", 150, 0, 150)
     metHists['met'] = createMetHist('met', "p_{T,miss} [GeV]", 300, 0, 300)
     metHists['met_p'] = createMetHist('met_p', "parallel p_{T,miss} [GeV]", 150, 0, 150)
     metHists['met_t'] = createMetHist('met_t', "transverse p_{T,miss} [GeV]", 150, 0, 150)
     metHists['u_p'] = createMetHist('u_p', "u_{p} [GeV]", 150, 0, 150)
 
-    twodvarList=['ht','ht_pt30_eta4','ht_pt30_eta3','vtx_size','jet_size','jet_size_pt30_eta4','jet_size_pt30_eta3']
+
+    twodvarList=['genht_pt30_eta5','npuVtx','genjet_size_pt30_eta5']
     varList = ['z_pt', 'met', 'met_p', 'met_t', 'u_p']
     varAllList = varList +twodvarList
     for v in varList:
@@ -109,38 +106,36 @@ def main():
 
 	tot_nevents += 1
         genparts = event.genparticles()
-        jets = event.jetspuppi()
+        genjets = event.genjets()
         mets = event.metspuppi()
 
  	## studymet
         z = findZ(genparts)
         z_pt = z.Mod()
 	if not (z_pt>0.00001): continue
-  	ht = doSum(jets, 0., 5000.)
-	ht_pt30_eta4 = doSum(jets, 30., 4.)
-	ht_pt30_eta3 = doSum(jets, 30., 3.)
+#  	ht = doSum(jets, 0., 5000.)
+#	ht_pt30_eta4 = doSum(jets, 30., 4.)
+#	ht_pt30_eta3 = doSum(jets, 30., 3.)
+	genht_pt30_eta5 = doSum(genjets, 30., 5.)
 	met_v = ROOT.TVector2(0,0)
 	met_v.SetMagPhi(mets[0].pt(),mets[0].phi())
 	met = mets[0].pt()
 	met_p = met_v.Proj(z).Mod()
 	met_t =	met_v.Norm(z).Mod()	
 	u_p = (z+met_v).Proj(z).Mod()
-	jet_size_pt30_eta4 = doCount(jets, 30., 4.)
-	jet_size_pt30_eta3 = doCount(jets, 30., 3.)
-	jet_size = len(jets)
+#	jet_size_pt30_eta4 = doCount(jets, 30., 4.)
+#	jet_size_pt30_eta3 = doCount(jets, 30., 3.)
+#	jet_size = len(jets)
+	genjet_size_pt30_eta5 = doCount(genjets, 30., 5.)
 	vtx_size = event.vtxSize()
- 	npuV = event.npuVertices()
+ 	npuVtx = event.npuVertices()
 	trueInt = event.trueInteractions()
 
 	var = {}
-        var['ht'] = ht
-        var['ht_pt30_eta4'] =ht_pt30_eta4
- 	var['ht_pt30_eta3'] =ht_pt30_eta3
-	var['vtx_size'] = vtx_size
- 	var['jet_size'] = jet_size 
-	var['jet_size_pt30_eta4'] = jet_size_pt30_eta4
-	var['jet_size_pt30_eta3'] = jet_size_pt30_eta3
-	var['z_pt'] = z_pt
+        var['genht_pt30_eta5'] =genht_pt30_eta5
+	var['npuVtx'] = npuVtx
+	var['genjet_size_pt30_eta5'] = genjet_size_pt30_eta5
+        var['z_pt'] = z_pt
 	var['met'] = met
 	var['met_p'] = met_p
 	var['met_t'] = met_t
