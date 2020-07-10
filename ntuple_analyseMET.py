@@ -22,6 +22,16 @@ def findZ(genparts):
 		return v
     return v
 
+def findRecoZ(leptons):
+    if leptons[0].charge()*leptons[1].charge() > 0:
+        return ROOT.TVector3(0,0,0)
+    v1= ROOT.TVector3(0,0,0)
+    v2= ROOT.TVector3(0,0,0)      
+    v1.SetPtEtaPhi(leptons[0].pt(), leptons[0].eta(), leptons[0].phi())
+    v2.SetPtEtaPhi(leptons[1].pt(), leptons[1].eta(), leptons[1].phi())
+    return v1+v2
+    
+
 def doSum(objs, ptCut, etaCut):
     s = 0
     for j in objs:
@@ -79,8 +89,7 @@ def main():
     ## create histo
     metHists = {}
     metHists['genht_pt30_eta5'] = createMetHist('genht_pt30_eta5', "H_{T} gen [GeV]", 50, 0, 500)
-    metHists['npuVtx'] = createMetHist('npuVtx', "npuVertices", 180, 0, 400)
-    metHists['genjet_size_pt30_eta5'] = createMetHist('genjet_size_pt30_eta5', "N_{genjet}", 15, 0, 15)
+    metHists['npuVtx'] = createMetHist('npuVtx', "npuVertices", 200, 100, 300)
     metHists['z_pt'] = createMetHist('z_pt', "p_{T}(Z) [GeV]", 150, 0, 150)
     metHists['met'] = createMetHist('met', "p_{T,miss} [GeV]", 300, 0, 300)
     metHists['met_p'] = createMetHist('met_p', "parallel p_{T,miss} [GeV]", 150, 0, 150)
@@ -88,7 +97,7 @@ def main():
     metHists['u_p'] = createMetHist('u_p', "u_{p} [GeV]", 150, 0, 150)
 
 
-    twodvarList=['genht_pt30_eta5','npuVtx','genjet_size_pt30_eta5']
+    twodvarList=['genht_pt30_eta5','npuVtx']
     varList = ['z_pt', 'met', 'met_p', 'met_t', 'u_p']
     varAllList = varList +twodvarList
     for v in varList:
@@ -105,12 +114,24 @@ def main():
             print '... processed {} events ...'.format(event.entry()+1)
 
 	tot_nevents += 1
-        genparts = event.genparticles()
         genjets = event.genjets()
         mets = event.metspuppi()
+	electrons = event.electrons()
+        muons = event.muons()
 
  	## studymet
-        z = findZ(genparts)
+ 	if len(electrons)>1: 
+	#   print " elec event "
+	   leptons = electrons
+	elif len(muons)>1: 
+	#   print " muon event "
+	   leptons = muons
+	else:
+	#   print " no dilep "
+	   continue
+ 	z3d = findRecoZ(leptons)	
+	z = ROOT.TVector2(0,0)
+	z.SetMagPhi(z3d.Pt(), z3d.Phi())
         z_pt = z.Mod()
 	if not (z_pt>0.00001): continue
 #  	ht = doSum(jets, 0., 5000.)
@@ -123,9 +144,6 @@ def main():
 	met_p = met_v.Proj(z).Mod()
 	met_t =	met_v.Norm(z).Mod()	
 	u_p = (z+met_v).Proj(z).Mod()
-#	jet_size_pt30_eta4 = doCount(jets, 30., 4.)
-#	jet_size_pt30_eta3 = doCount(jets, 30., 3.)
-#	jet_size = len(jets)
 	genjet_size_pt30_eta5 = doCount(genjets, 30., 5.)
 	vtx_size = event.vtxSize()
  	npuVtx = event.npuVertices()
@@ -134,7 +152,6 @@ def main():
 	var = {}
         var['genht_pt30_eta5'] =genht_pt30_eta5
 	var['npuVtx'] = npuVtx
-	var['genjet_size_pt30_eta5'] = genjet_size_pt30_eta5
         var['z_pt'] = z_pt
 	var['met'] = met
 	var['met_p'] = met_p
