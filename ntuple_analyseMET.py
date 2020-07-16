@@ -8,27 +8,28 @@ import itertools
 from array import array
 import math
 
-def findZ(genparts):
+def findZ(genparts, ptCut, etaCut):
     v= ROOT.TVector2(0, 0)
     for g in genparts:
         if abs(g.pid())==23: 
 	    d1 = g.d1()
 	    if d1<0: 
-#		print "d1 ", d1, " gd1 ", gd1
 		continue
 	    gd1 = genparts[d1]
- 	    if ( abs(gd1.pid())==11 or abs(gd1.pid()==13) ):
+ 	    if ( abs(gd1.pid())==11 or abs(gd1.pid()==13) ) and g.pt() > ptCut and abs(g.eta()) < etaCut :
 	        v.SetMagPhi(g.pt(),g.phi())
 		return v
     return v
 
-def findRecoZ(leptons):
+def findRecoZ(leptons, ptCut, etaCut, idCut, isoCut):
     if leptons[0].charge()*leptons[1].charge() > 0:
         return ROOT.TVector3(0,0,0)
     v1= ROOT.TVector3(0,0,0)
-    v2= ROOT.TVector3(0,0,0)      
-    v1.SetPtEtaPhi(leptons[0].pt(), leptons[0].eta(), leptons[0].phi())
-    v2.SetPtEtaPhi(leptons[1].pt(), leptons[1].eta(), leptons[1].phi())
+    v2= ROOT.TVector3(0,0,0)
+    if (leptons[0].pt() > ptCut and abs(leptons[0].eta()) <etaCut and leptons[0].idpass() > idCut and leptons[0].isopass() > isoCut  
+  	and leptons[1].pt() > ptCut and abs(leptons[1].eta()) <etaCut and leptons[1].idpass() > idCut and leptons[1].isopass() > isoCut) :
+    	v1.SetPtEtaPhi(leptons[0].pt(), leptons[0].eta(), leptons[0].phi())
+    	v2.SetPtEtaPhi(leptons[1].pt(), leptons[1].eta(), leptons[1].phi())
     return v1+v2
     
 
@@ -91,13 +92,14 @@ def main():
     metHists['genht_pt30_eta5'] = createMetHist('genht_pt30_eta5', "H_{T} gen [GeV]", 50, 0, 500)
     metHists['npuVtx'] = createMetHist('npuVtx', "npuVertices", 200, 100, 300)
     metHists['z_pt'] = createMetHist('z_pt', "p_{T}(Z) [GeV]", 150, 0, 150)
+    metHists['genz_pt'] = createMetHist('genz_pt', "p_{T}(gen Z) [GeV]", 150, 0, 150)
     metHists['met'] = createMetHist('met', "p_{T,miss} [GeV]", 300, 0, 300)
     metHists['met_p'] = createMetHist('met_p', "parallel p_{T,miss} [GeV]", 150, 0, 150)
     metHists['met_t'] = createMetHist('met_t', "transverse p_{T,miss} [GeV]", 150, 0, 150)
     metHists['u_p'] = createMetHist('u_p', "u_{p} [GeV]", 150, 0, 150)
 
 
-    twodvarList=['genht_pt30_eta5','npuVtx']
+    twodvarList=['genz_pt','genht_pt30_eta5','npuVtx']
     varList = ['z_pt', 'met', 'met_p', 'met_t', 'u_p']
     varAllList = varList +twodvarList
     for v in varList:
@@ -114,6 +116,7 @@ def main():
             print '... processed {} events ...'.format(event.entry()+1)
 
 	tot_nevents += 1
+	genparts = event.genparticles()
         genjets = event.genjets()
         mets = event.metspuppi()
 	electrons = event.electrons()
@@ -129,11 +132,14 @@ def main():
 	else:
 	#   print " no dilep "
 	   continue
- 	z3d = findRecoZ(leptons)	
+ 	z3d = findRecoZ(leptons, 15., 2., 0, 0)	
 	z = ROOT.TVector2(0,0)
 	z.SetMagPhi(z3d.Pt(), z3d.Phi())
         z_pt = z.Mod()
-	if not (z_pt>0.00001): continue
+	if not (z_pt>10.): continue
+        genz = findZ(genparts, 15., 2.)
+	genz_pt = genz.Mod()
+	if not (genz_pt>10.): continue
 #  	ht = doSum(jets, 0., 5000.)
 #	ht_pt30_eta4 = doSum(jets, 30., 4.)
 #	ht_pt30_eta3 = doSum(jets, 30., 3.)
@@ -153,6 +159,7 @@ def main():
         var['genht_pt30_eta5'] =genht_pt30_eta5
 	var['npuVtx'] = npuVtx
         var['z_pt'] = z_pt
+	var['genz_pt'] = genz_pt
 	var['met'] = met
 	var['met_p'] = met_p
 	var['met_t'] = met_t
