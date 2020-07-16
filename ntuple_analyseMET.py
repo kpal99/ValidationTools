@@ -90,13 +90,13 @@ def main():
     ## create histo
     metHists = {}
     metHists['genht_pt30_eta5'] = createMetHist('genht_pt30_eta5', "H_{T} gen [GeV]", 50, 0, 500)
-    metHists['npuVtx'] = createMetHist('npuVtx', "npuVertices", 200, 100, 300)
-    metHists['z_pt'] = createMetHist('z_pt', "p_{T}(Z) [GeV]", 150, 0, 150)
-    metHists['genz_pt'] = createMetHist('genz_pt', "p_{T}(gen Z) [GeV]", 150, 0, 150)
-    metHists['met'] = createMetHist('met', "p_{T,miss} [GeV]", 300, 0, 300)
-    metHists['met_p'] = createMetHist('met_p', "parallel p_{T,miss} [GeV]", 150, 0, 150)
-    metHists['met_t'] = createMetHist('met_t', "transverse p_{T,miss} [GeV]", 150, 0, 150)
-    metHists['u_p'] = createMetHist('u_p', "u_{p} [GeV]", 150, 0, 150)
+    metHists['npuVtx'] = createMetHist('npuVtx', "npuVertices", 100, 100, 300)
+    metHists['z_pt'] = createMetHist('z_pt', "p_{T}(Z) [GeV]", 75, 0, 150)
+    metHists['genz_pt'] = createMetHist('genz_pt', "p_{T}(gen Z) [GeV]", 75, 0, 150)
+    metHists['met'] = createMetHist('met', "p_{T,miss} [GeV]", 150, 0, 300)
+    metHists['met_p'] = createMetHist('met_p', "parallel p_{T,miss} [GeV]", 75, 0, 150)
+    metHists['met_t'] = createMetHist('met_t', "transverse p_{T,miss} [GeV]", 75, 0, 150)
+    metHists['u_p'] = createMetHist('u_p', "u_{p} [GeV]", 75, 0, 150)
 
 
     twodvarList=['genz_pt','genht_pt30_eta5','npuVtx']
@@ -104,7 +104,7 @@ def main():
     varAllList = varList +twodvarList
     for v in varList:
         for twodv in twodvarList:
-            metHists[v+'_VS_'+twodv] = ROOT.TProfile(v+'_VS_'+twodv, "", metHists[twodv].GetNbinsX(), 0, metHists[twodv].GetXaxis().GetBinUpEdge(metHists[twodv].GetNbinsX()))
+            metHists[v+'_VS_'+twodv] = ROOT.TProfile(v+'_VS_'+twodv, "", metHists[twodv].GetNbinsX(), metHists[twodv].GetXaxis().GetBinLowEdge(1), metHists[twodv].GetXaxis().GetBinUpEdge(metHists[twodv].GetNbinsX()))
 	    metHists[v+'_VS_'+twodv].GetXaxis().SetTitle(metHists[twodv].GetXaxis().GetTitle())
 	    metHists[v+'_VS_'+twodv].GetYaxis().SetTitle(metHists[v].GetXaxis().GetTitle())
 
