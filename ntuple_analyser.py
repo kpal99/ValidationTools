@@ -202,8 +202,15 @@ def main():
             "plotMassRange": [0, 500],
             "plotNObjRange_Delp": [0, 20],
             "plotNObjRange_Full": [0, 50],
-            "ids": [],  ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
-                        ## NOTE: only efficiency plots get anything with value [3] > 0
+            "ids": [
+		## ["nameforplot", numerator idpass threshold, numerator isopass threshold, denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
+                ## NOTE: only efficiency plots get anything with value [3] > 0
+                ["reco",-9,-9,0,"#varepsilon(reco)"],                         ## reco (eff, fakerate, response)
+                ["looseID",0,-9,0,"#varepsilon(reco)*#varepsilon(looseID)"], ## reco*ID (ID for fakerate)  
+                ["tightID",3,-9,0,"#varepsilon(reco)*#varepsilon(tightID)"],
+                ["looseIDifReco",0,-9,1,"#varepsilon(looseID)"],
+                ["tightIDifReco",3,-9,1,"#varepsilon(tightID)"],      ## IDs on reco-matched gen (eff only)
+		], 
             }
         if dumptcl: params["sliceSplit"] = 5
     elif obj == "photon": 
