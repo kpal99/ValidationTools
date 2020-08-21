@@ -141,8 +141,10 @@ def dostudy(path,suffix):
 		up_plus_qt_rms.Write()
 	outfile.Close()
 
-dostudy("/eos/user/w/wenyu/TDRFullsim_ntuple/DYToMuMuorEleEle_M-20_14TeV_pythia8/crab_DYToMuMuorEleEle_M-20_14TeV_pythia8_200PU/190807_164128/0000/*.root","fullsim")
-dostudy("/afs/cern.ch/user/e/eusai/DelphesNtuplizer/*.root","delphes")
+#dostudy("/eos/user/w/wenyu/TDRFullsim_ntuple/DYToMuMuorEleEle_M-20_14TeV_pythia8/crab_DYToMuMuorEleEle_M-20_14TeV_pythia8_200PU/190807_164128/0000/*.root","fullsim")
+dostudy("/eos/cms/store/group/upgrade/RTB/DelphesFlat_343pre01/DYToLL_M-50_TuneCP5_14TeV-pythia8_200PU.root","delphes")
+
+exit(0)
 
 f={}
 for i in ['fullsim','delphes']:
