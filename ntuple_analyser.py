@@ -155,12 +155,18 @@ def main():
                       help='max number of events [%default]',
                       default=500000,
                       type=int)
+    parser.add_option('--dumptcl',
+                      dest='dumptcl',
+                      help='use more bins for making tcl file?',
+                      action="store_true",
+                      default=False)
     (opt, args) = parser.parse_args()
 
 
     inFile = opt.inFile
     ntuple = Ntuple(inFile)
     maxEvents = opt.maxEvts
+    dumptcl = opt.dumptcl
 
     tot_nevents = 0
     tot_genpart = 0
@@ -206,6 +212,7 @@ def main():
                 ["tightIDifReco",3,-9,1,"#varepsilon(tightID)"],      ## IDs on reco-matched gen (eff only)
 		], 
             }
+        if dumptcl: params["sliceSplit"] = 5
     elif obj == "photon": 
         params = {
             "dR": 0.2,
@@ -231,6 +238,7 @@ def main():
                 ["tightIDifReco",3,-9,1,"#varepsilon(tightID)"],      ## IDs on reco-matched gen (eff only)
                 ],
             }
+        if dumptcl: params["sliceSplit"] = 5
     elif obj == "electron" or obj == "muon":
         params = {
             "dR": 0.2,
@@ -265,7 +273,8 @@ def main():
                 ["looseISOifRecoLooseID",0,0,2,"#varepsilon(looseISO given looseID)"], 
                 ["tightISOifRecoLooseID",0,14,2,"#varepsilon(tightISO given looseID)"] ## ISOs on reco+id-matched gen (eff only)
                 ], 
-            }                
+            }
+        if dumptcl: params["sliceSplit"] = 5                
     else: 
         print 'Physics object not recognized! Choose jetchs, jetpuppi, photon, electron, or muon.'            
         exit()
@@ -689,6 +698,7 @@ def main():
             if matchindex > -1:
                 p_tvectors.pop(matchindex)
                 p_idpass.pop(matchindex)
+                p_isopass.pop(matchindex)
 
             ## end of gen object loop
 
