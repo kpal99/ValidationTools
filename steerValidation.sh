@@ -7,10 +7,10 @@ DELPHESCARD="CMS_PhaseII_200PU_v04VAL.tcl"
 
 FULLSIMCAMP="Phase2HLTTDRWinter20RECOMiniAOD"
 #FULLSIMCAMP="PhaseIITDRSpring19MiniAOD"
-SAMPLE="QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8_200PU"
+SAMPLE="DYToLL_M-50_TuneCP5_14TeV-pythia8_200PU"
 
 WWWDIR=/eos/user/w/wenyu/www/delphes_validation
-CURDIR=20200423/jetchs
+CURDIR=20200820/met
 
 while getopts "o:s:" opt; do
     case "$opt" in
@@ -25,9 +25,18 @@ WORKDIR=${STORAGE}
 if [ -z ${WORKDIR} ]; then
     WORKDIR=${PWD}
 fi    
-PLOTDIR=plots
+PLOTDIR=plotsMet
 
 case ${COMMAND} in 
+
+    met)
+
+#      input=/eos/cms/store/group/upgrade/RTB/FullsimFlat_110X/DYToLL_M-50_14TeV_HLTTDRWinter20_200PU.root
+      input=/eos/cms/store/group/upgrade/RTB/DelphesFlat_343pre01/DYToLL_M-50_TuneCP5_14TeV-pythia8_200PU.root
+      output=histo_delp/val_met.root
+      python ntuple_analyseMET.py -i ${input} -o ${output} -p met --maxEvents -1
+
+    ;;
 
     jetpuppi)
 
@@ -73,7 +82,7 @@ case ${COMMAND} in
 
     plot)
 
-      python doPlot.py -d histo_delp/val_jetchs.root -f histo_full/val_jetchs.root -o ${PLOTDIR}
+      python doPlot.py -d histo_delp/val_met.root -f histo_full/val_met.root -o ${PLOTDIR}
 
       ;;
 
@@ -85,8 +94,8 @@ case ${COMMAND} in
       fi
 
       cp index.php ${POSTDIR}
-      cp ${WORKDIR}/${PLOTDIR}/jetchs*.png ${POSTDIR}
-      cp ${WORKDIR}/${PLOTDIR}/jetchs*.png ${POSTDIR}
+      cp ${WORKDIR}/${PLOTDIR}/*.png ${POSTDIR}
+      cp ${WORKDIR}/${PLOTDIR}/*.png ${POSTDIR}
 
       echo " " >> ${POSTDIR}/postlog.txt
       echo $(date) >> ${POSTDIR}/postlog.txt

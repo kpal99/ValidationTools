@@ -93,14 +93,14 @@ def main():
     metHists['npuVtx'] = createMetHist('npuVtx', "npuVertices", 100, 100, 300)
     metHists['z_pt'] = createMetHist('z_pt', "p_{T}(Z) [GeV]", 75, 0, 150)
     metHists['genz_pt'] = createMetHist('genz_pt', "p_{T}(gen Z) [GeV]", 75, 0, 150)
-    metHists['met'] = createMetHist('met', "p_{T,miss} [GeV]", 150, 0, 300)
+    metHists['met'] = createMetHist('met', "p_{T,miss} [GeV]", 75, 0, 150)
     metHists['met_p'] = createMetHist('met_p', "parallel p_{T,miss} [GeV]", 75, 0, 150)
     metHists['met_t'] = createMetHist('met_t', "transverse p_{T,miss} [GeV]", 75, 0, 150)
     metHists['u_p'] = createMetHist('u_p', "u_{p} [GeV]", 75, 0, 150)
-
+    metHists['u_t'] = createMetHist('u_t', "u_{t} [GeV]", 75, 0, 150)
 
     twodvarList=['genz_pt','genht_pt30_eta5','npuVtx']
-    varList = ['z_pt', 'met', 'met_p', 'met_t', 'u_p']
+    varList = ['z_pt', 'met', 'met_p', 'met_t', 'u_p', 'u_t']
     varAllList = varList +twodvarList
     for v in varList:
         for twodv in twodvarList:
@@ -150,13 +150,14 @@ def main():
 	met_p = met_v.Proj(z).Mod()
 	met_t =	met_v.Norm(z).Mod()	
 	u_p = (z+met_v).Proj(z).Mod()
+        u_t = (z+met_v).Norm(z).Mod()
 	genjet_size_pt30_eta5 = doCount(genjets, 30., 5.)
 	vtx_size = event.vtxSize()
  	npuVtx = event.npuVertices()
 	trueInt = event.trueInteractions()
 
 	var = {}
-        var['genht_pt30_eta5'] =genht_pt30_eta5
+        var['genht_pt30_eta5'] = genht_pt30_eta5
 	var['npuVtx'] = npuVtx
         var['z_pt'] = z_pt
 	var['genz_pt'] = genz_pt
@@ -164,6 +165,7 @@ def main():
 	var['met_p'] = met_p
 	var['met_t'] = met_t
  	var['u_p']= u_p
+        var['u_t']= u_t
 
 	for v in varAllList:
 	    metHists[v].Fill(var[v])
