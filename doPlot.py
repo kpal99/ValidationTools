@@ -142,8 +142,10 @@ for name in hist_names:
             hR.SetGraphDrawOpt("P E0 X0")
             hR.Draw("P E0")
             hR.GetLowerRefYaxis().SetTitle("delphes/fullsim")
-            hR.GetLowerRefGraph().SetMaximum(1.5)
+            hR.GetLowerRefGraph().SetMaximum(2.0)
+   	    hR.GetLowerRefGraph().SetMinimum(0.5)
             hR.GetLowerRefGraph().SetMarkerStyle(20)
+	    hR.GetUpperRefYaxis().SetRangeUser(hf.GetMinimum(), hf.GetMaximum())
             canv.Update()
         else:
             hf.Draw()
