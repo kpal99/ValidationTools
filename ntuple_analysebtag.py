@@ -63,8 +63,8 @@ def main():
     parser = optparse.OptionParser(usage)
     parser.add_option('-i', '--inFile',
                       dest='inFile',
-                      help='input file [%default]',  
-                      default='/eos/cms/store/group/upgrade/RTB/DelphesFlat_343pre01/TT_TuneCP5_14TeV_200PU.root',
+                      help='input file [%default]', # /eos/cms/store/group/upgrade/RTB/DelphesFlat_343pre01 
+                      default='/eos/cms/store/group/upgrade/RTB/FullsimFlat_110X/TT_TuneCP5_14TeV_200PU.root',
                       type='string')
     parser.add_option('-o', '--outFile',          
                       dest='outFile',       
@@ -79,7 +79,7 @@ def main():
     parser.add_option('--maxEvents',          
                       dest='maxEvts',
                       help='max number of events [%default]',
-                      default=50000,
+                      default=20000,
                       type=int)
     (opt, args) = parser.parse_args()
 
@@ -134,7 +134,7 @@ def main():
             break
         if (tot_nevents %1000) == 0 : # 1000
             print '... processed {} events ...'.format(event.entry()+1)
-
+	
 	tot_nevents += 1
 	genparts = event.genparticles()
         jets = event.jetspuppi()
@@ -146,7 +146,9 @@ def main():
 	    pVec = ROOT.TLorentzVector()
 	    pVec.SetPtEtaPhiM(p.pt(), p.eta(), p.phi(), p.mass())
 	    jetHadFlav = findHadronFlav(genparts, pVec, params['dR'])
-	    
+	   
+	    #print "pt ", p.pt(), " eta ", p.eta(), " HadFlav ", jetHadFlav, " btag ", p.btag() 
+
 	    if jetHadFlav == 5:
 		for quality in params["ids"]:
 		    isTagged = (p.btag() >= quality[1])
