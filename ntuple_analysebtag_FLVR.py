@@ -93,7 +93,7 @@ def main():
 
 
     params = {
-            "dR": 0.2,
+            "dR": 0.5,
             "ptMin": 20,
             "etaSlices": [[0, 1.5], [1.5, 2.5], [2.5, 4] ], ## use 1e5 as "Inf"
             "ptSlices": [[20, 50], [50, 100], [100, 1e5] ],
