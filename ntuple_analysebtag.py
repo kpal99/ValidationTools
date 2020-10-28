@@ -30,6 +30,27 @@ def findHadronFlav(genparts, jet, dR):
         return 4
     return 1 # any not 4 or 5 case  
 
+def findPartonFlav(genparts, jet, dR):
+
+    isbPar = False
+    iscPar = False
+    for g in genparts: # check if there exists one b-hadron
+        gVec = ROOT.TLorentzVector()
+        gVec.SetPtEtaPhiM(g.pt(), g.eta(), g.phi(), g.mass())
+        if jet.DeltaR(gVec) >= dR:
+            continue
+        if abs(g.pid()) == 5:
+            isbPar = True
+            break
+        if abs(g.pid()) == 4:
+            iscPar = True
+
+    if isbPar:
+        return 5
+    if iscPar:
+        return 4
+    return 1 # any not 4 or 5 case
+
 def doSum(objs, ptCut, etaCut):
     s = 0
     for j in objs:
@@ -145,11 +166,11 @@ def main():
 	    if p.pt() < params['ptMin']: continue
 	    pVec = ROOT.TLorentzVector()
 	    pVec.SetPtEtaPhiM(p.pt(), p.eta(), p.phi(), p.mass())
-	    jetHadFlav = findHadronFlav(genparts, pVec, params['dR'])
+	    jetParFlav = findPartonFlav(genparts, pVec, params['dR'])
 	   
 	    #print "pt ", p.pt(), " eta ", p.eta(), " HadFlav ", jetHadFlav, " btag ", p.btag() 
 
-	    if jetHadFlav == 5:
+	    if jetParFlav == 5:
 		for quality in params["ids"]:
 		    isTagged = (p.btag() >= quality[1])
 		    hists[obj+"_btagRate_to_eta_"+quality[0]].Fill(p.eta(), isTagged)
@@ -170,7 +191,7 @@ def main():
                             hists[obj+"_btagRate_to_pt_"+quality[0]+"_" + cutname].Fill(p.pt(), isTagged)
 
 
-	    elif jetHadFlav == 4:
+	    elif jetParFlav == 4:
                 for quality in params["ids"]:
                     isTagged = (p.btag() >= quality[1])
                     hists[obj+"_cMistagRate_to_eta_"+quality[0]].Fill(p.eta(), isTagged)
