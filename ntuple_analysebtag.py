@@ -100,12 +100,13 @@ def main():
     parser.add_option('--maxEvents',          
                       dest='maxEvts',
                       help='max number of events [%default]',
-                      default=20000,
+                      default=10000,
                       type=int)
     (opt, args) = parser.parse_args()
 
 
     inFile = opt.inFile
+    print inFile
     ntuple = Ntuple(inFile)
     maxEvents = opt.maxEvts
     tot_nevents = 0
@@ -114,18 +115,24 @@ def main():
 
 
     params = {
-            "dR": 0.2,
+            "dR": 0.5,
             "ptMin": 20,
             "etaSlices": [[0, 1.5], [1.5, 2.5], [2.5, 4] ], ## use 1e5 as "Inf"
-            "ptSlices": [[20, 50], [50, 100], [100, 1e5] ],
+            "ptSlices": [[20, 50], [50, 100], [100, 500] ],
             "sliceSplit": 1, # for 2D map, make N divisions of each slice
-            "plotPtRange": [0, 1500],
+            "plotPtRange": [0, 500],
             "plotEtaRange": [-5, 5],
 	    "ids": [
-	        ["looseID",1,"#varepsilon(looseID)"], # >= 
+	        ["looseID",1,"#varepsilon(looseID)"], # btag >= 1
 		["mediumID",3,"#varepsilon(mediumID)"], 
                 ["tightID",7,"#varepsilon(tightID)"],
+		],
+	    "bitids": [
+		["looseID",(1<<0),"#varepsilon(looseID)"], # btag & (1<<0)
+		["mediumID",(1<<1),"#varepsilon(mediumID)"],
+		["tightID",(1<<2),"#varepsilon(tightID)"],
 		]
+
     }
 
     ## create histo#
@@ -135,7 +142,7 @@ def main():
     for cut in ["nocut"]+params["etaSlices"]:
         hnames = ["btagRate_to_pt", "cMistagRate_to_pt", "lightMistagRate_to_pt"]
         for hname in hnames:
-            for quality in params["ids"]:
+            for quality in params["bitids"]:
                 newname = hname+"_"+quality[0]+"_"+ str(cut[0]) + "to" + str(cut[1])
                 newname = ((newname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
                 hists[obj+"_"+newname] = create2dHist(obj+"_"+newname,params,quality[2])
@@ -143,7 +150,7 @@ def main():
     for cut in ["nocut"]+params["ptSlices"]:
         hnames = ["btagRate_to_eta", "cMistagRate_to_eta", "lightMistagRate_to_eta"]
         for hname in hnames:
-            for quality in params["ids"]:
+            for quality in params["bitids"]:
                 newname = hname+"_"+quality[0]+"_"+ str(cut[0]) + "to" + str(cut[1])
                 newname = ((newname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
                 hists[obj+"_"+newname] = create2dHist(obj+"_"+newname,params,quality[2])
@@ -171,64 +178,64 @@ def main():
 	    #print "pt ", p.pt(), " eta ", p.eta(), " HadFlav ", jetHadFlav, " btag ", p.btag() 
 
 	    if jetParFlav == 5:
-		for quality in params["ids"]:
-		    isTagged = (p.btag() >= quality[1])
+		for quality in params["bitids"]:
+		    isTagged = int(bool(p.btag() & quality[1]))
 		    hists[obj+"_btagRate_to_eta_"+quality[0]].Fill(p.eta(), isTagged)
 	    	    hists[obj+"_btagRate_to_pt_"+quality[0]].Fill(p.pt(), isTagged)
 	        for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
                     if cut[0] <= p.pt() < cut[1]: 
- 			for quality in params["ids"]:
-                    	    isTagged = (p.btag() >= quality[1])
+ 			for quality in params["bitids"]:
+                    	    isTagged = int(bool(p.btag() & quality[1]))
 			    hists[obj+"_btagRate_to_eta_"+quality[0]+"_" + cutname].Fill(p.eta(), isTagged)
             	for cut in params["etaSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
                     if cut[0] < abs(p.eta()) <= cut[1]: 
-			for quality in params["ids"]:
-                            isTagged = (p.btag() >= quality[1])
+			for quality in params["bitids"]:
+                            isTagged = int(bool(p.btag() & quality[1]))
                             hists[obj+"_btagRate_to_pt_"+quality[0]+"_" + cutname].Fill(p.pt(), isTagged)
 
 
 	    elif jetParFlav == 4:
-                for quality in params["ids"]:
-                    isTagged = (p.btag() >= quality[1])
+                for quality in params["bitids"]:
+                    isTagged = int(bool(p.btag() & quality[1]))
                     hists[obj+"_cMistagRate_to_eta_"+quality[0]].Fill(p.eta(), isTagged)
                     hists[obj+"_cMistagRate_to_pt_"+quality[0]].Fill(p.pt(), isTagged)
                 for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
                     if cut[0] <= p.pt() < cut[1]:
-                        for quality in params["ids"]:
-                            isTagged = (p.btag() >= quality[1])
+                        for quality in params["bitids"]:
+                            isTagged = int(bool(p.btag() & quality[1]))
                             hists[obj+"_cMistagRate_to_eta_"+quality[0]+"_" + cutname].Fill(p.eta(), isTagged)
                 for cut in params["etaSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
                     if cut[0] < abs(p.eta()) <= cut[1]:
-                        for quality in params["ids"]:
-                            isTagged = (p.btag() >= quality[1])
+                        for quality in params["bitids"]:
+                            isTagged = int(bool(p.btag() & quality[1]))
                             hists[obj+"_cMistagRate_to_pt_"+quality[0]+"_" + cutname].Fill(p.pt(), isTagged)	         
 
 	    else:
-		for quality in params["ids"]:
-                    isTagged = (p.btag() >= quality[1])
+		for quality in params["bitids"]:
+                    isTagged = int(bool(p.btag() & quality[1]))
                     hists[obj+"_lightMistagRate_to_eta_"+quality[0]].Fill(p.eta(), isTagged)
                     hists[obj+"_lightMistagRate_to_pt_"+quality[0]].Fill(p.pt(), isTagged)
                 for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
                     if cut[0] <= p.pt() < cut[1]:
-                        for quality in params["ids"]:
-                            isTagged = (p.btag() >= quality[1])
+                        for quality in params["bitids"]:
+                            isTagged = int(bool(p.btag() & quality[1]))
                             hists[obj+"_lightMistagRate_to_eta_"+quality[0]+"_" + cutname].Fill(p.eta(), isTagged)
                 for cut in params["etaSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
                     if cut[0] < abs(p.eta()) <= cut[1]:
-                        for quality in params["ids"]:
-                            isTagged = (p.btag() >= quality[1])
+                        for quality in params["bitids"]:
+                            isTagged = int(bool(p.btag() & quality[1]))
                             hists[obj+"_lightMistagRate_to_pt_"+quality[0]+"_" + cutname].Fill(p.pt(), isTagged)
 
     outputF.cd()
