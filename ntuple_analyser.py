@@ -17,11 +17,11 @@ pdgid = {
     
 }
 def createHist(opt, varname, params):
-    if "pt" in varname:
+    if "pt" in varname and "resolution" not in varname:
         h = ROOT.TH1D(varname, "", 50, params["plotPtRange"][0], params["plotPtRange"][1])
         h.GetXaxis().SetTitle("p_{T} [GeV]")
         h.GetYaxis().SetTitle("N")
-    if "eta" in varname:
+    if "eta" in varname and "resolution" not in varname:
         h = ROOT.TH1D(varname, "", 50, params["plotEtaRange"][0], params["plotEtaRange"][1])
         h.GetXaxis().SetTitle("#eta")
         h.GetYaxis().SetTitle("N")
@@ -37,6 +37,12 @@ def createHist(opt, varname, params):
         h = ROOT.TH1D(varname, "", 20, 0, 20)
         h.GetXaxis().SetTitle("id pass")
         h.GetYaxis().SetTitle("N")
+
+    if "resolution" in varname:
+        h = ROOT.TH1D(varname, "", 100,params["plotResoRange"][0], params["plotResoRange"][1])
+        h.GetXaxis().SetTitle("p_{T}^{reco} / p_{T}^{gen}")
+        h.GetYaxis().SetTitle("N")
+
     if "multi" in varname:
         if "full" in opt.outFile:
             h = ROOT.TH1D(varname, "", params["plotNObjRange_Full"][1], params["plotNObjRange_Full"][0], params["plotNObjRange_Full"][1]) 
@@ -202,15 +208,16 @@ def main():
             "plotMassRange": [0, 500],
             "plotNObjRange_Delp": [0, 20],
             "plotNObjRange_Full": [0, 50],
+            "plotResoRange": [0, 2],
             "ids": [
-		## ["nameforplot", numerator idpass threshold, numerator isopass threshold, denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
+                ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
                 ## NOTE: only efficiency plots get anything with value [3] > 0
                 ["reco",-9,-9,0,"#varepsilon(reco)"],                         ## reco (eff, fakerate, response)
                 ["looseID",0,-9,0,"#varepsilon(reco)*#varepsilon(looseID)"], ## reco*ID (ID for fakerate)  
                 ["tightID",3,-9,0,"#varepsilon(reco)*#varepsilon(tightID)"],
                 ["looseIDifReco",0,-9,1,"#varepsilon(looseID)"],
                 ["tightIDifReco",3,-9,1,"#varepsilon(tightID)"],      ## IDs on reco-matched gen (eff only)
-		], 
+                ], 
             }
         if dumptcl: params["sliceSplit"] = 5
     elif obj == "photon": 
@@ -227,6 +234,7 @@ def main():
             "plotMassRange": [-1, 1],
             "plotNObjRange_Delp": [0, 4],
             "plotNObjRange_Full": [0, 4],
+            "plotResoRange": [0.8, 1.2],
             "ids": [  
                 ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, 
                 ##  denominator: 0(all)/1(reco matched)/2(reco+id), "x-axis label"]
@@ -253,6 +261,7 @@ def main():
             "plotMassRange": [-1, 1],
             "plotNObjRange_Delp": [0, 8],
             "plotNObjRange_Full": [0, 8],
+            "plotResoRange": [0.8, 1.2],
             "ids": [  
                 ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, 
                 ##  denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
@@ -313,6 +322,22 @@ def main():
                 newname = ((newname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
                 hists[obj+"_"+newname] = createHist(opt, obj+"_"+newname,params)
 
+    ### book resolution histograms here:
+    for ptbin in params["ptSlices"]:
+        for etabin in params["etaSlices"]:
+            
+            if len(params["ids"]) == 0:
+                hname = "resolution_pt_{}_{}_eta_{}_{}".format(ptbin[0],  ptbin[1], etabin[0], etabin[1])
+                hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
+                hists[obj+"_"+hname] = createHist(opt, obj+"_"+hname,params)
+                print obj+"_"+hname
+            else:
+                for quality in params["ids"]:
+                    if quality[3] > 0: continue
+                    hname = "{}_resolution_pt_{}_{}_eta_{}_{}".format(quality[0], ptbin[0],  ptbin[1], etabin[0], etabin[1])
+                    hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
+                    hists[obj+"_"+hname] = createHist(opt, obj+"_"+hname,params)
+
     for cut in ["nocut"]+params["etaSlices"]:
         hnames = ["efficiency_to_pt", "ptresponse_to_pt", "fakerate_to_pt"]
         for hname in hnames:
@@ -359,7 +384,7 @@ def main():
     for event in ntuple:
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
-        if (tot_nevents %1000) == 0 :
+        if (tot_nevents %10) == 0 :
             print '... processed {} events ...'.format(event.entry()+1)
 
         tot_nevents += 1
@@ -376,13 +401,13 @@ def main():
         #tot_jetAK8 += len(event.jetsAK8())
 
         ## Set the reco and generated object collections
-	if obj=="jetpuppi":
+        if obj=="jetpuppi":
             recoobjs = event.jetspuppi()
             genobjs = event.genjets()
-	elif obj=="jetchs":
+        elif obj=="jetchs":
             recoobjs = event.jetschs()
             genobjs = event.genjets()
-	elif obj == "photon": 
+        elif obj == "photon": 
             recoobjs = event.gammas()
             genobjs = event.genparticles()
         elif obj == "electron":
@@ -404,7 +429,7 @@ def main():
                     if quality[3] == 0: multiplicity[cutname+"_"+quality[0]] = 0                    
             else: multiplicity[cutname] = 0
 
-	p_tvectors = []
+        p_tvectors = []
         p_idpass = []
         p_isopass = []
 
@@ -531,6 +556,8 @@ def main():
             # else:
             #     if printgen: print "gen muon:",g.pt(),g.eta(),g.phi(),minDR
 
+            #print "gen muon:",g.pt(),g.eta(),g.phi(),minDR
+
             ## Work with only matched pairs first:
             if match == 1:
                 
@@ -543,28 +570,46 @@ def main():
                             hists[obj+"_matched_eta_"+quality[0]].Fill(p_tvectors[matchindex].Eta())
                             hists[obj+"_matched_phi_"+quality[0]].Fill(p_tvectors[matchindex].Phi())
                             hists[obj+"_matched_mass_"+quality[0]].Fill(p_tvectors[matchindex].M())
-			    hists[obj+"_matched_idpass_"+quality[0]].Fill(p_idpass[matchindex])
+                            hists[obj+"_matched_idpass_"+quality[0]].Fill(p_idpass[matchindex])
+
                 else:
                     hists[obj+"_matched_pt"].Fill(p_tvectors[matchindex].Pt())
                     hists[obj+"_matched_eta"].Fill(p_tvectors[matchindex].Eta())
                     hists[obj+"_matched_phi"].Fill(p_tvectors[matchindex].Phi())
                     hists[obj+"_matched_mass"].Fill(p_tvectors[matchindex].M())
-		    hists[obj+"_matched_idpass"].Fill(p_idpass[matchindex]) 
+                    hists[obj+"_matched_idpass"].Fill(p_idpass[matchindex]) 
                 hists["gen"+obj+"_matched_pt"].Fill(g.pt())
                 hists["gen"+obj+"_matched_eta"].Fill(g.eta())
                 hists["gen"+obj+"_matched_phi"].Fill(g.phi())
                 hists["gen"+obj+"_matched_mass"].Fill(g.mass())
-	
-                ## Fill ptresponse hists                
+        
+                ## Fill ptresponse hists and resolution plots              
                 if len(params["ids"]) > 0:
                     for quality in params["ids"]:
                         if quality[3] >= 1: continue
                         if p_idpass[matchindex] > quality[1] and p_isopass[matchindex] > quality[2]:
                             hists[obj+"_ptresponse_to_eta_"+quality[0]].Fill(g.eta(), p_tvectors[matchindex].Pt()/g.pt())
                             hists[obj+"_ptresponse_to_pt_"+quality[0]].Fill(g.pt(), p_tvectors[matchindex].Pt()/g.pt())
+
+                            ## here fill resolution 
+                            for ptbin in params["ptSlices"]:
+                                for etabin in params["etaSlices"]:
+                                    if g.pt() > ptbin[0] and g.pt() < ptbin[1] and abs(g.eta()) > etabin[0] and abs(g.eta()) < etabin[1] :
+                                        hname = "{}_resolution_pt_{}_{}_eta_{}_{}".format(quality[0], ptbin[0],  ptbin[1], etabin[0], etabin[1])
+                                        hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
+                                        hists[obj+"_"+hname].Fill(p_tvectors[matchindex].Pt()/g.pt())
+
                 else:
                     hists[obj+"_ptresponse_to_eta"].Fill(g.eta(), p_tvectors[matchindex].Pt()/g.pt())
                     hists[obj+"_ptresponse_to_pt"].Fill(g.pt(), p_tvectors[matchindex].Pt()/g.pt())
+
+                    for ptbin in params["ptSlices"]:
+                        for etabin in params["etaSlices"]:
+                            if g.pt() > ptbin[0] and g.pt() < ptbin[1] and abs(g.eta()) > etabin[0] and abs(g.eta()) < etabin[1] :
+
+                                hname = "resolution_pt_{}_{}_eta_{}_{}".format(ptbin[0],  ptbin[1], etabin[0], etabin[1])
+                                hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
+                                hists[obj+"_"+hname].Fill(g.pt(), p_tvectors[matchindex].Pt()/g.pt())
 
                 for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
