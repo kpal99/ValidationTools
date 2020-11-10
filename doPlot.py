@@ -126,8 +126,11 @@ for name in hist_names:
     canv = rt.TCanvas(canv_name, canv_name, 900, 600)
     hd = inputFile_d.Get(name)
     hf = inputFile_f.Get(name)
-    test = hf.Integral()
-    if test == 0: continue
+    try:
+        test = hf.Integral()
+        if test == 0: continue
+    except:
+        continue
 
 
     if 'resolution' in name:
@@ -232,6 +235,9 @@ for name in hist_names:
             hR.Draw("P E0")
             hR.GetLowerRefYaxis().SetTitle("delphes/fullsim")
             hR.GetLowerRefGraph().SetMaximum(1.5)
+            if 'efficiency' in name or 'fake' in name or 'nonprompt' in name:
+                hR.GetUpperRefYaxis().SetRangeUser(0,1)
+            else: hR.GetUpperRefYaxis().SetRangeUser(0,max(hd.GetMaximum(),hf.GetMaximum())*1.1)
             hR.GetLowerRefGraph().SetMarkerStyle(20)
             canv.Update()
         else:
