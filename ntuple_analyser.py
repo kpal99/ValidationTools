@@ -21,29 +21,33 @@ def createHist(opt, varname, params):
         h = TH1D(varname, "", 50, params["plotPtRange"][0], params["plotPtRange"][1])
         h.GetXaxis().SetTitle("p_{T} [GeV]")
         h.GetYaxis().SetTitle("N")
-    if "eta" in varname and "resolution" not in varname:
+    elif "eta" in varname and "resolution" not in varname:
         h = TH1D(varname, "", 50, params["plotEtaRange"][0], params["plotEtaRange"][1])
         h.GetXaxis().SetTitle("#eta")
         h.GetYaxis().SetTitle("N")
-    if "phi" in varname:
+    elif "phi" in varname:
         h = TH1D(varname, "", 50, params["plotPhiRange"][0], params["plotPhiRange"][1])
         h.GetXaxis().SetTitle("#phi")
         h.GetYaxis().SetTitle("N")
-    if "mass" in varname:
+    elif "mass" in varname:
         h = TH1D(varname, "", 50, params["plotMassRange"][0], params["plotMassRange"][1])
         h.GetXaxis().SetTitle("mass [GeV]")
         h.GetYaxis().SetTitle("N")
-    if "idpass" in varname:
+    elif "idpass" in varname:
         h = TH1D(varname, "", 20, 0, 20)
-        h.GetXaxis().SetTitle("id pass")
+        h.GetXaxis().SetTitle("ID bit value")
+        h.GetYaxis().SetTitle("N")
+    elif "isopass" in varname:
+        h = TH1D(varname, "", 20, 0, 20)
+        h.GetXaxis().SetTitle("isolation bit value")
         h.GetYaxis().SetTitle("N")
 
-    if "resolution" in varname:
+    elif "resolution" in varname:
         h = TH1D(varname, "", 100,params["plotResoRange"][0], params["plotResoRange"][1])
         h.GetXaxis().SetTitle("p_{T}^{reco} / p_{T}^{gen}")
         h.GetYaxis().SetTitle("N")
 
-    if "multi" in varname:
+    elif "multi" in varname:
         if "full" in opt.outFile:
             h = TH1D(varname, "", params["plotNObjRange_Full"][1], params["plotNObjRange_Full"][0], params["plotNObjRange_Full"][1]) 
         else:
@@ -230,7 +234,7 @@ def main():
             "ids": [
                 ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
                 ## NOTE: only efficiency plots get anything with value [3] > 0
-                ## Loose is bit 0, Medium is bit 1, Tight is bit 2, -1 is nothing
+                ## Loose is bit 0, Medium is bit 1, Tight is bit 2, -1 is nothing                
                 ["reco",-1,-1,0,"#varepsilon(reco)"],                         ## reco (eff, fakerate, response)
                 ["looseID",0,-1,0,"#varepsilon(reco)*#varepsilon(looseID)"], ## reco*ID (ID for fakerate)  
                 ["tightID",2,-1,0,"#varepsilon(reco)*#varepsilon(tightID)"],
@@ -253,6 +257,7 @@ def main():
             "plotMassRange": [-1, 1],
             "plotNObjRange_Delp": [0, 4],
             "plotNObjRange_Full": [0, 4],
+            "plotResoRange": [0, 2],
             "ids": [  
                 ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, 
                 ##  denominator: 0(all)/1(reco matched)/2(reco+id), "x-axis label"]
@@ -261,8 +266,16 @@ def main():
                 ["reco",-1,-1,0,"#varepsilon(reco)"],                         ## reco (eff, fakerate, response)
                 ["looseID",0,-1,0,"#varepsilon(reco)*#varepsilon(looseID)"], ## reco*ID (ID for fakerate)  
                 ["tightID",2,-1,0,"#varepsilon(reco)*#varepsilon(tightID)"],
+                ["looseISO",-1,0,0,"#varepsilon(reco)*#varepsilon(looseISO)"],   ## reco*ISO (ISO for fakerate) 
+                ["tightISO",-1,2,0,"#varepsilon(reco)*#varepsilon(tightISO)"],
+                ["looseIDISO",0,0,0,"#varepsilon(reco)*#varepsilon(looseID)*#varepsilon(looseISO)"], ## reco*ID*ISOs (ID+ISO for fakerate)
+                ["tightIDISO",2,2,0,"#varepsilon(reco)*#varepsilon(tightID)*#varepsilon(tightISO)"], 
                 ["looseIDifReco",0,-1,1,"#varepsilon(looseID)"], 
                 ["tightIDifReco",2,-1,1,"#varepsilon(tightID)"],      ## IDs on reco-matched gen (eff only)
+                ["looseISOifReco",-1,0,1,"#varepsilon(looseISO)"], 
+                ["tightISOifReco",-1,2,1,"#varepsilon(tightISO)"],   ## ISOs on reco-matched gen (eff only) 
+                ["looseIDISOifReco",0,0,1,"#varepsilon(looseID)*#varepsilon(looseISO)"], 
+                ["tightIDISOifReco",2,2,1,"#varepsilon(tightID)*#varepsilon(tightISO)"], ## ID+ISOs on reco-matched gen (eff only)
                 ],
             }
         if dumptcl: params["sliceSplit"] = 5
@@ -280,27 +293,27 @@ def main():
             "plotMassRange": [-1, 1],
             "plotNObjRange_Delp": [0, 8],
             "plotNObjRange_Full": [0, 8],
+            "plotResoRange": [0, 2],
             "ids": [  
                 ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, 
                 ##  denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
                 ## NOTE: only efficiency plots get anything with value [3] > 0 
-                ## ID: Loose is bit 0, Medium is bit 1, Tight is bit 2, -1 is nothing
-                ## ISO: Tight < 0.1 is bit 0, Loose < 0.4 is bit 3, -1 is nothing
+                ## Loose is bit 0, Medium is bit 1, Tight is bit 2, -1 is nothing
                 ["reco",-1,-1,0,"#varepsilon(reco)"],                         ## reco (eff, fakerate, response)
                 ["looseID",0,-1,0,"#varepsilon(reco)*#varepsilon(looseID)"], ## reco*ID (ID for fakerate)  
                 ["tightID",2,-1,0,"#varepsilon(reco)*#varepsilon(tightID)"],
-                ["looseISO",-1,3,0,"#varepsilon(reco)*#varepsilon(looseISO)"],   ## reco*ISO (ISO for fakerate) 
-                ["tightISO",-1,0,0,"#varepsilon(reco)*#varepsilon(tightISO)"],
-                ["looseIDISO",0,3,0,"#varepsilon(reco)*#varepsilon(looseID)*#varepsilon(looseISO)"], ## reco*ID*ISOs (ID+ISO for fakerate)
-                ["tightIDISO",2,0,0,"#varepsilon(reco)*#varepsilon(tightID)*#varepsilon(tightISO)"], 
+                ["looseISO",-1,0,0,"#varepsilon(reco)*#varepsilon(looseISO)"],   ## reco*ISO (ISO for fakerate) 
+                ["tightISO",-1,2,0,"#varepsilon(reco)*#varepsilon(tightISO)"],
+                ["looseIDISO",0,0,0,"#varepsilon(reco)*#varepsilon(looseID)*#varepsilon(looseISO)"], ## reco*ID*ISOs (ID+ISO for fakerate)
+                ["tightIDISO",2,2,0,"#varepsilon(reco)*#varepsilon(tightID)*#varepsilon(tightISO)"], 
                 ["looseIDifReco",0,-1,1,"#varepsilon(looseID)"], 
                 ["tightIDifReco",2,-1,1,"#varepsilon(tightID)"],      ## IDs on reco-matched gen (eff only)
-                ["looseISOifReco",-1,3,1,"#varepsilon(looseISO)"], 
-                ["tightISOifReco",-1,0,1,"#varepsilon(tightISO)"],   ## ISOs on reco-matched gen (eff only) 
-                ["looseIDISOifReco",0,3,1,"#varepsilon(looseID)*#varepsilon(looseISO)"], 
-                ["tightIDISOifReco",2,0,1,"#varepsilon(tightID)*#varepsilon(tightISO)"], ## ID+ISOs on reco-matched gen (eff only)
-                ["looseISOifRecoLooseID",0,3,2,"#varepsilon(looseISO given looseID)"], 
-                ["tightISOifRecoLooseID",0,0,2,"#varepsilon(tightISO given looseID)"] ## ISOs on reco+id-matched gen (eff only)
+                ["looseISOifReco",-1,0,1,"#varepsilon(looseISO)"], 
+                ["tightISOifReco",-1,2,1,"#varepsilon(tightISO)"],   ## ISOs on reco-matched gen (eff only) 
+                ["looseIDISOifReco",0,0,1,"#varepsilon(looseID)*#varepsilon(looseISO)"], 
+                ["tightIDISOifReco",2,2,1,"#varepsilon(tightID)*#varepsilon(tightISO)"], ## ID+ISOs on reco-matched gen (eff only)
+                ["looseISOifRecoLooseID",0,0,2,"#varepsilon(looseISO given looseID)"], 
+                ["tightISOifRecoLooseID",0,2,2,"#varepsilon(tightISO given looseID)"] ## ISOs on reco+id-matched gen (eff only)
                 ], 
             }
         if obj == 'electron': 
@@ -313,7 +326,7 @@ def main():
 
     ## BOOK HISTOGRAMS
     hists = {} 
-    hnames = ["pt", "eta", "phi", "mass", "idpass"]
+    hnames = ["pt", "eta", "phi", "mass", "idpass", "isopass"]
     for hname in hnames:
         if hname == "idpass": continue
         hists["gen"+obj+"_"+hname] = createHist(opt, "gen"+obj+"_"+hname,params)
@@ -406,7 +419,7 @@ def main():
     for event in ntuple:
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
-        if (tot_nevents %10) == 0 :
+        if (tot_nevents %1000) == 0 :
             print '... processed {} events ...'.format(event.entry()+1)
 
         tot_nevents += 1
@@ -464,10 +477,15 @@ def main():
         for p in recoobjs:
             if abs(p.eta()) > 5 or p.pt() < params["ptMin"] : continue
 
-            ## jets don't have the isopass method
-            isopass = -1
+            ## jets don't have the isopass method            
+            ## Dummy value is 1111 = 8+4+2+1 = 15
+            isopass = 15   
             try: isopass = p.isopass() 
             except: pass
+
+            ## If this is fullsim, for electrons and photons we want isopass = 1111
+            if (obj == 'photon' or obj == 'electron') and 'full' in opt.outFile: 
+                isopass = 15
 
             ## Fill reco object hists
             if len(params["ids"]) > 0:
@@ -479,12 +497,14 @@ def main():
                         hists[obj+"_phi_"+quality[0]].Fill(p.phi())
                         hists[obj+"_mass_"+quality[0]].Fill(p.mass())
                         hists[obj+"_idpass_"+quality[0]].Fill(p.idpass())
+                        hists[obj+"_isopass_"+quality[0]].Fill(isopass)
             else:
                 hists[obj+"_pt"].Fill(p.pt())
                 hists[obj+"_eta"].Fill(p.eta())
                 hists[obj+"_phi"].Fill(p.phi())
                 hists[obj+"_mass"].Fill(p.mass())
                 hists[obj+"_idpass"].Fill(p.idpass())
+                hists[obj+"_isopass"].Fill(isopass)
 
 
             if obj == "jet" and p.pt() < 25 : continue  # for jets
