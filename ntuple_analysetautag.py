@@ -201,7 +201,6 @@ def main():
         tot_nevents += 1
         genparts = event.genparticles()
         taus = event.taus()
-        electrons = event.electrons()
 
         # studymet
 
