@@ -439,9 +439,11 @@ def main():
 	if obj=="jetpuppi":
             recoobjs = event.jetspuppi()
             genobjs = event.genjets()
+	    fakeobjs = event.jetspuppi()	
 	elif obj=="jetchs":
             recoobjs = event.jetschs()
             genobjs = event.genjets()
+	    fakeobjs = event.jetschs()
 	elif obj == "photon": 
             recoobjs = event.gammas()
             genobjs = event.genparticles()
