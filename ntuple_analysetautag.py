@@ -67,7 +67,6 @@ def findTauFlav(genparts, tau, dR):
         if abs(g.pid()) == 11:
             isElec = True
     if isTau:
-
         return 15
     elif isElec:
         return 11
@@ -172,24 +171,17 @@ def main():
                   "elecMistagRate_to_pt", "lightMistagRate_to_pt"]
         for hname in hnames:
             for quality in params["bitids"]:
-                newname = hname+"_"+quality[0]+"_" + \
-                    str(cut[0]) + "to" + str(cut[1])
-                newname = ((newname.replace('.', 'p')).replace(
-                    '100000p0', 'Inf')).replace('_ntoo', '')
-                hists[obj+"_" +
-                      newname] = create2dHist(obj+"_"+newname, params, quality[2])
+                newname = hname+"_"+quality[0]+"_" + str(cut[0]) + "to" + str(cut[1])
+                newname = ((newname.replace('.', 'p')).replace('100000p0', 'Inf')).replace('_ntoo', '')
+                hists[obj+"_" + newname] = create2dHist(obj+"_"+newname, params, quality[2])
 
     for cut in ["nocut"]+params["ptSlices"]:
-        hnames = ["tautagRate_to_eta",
-                  "elecMistagRate_to_eta", "lightMistagRate_to_eta"]
+        hnames = ["tautagRate_to_eta", "elecMistagRate_to_eta", "lightMistagRate_to_eta"]
         for hname in hnames:
             for quality in params["bitids"]:
-                newname = hname+"_"+quality[0]+"_" + \
-                    str(cut[0]) + "to" + str(cut[1])
-                newname = ((newname.replace('.', 'p')).replace(
-                    '100000p0', 'Inf')).replace('_ntoo', '')
-                hists[obj+"_" +
-                      newname] = create2dHist(obj+"_"+newname, params, quality[2])
+                newname = hname+"_"+quality[0]+"_" + str(cut[0]) + "to" + str(cut[1])
+                newname = ((newname.replace('.', 'p')).replace('100000p0', 'Inf')).replace('_ntoo', '')
+                hists[obj+"_" + newname] = create2dHist(obj+"_"+newname, params, quality[2])
 
     # study
     for event in ntuple:
@@ -214,80 +206,62 @@ def main():
             if tauFlav == 15:
                 for quality in params["bitids"]:
                     isTagged = int(bool(p.isopass() & quality[1]))
-                    hists[obj+"_tautagRate_to_eta_" +
-                          quality[0]].Fill(p.eta(), isTagged)
-                    hists[obj+"_tautagRate_to_pt_" +
-                          quality[0]].Fill(p.pt(), isTagged)
+                    hists[obj+"_tautagRate_to_eta_" + quality[0]].Fill(p.eta(), isTagged)
+                    hists[obj+"_tautagRate_to_pt_" + quality[0]].Fill(p.pt(), isTagged)
                 for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
+                    cutname = (cutname.replace('.', 'p')).replace('100000p0', 'Inf')
                     if cut[0] <= p.pt() < cut[1]:
                         for quality in params["bitids"]:
                             isTagged = int(bool(p.isopass() & quality[1]))
-                            hists[obj+"_tautagRate_to_eta_"+quality[0] +
-                                  "_" + cutname].Fill(p.eta(), isTagged)
+                            hists[obj+"_tautagRate_to_eta_"+quality[0] + "_" + cutname].Fill(p.eta(), isTagged)
                 for cut in params["etaSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
+                    cutname = (cutname.replace('.', 'p')).replace('100000p0', 'Inf')
                     if cut[0] < abs(p.eta()) <= cut[1]:
                         for quality in params["bitids"]:
                             isTagged = int(bool(p.isopass() & quality[1]))
-                            hists[obj+"_tautagRate_to_pt_"+quality[0] +
-                                  "_" + cutname].Fill(p.pt(), isTagged)
+                            hists[obj+"_tautagRate_to_pt_"+quality[0] + "_" + cutname].Fill(p.pt(), isTagged)
 
             if tauFlav == 11:
                 for quality in params["bitids"]:
                     isTagged = int(bool(p.isopass() & quality[1]))
-                    hists[obj+"_elecMistagRate_to_eta_" +
-                          quality[0]].Fill(p.eta(), isTagged)
-                    hists[obj+"_elecMistagRate_to_pt_" +
-                          quality[0]].Fill(p.pt(), isTagged)
+                    hists[obj+"_elecMistagRate_to_eta_" + quality[0]].Fill(p.eta(), isTagged)
+                    hists[obj+"_elecMistagRate_to_pt_" + quality[0]].Fill(p.pt(), isTagged)
                 for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
+                    cutname = (cutname.replace('.', 'p')).replace('100000p0', 'Inf')
                     if cut[0] <= p.pt() < cut[1]:
                         for quality in params["bitids"]:
                             isTagged = int(bool(p.isopass() & quality[1]))
-                            hists[obj+"_elecMistagRate_to_eta_"+quality[0] +
-                                  "_" + cutname].Fill(p.eta(), isTagged)
+                            hists[obj+"_elecMistagRate_to_eta_"+quality[0] + "_" + cutname].Fill(p.eta(), isTagged)
                 for cut in params["etaSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
+                    cutname = (cutname.replace('.', 'p')).replace('100000p0', 'Inf')
                     if cut[0] < abs(p.eta()) <= cut[1]:
                         for quality in params["bitids"]:
                             isTagged = int(bool(p.isopass() & quality[1]))
-                            hists[obj+"_elecMistagRate_to_pt_"+quality[0] +
-                                  "_" + cutname].Fill(p.pt(), isTagged)
+                            hists[obj+"_elecMistagRate_to_pt_"+quality[0] + "_" + cutname].Fill(p.pt(), isTagged)
 
             if tauFlav == 1:
                 for quality in params["bitids"]:
                     isTagged = int(bool(p.isopass() & quality[1]))
-                    hists[obj+"_lightMistagRate_to_eta_" +
-                          quality[0]].Fill(p.eta(), isTagged)
-                    hists[obj+"_lightMistagRate_to_pt_" +
-                          quality[0]].Fill(p.pt(), isTagged)
+                    hists[obj+"_lightMistagRate_to_eta_" + quality[0]].Fill(p.eta(), isTagged)
+                    hists[obj+"_lightMistagRate_to_pt_" + quality[0]].Fill(p.pt(), isTagged)
                 for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
+                    cutname = (cutname.replace('.', 'p')).replace('100000p0', 'Inf')
                     if cut[0] <= p.pt() < cut[1]:
                         for quality in params["bitids"]:
                             isTagged = int(bool(p.isopass() & quality[1]))
-                            hists[obj+"_lightMistagRate_to_eta_"+quality[0] +
-                                  "_" + cutname].Fill(p.eta(), isTagged)
+                            hists[obj+"_lightMistagRate_to_eta_"+quality[0] + "_" + cutname].Fill(p.eta(), isTagged)
                 for cut in params["etaSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
+                    cutname = (cutname.replace('.', 'p')).replace('100000p0', 'Inf')
                     if cut[0] < abs(p.eta()) <= cut[1]:
                         for quality in params["bitids"]:
                             isTagged = int(bool(p.isopass() & quality[1]))
-                            hists[obj+"_lightMistagRate_to_pt_"+quality[0] +
-                                  "_" + cutname].Fill(p.pt(), isTagged)
+                            hists[obj+"_lightMistagRate_to_pt_"+quality[0] +"_" + cutname].Fill(p.pt(), isTagged)
 
     outputF.cd()
     for h in hists.keys():
