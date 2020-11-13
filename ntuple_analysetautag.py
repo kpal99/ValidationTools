@@ -8,51 +8,6 @@ import itertools
 from array import array
 import math
 
-
-def findHadronFlav(genparts, jet, dR):
-
-    isbHad = False
-    iscHad = False
-    for g in genparts:  # check if there exists one b-hadron
-        gVec = ROOT.TLorentzVector()
-        gVec.SetPtEtaPhiM(g.pt(), g.eta(), g.phi(), g.mass())
-        if jet.DeltaR(gVec) >= dR:
-            continue
-        if 500 < abs(g.pid()) < 600 or 5000 < abs(g.pid()) < 6000:
-            isbHad = True
-            break
-        if 400 < abs(g.pid()) < 500 or 4000 < abs(g.pid()) < 5000:
-            iscHad = True
-
-    if isbHad:
-        return 5
-    if iscHad:
-        return 4
-    return 1  # any not 4 or 5 case
-
-
-def findPartonFlav(genparts, jet, dR):
-
-    isbPar = False
-    iscPar = False
-    for g in genparts:  # check if there exists one b-hadron
-        gVec = ROOT.TLorentzVector()
-        gVec.SetPtEtaPhiM(g.pt(), g.eta(), g.phi(), g.mass())
-        if jet.DeltaR(gVec) >= dR:
-            continue
-        if abs(g.pid()) == 5:
-            isbPar = True
-            break
-        if abs(g.pid()) == 4:
-            iscPar = True
-
-    if isbPar:
-        return 5
-    if iscPar:
-        return 4
-    return 1  # any not 4 or 5 case
-
-
 def findTauFlav(genparts, tau, dR):
 
     isTau = False
