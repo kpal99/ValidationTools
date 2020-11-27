@@ -65,6 +65,9 @@ def create2dHist(varname, params, title):
     return h
 
 
+dumptcl = False
+
+
 def create2Dmap(varname, params, title, dumptcl):
 
     # use the slices to build a list of bin edges
@@ -131,6 +134,39 @@ def create2Dmap(varname, params, title, dumptcl):
     return h
 
 
+params2D = {
+    "dR": 0.2,
+    "ptRatio": 2.0,
+    "ptMin": 20,
+    # use 1e5 as "Inf"
+    "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5]],
+    "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5]],
+    "sliceSplit": 1,  # for 2D map, make N divisions of each slice
+    "plotPtRange": [0, 1500],
+    "plotEtaRange": [-5, 5],
+    "plotPhiRange": [-5, 5],
+    "plotMassRange": [0, 500],
+    "plotNObjRange_Delp": [0, 20],
+    "plotNObjRange_Full": [0, 50],
+    "plotResoRange": [0, 2],
+    "ids": [
+        # ["nameforplot", numerator idpass threshold, numerator isopass threshold, denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
+        # NOTE: only efficiency plots get anything with value [3] > 0
+        # Loose is bit 0, Medium is bit 1, Tight is bit 2, -1 is nothing
+        # reco (eff, fakerate, response)
+        ["reco", -1, -1, 0, "#varepsilon(reco)"],
+        # reco*ID (ID for fakerate)
+        ["looseID", 0, -1, 0,
+         "#varepsilon(reco)*#varepsilon(looseID)"],
+        ["tightID", 2, -1, 0,
+         "#varepsilon(reco)*#varepsilon(tightID)"],
+        ["looseIDifReco", 0, -1, 1, "#varepsilon(looseID)"],
+        # IDs on reco-matched gen (eff only)
+        ["tightIDifReco", 2, -1, 1, "#varepsilon(tightID)"],
+    ]
+}
+
+
 def main():
     usage = 'usage: %prog [options]'
     parser = optparse.OptionParser(usage)
@@ -183,38 +219,6 @@ def main():
         ]
     }
 
-    params2D = {
-        "dR": 0.2,
-        "ptRatio": 2.0,
-        "ptMin": 20,
-        # use 1e5 as "Inf"
-        "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5]],
-        "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5]],
-        "sliceSplit": 1,  # for 2D map, make N divisions of each slice
-        "plotPtRange": [0, 1500],
-        "plotEtaRange": [-5, 5],
-        "plotPhiRange": [-5, 5],
-        "plotMassRange": [0, 500],
-        "plotNObjRange_Delp": [0, 20],
-        "plotNObjRange_Full": [0, 50],
-        "plotResoRange": [0, 2],
-        "ids": [
-            # ["nameforplot", numerator idpass threshold, numerator isopass threshold, denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
-            # NOTE: only efficiency plots get anything with value [3] > 0
-            # Loose is bit 0, Medium is bit 1, Tight is bit 2, -1 is nothing
-            # reco (eff, fakerate, response)
-            ["reco", -1, -1, 0, "#varepsilon(reco)"],
-            # reco*ID (ID for fakerate)
-            ["looseID", 0, -1, 0,
-             "#varepsilon(reco)*#varepsilon(looseID)"],
-            ["tightID", 2, -1, 0,
-             "#varepsilon(reco)*#varepsilon(tightID)"],
-            ["looseIDifReco", 0, -1, 1, "#varepsilon(looseID)"],
-            # IDs on reco-matched gen (eff only)
-            ["tightIDifReco", 2, -1, 1, "#varepsilon(tightID)"],
-        ]
-    }
-
     ## create histo#
 
     hists = {}
@@ -243,8 +247,8 @@ def main():
                 hists[obj+"_" +
                       newname] = create2dHist(obj+"_"+newname, params, quality[2])
 
-        hnames = ["efficiency2D", "fakerate2D"]
-    for hname in hnames:
+    hnames2D = ["efficiency2D", "fakerate2D"]
+    for hname in hnames2D:
         if len(params2D["ids"]) == 0:
             title = "#varepsilon(reco)"
             hists[obj+"_" +
@@ -263,21 +267,27 @@ def main():
             break
         if (tot_nevents % 10) == 0:  # 1000
             print '... processed {} events ...'.format(event.entry()+1)
-
         tot_nevents += 1
         genparts = event.genparticles()
         jets = event.jetspuppi()
+        p_idpass = []
 
         # studymet
         for p in jets:
-
+            p_idpass.append(p.idpass())
             if p.pt() < params['ptMin']:
                 continue
             pVec = ROOT.TLorentzVector()
             pVec.SetPtEtaPhiM(p.pt(), p.eta(), p.phi(), p.mass())
             jetHadFlav = findHadronFlav(genparts, pVec, params['dR'])
-
+            matchindex = -1
+            match = 0
+            minDR = 999
             if jetHadFlav == 5:
+                # matched
+                if minDR < params["dR"] and (1./params["ptRatio"] < p_tvectors[minDRindex].Pt()/g.pt() < params["ptRatio"]):
+                    match = 1
+                    matchindex = minDRindex
                 for quality in params["ids"]:
                     isTagged = (p.btag() >= quality[1])
                     hists[obj+"_btagRate_to_eta_" +
@@ -302,8 +312,14 @@ def main():
                             isTagged = (p.btag() >= quality[1])
                             hists[obj+"_btagRate_to_pt_"+quality[0] +
                                   "_" + cutname].Fill(p.pt(), isTagged)
+                for quality in params2D["ids"]:
+					hists[obj+"_efficiency2D_"+quality[0]].Fill(p.pt(), p.eta(), match)
 
             elif jetHadFlav == 4:
+                # matched
+                if minDR < params["dR"] and (1./params["ptRatio"] < p_tvectors[minDRindex].Pt()/g.pt() < params["ptRatio"]):
+                    match = 1
+                    matchindex = minDRindex
                 for quality in params["ids"]:
                     isTagged = (p.btag() >= quality[1])
                     hists[obj+"_cMistagRate_to_eta_" +
@@ -330,6 +346,10 @@ def main():
                                   "_" + cutname].Fill(p.pt(), isTagged)
 
             else:
+                # matched
+                if minDR < params["dR"] and (1./params["ptRatio"] < p_tvectors[minDRindex].Pt()/g.pt() < params["ptRatio"]):
+                    match = 1
+                    matchindex = minDRindex
                 for quality in params["ids"]:
                     isTagged = (p.btag() >= quality[1])
                     hists[obj+"_lightMistagRate_to_eta_" +
