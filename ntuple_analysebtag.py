@@ -64,17 +64,13 @@ def create2dHist(varname, params, title):
 
     return h
 
-
-dumptcl = False
-
-
 def create2Dmap(varname, params, title, dumptcl):
 
     # use the slices to build a list of bin edges
-    ptbins = [item[0] for item in params["ptSlices2D"]]
-    etabins = [item[0] for item in params["etaSlices2D"]]
-    ptbins.append(params["ptSlices2D"][-1][1])
-    etabins.append(params["etaSlices2D"][-1][1])
+    ptbins = [item[0] for item in params["ptSlices"]]
+    etabins = [item[0] for item in params["etaSlices"]]
+    ptbins.append(params["ptSlices"][-1][1])
+    etabins.append(params["etaSlices"][-1][1])
     # set more realistic caps
     if not dumptcl:
         if ptbins[-1] > 5e4:
@@ -166,6 +162,7 @@ def main():
     inFile = opt.inFile
     ntuple = Ntuple(inFile)
     maxEvents = opt.maxEvts
+    dumptcl = opt.dumptcl
     tot_nevents = 0
     outputF = ROOT.TFile(opt.outFile, "RECREATE")
     obj = opt.physobject
@@ -174,10 +171,8 @@ def main():
         "dR": 0.5,
         "ptRatio": 2.0,
         "ptMin": 20,
-        "etaSlices": [[0, 1.5], [1.5, 2.5], [2.5, 4]],  # use 1e5 as "Inf"
-        "ptSlices": [[20, 50], [50, 100], [100, 1e5]],
-        "etaSlices2D": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5]],
-        "ptSlices2D": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5]],
+        "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5]],  # use 1e5 as "Inf"
+        "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5]],
         "sliceSplit": 1,  # for 2D map, make N divisions of each slice
         "plotPtRange": [0, 500],
         "plotEtaRange": [-5, 5],
