@@ -326,13 +326,13 @@ def main():
                             if match == 1:
                                 if quality[3] == 2:
                                     if idpass:
-                                        hists[obj+"_efficiency2D_"+quality[0]].Fill(p.pt(),p.eta(), isopass)
+                                        hists[obj+"_btagRate_efficiency2D_"+quality[0]].Fill(p.pt(),p.eta(), isopass)
                                 else:
-                                    hists[obj+"_efficiency2D_"+quality[0]].Fill(p.pt(),p.eta(), idpass*isopass)
+                                    hists[obj+"_btagRate_efficiency2D_"+quality[0]].Fill(p.pt(),p.eta(), idpass*isopass)
                         else:
-                            hists[obj+"_efficiency2D_"+quality[0]].Fill(p.pt(),p.eta(), match*idpass*isopass)
+                            hists[obj+"_btagRate_efficiency2D_"+quality[0]].Fill(p.pt(),p.eta(), match*idpass*isopass)
                 else:
-                    hists[obj+"_efficiency2D"].Fill(p.pt(),p.eta(), match)
+                    hists[obj+"_btagRate_efficiency2D"].Fill(p.pt(),p.eta(), match)
 
             elif jetParFlav == 4:
                     for quality in params["bitids"]:
