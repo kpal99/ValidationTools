@@ -210,11 +210,11 @@ def main():
                 ["looseID", (1 << 0), "#varepsilon(looseID)"],  # btag & (1<<0)
                 ["mediumID", (1 << 1), "#varepsilon(mediumID)"],
                 ["tightID", (1 << 2), "#varepsilon(tightID)"]],
-	    ## in "ids2D" ["nameforplot", numerator idpass threshold, numerator isopass threshold, denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
-            ## Loose is bit 0, Medium is bit 1, Tight is bit 2, -1 is nothing
             "ids2D": [
-                ["looseID", 0, -1, 0, "#varepsilon(reco)*#varepsilon(looseID)"],
-                ["mediumID", 1, -1, 0, "#varepsilon(reco)*#varepsilon(mediumID)"],
+                ["looseID", 0, -1, 0,
+                    "#varepsilon(reco)*#varepsilon(looseID)"],
+                ["mediumID", 1, -1, 0,
+                    "#varepsilon(reco)*#varepsilon(mediumID)"],
                 ["tightID", 2, -1, 0, "#varepsilon(reco)*#varepsilon(tightID)"]
         ]
     }
@@ -264,13 +264,19 @@ def main():
     for event in ntuple:
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
-        if (tot_nevents % 1000) == 0:  # 1000
+        if (tot_nevents % 10) == 0:  # 1000
             print '... processed {} events ...'.format(event.entry()+1)
 
         tot_nevents += 1
         genparts = event.genparticles()
         jets = event.jetspuppi()
         p_idpass = []
+        p_isopass = []
+        ## jets don't have the isopass method            
+        ## Dummy value is 1111 = 8+4+2+1 = 15
+        isopass = 15
+        p_isopass.append(isopass)
+        p_tvectors = []
 
         for p in jets:
             if abs(p.eta()) > 5 or p.pt() < params["ptMin"]: continue
@@ -281,6 +287,11 @@ def main():
             matchindex = -1
             minDR = 999
             minDRindex = -1
+            for ivec in range(0, len(p_tvectors)):
+                deltaR = g_vec.DeltaR(p_tvectors[ivec])
+                if deltaR < minDR:
+                    minDR = deltaR
+                    minDRindex = ivec
             jetParFlav = findPartonFlav(genparts, pVec, params['dR'])
             if minDR < params["dR"] and (1./params["ptRatio"] < p_tvectors[minDRindex].Pt()/p.pt() < params["ptRatio"]):
                 match = 1
