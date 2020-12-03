@@ -294,10 +294,6 @@ def main():
                           ].Fill(p.pt(), p.eta(), match)
 
             elif jetHadFlav == 4:
-                # matched
-                if minDR < params["dR"] and (1./params["ptRatio"] < p_tvectors[minDRindex].Pt()/g.pt() < params["ptRatio"]):
-                    match = 1
-                    matchindex = minDRindex
                 for quality in params["ids"]:
                     isTagged = (p.btag() >= quality[1])
                     hists[obj+"_cMistagRate_to_eta_" +
@@ -324,10 +320,6 @@ def main():
                                   "_" + cutname].Fill(p.pt(), isTagged)
 
             else:
-                # matched
-                if minDR < params["dR"] and (1./params["ptRatio"] < p_tvectors[minDRindex].Pt()/g.pt() < params["ptRatio"]):
-                    match = 1
-                    matchindex = minDRindex
                 for quality in params["ids"]:
                     isTagged = (p.btag() >= quality[1])
                     hists[obj+"_lightMistagRate_to_eta_" +
