@@ -274,28 +274,22 @@ def main():
             if jetHadFlav == 5:
                 for quality in params["ids"]:
                     isTagged = (p.btag() >= quality[1])
-                    hists[obj+"_btagRate_to_eta_" +
-                          quality[0]].Fill(p.eta(), isTagged)
-                    hists[obj+"_btagRate_to_pt_" +
-                          quality[0]].Fill(p.pt(), isTagged)
+                    hists[obj+"_btagRate_to_eta_" + quality[0]].Fill(p.eta(), isTagged)
+                    hists[obj+"_btagRate_to_pt_" + quality[0]].Fill(p.pt(), isTagged)
                 for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
+                    cutname = (cutname.replace('.', 'p')).replace('100000p0', 'Inf')
                     if cut[0] <= p.pt() < cut[1]:
                         for quality in params["ids"]:
                             isTagged = (p.btag() >= quality[1])
-                            hists[obj+"_btagRate_to_eta_"+quality[0] +
-                                  "_" + cutname].Fill(p.eta(), isTagged)
+                            hists[obj+"_btagRate_to_eta_"+quality[0] + "_" + cutname].Fill(p.eta(), isTagged)
                 for cut in params["etaSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
+                    cutname = (cutname.replace('.', 'p')).replace('100000p0', 'Inf')
                     if cut[0] < abs(p.eta()) <= cut[1]:
                         for quality in params["ids"]:
                             isTagged = (p.btag() >= quality[1])
-                            hists[obj+"_btagRate_to_pt_"+quality[0] +
-                                  "_" + cutname].Fill(p.pt(), isTagged)
+                            hists[obj+"_btagRate_to_pt_"+quality[0] + "_" + cutname].Fill(p.pt(), isTagged)
                 if len(params["ids2D"]) > 0:
                     for quality in params["ids2D"]:
                         try: idpass = (quality[1] < 0 or (p_idpass[matchindex] & (1<<quality[1])))
@@ -317,54 +311,42 @@ def main():
             elif jetHadFlav == 4:
                 for quality in params["ids"]:
                     isTagged = (p.btag() >= quality[1])
-                    hists[obj+"_cMistagRate_to_eta_" +
-                          quality[0]].Fill(p.eta(), isTagged)
-                    hists[obj+"_cMistagRate_to_pt_" +
-                          quality[0]].Fill(p.pt(), isTagged)
+                    hists[obj+"_cMistagRate_to_eta_" + quality[0]].Fill(p.eta(), isTagged)
+                    hists[obj+"_cMistagRate_to_pt_" + quality[0]].Fill(p.pt(), isTagged)
                 for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
+                    cutname = (cutname.replace('.', 'p')).replace('100000p0', 'Inf')
                     if cut[0] <= p.pt() < cut[1]:
                         for quality in params["ids"]:
                             isTagged = (p.btag() >= quality[1])
-                            hists[obj+"_cMistagRate_to_eta_"+quality[0] +
-                                  "_" + cutname].Fill(p.eta(), isTagged)
+                            hists[obj+"_cMistagRate_to_eta_"+quality[0] + "_" + cutname].Fill(p.eta(), isTagged)
                 for cut in params["etaSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
+                    cutname = (cutname.replace('.', 'p')).replace('100000p0', 'Inf')
                     if cut[0] < abs(p.eta()) <= cut[1]:
                         for quality in params["ids"]:
                             isTagged = (p.btag() >= quality[1])
-                            hists[obj+"_cMistagRate_to_pt_"+quality[0] +
-                                  "_" + cutname].Fill(p.pt(), isTagged)
+                            hists[obj+"_cMistagRate_to_pt_"+quality[0] + "_" + cutname].Fill(p.pt(), isTagged)
 
             else:
                 for quality in params["ids"]:
                     isTagged = (p.btag() >= quality[1])
-                    hists[obj+"_lightMistagRate_to_eta_" +
-                          quality[0]].Fill(p.eta(), isTagged)
-                    hists[obj+"_lightMistagRate_to_pt_" +
-                          quality[0]].Fill(p.pt(), isTagged)
+                    hists[obj+"_lightMistagRate_to_eta_" + quality[0]].Fill(p.eta(), isTagged)
+                    hists[obj+"_lightMistagRate_to_pt_" + quality[0]].Fill(p.pt(), isTagged)
                 for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
+                    cutname = (cutname.replace('.', 'p')).replace('100000p0', 'Inf')
                     if cut[0] <= p.pt() < cut[1]:
                         for quality in params["ids"]:
                             isTagged = (p.btag() >= quality[1])
-                            hists[obj+"_lightMistagRate_to_eta_"+quality[0] +
-                                  "_" + cutname].Fill(p.eta(), isTagged)
+                            hists[obj+"_lightMistagRate_to_eta_"+quality[0] + "_" + cutname].Fill(p.eta(), isTagged)
                 for cut in params["etaSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
+                    cutname = (cutname.replace('.', 'p')).replace('100000p0', 'Inf')
                     if cut[0] < abs(p.eta()) <= cut[1]:
                         for quality in params["ids"]:
                             isTagged = (p.btag() >= quality[1])
-                            hists[obj+"_lightMistagRate_to_pt_"+quality[0] +
-                                  "_" + cutname].Fill(p.pt(), isTagged)
+                            hists[obj+"_lightMistagRate_to_pt_"+quality[0] + "_" + cutname].Fill(p.pt(), isTagged)
 
     outputF.cd()
     for h in hists.keys():
