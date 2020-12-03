@@ -71,10 +71,10 @@ dumptcl = False
 def create2Dmap(varname, params, title, dumptcl):
 
     # use the slices to build a list of bin edges
-    ptbins = [item[0] for item in params2D["ptSlices"]]
-    etabins = [item[0] for item in params2D["etaSlices"]]
-    ptbins.append(params2D["ptSlices"][-1][1])
-    etabins.append(params2D["etaSlices"][-1][1])
+    ptbins = [item[0] for item in params["ptSlices2D"]]
+    etabins = [item[0] for item in params["etaSlices2D"]]
+    ptbins.append(params["ptSlices2D"][-1][1])
+    etabins.append(params["etaSlices2D"][-1][1])
     # set more realistic caps
     if not dumptcl:
         if ptbins[-1] > 5e4:
@@ -89,7 +89,7 @@ def create2Dmap(varname, params, title, dumptcl):
         if ptbins[iedge+1] >= 9e4:
             ptbinsext.append(ptbins[iedge])
             continue  # don't subdivide the overflow bin
-        nsplits = params2D["sliceSplit"]
+        nsplits = params["sliceSplit"]
         if ptbins[iedge+1] >= 150 or ptbins[iedge] == 100:
             nsplits = 2
         for j in range(0, nsplits):  # 0, 1, 2 if sliceSplit = 3
@@ -105,7 +105,7 @@ def create2Dmap(varname, params, title, dumptcl):
         if etabins[iedge+1] >= 9e4:
             etabinsext.append(etabins[iedge])
             continue  # don't subdivide the overflow bin
-        nsplits = params2D["sliceSplit"]
+        nsplits = params["sliceSplit"]
         if 'electron' in varname and etabins[iedge] == 1.5:
             nsplits = 7
         for j in range(0, nsplits):  # 0, 1, 2 if sliceSplit = 3
@@ -132,40 +132,6 @@ def create2Dmap(varname, params, title, dumptcl):
 
     h.Sumw2()
     return h
-
-
-params2D = {
-    "dR": 0.2,
-    "ptRatio": 2.0,
-    "ptMin": 20,
-    # use 1e5 as "Inf"
-    "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5]],
-    "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5]],
-    "sliceSplit": 1,  # for 2D map, make N divisions of each slice
-    "plotPtRange": [0, 1500],
-    "plotEtaRange": [-5, 5],
-    "plotPhiRange": [-5, 5],
-    "plotMassRange": [0, 500],
-    "plotNObjRange_Delp": [0, 20],
-    "plotNObjRange_Full": [0, 50],
-    "plotResoRange": [0, 2],
-    "ids": [
-        # ["nameforplot", numerator idpass threshold, numerator isopass threshold, denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
-        # NOTE: only efficiency plots get anything with value [3] > 0
-        # Loose is bit 0, Medium is bit 1, Tight is bit 2, -1 is nothing
-        # reco (eff, fakerate, response)
-        ["reco", -1, -1, 0, "#varepsilon(reco)"],
-        # reco*ID (ID for fakerate)
-        ["looseID", 0, -1, 0,
-         "#varepsilon(reco)*#varepsilon(looseID)"],
-        ["tightID", 2, -1, 0,
-         "#varepsilon(reco)*#varepsilon(tightID)"],
-        ["looseIDifReco", 0, -1, 1, "#varepsilon(looseID)"],
-        # IDs on reco-matched gen (eff only)
-        ["tightIDifReco", 2, -1, 1, "#varepsilon(tightID)"],
-    ]
-}
-
 
 def main():
     usage = 'usage: %prog [options]'
@@ -206,17 +172,33 @@ def main():
 
     params = {
         "dR": 0.5,
+        "ptRatio": 2.0,
         "ptMin": 20,
         "etaSlices": [[0, 1.5], [1.5, 2.5], [2.5, 4]],  # use 1e5 as "Inf"
         "ptSlices": [[20, 50], [50, 100], [100, 1e5]],
+        "etaSlices2D": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5]],
+        "ptSlices2D": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5]],
         "sliceSplit": 1,  # for 2D map, make N divisions of each slice
         "plotPtRange": [0, 500],
         "plotEtaRange": [-5, 5],
         "ids": [
             ["looseID", 1, "#varepsilon(looseID)"],  # >=
             ["mediumID", 3, "#varepsilon(mediumID)"],
-            ["tightID", 7, "#varepsilon(tightID)"],
-        ]
+            ["tightID", 7, "#varepsilon(tightID)"]],
+        "ids2D": [
+        # NOTE: only efficiency plots get anything with value [3] > 0
+        # Loose is bit 0, Medium is bit 1, Tight is bit 2, -1 is nothing
+        # reco (eff, fakerate, response)
+        ["reco", -1, -1, 0, "#varepsilon(reco)"],
+        # reco*ID (ID for fakerate)
+        ["looseID", 0, -1, 0,
+         "#varepsilon(reco)*#varepsilon(looseID)"],
+        ["tightID", 2, -1, 0,
+         "#varepsilon(reco)*#varepsilon(tightID)"],
+        ["looseIDifReco", 0, -1, 1, "#varepsilon(looseID)"],
+        # IDs on reco-matched gen (eff only)
+        ["tightIDifReco", 2, -1, 1, "#varepsilon(tightID)"],
+    ]
     }
 
     ## create histo#
@@ -249,12 +231,12 @@ def main():
 
     hnames2D = ["efficiency2D", "fakerate2D"]
     for hname in hnames2D:
-        if len(params2D["ids"]) == 0:
+        if len(params["ids2D"]) == 0:
             title = "#varepsilon(reco)"
             hists[obj+"_" +
                   hname] = create2Dmap(obj+"_"+hname, params, title, dumptcl)
         else:
-            for quality in params2D["ids"]:
+            for quality in params["ids2D"]:
                 if 'fakerate' in hname and quality[3] > 0:
                     continue
                 newname = hname+"_"+quality[0]
@@ -312,8 +294,9 @@ def main():
                             isTagged = (p.btag() >= quality[1])
                             hists[obj+"_btagRate_to_pt_"+quality[0] +
                                   "_" + cutname].Fill(p.pt(), isTagged)
-                for quality in params2D["ids"]:
-					hists[obj+"_efficiency2D_"+quality[0]].Fill(p.pt(), p.eta(), match)
+                for quality in params["ids2D"]:
+                    hists[obj+"_efficiency2D_"+quality[0]
+                          ].Fill(p.pt(), p.eta(), match)
 
             elif jetHadFlav == 4:
                 # matched
