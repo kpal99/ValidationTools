@@ -210,11 +210,11 @@ def main():
                 ["looseID", (1 << 0), "#varepsilon(looseID)"],  # btag & (1<<0)
                 ["mediumID", (1 << 1), "#varepsilon(mediumID)"],
                 ["tightID", (1 << 2), "#varepsilon(tightID)"]],
+	    ## in "ids2D" ["nameforplot", numerator idpass threshold, numerator isopass threshold, denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
+            ## Loose is bit 0, Medium is bit 1, Tight is bit 2, -1 is nothing
             "ids2D": [
-                ["looseID", 0, -1, 0,
-                    "#varepsilon(reco)*#varepsilon(looseID)"],
-                ["mediumID", 1, -1, 0,
-                    "#varepsilon(reco)*#varepsilon(mediumID)"],
+                ["looseID", 0, -1, 0, "#varepsilon(reco)*#varepsilon(looseID)"],
+                ["mediumID", 1, -1, 0, "#varepsilon(reco)*#varepsilon(mediumID)"],
                 ["tightID", 2, -1, 0, "#varepsilon(reco)*#varepsilon(tightID)"]
         ]
     }
