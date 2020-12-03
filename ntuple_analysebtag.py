@@ -279,6 +279,7 @@ def main():
         p_tvectors = []
 
         for p in jets:
+            p_idpass.append(p.idpass())
             if abs(p.eta()) > 5 or p.pt() < params["ptMin"]: continue
             if p.pt() < params['ptMin']: continue
             pVec = ROOT.TLorentzVector()
