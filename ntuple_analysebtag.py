@@ -349,7 +349,6 @@ def main():
                 else:
                     hists[obj +
                           "_btagRate_efficiency2D"].Fill(p.pt(), p.eta(), match)
-
             elif jetParFlav == 4:
                 for quality in params["bitids"]:
                     isTagged = int(bool(p.btag() & quality[1]))
@@ -375,7 +374,6 @@ def main():
                             isTagged = int(bool(p.btag() & quality[1]))
                             hists[obj+"_cMistagRate_to_pt_"+quality[0] +
                                   "_" + cutname].Fill(p.pt(), isTagged)
-
             else:
                 for quality in params["bitids"]:
                     isTagged = int(bool(p.btag() & quality[1]))
