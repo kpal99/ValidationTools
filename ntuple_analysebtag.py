@@ -9,7 +9,6 @@ import itertools
 from array import array
 import math
 
-
 def findHadronFlav(genparts, jet, dR):
 
     isbHad = False
@@ -24,13 +23,11 @@ def findHadronFlav(genparts, jet, dR):
 	    break
         if 400 < abs(g.pid()) < 500 or 4000 < abs(g.pid()) < 5000:
             iscHad = True
-
     if isbHad:
         return 5
     if iscHad:
         return 4
     return 1  # any not 4 or 5 case
-
 
 def findPartonFlav(genparts, jet, dR):
 
@@ -46,7 +43,6 @@ def findPartonFlav(genparts, jet, dR):
             break
         if abs(g.pid()) == 4:
             iscPar = True
-
     if isbPar:
         return 5
     if iscPar:
@@ -83,7 +79,6 @@ def create2dHist(varname, params, title):
         h.GetYaxis().SetTitle("tagging efficiency")
 
     h.Sumw2()
-
     return h
 
 
