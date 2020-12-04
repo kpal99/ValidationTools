@@ -1207,10 +1207,14 @@ module Efficiency PhotonLooseID {
   set OutputArray photons
   # set EfficiencyFormula {efficiency formula as a function of eta and pt}
   # efficiency formula for photons
+
+
+  ## DUMMY_PHOTONIDLOOSE_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
+  ## ENDDUMMY_PHOTONIDLOOSE_EFFICIENCY
 
 }
 
@@ -1227,10 +1231,13 @@ module Efficiency PhotonMediumID {
   set OutputArray photons
   # set EfficiencyFormula {efficiency formula as a function of eta and pt}
   # efficiency formula for photons
+
+  ## DUMMY_PHOTONIDMEDIUM_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
+  ## ENDDUMMY_PHOTONIDMEDIUM_EFFICIENCY
 
 }
 
@@ -1247,10 +1254,13 @@ module Efficiency PhotonTightID {
   set OutputArray photons
   # set EfficiencyFormula {efficiency formula as a function of eta and pt}
   # efficiency formula for photons
+
+  ## DUMMY_PHOTONIDTIGHT_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
+  ## ENDDUMMY_PHOTONIDTIGHT_EFFICIENCY
 
 }
 
@@ -1315,10 +1325,13 @@ module Efficiency ElectronLooseEfficiency {
 
   set InputArray ElectronSmear/electrons
   set OutputArray electrons
+
+  ## DUMMY_ELECTRONIDLOOSE_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
+  ## ENDDUMMY_ELECTRONIDLOOSE_EFFICIENCY
 
 
 }
@@ -1333,10 +1346,12 @@ module Efficiency ElectronMediumEfficiency {
   set InputArray ElectronSmear/electrons
   set OutputArray electrons
 
+  ## DUMMY_ELECTRONIDMEDIUM_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
+  ## ENDDUMMY_ELECTRONIDMEDIUM_EFFICIENCY
 }
 
 #######################
@@ -1348,10 +1363,12 @@ module Efficiency ElectronTightEfficiency {
   set InputArray ElectronSmear/electrons
   set OutputArray electrons
 
+  ## DUMMY_ELECTRONIDTIGHT_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
+  ## ENDDUMMY_ELECTRONIDTIGHT_EFFICIENCY
 }
 
 
@@ -1415,10 +1432,12 @@ module Efficiency MuonLooseIdEfficiency {
     set OutputArray muons
     # TightID(fullsim) * TightIso(fullsim)/TightIso(Delphes) efficiency formula for muons
     
+    ## DUMMY_MUONIDLOOSE_EFFICIENCY
     set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
+    ## ENDDUMMY_MUONIDLOOSE_EFFICIENCY
 }
 
 ##################
@@ -1430,10 +1449,13 @@ module Efficiency MuonMediumIdEfficiency {
     set InputArray MuonSmear/muons
     set OutputArray muons
     # TightID(fullsim) * TightIso(fullsim)/TightIso(Delphes) efficiency formula for muons
+
+    ## DUMMY_MUONIDMEDIUM_EFFICIENCY
     set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
+    ## ENDDUMMY_MUONIDMEDIUM_EFFICIENCY
 }
 
 ##################
@@ -1444,10 +1466,13 @@ module Efficiency MuonTightIdEfficiency {
     set InputArray MuonSmear/muons
     set OutputArray muons
     # TightID(fullsim) * TightIso(fullsim)/TightIso(Delphes) efficiency formula for muons
+
+    ## DUMMY_MUONIDTIGHT_EFFICIENCY
     set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
+    ## ENDDUMMY_MUONIDTIGHT_EFFICIENCY
 }
 
 
