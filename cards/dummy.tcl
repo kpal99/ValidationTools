@@ -1657,9 +1657,10 @@ module JetFakeParticle JetFakeMakerLoose {
   set JetOutputArray jets
 
   set EfficiencyFormula {
-      11 0.02
-      13 0.02
-      22 0.10 }
+      {11} {0.02}
+      {13} {0.02}
+      {22} {0.10} 
+  }
 
 }
 
@@ -1677,9 +1678,10 @@ module JetFakeParticle JetFakeMakerMedium {
   set JetOutputArray jets
 
   set EfficiencyFormula {
-      11 0.01
-      13 0.01
-      22 0.05 }
+      {11} {0.01}
+      {13} {0.01}
+      {22} {0.05} 
+  }
 
 }
 
@@ -1696,9 +1698,10 @@ module JetFakeParticle JetFakeMakerTight {
   set JetOutputArray jets
 
   set EfficiencyFormula {
-      11 0.005
-      13 0.005
-      22 0.025 }
+      {11} {0.005}
+      {13} {0.005}
+      {22} {0.025} 
+  }
 
 }
 
