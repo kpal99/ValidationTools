@@ -162,7 +162,6 @@ for name in hist_names:
         mean_and_sigmas_d[ntup_in] = get_mean_and_sigma(hd, wmin=0.2, wmax=1.8, step=0.001, epsilon=0.007)
         mean_and_sigmas_f[ntup_in] = get_mean_and_sigma(hf, wmin=0.2, wmax=1.8, step=0.001, epsilon=0.007)
 
-    '''
     if 'efficiency2D' in name or 'fakerate2D' in name or 'fakenonisorate2D' in name:
         rt.gStyle.SetPaintTextFormat("1.2f")
         hd.SetStats(rt.kFALSE)
@@ -252,7 +251,6 @@ for name in hist_names:
         legend.AddEntry(hf,"FullSim","l")
         legend.Draw()
         canv.Print(printoutdir+ "/" + canv_name +".png")
-   '''
 
 if dumptcl:
 
