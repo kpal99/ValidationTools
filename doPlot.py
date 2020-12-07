@@ -162,7 +162,7 @@ for name in hist_names:
         mean_and_sigmas_d[ntup_in] = get_mean_and_sigma(hd, wmin=0.2, wmax=1.8, step=0.001, epsilon=0.007)
         mean_and_sigmas_f[ntup_in] = get_mean_and_sigma(hf, wmin=0.2, wmax=1.8, step=0.001, epsilon=0.007)
 
-    '''
+
     if 'efficiency2D' in name or 'fakerate2D' in name or 'fakenonisorate2D' in name:
         rt.gStyle.SetPaintTextFormat("1.2f")
         hd.SetStats(rt.kFALSE)
@@ -252,16 +252,15 @@ for name in hist_names:
         legend.AddEntry(hf,"FullSim","l")
         legend.Draw()
         canv.Print(printoutdir+ "/" + canv_name +".png")
-   '''
 
 if dumptcl:
 
-    '''
-    dumpme = ['efficiency2D_looseID','efficiency2D_tightID']
-    photondump = ['nonpromptfakerate2D_looseID', 'nonpromptfakerate2D_tightID','fakerate2D_looseID','fakerate2D_tightID']
-
+    
+    dumpme = ['efficiency2D_looseID','efficiency2D_mediumID','efficiency2D_tightID']
+    if 'Fake' in inFileD: 
+        ## Fakerates for now just fullsim values for fraction of Puppi jets matched to Reco+ID+Isolation photons
+        dumpme = ['fakerate2D_looseIDISO','fakerate2D_mediumIDISO','fakerate2D_tightIDISO']
     particle = (hist_names[0].split('_')[0]).replace('gen','')
-    if particle == 'photon': dumpme.extend(photondump) 
 
     for dumpname in dumpme:
         quality = dumpname.split('_')[-1]
@@ -269,32 +268,26 @@ if dumptcl:
         print 'dumping tcl using hist name',name
 
         form = 'Efficiency'
-        if 'non' in dumpname: form = 'NonPrompt';
-        elif 'fake' in dumpname: form = 'Fake';
-
-        if particle == 'muon' or particle == 'electron': 
-            useIso = True
-            print 'Forcing useIso = true for muon/electron tcl files'
+        if 'fake' in dumpname: form = 'Fake';
 
         id2D_f = inputFile_f.Get(name).ProjectionXY("id_"+name)
+
+        if 'fake' in dumpname: 
+            useIso = False
+            print "Forcing useIso to false for fakerates"
         if useIso: 
-            if particle != 'photon':
-                #(RecoFS eff * IDFS eff)*(IsoFS eff)/(RecoDelphes eff * IsoDelphes eff)
-                iso2D_d = inputFile_d.Get(name.replace('ID','ISO')).ProjectionXY("isoD_"+name) # if removing Reco, add "ifReco" to ID and ISO
-                iso2D_f = inputFile_f.Get(name.replace('ID','ISOifReco')).ProjectionXY("isoF_"+name)
-            else:
-                iso2D_d = inputFile_d.Get(name).ProjectionXY("isoD_"+name)
-                iso2D_f = inputFile_f.Get(name).ProjectionXY("isoF_"+name)
-
+            # using (looseID fullsim) * (looseISOifReco fullsim) / (looseISO delphes), which equals
+            #       (RecoFS eff * IDFS eff) * (IsoFS eff) / (RecoDelphes eff * IsoDelphes eff)
+            iso2D_d = inputFile_d.Get(name.replace('ID','ISO')).ProjectionXY("isoD_"+name) # if removing Reco, add "ifReco" to ID and ISO
+            iso2D_f = inputFile_f.Get(name.replace('ID','ISOifReco')).ProjectionXY("isoF_"+name)
+            
         f = open(printoutdir+'/'+particle+quality+form+'.tcl','w')
-        f.write('## Fullsim Efficiency for '+name+', multiplying ISO(mu/el) or RECO(photon) Fullsim/Delphes? '+str(useIso)+'\n\n')
+        if 'eff' in dumpname:
+            f.write('## Fullsim Efficiency for '+name+', multiplying ISO(mu/el) or RECO(photon) Fullsim/Delphes? '+str(useIso)+'\n\n')
+        else:
+            f.write('## Fullsim Fakerate for '+name+' (reco + ID + iso)\n\n')
 
-        if form == 'Efficiency':
-            f.write('set EfficiencyFormula {\n')
-        elif form == 'NonPrompt':
-            f.write('set NonpromptFormula {\n')
-        elif form == 'Fake':
-            f.write('set FakeFormula {\n')
+        f.write('set EfficiencyFormula {\n')
 
         ptlow = id2D_f.GetXaxis().GetBinLowEdge(1)
         f.write('\t(pt <= '+str(ptlow)+')*(1.0) +\n')
@@ -333,7 +326,7 @@ if dumptcl:
                 f.write('\t'+string+'\n')
         f.write('}\n')
         f.close()
-    '''
+    
     
     ## resolution dumps
     
