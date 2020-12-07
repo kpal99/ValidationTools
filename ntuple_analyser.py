@@ -249,9 +249,9 @@ def main():
             "ptRatio": 100.0,
             "ptMin": 8,
             "etaSlices": [[0, 1.5], [1.5, 3], [3,1e5]],
-            "ptSlices": [[8, 20], [20, 50], [50, 100], [100, 150], [150, 1e5]],
+            "ptSlices": [[10, 20], [20, 50], [50, 100], [100, 150], [150, 1e5]],
             "sliceSplit": 3,
-            "plotPtRange": [0, 200],
+            "plotPtRange": [0, 250],
             "plotEtaRange": [-4, 4],
             "plotPhiRange": [-4, 4],
             "plotMassRange": [-1, 1],
@@ -265,16 +265,22 @@ def main():
                 ## Loose is bit 0, Medium is bit 1, Tight is bit 2, -1 is nothing
                 ["reco",-1,-1,0,"#varepsilon(reco)"],                         ## reco (eff, fakerate, response)
                 ["looseID",0,-1,0,"#varepsilon(reco)*#varepsilon(looseID)"], ## reco*ID (ID for fakerate)  
+                ["mediumID",1,-1,0,"#varepsilon(reco)*#varepsilon(mediumID)"],
                 ["tightID",2,-1,0,"#varepsilon(reco)*#varepsilon(tightID)"],
                 ["looseISO",-1,0,0,"#varepsilon(reco)*#varepsilon(looseISO)"],   ## reco*ISO (ISO for fakerate) 
+                ["mediumISO",-1,1,0,"#varepsilon(reco)*#varepsilon(mediumISO)"],
                 ["tightISO",-1,2,0,"#varepsilon(reco)*#varepsilon(tightISO)"],
                 ["looseIDISO",0,0,0,"#varepsilon(reco)*#varepsilon(looseID)*#varepsilon(looseISO)"], ## reco*ID*ISOs (ID+ISO for fakerate)
+                ["mediumIDISO",1,1,0,"#varepsilon(reco)*#varepsilon(mediumID)*#varepsilon(mediumISO)"], 
                 ["tightIDISO",2,2,0,"#varepsilon(reco)*#varepsilon(tightID)*#varepsilon(tightISO)"], 
                 ["looseIDifReco",0,-1,1,"#varepsilon(looseID)"], 
+                ["mediumIDifReco",1,-1,1,"#varepsilon(mediumID)"],      ## IDs on reco-matched gen (eff only)
                 ["tightIDifReco",2,-1,1,"#varepsilon(tightID)"],      ## IDs on reco-matched gen (eff only)
                 ["looseISOifReco",-1,0,1,"#varepsilon(looseISO)"], 
+                ["mediumISOifReco",-1,1,1,"#varepsilon(mediumISO)"],   ## ISOs on reco-matched gen (eff only) 
                 ["tightISOifReco",-1,2,1,"#varepsilon(tightISO)"],   ## ISOs on reco-matched gen (eff only) 
                 ["looseIDISOifReco",0,0,1,"#varepsilon(looseID)*#varepsilon(looseISO)"], 
+                ["mediumIDISOifReco",1,1,1,"#varepsilon(mediumID)*#varepsilon(mediumISO)"], ## ID+ISOs on reco-matched gen (eff only)
                 ["tightIDISOifReco",2,2,1,"#varepsilon(tightID)*#varepsilon(tightISO)"], ## ID+ISOs on reco-matched gen (eff only)
                 ],
             }
@@ -301,19 +307,23 @@ def main():
                 ## Loose is bit 0, Medium is bit 1, Tight is bit 2, -1 is nothing
                 ["reco",-1,-1,0,"#varepsilon(reco)"],                         ## reco (eff, fakerate, response)
                 ["looseID",0,-1,0,"#varepsilon(reco)*#varepsilon(looseID)"], ## reco*ID (ID for fakerate)  
+                ["mediumID",1,-1,0,"#varepsilon(reco)*#varepsilon(mediumID)"],
                 ["tightID",2,-1,0,"#varepsilon(reco)*#varepsilon(tightID)"],
                 ["looseISO",-1,0,0,"#varepsilon(reco)*#varepsilon(looseISO)"],   ## reco*ISO (ISO for fakerate) 
+                ["mediumISO",-1,1,0,"#varepsilon(reco)*#varepsilon(mediumISO)"],
                 ["tightISO",-1,2,0,"#varepsilon(reco)*#varepsilon(tightISO)"],
                 ["looseIDISO",0,0,0,"#varepsilon(reco)*#varepsilon(looseID)*#varepsilon(looseISO)"], ## reco*ID*ISOs (ID+ISO for fakerate)
+                ["mediumIDISO",1,1,0,"#varepsilon(reco)*#varepsilon(mediumID)*#varepsilon(mediumISO)"], 
                 ["tightIDISO",2,2,0,"#varepsilon(reco)*#varepsilon(tightID)*#varepsilon(tightISO)"], 
                 ["looseIDifReco",0,-1,1,"#varepsilon(looseID)"], 
+                ["mediumIDifReco",1,-1,1,"#varepsilon(mediumID)"],      ## IDs on reco-matched gen (eff only)
                 ["tightIDifReco",2,-1,1,"#varepsilon(tightID)"],      ## IDs on reco-matched gen (eff only)
                 ["looseISOifReco",-1,0,1,"#varepsilon(looseISO)"], 
+                ["mediumISOifReco",-1,1,1,"#varepsilon(mediumISO)"],   ## ISOs on reco-matched gen (eff only) 
                 ["tightISOifReco",-1,2,1,"#varepsilon(tightISO)"],   ## ISOs on reco-matched gen (eff only) 
                 ["looseIDISOifReco",0,0,1,"#varepsilon(looseID)*#varepsilon(looseISO)"], 
+                ["mediumIDISOifReco",1,1,1,"#varepsilon(mediumID)*#varepsilon(mediumISO)"], ## ID+ISOs on reco-matched gen (eff only)
                 ["tightIDISOifReco",2,2,1,"#varepsilon(tightID)*#varepsilon(tightISO)"], ## ID+ISOs on reco-matched gen (eff only)
-                ["looseISOifRecoLooseID",0,0,2,"#varepsilon(looseISO given looseID)"], 
-                ["tightISOifRecoLooseID",0,2,2,"#varepsilon(tightISO given looseID)"] ## ISOs on reco+id-matched gen (eff only)
                 ], 
             }
         if obj == 'electron': 
@@ -513,9 +523,9 @@ def main():
             
             ## Increment multiplicity counters
             if len(params["ids"]) > 0:
-                for quality in params["ids"]:
+                for quality in params["ids"]: 
                     if quality[3] >= 1: continue
-                    if (quality[1] < 0 or (p.idpass() & (1<<quality[1]))) and (quality[2] < 0 or (isopass & (1<<quality[2]))): multiplicity["nocut_"+quality[0]] += 1
+                    if (quality[1] < 0 or bool(p.idpass() & (1<<quality[1]))) and (quality[2] < 0 or bool(isopass & (1<<quality[2]))): multiplicity["nocut_"+quality[0]] += 1
             else: multiplicity["nocut"] += 1
             for cut in params["etaSlices"]:
                 cutname = str(cut[0]) + "to" + str(cut[1])
@@ -524,7 +534,7 @@ def main():
                     if len(params["ids"]) > 0:
                         for quality in params["ids"]:
                             if quality[3] >= 1: continue 
-                            if (quality[1] < 0 or (p.idpass() & (1<<quality[1]))) and (quality[2] < 0 or (isopass & (1<<quality[2]))): multiplicity[cutname+"_"+quality[0]] += 1
+                            if (quality[1] < 0 or bool(p.idpass() & (1<<quality[1]))) and (quality[2] < 0 or bool(isopass & (1<<quality[2]))): multiplicity[cutname+"_"+quality[0]] += 1
                     else: multiplicity[cutname] += 1
 
             for cut in params["ptSlices"]:
@@ -534,7 +544,7 @@ def main():
                     if len(params["ids"]) > 0:
                         for quality in params["ids"]: 
                             if quality[3] >= 1: continue
-                            if (quality[1] < 0 or (p.idpass() & (1<<quality[1]))) and (quality[2] < 0 or (isopass & (1<<quality[2]))): multiplicity[cutname+"_"+quality[0]] += 1
+                            if (quality[1] < 0 or bool(p.idpass() & (1<<quality[1]))) and (quality[2] < 0 or bool(isopass & (1<<quality[2]))): multiplicity[cutname+"_"+quality[0]] += 1
                     else: multiplicity[cutname] += 1
 
             ## STORE all reco objects passing basic thresholds (25 hardcoded for jets)
@@ -611,7 +621,7 @@ def main():
                     if len(params["ids"]) > 0:
                         for quality in params["ids"]:
                             if quality[3] >= 1: continue
-                            if (quality[1] < 0 or (p_idpass[matchindex] & (1<<quality[1]))) and (quality[2] < 0 or (p_isopass[matchindex] & (1<<quality[2]))):
+                            if (quality[1] < 0 or bool(p_idpass[matchindex] & (1<<quality[1]))) and (quality[2] < 0 or bool(p_isopass[matchindex] & (1<<quality[2]))):
                                 hists[obj+"_ptresponse_to_eta_"+quality[0]].Fill(g.eta(), p_tvectors[matchindex].Pt()/g.pt())
                                 hists[obj+"_ptresponse_to_pt_"+quality[0]].Fill(g.pt(), p_tvectors[matchindex].Pt()/g.pt())
         
@@ -642,7 +652,7 @@ def main():
                             if len(params["ids"]) > 0:
                                 for quality in params["ids"]:
                                     if quality[3] >= 1: continue
-                                    if (quality[1] < 0 or (p_idpass[matchindex] & (1<<quality[1]))) and (quality[2] < 0 or (p_isopass[matchindex] & (1<<quality[2]))): 
+                                    if (quality[1] < 0 or bool(p_idpass[matchindex] & (1<<quality[1]))) and (quality[2] < 0 or bool(p_isopass[matchindex] & (1<<quality[2]))): 
                                         hists[obj+"_ptresponse_to_eta_"+quality[0]+"_"+cutname].Fill(g.eta(), p_tvectors[matchindex].Pt()/g.pt())
                             else: hists[obj+"_ptresponse_to_eta_"+cutname].Fill(g.eta(), p_tvectors[matchindex].Pt()/g.pt())
                     
@@ -653,7 +663,7 @@ def main():
                                 if len(params["ids"]) > 0:
                                     for quality in params["ids"]:
                                         if quality[3] >= 1: continue
-                                        if (quality[1] < 0 or (p_idpass[matchindex] & (1<<quality[1]))) and (quality[2] < 0 or (p_isopass[matchindex] & (1<<quality[2]))):
+                                        if (quality[1] < 0 or bool(p_idpass[matchindex] & (1<<quality[1]))) and (quality[2] < 0 or bool(p_isopass[matchindex] & (1<<quality[2]))):
                                             hists[obj+"_ptresponse_to_pt_"+quality[0]+"_"+cutname].Fill(g.pt(), p_tvectors[matchindex].Pt()/g.pt())
                                 else: hists[obj+"_ptresponse_to_pt_"+cutname].Fill(g.pt(), p_tvectors[matchindex].Pt()/g.pt())
         
@@ -667,13 +677,22 @@ def main():
                 ## efficiency when quality[3] == 1: 
                 ##             denominator = all reco-matched gen objects: if match, fill 0 if matched&!quality, idpass*isopass = 0
                 ##             numerator = all reco-matched gen objects with given reco quality: fill 1 if matched&quality, idpass*isopass = 1
+                #print '*************************************'
                 if len(params["ids"]) > 0:
                     for quality in params["ids"]:
 
-                        try: idpass = (quality[1] < 0 or (p_idpass[matchindex] & (1<<quality[1])))
+                        try: idpass = (quality[1] < 0 or bool(p_idpass[matchindex] & (1<<quality[1])))
                         except IndexError: idpass = False
-                        try: isopass = (quality[2] < 0 or (p_isopass[matchindex] & (1<<quality[2])))
+                        try: isopass = (quality[2] < 0 or bool(p_isopass[matchindex] & (1<<quality[2])))
                         except: isopass = False
+                        
+                        # print '--------------------------'
+                        # print 'Testing quality:',quality[1],quality[2],quality[3]
+                        # print 'isMatched?:',match
+                        # if match: 
+                        #     print 'Matched idpass:',p_idpass[matchindex],', isopass:',p_isopass[matchindex]
+                        #     print 'Bit test gave idpass = ',idpass,', and isopass = ',isopass
+
                         if quality[3] >= 1:
                             if match == 1:
                                 if quality[3] == 2:
@@ -699,9 +718,9 @@ def main():
                     if cut[0] <= g.pt() < cut[1]: 
                         if len(params["ids"]) > 0:
                             for quality in params["ids"]:
-                                try: idpass = (quality[1] < 0 or (p_idpass[matchindex] & (1<<quality[1])))
+                                try: idpass = (quality[1] < 0 or bool(p_idpass[matchindex] & (1<<quality[1])))
                                 except IndexError: idpass = False
-                                try: isopass = (quality[2] < 0 or (p_isopass[matchindex] & (1<<quality[2])))
+                                try: isopass = (quality[2] < 0 or bool(p_isopass[matchindex] & (1<<quality[2])))
                                 except: isopass = False
                                 if quality[3] >= 1:
                                     if match == 1: 
@@ -717,9 +736,9 @@ def main():
                     if cut[0] < abs(g.eta()) <= cut[1]: 
                         if len(params["ids"]) > 0:
                             for quality in params["ids"]:
-                                try: idpass = (quality[1] < 0 or (p_idpass[matchindex] & (1<<quality[1])))
+                                try: idpass = (quality[1] < 0 or bool(p_idpass[matchindex] & (1<<quality[1])))
                                 except IndexError: idpass = False
-                                try: isopass = (quality[2] < 0 or (p_isopass[matchindex] & (1<<quality[2])))
+                                try: isopass = (quality[2] < 0 or bool(p_isopass[matchindex] & (1<<quality[2])))
                                 except: isopass = False
                                 if quality[3] >= 1:
                                     if match == 1: 
@@ -769,9 +788,9 @@ def main():
                 if len(params["ids"]) > 0:
                     for quality in params["ids"]:
                         if quality[3] > 0: continue
-                        try: idpass = (quality[1] < 0 or (p_idpass[matchindexF] & (1<<quality[1])))
+                        try: idpass = (quality[1] < 0 or bool(p_idpass[matchindexF] & (1<<quality[1])))
                         except IndexError: idpass = False
-                        try: isopass = (quality[2] < 0 or (p_isopass[matchindexF] & (1<<quality[2])))
+                        try: isopass = (quality[2] < 0 or bool(p_isopass[matchindexF] & (1<<quality[2])))
                         except: isopass = False
                         hists[obj+"_fakerate_to_eta_"+quality[0]].Fill(g.eta(), matchF*idpass*isopass) #0 if any fail, 1 if all
                         hists[obj+"_fakerate_to_pt_"+quality[0]].Fill(g.pt(), matchF*idpass*isopass)
@@ -787,9 +806,9 @@ def main():
                         if len(params["ids"]) > 0:
                             for quality in params["ids"]:
                                 if quality[3] > 0: continue
-                                try: idpass = (quality[1] < 0 or (p_idpass[matchindexF] & (1<<quality[1])))
+                                try: idpass = (quality[1] < 0 or bool(p_idpass[matchindexF] & (1<<quality[1])))
                                 except IndexError: idpass = False
-                                try: isopass = (quality[2] < 0 or (p_isopass[matchindexF] & (1<<quality[2])))
+                                try: isopass = (quality[2] < 0 or bool(p_isopass[matchindexF] & (1<<quality[2])))
                                 except: isopass = False
                                 hists[obj+"_fakerate_to_eta_"+quality[0]+"_" + cutname].Fill(g.eta(), matchF*idpass*isopass)
                         else: hists[obj+"_fakerate_to_eta_" + cutname].Fill(g.eta(), matchF)
@@ -801,9 +820,9 @@ def main():
                             if len(params["ids"]) > 0:
                                 for quality in params["ids"]:
                                     if quality[3] > 0: continue
-                                    try: idpass = (quality[1] < 0 or (p_idpass[matchindexF] & (1<<quality[1])))
+                                    try: idpass = (quality[1] < 0 or bool(p_idpass[matchindexF] & (1<<quality[1])))
                                     except IndexError: idpass = False
-                                    try: isopass = (quality[2] < 0 or (p_isopass[matchindexF] & (1<<quality[2])))
+                                    try: isopass = (quality[2] < 0 or bool(p_isopass[matchindexF] & (1<<quality[2])))
                                     except: isopass = False
                                     hists[obj+"_fakerate_to_pt_"+quality[0]+"_"+cutname].Fill(g.pt(), matchF*idpass*isopass)
                             else: hists[obj+"_fakerate_to_pt_"+cutname].Fill(g.pt(), matchF)
