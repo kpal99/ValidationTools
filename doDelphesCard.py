@@ -420,7 +420,7 @@ for obj, params in object_dict.items():
             fakeFile_f = rt.TFile.Open(file_fake_F)
 
             lines_fake = []
-            lines_fake.append('  ### {} {} FAKE \n'.format(collection,quality))
+            #lines_fake.append('  ### {} {} FAKE \n'.format(collection,quality))
             
             pdgcode=-1
             if collection=='electron': pdgcode=11

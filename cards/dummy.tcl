@@ -1128,11 +1128,11 @@ module MomentumSmearing JetSmearPUPPIAK8 {
 module Efficiency JetLooseID {
 
   ## input particles
-  set InputArray JetSmearPUPPI/Jets
+  set InputArray JetSmearPUPPI/jets
   ## output particles
-  set OutputArray Jets
+  set OutputArray jets
   # set EfficiencyFormula {efficiency formula as a function of eta and pt}
-  # efficiency formula for Jets
+  # efficiency formula for jets
 
 
   ## DUMMY_JETPUPPI_LOOSEID_EFFICIENCY
@@ -1153,11 +1153,11 @@ module Efficiency JetLooseID {
 module Efficiency JetTightID {
 
   ## input particles
-  set InputArray JetSmearPUPPI/Jets
+  set InputArray JetSmearPUPPI/jets
   ## output particles
-  set OutputArray Jets
+  set OutputArray jets
   # set EfficiencyFormula {efficiency formula as a function of eta and pt}
-  # efficiency formula for Jets
+  # efficiency formula for jets
 
 
   ## DUMMY_JETPUPPI_TIGHTID_EFFICIENCY
