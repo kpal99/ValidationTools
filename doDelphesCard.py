@@ -54,7 +54,7 @@ def get_mean_and_sigma(theHist, wmin=0.2, wmax=1.8, step=0.001, epsilon=0.007):
 
 #_________________________________________________________________________________
 
-## THIS FUNCTION REMOVES THE SPUROUS + SIGN AND CONVERTS THE LIST OF STRINGS INTO A STRING
+## THIS FUNCTION REMOVES THE SPURIOUS + SIGN AND CONVERTS THE LIST OF STRINGS INTO A STRING
 def clean_dump(dump):
     last_line = dump[-1]
     last_char_index = last_line.rfind("+")
@@ -113,52 +113,49 @@ parser.add_option('--card-out',
                   type='string')
 
 object_dict={
+
+
               
-	      
-	      'muon':{
+              'muon':{
                         'collection':'muon',
-                        'qualities':['loose','medium','tight'], ## here store qualities used to produce efficiencies and fake-rate (dummy for now)
                         'fit_range':[0.9,1.1],
                         'scale_quality':'looseIDISO', ## collection used for momentum scale and smearing
-                        'control_str':'## DUMMY_MUON',  ## this string is what willbe looked for to insert the new param in the Delphes card
-                        'inFileF':'histos/muon_fullsim_LMT012.root',
-                        'inFileD':'histos/muon_delphes_V07VAL.root',
-                        
+                        'qualities':['loose','medium','tight'], ## (will look for string "DUMMY_MUON_{quality}ID_EFFICIENCY or DUMMY_MUON_{quality}ID_FAKERATE )
+                        'file_prompt_F':'histos/muon_fullsim_LMT012.root',
+                        'file_prompt_D':'histos/muon_delphes_v07VAL_withfakes.root',
+                        'file_fake_F':'histos/muonfakes_fullsim_LMT012.root',
               },
 
               'electron':{
                         'collection':'electron',
-                        'qualities':['loose','medium','tight'], ## here store qualities used to produce efficiencies and fake-rate (dummy for now)
                         'fit_range':[0.9,1.1],
                         'scale_quality':'looseIDISO', ## collection used for momentum scale and smearing
-                        'control_str':'## DUMMY_ELECTRON',  ## this string is what willbe looked for to insert the new param in the Delphes card
-                        'inFileF':'histos/electron_fullsim_LMT012.root',
-                        'inFileD':'histos/electron_delphes_V07VAL.root',
+                        'qualities':['loose','medium','tight'], ## here store qualities used to produce efficiencies and fake-rate (dummy for now)
+                        'file_prompt_F':'histos/electron_fullsim_LMT012.root',
+                        'file_prompt_D':'histos/electron_delphes_v07VAL_withfakes.root',
+                        'file_fake_F':'histos/electronfakes_fullsim_LMT012.root',
                         
               },
 
               'photon':{
                         'collection':'photon',
-                        'qualities':['loose','medium','tight'], ## here store qualities used to produce efficiencies and fake-rate (dummy for now)
                         'fit_range':[0.9,1.1],
                         'scale_quality':'looseIDISO', ## collection used for momentum scale and smearing
-                        'control_str':'## DUMMY_PHOTON',  ## this string is what willbe looked for to insert the new param in the Delphes card
-                        'inFileF':'histos/photon_fullsim_LMT012.root',
-                        'inFileD':'histos/photon_delphes_V07VAL.root',
+                        'qualities':['loose','medium','tight'], ## here store qualities used to produce efficiencies and fake-rate (dummy for now)
+                        'file_prompt_F':'histos/photon_fullsim_LMT012.root',
+                        'file_prompt_D':'histos/photon_delphes_v07VAL_withfakes.root',
+                        'file_fake_F':'histos/photonfakes_fullsim_LMT012.root',
                         
               },
 
               'jet':{
                         'collection':'jetpuppi',
-                        'qualities':['loose','tight'], ## here store qualities used to produce efficiencies and fake-rate (dummy for now)
                         'fit_range':[0.0,2.0],
                         'scale_quality':'tightID', ## collection used for momentum scale and smearing
-                        'control_str':'## DUMMY_JET',  ## this string is what willbe looked for to insert the new param in the Delphes card
-                        'inFileF':'histos/jetpuppi_fullsim_LMT012.root',
-                        'inFileD':'histos/jetpuppi_delphes_V07VAL.root',
+                        'qualities':['loose','tight'], ## here store qualities used to produce efficiencies and fake-rate (dummy for now)
+                        'file_prompt_F':'histos/jetpuppi_fullsim_LMT012.root',
+                        'file_prompt_D':'histos/jetpuppi_delphes_v07VAL_withfakes.root',
               },
-
-
 }
 
 
@@ -179,25 +176,24 @@ for obj, params in object_dict.items():
     collection=params['collection']
     scale_quality=params['scale_quality']
 
-    starting_scale = params['control_str']+'_SCALE'
+    starting_scale = '## DUMMY_'+collection.upper()+'_SCALE'
     ending_scale = starting_scale.replace('DUMMY','ENDDUMMY')
     
-    starting_smear = params['control_str']+'_SMEAR'
+    starting_smear = '## DUMMY_'+collection.upper()+'_SMEAR'
     ending_smear = starting_smear.replace('DUMMY','ENDDUMMY')
 
-    inFileF=params['inFileF']
-    inFileD=params['inFileD']
+    file_prompt_F=params['file_prompt_F']
+    file_prompt_D=params['file_prompt_D']
 
     fit_range_min=params['fit_range'][0]
     fit_range_max=params['fit_range'][1]
 
-    inputFile_d = rt.TFile.Open(inFileD)
-    inputFile_f = rt.TFile.Open(inFileF)
+    inputFile_d = rt.TFile.Open(file_prompt_D)
+    inputFile_f = rt.TFile.Open(file_prompt_F)
 
     ## these dicts contain resolutions to be dumped in tcl format
     mean_and_sigmas_d = OrderedDict()
     mean_and_sigmas_f = OrderedDict()
-
 
     hist_names = []
 
@@ -241,7 +237,7 @@ for obj, params in object_dict.items():
 
             if quality != scale_quality: continue
             
-	    print colname, quality, ptmin, ptmax, etamin, etamax
+            print colname, quality, ptmin, ptmax, etamin, etamax
 
             ## form input ntuple for mean_and_sigmas dictionary
             ntup_in = (colname, quality, ptmin, ptmax, etamin, etamax)
@@ -251,98 +247,6 @@ for obj, params in object_dict.items():
 
 
         ### HERE IS WHERE WE COMPUTE EFFICIENCY RATIOS AND FAKE RATE
-
-        '''
-        if 'efficiency2D' in name or 'fakerate2D' in name or 'fakenonisorate2D' in name:
-            rt.gStyle.SetPaintTextFormat("1.2f")
-            hd.SetStats(rt.kFALSE)
-            if 'efficiency' in name: 
-                hd.GetZaxis().SetRangeUser(0,1)
-                hf.GetZaxis().SetRangeUser(0,1)
-                if hd.GetYaxis().GetBinUpEdge(hd.GetNbinsY()) > 10:
-                    hd.GetYaxis().SetRange(1,hd.GetNbinsY()-1)
-                    hf.GetYaxis().SetRange(1,hf.GetNbinsY()-1)
-                if hd.GetXaxis().GetBinUpEdge(hd.GetNbinsX()) > 5000:
-                    hd.GetXaxis().SetRange(1,hd.GetNbinsX()-1)
-                    hf.GetXaxis().SetRange(1,hf.GetNbinsX()-1)
-            else: 
-                hd.GetZaxis().SetRangeUser(0,0.2)
-                hf.GetZaxis().SetRangeUser(0,0.2)
-                if hd.GetYaxis().GetBinUpEdge(hd.GetNbinsY()) > 10:
-                    hd.GetYaxis().SetRange(1,hd.GetNbinsY()-1)
-                    hf.GetYaxis().SetRange(1,hf.GetNbinsY()-1)
-                if hd.GetXaxis().GetBinUpEdge(hd.GetNbinsX()) > 5000:
-                    hd.GetXaxis().SetRange(1,hd.GetNbinsX()-1)
-                    hf.GetXaxis().SetRange(1,hf.GetNbinsX()-1)
-            hd.Draw("colz texte")
-            canv.Print(printoutdir+"/"+canv_name+"_delphes.png")
-            hf.SetStats(rt.kFALSE)        
-            hf.Draw("colz texte")
-            canv.Print(printoutdir+"/"+canv_name+"_fullsim.png")
-        else:
-            hf.SetLineColor(rt.kBlue)
-            hf.SetMarkerStyle(21)
-            hf.SetMarkerColor(rt.kBlue)
-            hf.SetStats(rt.kFALSE)
-            hd.SetLineColor(rt.kRed)
-            hd.SetMarkerStyle(20)
-            hd.SetMarkerColor(rt.kRed)
-            hd.SetStats(rt.kFALSE)        
-            if 'efficiency' not in name and 'fake' not in name and 'nonprompt' not in name and 'ptresponse' not in name:
-
-                if hf.Integral() > 0:
-                    hf.Scale(1.0/hf.Integral())
-                if hd.Integral() > 0:
-                    hd.Scale(1.0/hd.Integral())
-
-            if 'efficiency' in name or 'fake' in name or 'nonprompt' in name:
-                hf.SetMaximum(1)
-            else:
-                hf.SetMaximum(max(hd.GetMaximum(),hf.GetMaximum())*1.1)
-            hf.SetMinimum(0)
-
-            if '2D' not in name: 
-                if 'Profile' in hf.ClassName() or 'Profile' in hd.ClassName():
-                    try: 
-                        hdProject = hd.ProjectionX('projXD_'+name)
-                        hdProject.SetLineColor(rt.kRed)
-                        hdProject.SetMarkerStyle(20)
-                        hdProject.SetMarkerColor(rt.kRed)
-                        hdProject.SetStats(rt.kFALSE)        
-                    except: print('delphes histogram is missing:',name)
-                    try: 
-                        hfProject = hf.ProjectionX('projXF_'+name)
-                        hfProject.SetLineColor(rt.kBlue)
-                        hfProject.SetMarkerStyle(21)
-                        hfProject.SetMarkerColor(rt.kBlue)
-                        hfProject.SetStats(rt.kFALSE)
-                    except: print('fullsim histogram is missing:',name)
-                    hR = rt.TRatioPlot(hdProject, hfProject)
-                else:
-                    hR = rt.TRatioPlot(hd, hf)
-                hR.SetH1DrawOpt("P E0")
-                hR.SetGraphDrawOpt("P E0 X0")
-                hR.Draw("P E0")
-                hR.GetLowerRefYaxis().SetTitle("delphes/fullsim")
-                hR.GetLowerRefGraph().SetMaximum(1.5)
-                if 'efficiency' in name or 'fake' in name or 'nonprompt' in name:
-                    hR.GetUpperRefYaxis().SetRangeUser(0,1)
-                else: hR.GetUpperRefYaxis().SetRangeUser(0,max(hd.GetMaximum(),hf.GetMaximum())*1.1)
-                hR.GetLowerRefGraph().SetMarkerStyle(20)
-                canv.Update()
-            else:
-                hf.Draw()
-                hd.Draw("same")
-
-
-            legend = rt.TLegend(.9,.9,.99,.99)
-            legend.SetTextSize(0.03)
-            legend.SetBorderSize(0) 
-            legend.AddEntry(hd,"Delphes","l")
-            legend.AddEntry(hf,"FullSim","l")
-            legend.Draw()
-            canv.Print(printoutdir+ "/" + canv_name +".png")
-       '''
 
 
     ## HERE IS WHERE WE COMPUTE THE VALUES AND DUMP THE RESOLUTION IN THE INPUT TCL FILE 
@@ -434,55 +338,32 @@ for obj, params in object_dict.items():
     ## smear parametrisation  
     content=replaced(content, dump_reso, starting_smear, ending_smear)
 
-
-
     ## ADD HERE VARIOUS EFFICIENCIES AND FAKE RATES
 
-    '''
-    dumpme = ['efficiency2D_looseID','efficiency2D_tightID']
-    photondump = ['nonpromptfakerate2D_looseID', 'nonpromptfakerate2D_tightID','fakerate2D_looseID','fakerate2D_tightID']
+    for quality in params['qualities']:
 
-    particle = (hist_names[0].split('_')[0]).replace('gen','')
-    if particle == 'photon': dumpme.extend(photondump) 
-
-    for dumpname in dumpme:
-        quality = dumpname.split('_')[-1]
-        name = particle+'_'+dumpname
-        print 'dumping tcl using hist name',name
+        dumpname='efficiency2D_'+quality+'IDISO'
+        
+        if collection == 'jetpuppi':
+            dumpname='efficiency2D_'+quality+'ID'
+            
+        name=collection+'_'+dumpname
 
         form = 'Efficiency'
-        if 'non' in dumpname: form = 'NonPrompt';
-        elif 'fake' in dumpname: form = 'Fake';
+        print quality, name
 
-        if particle == 'muon' or particle == 'electron': 
-            useIso = True
-            print 'Forcing useIso = true for muon/electron tcl files'
+        id2D_f = inputFile_f.Get(name).ProjectionXY("id_"+name+"_f")
+        id2D_d = inputFile_d.Get(name).ProjectionXY("id_"+name+"_d")
 
-        id2D_f = inputFile_f.Get(name).ProjectionXY("id_"+name)
-        if useIso: 
-            if particle != 'photon':
-                #(RecoFS eff * IDFS eff)*(IsoFS eff)/(RecoDelphes eff * IsoDelphes eff)
-                iso2D_d = inputFile_d.Get(name.replace('ID','ISO')).ProjectionXY("isoD_"+name) # if removing Reco, add "ifReco" to ID and ISO
-                iso2D_f = inputFile_f.Get(name.replace('ID','ISOifReco')).ProjectionXY("isoF_"+name)
-            else:
-                iso2D_d = inputFile_d.Get(name).ProjectionXY("isoD_"+name)
-                iso2D_f = inputFile_f.Get(name).ProjectionXY("isoF_"+name)
+        lines_eff = []
+        lines_eff.append('  ### {} {} ID \n'.format(collection,quality))
+        lines_eff.append('  set EfficiencyFormula {\n')
 
-        f = open(printoutdir+'/'+particle+quality+form+'.tcl','w')
-        f.write('## Fullsim Efficiency for '+name+', multiplying ISO(mu/el) or RECO(photon) Fullsim/Delphes? '+str(useIso)+'\n\n')
 
-        if form == 'Efficiency':
-            f.write('set EfficiencyFormula {\n')
-        elif form == 'NonPrompt':
-            f.write('set NonpromptFormula {\n')
-        elif form == 'Fake':
-            f.write('set FakeFormula {\n')
-
-        ptlow = id2D_f.GetXaxis().GetBinLowEdge(1)
-        f.write('\t(pt <= '+str(ptlow)+')*(1.0) +\n')
-
+        ### calculate residual efficiency
         for ybin in range(0,id2D_f.GetNbinsY()): ## eta
             isetaOF = False
+            #print id2D_f.GetBinContent(ybin+1), id2D_d.GetBinContent(ybin+1)
 
             if id2D_f.GetYaxis().GetBinWidth(ybin+1) == 0: continue
             etalow = id2D_f.GetYaxis().GetBinLowEdge(ybin+1)
@@ -491,31 +372,112 @@ for obj, params in object_dict.items():
 
             for xbin in range (0,id2D_f.GetNbinsX()): ##pt
                 isptOF = False
+
+                #print id2D_f.GetBinContent(xbin+1,ybin+1), id2D_d.GetBinContent(xbin+1,ybin+1)
+                
                 if id2D_f.GetXaxis().GetBinWidth(xbin+1) == 0: continue
                 ptlow = id2D_f.GetXaxis().GetBinLowEdge(xbin+1)
                 pthigh = id2D_f.GetXaxis().GetBinUpEdge(xbin+1)
                 if pthigh > 9e4: isptOF = True
 
+                '''
                 ratio = id2D_f.GetBinContent(xbin+1,ybin+1)
                 if useIso: 
                     delpheseff = iso2D_d.GetBinContent(xbin+1,ybin+1)
                     if delpheseff > 0: 
                         ratio = ratio * iso2D_f.GetBinContent(xbin+1,ybin+1)/delpheseff
                     else: ratio = ratio * iso2D_f.GetBinContent(xbin+1,ybin+1)
+                '''
+                ratio = 1.
+                eff_d = id2D_d.GetBinContent(xbin+1,ybin+1)
+                eff_f = id2D_f.GetBinContent(xbin+1,ybin+1)
+                if eff_d > 0 and eff_f < eff_d: 
+                    ratio = eff_f/eff_d
 
                 if isptOF:
-                    if isetaOF: string = "(abs(eta) > "+str(etalow)+") * (pt > "+str(ptlow)+") * ("+str(ratio)+") +"
-                    else: string = "(abs(eta) > "+str(etalow)+" && abs(eta) <= "+str(etahigh)+") * (pt > "+str(ptlow)+") * ("+str(ratio)+") +"
+                    if isetaOF: string = "   (abs(eta) > "+str(etalow)+") * (pt > "+str(ptlow)+") * ("+str(ratio)+") +"
+                    else: string = "   (abs(eta) > "+str(etalow)+" && abs(eta) <= "+str(etahigh)+") * (pt > "+str(ptlow)+") * ("+str(ratio)+") +"
                 else:
-                    if isetaOF: string = "(abs(eta) > "+str(etalow)+") * (pt > "+str(ptlow)+" && pt <= "+str(pthigh)+") * ("+str(ratio)+") +"
-                    else: string = "(abs(eta) > "+str(etalow)+" && abs(eta) <= "+str(etahigh)+") * (pt > "+str(ptlow)+" && pt <= "+str(pthigh)+") * ("+str(ratio)+") +"
+                    if isetaOF: string = "   (abs(eta) > "+str(etalow)+") * (pt > "+str(ptlow)+" && pt <= "+str(pthigh)+") * ("+str(ratio)+") +"
+                    else: string = "   (abs(eta) > "+str(etalow)+" && abs(eta) <= "+str(etahigh)+") * (pt > "+str(ptlow)+" && pt <= "+str(pthigh)+") * ("+str(ratio)+") +"
 
-                if xbin == id2D_f.GetNbinsX()-1 and ybin == id2D_f.GetNbinsY()-1: string = string[:-2]
+                lines_eff.append(string)
+                #print string
 
-                f.write('\t'+string+'\n')
-        f.write('}\n')
-        f.close()
-    '''
+        dump_eff=lines_eff
+        dump_eff=clean_dump(dump_eff)
+
+        print dump_eff
+
+        starting_eff = '## DUMMY_' + collection.upper() + '_'+ quality.upper() + 'ID_EFFICIENCY'
+        ending_eff = starting_eff.replace('DUMMY','ENDDUMMY')
+
+        content=replaced(content, dump_eff, starting_eff, ending_eff)
+
+        if 'file_fake_F' in params: ## exclude jets
+
+            file_fake_F=params['file_fake_F']
+            fakeFile_f = rt.TFile.Open(file_fake_F)
+
+            lines_fake = []
+            lines_fake.append('  ### {} {} FAKE \n'.format(collection,quality))
+            
+            pdgcode=-1
+            if collection=='electron': pdgcode=11
+            elif collection=='muon': pdgcode=13
+            elif collection=='photon': pdgcode=22
+            
+            lines_fake.append('  {{{}}} {{\n'.format(pdgcode))
+
+            ### extract fakerate
+
+            name_fake=collection+'_fakerate2D_'+quality+'IDISO'
+
+            ## this is already a TH2
+            
+            print name_fake
+            fake2D_f = fakeFile_f.Get(name_fake)
+
+            ## ex: DUMMY_PHOTONMediumID_EFFICIENCY
+
+            ### calculate residual efficiency
+            for ybin in range(0,fake2D_f.GetNbinsY()): ## eta
+                isetaOF = False
+
+                if fake2D_f.GetYaxis().GetBinWidth(ybin+1) == 0: continue
+                etalow = fake2D_f.GetYaxis().GetBinLowEdge(ybin+1)
+                etahigh = fake2D_f.GetYaxis().GetBinUpEdge(ybin+1)
+                if etahigh > 10: isetaOF = True
+
+                for xbin in range (0,fake2D_f.GetNbinsX()): ##pt
+                    isptOF = False
+
+                    if fake2D_f.GetXaxis().GetBinWidth(xbin+1) == 0: continue
+                    ptlow = fake2D_f.GetXaxis().GetBinLowEdge(xbin+1)
+                    pthigh = fake2D_f.GetXaxis().GetBinUpEdge(xbin+1)
+                    if pthigh > 9e4: isptOF = True
+
+                    eff_f = fake2D_f.GetBinContent(xbin+1,ybin+1)
+
+                    if isptOF:
+                        if isetaOF: string = "          (abs(eta) > "+str(etalow)+") * (pt > "+str(ptlow)+") * ("+str(eff_f)+") +"
+                        else: string = "          (abs(eta) > "+str(etalow)+" && abs(eta) <= "+str(etahigh)+") * (pt > "+str(ptlow)+") * ("+str(eff_f)+") +"
+                    else:
+                        if isetaOF: string = "          (abs(eta) > "+str(etalow)+") * (pt > "+str(ptlow)+" && pt <= "+str(pthigh)+") * ("+str(eff_f)+") +"
+                        else: string = "         (abs(eta) > "+str(etalow)+" && abs(eta) <= "+str(etahigh)+") * (pt > "+str(ptlow)+" && pt <= "+str(pthigh)+") * ("+str(eff_f)+") +"
+  
+                    lines_fake.append(string)
+                    #print string
+
+            dump_fake=lines_fake
+            dump_fake=clean_dump(dump_fake)
+
+            print dump_fake
+
+            starting_fake = '## DUMMY_' + collection.upper() + '_'+ quality.upper() + 'ID_FAKERATE'
+            ending_fake = starting_fake.replace('DUMMY','ENDDUMMY')
+
+            content=replaced(content, dump_fake, starting_fake, ending_fake)
 
 
 ## dump new content into new delphes card

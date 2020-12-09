@@ -1,3 +1,4 @@
+
 ########################################
 #
 #  Main authors: Michele Selvaggi (CERN)
@@ -108,6 +109,9 @@ set ExecutionPath {
   JetScalePUPPIAK8
   JetSmearPUPPI
   JetSmearPUPPIAK8
+
+  JetLooseID
+  JetTightID
 
   JetFlavorAssociationPUPPI
   JetFlavorAssociationPUPPIAK8
@@ -1076,9 +1080,9 @@ module EnergyScale JetScalePUPPI {
   set OutputArray jets
 
  # scale formula for jets
-  ## DUMMY_JET_SCALE
+  ## DUMMY_JETPUPPI_SCALE
   set ScaleFormula {1.00}
-  ## ENDDUMMY_JET_SCALE
+  ## ENDDUMMY_JETPUPPI_SCALE
 }
 
 module EnergyScale JetScalePUPPIAK8 {
@@ -1101,18 +1105,68 @@ module MomentumSmearing JetSmearPUPPI {
   set OutputArray jets
 
  # scale formula for jets
- ## DUMMY_JET_SMEAR
+ ## DUMMY_JETPUPPI_SMEAR
   set ResolutionFormula {1.00e-10}
- ## ENDDUMMY_JET_SMEAR
+ ## ENDDUMMY_JETPUPPI_SMEAR
 }
 
 module MomentumSmearing JetSmearPUPPIAK8 {
   set InputArray JetScalePUPPIAK8/jets
   set OutputArray jets
 
- ## DUMMY_JETAK8_SMEAR
+ ## DUMMY_JETPUPPIAK8_SMEAR
   set ResolutionFormula {1.00e-10}
- ## ENDDUMMY_JETAK8_SMEAR
+ ## ENDDUMMY_JETPUPPIAK8_SMEAR
+}
+
+
+
+#####################
+# Jet Id Loose     #
+#####################
+
+module Efficiency JetLooseID {
+
+  ## input particles
+  set InputArray JetSmearPUPPI/Jets
+  ## output particles
+  set OutputArray Jets
+  # set EfficiencyFormula {efficiency formula as a function of eta and pt}
+  # efficiency formula for Jets
+
+
+  ## DUMMY_JETPUPPI_LOOSEID_EFFICIENCY
+  set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
+                           (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 1.5 && abs(eta) <= 5.0) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 5.0)                                   * (0.00)}
+  ## ENDDUMMY_JETPUPPI_LOOSEID_EFFICIENCY
+
+}
+
+
+
+#####################
+# Jet Id Tight      #
+#####################
+
+module Efficiency JetTightID {
+
+  ## input particles
+  set InputArray JetSmearPUPPI/Jets
+  ## output particles
+  set OutputArray Jets
+  # set EfficiencyFormula {efficiency formula as a function of eta and pt}
+  # efficiency formula for Jets
+
+
+  ## DUMMY_JETPUPPI_TIGHTID_EFFICIENCY
+  set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
+                           (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 1.5 && abs(eta) <= 5.0) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 5.0)                                   * (0.00)}
+  ## ENDDUMMY_JETPUPPI_TIGHTID_EFFICIENCY
+
 }
 
 
@@ -1209,12 +1263,12 @@ module Efficiency PhotonLooseID {
   # efficiency formula for photons
 
 
-  ## DUMMY_PHOTONIDLOOSE_EFFICIENCY
+  ## DUMMY_PHOTON_LOOSEID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
-  ## ENDDUMMY_PHOTONIDLOOSE_EFFICIENCY
+  ## ENDDUMMY_PHOTON_LOOSEID_EFFICIENCY
 
 }
 
@@ -1232,12 +1286,12 @@ module Efficiency PhotonMediumID {
   # set EfficiencyFormula {efficiency formula as a function of eta and pt}
   # efficiency formula for photons
 
-  ## DUMMY_PHOTONIDMEDIUM_EFFICIENCY
+  ## DUMMY_PHOTON_MEDIUMID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
-  ## ENDDUMMY_PHOTONIDMEDIUM_EFFICIENCY
+  ## ENDDUMMY_PHOTON_MEDIUMID_EFFICIENCY
 
 }
 
@@ -1255,12 +1309,12 @@ module Efficiency PhotonTightID {
   # set EfficiencyFormula {efficiency formula as a function of eta and pt}
   # efficiency formula for photons
 
-  ## DUMMY_PHOTONIDTIGHT_EFFICIENCY
+  ## DUMMY_PHOTON_TIGHTID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
-  ## ENDDUMMY_PHOTONIDTIGHT_EFFICIENCY
+  ## ENDDUMMY_PHOTON_TIGHTID_EFFICIENCY
 
 }
 
@@ -1326,12 +1380,12 @@ module Efficiency ElectronLooseEfficiency {
   set InputArray ElectronSmear/electrons
   set OutputArray electrons
 
-  ## DUMMY_ELECTRONIDLOOSE_EFFICIENCY
+  ## DUMMY_ELECTRON_LOOSEID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
-  ## ENDDUMMY_ELECTRONIDLOOSE_EFFICIENCY
+  ## ENDDUMMY_ELECTRON_LOOSEID_EFFICIENCY
 
 
 }
@@ -1346,12 +1400,12 @@ module Efficiency ElectronMediumEfficiency {
   set InputArray ElectronSmear/electrons
   set OutputArray electrons
 
-  ## DUMMY_ELECTRONIDMEDIUM_EFFICIENCY
+  ## DUMMY_ELECTRON_MEDIUMID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
-  ## ENDDUMMY_ELECTRONIDMEDIUM_EFFICIENCY
+  ## ENDDUMMY_ELECTRON_MEDIUMID_EFFICIENCY
 }
 
 #######################
@@ -1363,12 +1417,12 @@ module Efficiency ElectronTightEfficiency {
   set InputArray ElectronSmear/electrons
   set OutputArray electrons
 
-  ## DUMMY_ELECTRONIDTIGHT_EFFICIENCY
+  ## DUMMY_ELECTRON_TIGHTID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
-  ## ENDDUMMY_ELECTRONIDTIGHT_EFFICIENCY
+  ## ENDDUMMY_ELECTRON_TIGHTID_EFFICIENCY
 }
 
 
@@ -1430,14 +1484,13 @@ module MomentumSmearing MuonSmear {
 module Efficiency MuonLooseIdEfficiency {
     set InputArray MuonSmear/muons
     set OutputArray muons
-    # TightID(fullsim) * TightIso(fullsim)/TightIso(Delphes) efficiency formula for muons
     
-    ## DUMMY_MUONIDLOOSE_EFFICIENCY
+    ## DUMMY_MUON_LOOSEID_EFFICIENCY
     set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
-    ## ENDDUMMY_MUONIDLOOSE_EFFICIENCY
+    ## ENDDUMMY_MUON_LOOSEID_EFFICIENCY
 }
 
 ##################
@@ -1448,14 +1501,13 @@ module Efficiency MuonLooseIdEfficiency {
 module Efficiency MuonMediumIdEfficiency {
     set InputArray MuonSmear/muons
     set OutputArray muons
-    # TightID(fullsim) * TightIso(fullsim)/TightIso(Delphes) efficiency formula for muons
 
-    ## DUMMY_MUONIDMEDIUM_EFFICIENCY
+    ## DUMMY_MUON_MEDIUMID_EFFICIENCY
     set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
-    ## ENDDUMMY_MUONIDMEDIUM_EFFICIENCY
+    ## ENDDUMMY_MUON_MEDIUMID_EFFICIENCY
 }
 
 ##################
@@ -1465,14 +1517,13 @@ module Efficiency MuonMediumIdEfficiency {
 module Efficiency MuonTightIdEfficiency {
     set InputArray MuonSmear/muons
     set OutputArray muons
-    # TightID(fullsim) * TightIso(fullsim)/TightIso(Delphes) efficiency formula for muons
 
-    ## DUMMY_MUONIDTIGHT_EFFICIENCY
+    ## DUMMY_MUON_TIGHTID_EFFICIENCY
     set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
                            (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
          (abs(eta) > 4.0)                                   * (0.00)}
-    ## ENDDUMMY_MUONIDTIGHT_EFFICIENCY
+    ## ENDDUMMY_MUON_TIGHTID_EFFICIENCY
 }
 
 
@@ -1657,9 +1708,15 @@ module JetFakeParticle JetFakeMakerLoose {
   set JetOutputArray jets
 
   set EfficiencyFormula {
+  ## DUMMY_ELECTRON_LOOSEID_FAKERATE
       {11} {0.02}
+  ## ENDDUMMY_ELECTRON_LOOSEID_FAKERATE
+  ## DUMMY_MUON_LOOSEID_FAKERATE
       {13} {0.02}
+  ## ENDDUMMY_MUON_LOOSEID_FAKERATE
+  ## DUMMY_PHOTON_LOOSEID_FAKERATE
       {22} {0.10} 
+  ## ENDDUMMY_PHOTON_LOOSEID_FAKERATE
   }
 
 }
@@ -1678,9 +1735,15 @@ module JetFakeParticle JetFakeMakerMedium {
   set JetOutputArray jets
 
   set EfficiencyFormula {
+  ## DUMMY_ELECTRON_MEDIUMID_FAKERATE
       {11} {0.01}
+  ## ENDDUMMY_ELECTRON_MEDIUMID_FAKERATE
+  ## DUMMY_MUON_MEDIUMID_FAKERATE
       {13} {0.01}
+  ## ENDDUMMY_MUON_MEDIUMID_FAKERATE
+  ## DUMMY_PHOTON_MEDIUMID_FAKERATE
       {22} {0.05} 
+  ## ENDDUMMY_PHOTON_MEDIUMID_FAKERATE
   }
 
 }
@@ -1698,9 +1761,15 @@ module JetFakeParticle JetFakeMakerTight {
   set JetOutputArray jets
 
   set EfficiencyFormula {
+  ## DUMMY_ELECTRON_TIGHTID_FAKERATE
       {11} {0.005}
+  ## ENDDUMMY_ELECTRON_TIGHTID_FAKERATE
+  ## DUMMY_MUON_TIGHTID_FAKERATE
       {13} {0.005}
+  ## ENDDUMMY_MUON_TIGHTID_FAKERATE
+  ## DUMMY_PHOTON_TIGHTID_FAKERATE
       {22} {0.025} 
+  ## ENDDUMMY_PHOTON_TIGHTID_FAKERATE
   }
 
 }
@@ -1860,6 +1929,9 @@ module TreeWriter TreeWriter {
 
   add Branch JetSmearPUPPI/jets JetPUPPI Jet
   add Branch JetSmearPUPPIAK8/jets JetPUPPIAK8 Jet
+
+  add Branch JetLooseID/jets JetLoose Jet
+  add Branch JetTightID/jets JetTight Jet
 
   add Branch Rho/rho Rho Rho
   add Branch PuppiMissingET/momentum PuppiMissingET MissingET
