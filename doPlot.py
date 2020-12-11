@@ -126,6 +126,7 @@ for name in hist_names:
     canv = rt.TCanvas(canv_name, canv_name, 900, 600)
     hd = inputFile_d.Get(name)
     hf = inputFile_f.Get(name)
+
     try:
         test = hf.Integral()
         if test == 0: continue
@@ -162,6 +163,7 @@ for name in hist_names:
         mean_and_sigmas_d[ntup_in] = get_mean_and_sigma(hd, wmin=0.2, wmax=1.8, step=0.001, epsilon=0.007)
         mean_and_sigmas_f[ntup_in] = get_mean_and_sigma(hf, wmin=0.2, wmax=1.8, step=0.001, epsilon=0.007)
 
+
     if 'efficiency2D' in name or 'fakerate2D' in name or 'fakenonisorate2D' in name:
         rt.gStyle.SetPaintTextFormat("1.2f")
         hd.SetStats(rt.kFALSE)
@@ -197,6 +199,7 @@ for name in hist_names:
         hd.SetMarkerStyle(20)
         hd.SetMarkerColor(rt.kRed)
         hd.SetStats(rt.kFALSE)        
+
         if 'efficiency' not in name and 'fake' not in name and 'nonprompt' not in name and 'ptresponse' not in name:
             
             if hf.Integral() > 0:
@@ -204,7 +207,8 @@ for name in hist_names:
             if hd.Integral() > 0:
                 hd.Scale(1.0/hd.Integral())
 
-        if 'efficiency' in name or 'fake' in name or 'nonprompt' in name:
+
+        if 'efficiency' in name or 'fake' in name or 'nonprompt' in name or 'Rate' in name:
             hf.SetMaximum(1)
         else:
             hf.SetMaximum(max(hd.GetMaximum(),hf.GetMaximum())*1.1)
