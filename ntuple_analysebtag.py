@@ -188,7 +188,8 @@ def main():
         "ptRatio": 2.0,
         "ptMin": 20,
         "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5]],
-        "etaSlices2D": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 4]],  # up to eta = 4 for 2D maps      
+        # up to eta = 4 for 2D maps
+        "etaSlices2D": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 4]],
         "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5]],
         "sliceSplit": 1,  # for 2D map, make N divisions of each slice
         "plotPtRange": [0, 500],
@@ -243,7 +244,7 @@ def main():
     for event in ntuple:
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
-        if (tot_nevents % 10) == 0:  # 1000
+        if (tot_nevents % 100) == 0:  # 1000
             print '... processed {} events ...'.format(event.entry()+1)
 
         tot_nevents += 1
@@ -256,6 +257,7 @@ def main():
             pVec = ROOT.TLorentzVector()
             pVec.SetPtEtaPhiM(p.pt(), p.eta(), p.phi(), p.mass())
             jetParFlav = findPartonFlav(genparts, pVec, params['dR'])
+
             if jetParFlav == 5:
                 for quality in params["bitids"]:
                     isTagged = int(bool(p.btag() & quality[1]))
