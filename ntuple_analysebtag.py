@@ -79,6 +79,65 @@ def create2dHist(varname, params, title):
 
     return h
 
+def create2Dmap(varname, params, title, dumptcl):
+
+    # use the slices to build a list of bin edges
+    ptbins = [item[0] for item in params["ptSlices"]]
+    etabins = [item[0] for item in params["etaSlices"]]
+    ptbins.append(params["ptSlices"][-1][1])
+    etabins.append(params["etaSlices"][-1][1])
+    # set more realistic caps
+    if not dumptcl:
+        if ptbins[-1] > 5e4:
+            ptbins[-1] = ptbins[-2]*2.  # probably somewhere in 200 -- 4000?
+        if etabins[-1] > 5e4:
+            etabins[-1] = 5.
+
+    ptbinsext = []
+    for iedge in range(0, len(ptbins)-1):
+        # print "ptbins"+str(ptbins)
+        binwidth = ptbins[iedge + 1] - ptbins[iedge]
+        if ptbins[iedge + 1] >= 9e4:
+            ptbinsext.append(ptbins[iedge])
+            continue  # don't subdivide the overflow bin
+        nsplits = params["sliceSplit"]
+        if ptbins[iedge+1] >= 150 or ptbins[iedge] == 100:
+            nsplits = 2
+        for j in range(0, nsplits):  # 0, 1, 2 if sliceSplit = 3
+            # low, low+0*width/3, low+width/3, low+2*width/3
+            ptbinsext.append(ptbins[iedge] + int(j*binwidth/nsplits))
+    ptbinsext.append(ptbins[-1])
+    # print ptbinsext
+
+    etabinsext = []
+    for iedge in range(0, len(etabins)-1):
+        # print "etabins"+str(etabins)
+        binwidth = etabins[iedge+1] - etabins[iedge]
+        if etabins[iedge+1] >= 9e4:
+            etabinsext.append(etabins[iedge])
+            continue  # don't subdivide the overflow bin
+        nsplits = params["sliceSplit"]
+        if 'electron' in varname and etabins[iedge] == 1.5:
+            nsplits = 7
+        for j in range(0, nsplits):  # 0, 1, 2 if sliceSplit = 3
+            # low, low+0*width/3, low+width/3, low+2*width/3
+            etabinsext.append(etabins[iedge] + j*binwidth/nsplits)
+    etabinsext.append(etabins[-1])
+    # print etabinsext
+
+    # arrays for ROOT
+    xbins = array('d', ptbinsext)
+    ybins = array('d', etabinsext)
+    if "efficiency" in varname:
+        h = ROOT.TProfile2D(varname, title, len(xbins) -
+                       1, xbins, len(ybins)-1, ybins)
+        h.GetXaxis().SetTitle("jet p_{T} [GeV]")
+        h.GetYaxis().SetTitle("jet #eta")
+
+    h.Sumw2()
+    return h
+
+
 def main():
     usage = 'usage: %prog [options]'
     parser = optparse.OptionParser(usage)
@@ -90,7 +149,7 @@ def main():
     parser.add_option('-o', '--outFile',          
                       dest='outFile',       
                       help='output file [%default]',  
-                      default='histo_full/val_btag.root',       
+                      default='histo_delp/val_btag.root',       
                       type='string')
     parser.add_option('-p', '--physObj',          
                       dest='physobject',       
@@ -102,6 +161,11 @@ def main():
                       help='max number of events [%default]',
                       default=10000,
                       type=int)
+    parser.add_option('--dumptcl',
+                      dest='dumptcl',
+                      help='use more bins for making tcl file?',
+                      action="store_true",
+                      default=False)
     (opt, args) = parser.parse_args()
 
 
@@ -109,6 +173,7 @@ def main():
     print inFile
     ntuple = Ntuple(inFile)
     maxEvents = opt.maxEvts
+    dumptcl = opt.dumptcl
     tot_nevents = 0
     outputF = ROOT.TFile(opt.outFile, "RECREATE")
     obj = opt.physobject
@@ -155,6 +220,11 @@ def main():
                 newname = ((newname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
                 hists[obj+"_"+newname] = create2dHist(obj+"_"+newname,params,quality[2])
 
+    hnames2D = ["btagRate_2D", "cMistagRate_2D", "lightMistagRate_2D"]
+    for hname in hnames2D:
+        for quality in params["bitids"]:
+            newname = hname+"_"+quality[0]
+            hists[obj+"_"+newname] = create2Dmap(obj+"_"+newname, params, quality[2], dumptcl)
 
     ## study
     for event in ntuple:
@@ -167,7 +237,7 @@ def main():
 	genparts = event.genparticles()
         jets = event.jetspuppi()
 
- 	## studymet
+ 
 	for p in jets:
 	  
 	    if p.pt() < params['ptMin']: continue
@@ -182,6 +252,7 @@ def main():
 		    isTagged = int(bool(p.btag() & quality[1]))
 		    hists[obj+"_btagRate_to_eta_"+quality[0]].Fill(p.eta(), isTagged)
 	    	    hists[obj+"_btagRate_to_pt_"+quality[0]].Fill(p.pt(), isTagged)
+                    hists[obj+"_btagRate_2D_" + quality[0]].Fill(p.pt(), p.eta(), isTagged)
 	        for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
@@ -203,6 +274,7 @@ def main():
                     isTagged = int(bool(p.btag() & quality[1]))
                     hists[obj+"_cMistagRate_to_eta_"+quality[0]].Fill(p.eta(), isTagged)
                     hists[obj+"_cMistagRate_to_pt_"+quality[0]].Fill(p.pt(), isTagged)
+                    hists[obj+"_cMistagRate_2D_" + quality[0]].Fill(p.pt(), p.eta(), isTagged)
                 for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
@@ -223,6 +295,7 @@ def main():
                     isTagged = int(bool(p.btag() & quality[1]))
                     hists[obj+"_lightMistagRate_to_eta_"+quality[0]].Fill(p.eta(), isTagged)
                     hists[obj+"_lightMistagRate_to_pt_"+quality[0]].Fill(p.pt(), isTagged)
+                    hists[obj+"_lightMistagRate_2D_" + quality[0]].Fill(p.pt(), p.eta(), isTagged)
                 for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
