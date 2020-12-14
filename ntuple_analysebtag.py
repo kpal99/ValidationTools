@@ -128,7 +128,7 @@ def create2Dmap(varname, params, title, dumptcl):
     # arrays for ROOT
     xbins = array('d', ptbinsext)
     ybins = array('d', etabinsext)
-    if "efficiency" in varname:
+    if "2D" in varname:
         h = ROOT.TProfile2D(varname, title, len(xbins) -
                        1, xbins, len(ybins)-1, ybins)
         h.GetXaxis().SetTitle("jet p_{T} [GeV]")
