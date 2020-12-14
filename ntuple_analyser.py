@@ -192,6 +192,7 @@ def main():
 
 
     inFile = opt.inFile
+    print 'READING: ',inFile
     ntuple = Ntuple(inFile)
     maxEvents = opt.maxEvts
     dumptcl = opt.dumptcl
@@ -230,7 +231,7 @@ def main():
             "plotMassRange": [0, 500],
             "plotNObjRange_Delp": [0, 20],
             "plotNObjRange_Full": [0, 50],
-            "plotResoRange": [0, 2],
+            "plotResoRange": [0.8, 1.2],
             "ids": [
                 ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
                 ## NOTE: only efficiency plots get anything with value [3] > 0
@@ -257,7 +258,7 @@ def main():
             "plotMassRange": [-1, 1],
             "plotNObjRange_Delp": [0, 4],
             "plotNObjRange_Full": [0, 4],
-            "plotResoRange": [0, 2],
+            "plotResoRange": [0.8, 1.2],
             "ids": [  
                 ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, 
                 ##  denominator: 0(all)/1(reco matched)/2(reco+id), "x-axis label"]
@@ -299,7 +300,7 @@ def main():
             "plotMassRange": [-1, 1],
             "plotNObjRange_Delp": [0, 8],
             "plotNObjRange_Full": [0, 8],
-            "plotResoRange": [0, 2],
+            "plotResoRange": [0.9, 1.1],
             "ids": [  
                 ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, 
                 ##  denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
@@ -686,13 +687,6 @@ def main():
                         try: isopass = (quality[2] < 0 or bool(p_isopass[matchindex] & (1<<quality[2])))
                         except: isopass = False
                         
-                        # print '--------------------------'
-                        # print 'Testing quality:',quality[1],quality[2],quality[3]
-                        # print 'isMatched?:',match
-                        # if match: 
-                        #     print 'Matched idpass:',p_idpass[matchindex],', isopass:',p_isopass[matchindex]
-                        #     print 'Bit test gave idpass = ',idpass,', and isopass = ',isopass
-
                         if quality[3] >= 1:
                             if match == 1:
                                 if quality[3] == 2:
@@ -764,7 +758,7 @@ def main():
             for g in fakeobjs:
         
                 ## Cuts on the gen fake object
-                if abs(g.eta()) > 5 or g.pt() < 20 : continue
+                if abs(g.eta()) > 5 or g.pt() < 15 : continue
         
                 g_vec = TLorentzVector()
                 g_vec.SetPtEtaPhiM(g.pt(), g.eta(), g.phi(), g.mass())
@@ -792,6 +786,7 @@ def main():
                         except IndexError: idpass = False
                         try: isopass = (quality[2] < 0 or bool(p_isopass[matchindexF] & (1<<quality[2])))
                         except: isopass = False
+                        
                         hists[obj+"_fakerate_to_eta_"+quality[0]].Fill(g.eta(), matchF*idpass*isopass) #0 if any fail, 1 if all
                         hists[obj+"_fakerate_to_pt_"+quality[0]].Fill(g.pt(), matchF*idpass*isopass)
                         hists[obj+"_fakerate2D_"+quality[0]].Fill(g.pt(),g.eta(), matchF*idpass*isopass)
