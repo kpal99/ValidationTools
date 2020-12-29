@@ -300,8 +300,8 @@ for obj, params in object_dict.items():
         mu_f = mean_and_sigmas_f[ntup_in][0]
 
         ## 1 - is gaussian width and 2 - is effective width
-        sigma_d = mean_and_sigmas_d[ntup_in][1]
-        sigma_f = mean_and_sigmas_f[ntup_in][1]
+        sigma_d = mean_and_sigmas_d[ntup_in][2]
+        sigma_f = mean_and_sigmas_f[ntup_in][2]
 
 
         if mu_d > 0. and mu_f > 0.:   ## otherwise pick value from previous bin
@@ -391,7 +391,7 @@ for obj, params in object_dict.items():
                 ratio = 1.
                 eff_d = id2D_d.GetBinContent(xbin+1,ybin+1)
                 eff_f = id2D_f.GetBinContent(xbin+1,ybin+1)
-                if eff_d > 0 and eff_f < eff_d: 
+                if eff_d > 0 and eff_f > 0 and eff_f < eff_d: 
                     ratio = eff_f/eff_d
 
                 if isptOF:
@@ -402,12 +402,12 @@ for obj, params in object_dict.items():
                     else: string = "   (abs(eta) > "+str(etalow)+" && abs(eta) <= "+str(etahigh)+") * (pt > "+str(ptlow)+" && pt <= "+str(pthigh)+") * ("+str(ratio)+") +"
 
                 lines_eff.append(string)
-                #print string
+                print string
 
         dump_eff=lines_eff
         dump_eff=clean_dump(dump_eff)
 
-        print dump_eff
+        #print dump_eff
 
         starting_eff = '## DUMMY_' + collection.upper() + '_'+ quality.upper() + 'ID_EFFICIENCY'
         ending_eff = starting_eff.replace('DUMMY','ENDDUMMY')
@@ -472,7 +472,7 @@ for obj, params in object_dict.items():
             dump_fake=lines_fake
             dump_fake=clean_dump(dump_fake)
 
-            print dump_fake
+            #print dump_fake
 
             starting_fake = '## DUMMY_' + collection.upper() + '_'+ quality.upper() + 'ID_FAKERATE'
             ending_fake = starting_fake.replace('DUMMY','ENDDUMMY')
