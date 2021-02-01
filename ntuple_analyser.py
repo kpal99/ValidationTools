@@ -222,7 +222,7 @@ def main():
             "dR": 0.2,
             "ptRatio": 2.0,
             "ptMin": 20,
-            "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5] ], ## use 1e5 as "Inf"
+            "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 5], [5,1e5] ], ## use 1e5 as "Inf"
             "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5] ],
             "sliceSplit": 1, # for 2D map, make N divisions of each slice
             "plotPtRange": [0, 1500],
@@ -243,13 +243,13 @@ def main():
                 ["tightIDifReco",2,-1,1,"#varepsilon(tightID)"],      ## IDs on reco-matched gen (eff only)
                 ], 
             }
-        if dumptcl: params["sliceSplit"] = 5
+        if dumptcl: params["sliceSplit"] = 2
     elif obj == "photon": 
         params = {
             "dR": 0.1,
             "ptRatio": 100.0,
             "ptMin": 8,
-            "etaSlices": [[0, 1.5], [1.5, 3], [3,1e5]],
+            "etaSlices": [[0, 1.5], [1.5, 3], [3, 4], [4,1e5]],
             "ptSlices": [[10, 20], [20, 50], [50, 100], [100, 150], [150, 1e5]],
             "sliceSplit": 3,
             "plotPtRange": [0, 250],
@@ -285,7 +285,7 @@ def main():
                 ["tightIDISOifReco",2,2,1,"#varepsilon(tightID)*#varepsilon(tightISO)"], ## ID+ISOs on reco-matched gen (eff only)
                 ],
             }
-        if dumptcl: params["sliceSplit"] = 5
+        if dumptcl: params["sliceSplit"] = 2
     elif obj == "electron" or obj == "muon":
         params = {
             "dR": 0.2,
@@ -329,8 +329,8 @@ def main():
             }
         if obj == 'electron': 
             #params["ptSlices"] = [[10,20], [20, 50], [50, 100], [100, 200], [200, 300], [300, 400], [400, 1e5]]
-            params["etaSlices"] = [[0, 1.5], [1.5, 3], [3, 1e5] ]
-        if dumptcl: params["sliceSplit"] = 5                
+            params["etaSlices"] = [[0, 1.5], [1.5, 3], [3, 4], [4, 1e5] ]
+        if dumptcl: params["sliceSplit"] = 2                
     else: 
         print 'Physics object not recognized! Choose jetchs, jetpuppi, photon, electron, or muon.'            
         exit()
