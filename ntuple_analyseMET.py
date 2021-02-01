@@ -90,14 +90,14 @@ def main():
     ## create histo
     metHists = {}
     metHists['genht_pt30_eta5'] = createMetHist('genht_pt30_eta5', "H_{T} gen [GeV]", 50, 0, 500)
-    metHists['npuVtx'] = createMetHist('npuVtx', "npuVertices", 100, 100, 300)
-    metHists['z_pt'] = createMetHist('z_pt', "p_{T}(Z) [GeV]", 75, 0, 150)
-    metHists['genz_pt'] = createMetHist('genz_pt', "p_{T}(gen Z) [GeV]", 75, 0, 150)
-    metHists['met'] = createMetHist('met', "p_{T,miss} [GeV]", 75, 0, 150)
-    metHists['met_p'] = createMetHist('met_p', "parallel p_{T,miss} [GeV]", 75, 0, 150)
-    metHists['met_t'] = createMetHist('met_t', "transverse p_{T,miss} [GeV]", 75, 0, 150)
-    metHists['u_p'] = createMetHist('u_p', "u_{p} [GeV]", 75, 0, 150)
-    metHists['u_t'] = createMetHist('u_t', "u_{t} [GeV]", 75, 0, 150)
+    metHists['npuVtx'] = createMetHist('npuVtx', "npuVertices", 40, 100, 300)
+    metHists['z_pt'] = createMetHist('z_pt', "p_{T}(Z) [GeV]", 40, 0, 150)
+    metHists['genz_pt'] = createMetHist('genz_pt', "p_{T}(gen Z) [GeV]", 40, 0, 150)
+    metHists['met'] = createMetHist('met', "p_{T,miss} [GeV]", 40, 0, 150)
+    metHists['met_p'] = createMetHist('met_p', "parallel p_{T,miss} [GeV]", 40, 0, 150)
+    metHists['met_t'] = createMetHist('met_t', "transverse p_{T,miss} [GeV]", 40, 0, 150)
+    metHists['u_p'] = createMetHist('u_p', "u_{p} [GeV]", 40, 0, 150)
+    metHists['u_t'] = createMetHist('u_t', "u_{t} [GeV]", 40, 0, 150)
 
     twodvarList=['genz_pt','genht_pt30_eta5','npuVtx']
     varList = ['z_pt', 'met', 'met_p', 'met_t', 'u_p', 'u_t']
