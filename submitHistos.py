@@ -1,4 +1,4 @@
-import os,time,subprocess
+import os,time,subprocess,string
 runDir = os.getcwd()
 
 def striplist(alist): 
@@ -17,44 +17,54 @@ def EOSlist_root_files(Dir):
             rootlist.append(item)
     return rootlist
 
+# Should we run fullsim?
+doFullsim = True
+FS = sys.argv[1]
+if 'elphes' in FS: doFullsim = False
+
 # Set some paths
-DelphesDir = '/store/group/upgrade/RTB/DelphesFlat_343pre07/' # keep the trailing slash here
-FullsimDir = '/store/group/upgrade/RTB/FullsimFlat_111X/'
-HistoDir = '/store/group/upgrade/RTB/ValidationHistos_Summer20Val7/'
-LogDir = '/afs/cern.ch/work/j/jmhogan/public/UpgradeStudies/ValidationTools/CondorLogs/'
+url = 'root://eoscms.cern.ch/'
+DelphesDir = '/store/group/upgrade/RTB/DelphesFlat_343pre07/v07VALclosure_v2/' # keep the trailing slash here
+FullsimDir = '/store/group/upgrade/RTB/Iter5/'
+HistoDir = '/store/group/upgrade/RTB/ValidationHistos/v07VALclosure_v2/'
+LogDir = '/afs/cern.ch/work/j/jmhogan/public/UpgradeStudies/ValidationTools/CondorLogs/ValidationHistos/'
 
 if not os.path.exists(HistoDir):
     os.system('mkdir -p /eos/cms'+HistoDir)
 if not os.path.exists(LogDir):
     os.system('mkdir -p '+LogDir)
 
-# Should we run fullsim?
-doFullsim = True
-
 # Should we use the dumptcl setting?
 dumptcl = False
-
-# Set some particles
-particles = ['muon','electron','photon','jet','btag','tau']
 
 # Set some samples. 
 # Making them lists to start with guessing we will have multiples
 # Making them folders assuming we will stop hadding the flat trees...
-DelphesEffs = {'muon':[DelphesDir+'DYToLL_M-50_TuneCP5_14TeV-pythia8_200PU_v07closure'],
-               'electron':[DelphesDir+'DYToLL_M-50_TuneCP5_14TeV-pythia8_200PU_v07closure'],
-               'photon':[DelphesDir+'GluGluToHHTo2B2G_node_SM_TuneCP5_14TeV-madgraph_pythia8_200PU_v7closure'],
-               'jet':[DelphesDir+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8_200PU_v7closure'],
-               'btag':[DelphesDir+'TT_TuneCP5_14TeV_200PU_v07VAL'],
-           }
-FullsimEffs = {'muon':[FullsimDir+'DYToLL_M-50_TuneCP5_14TeV-pythia8_HLTTDRSummer20_LMT012'],
-               'electron':[FullsimDir+'DYToLL_M-50_TuneCP5_14TeV-pythia8_HLTTDRSummer20_LMT012'],
-               'photon':[FullsimDir+'GluGluToHHTo2B2G_node_SM_TuneCP5_14TeV-madgraph_pythia8_HLTTDRSummer20_LMT012'],
-               'jet':[FullsimDir+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8_HLTTDRSummer20_LMT012'],
-               'bjet':[FullsimDir+'TT_TuneCP5_14TeV-powheg-pythia8_HLTTDRSummer20_200PU'],
-           }
+DelphesPaths = [
+        DelphesDir+'DoubleElectron_FlatPt-1To100_200PU_flat',
+        DelphesDir+'DoubleMuon_gun_FlatPt-1To100_200PU_flat',
+        DelphesDir+'DoublePhoton_FlatPt-1To100_200PU_flat',
+        DelphesDir+'DYToLL_M-50_TuneCP5_14TeV-pythia8_200PU_flat',
+        DelphesDir+'GluGluHToTauTau_M125_14TeV_powheg_pythia8_TuneCP5_200PU_flat',
+        DelphesDir+'GluGluToHHTo2B2G_node_SM_TuneCP5_14TeV-madgraph_pythia8_200PU_flat',
+        DelphesDir+'GluGluToHHTo2B2Tau_node_SM_TuneCP5_14TeV-madgraph-pythia8_200PU_flat',
+        DelphesDir+'MultiTau_PT15to500_200PU_flat',
+        DelphesDir+'QCD_Pt_120to170_TuneCP5_14TeV_pythia8_200PU_flat',
+        DelphesDir+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8_200PU_flat',
+        DelphesDir+'QCD_Pt_170to300_TuneCP5_14TeV_pythia8_200PU_flat',
+        DelphesDir+'QCD_Pt_20to30_TuneCP5_14TeV_pythia8_200PU_flat',
+        DelphesDir+'QCD_Pt_300to470_TuneCP5_14TeV_pythia8_200PU_flat',
+        DelphesDir+'QCD_Pt_30to50_TuneCP5_14TeV_pythia8_200PU_flat',
+        DelphesDir+'QCD_Pt_470to600_TuneCP5_14TeV_pythia8_200PU_flat',
+        DelphesDir+'QCD_Pt_50to80_TuneCP5_14TeV_pythia8_200PU_flat',
+        DelphesDir+'QCD_Pt_600oInf_TuneCP5_14TeV_pythia8_200PU_flat',
+        DelphesDir+'QCD_Pt_80to120_TuneCP5_14TeV_pythia8_200PU_flat',
+        DelphesDir+'TT_TuneCP5_14TeV-powheg-pythia8_200PU_flat',
+]
 
-DelphesFakes = [DelphesDir+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8_200PU_v7closure'] # for everything?
-FullsimFakes = [FullsimDir+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8_HLTTDRSummer20_LMT012'], # for everything?
+FullsimPaths = [
+        FullsimDir+'TT_TuneCP5_14TeV-powheg-pythia8/crab_TT_TuneCP5_14TeV-powheg-pythia8/201211_161715/0000/'
+]
 
 start_time = time.time()
 
@@ -70,54 +80,72 @@ start_time = time.time()
 print 'Starting Submission'
 count = 0
 
-# Loop over particles
-for particle in particles:
     
-    # For each particle we will submit a job for:
-    # Delphes efficiency, from all relevant samples
-    # Delphes fakes, from all relevant samples
-    # Fullsim efficiency, from all relevant samples -- switch to turn off for closures
-    # Fullsim fakes, from all relevant samples -- switch to turn off for closures
-    # "jet" is the only one that doesn't have "fakes"
+# For each sample we submit 1 job per ROOT file
+# particle "all" runs muon, electron, photon, jet, met
+# hadds all outputs and writes that mega-file to eos
 
-    samplelist = DelphesEffs[particle]
-    if doFullsim:
-        if particle == 'jet': samplelist += FullsimEffs[particle]
-        else: samplelist += FullsimEffs[particle] + DelphesFakes + FullsimFakes
-    else:
-        if particle != 'jet': samplelist += DelphesFakes
+samplelist = DelphesPaths
+pfix = 'delphes_'
+filesperjob = 20
+if doFullsim: 
+        samplelist = FullsimPaths
+        pfix = 'fullsim_'
+        filesperjob = 10
 
-    # Loop over the samples
-    for sample in samplelist:
+# Particle: muon, electron, photon, jet, met
+# 'all' will process all of them
+particle = 'all'
 
-        outDir = sample.replace(DelphesDir,HistoDir+particle+'Histos_').replace(FullsimDir,HistoDir+particle+'Histos_')
-        logDir = sample.replace(DelphesDir,LogDir+particle+'Histos_').replace(FullsimDir,LogDir+particle+'Histos_')
+# Loop over the samples
+for sample in samplelist:
+
+        outDir = sample.replace(DelphesDir,HistoDir+'Histos_').replace(FullsimDir,HistoDir+'HistosFS_')
+        logDir = sample.replace(DelphesDir,LogDir+'Histos_').replace(FullsimDir,LogDir+'HistosFS_')
+        if not os.path.exists(outDir):
+                os.system('mkdir -p /eos/cms'+outDir)
+        if not os.path.exists(logDir):
+                os.system('mkdir -p '+logDir)
+        print 'Files to:',outDir
+        print 'Logs to:',logDir
         
         # For each sample we need a list of input ROOT files
         rootlist = EOSlist_root_files(sample)
         tmpcount = 0
 
+        basefilename = (rootlist[0].split('.')[0]).split('_')[:-1]
+        basefilename = '_'.join(basefilename)
+        print "Running basefilenames:",basefilename
+
         # Loop over the root files to submit jobs
-        for rfile in rootlist:
+        for i in range(0,len(rootlist),filesperjob):
+        #for rfile in rootlist:
             
-            tmpcount += 1
-            #if tmpcount > 1: continue # for a test job
+                tmpcount += 1
+                #if tmpcount > 1: continue # for a test job
 
-            # Manipulate names -- NEED TO THINK ABOUT EXTENSIONS or avoid them
-            # file looks like sample_blah_blah_345.root
-            index = (rfile.split('.')[0]).split('_')[-1]
-            basename = rfile.split('_')[0] #DYToLL or QCD or GluGluToHHTo2B2G, etc.
-            if basename == 'QCD':
-                basename = basename+'_'+rfile.split('_')[1] # Pt-20to30, etc.
-            
-            outname = particle+'_delphes_'+basename+'_'+index
+                index = (rootlist[i].split('.')[0]).split('_')[-1] ## 1-1                
 
-            # Write the condor config
-            dict = {'RUNDIR':runDir, 'FILEOUT':outname, 'FILEIN':sample+'/'+rfile, 'TCL':dumptcl, 'PARTICLE':particle, 'OUTDIR':outDir}
-            jdfName = logDir+'/'+rfile.replace('.root','.job')
-            jdf = open(jdfName,'w')
-            jdf.write(
-                """universe = vanilla
+                idlist = index+' '
+                for j in range(i+1,i+filesperjob):
+                        if j >= len(rootlist): continue
+                        idlist += (rootlist[j].split('.')[0]).split('_')[-1]+' '
+                        
+                idlist = idlist.strip()
+                print "Running IDs",idlist
+
+
+                outname = pfix+basefilename.replace('_flat_','_'+particle+'histos_')+'_'+str(tmpcount)
+                print 'Output name:',outname
+
+                print 'Input file like:',sample+'/'+basefilename+'_1.root'
+
+                # Write the condor config
+                dict = {'RUNDIR':runDir, 'FILEOUT':outname, 'FILEIN':sample+'/'+basefilename, 'TCL':dumptcl, 'PARTICLE':particle, 'OUTDIR':outDir, 'IDLIST':idlist}
+                jdfName = logDir+'/'+basefilename+'_'+str(tmpcount)+'.job'
+                jdf = open(jdfName,'w')
+                jdf.write(
+                        """universe = vanilla
 +JobFlavor = tomorrow
 Executable = %(RUNDIR)s/RunHistos.sh
 Should_Transfer_files = YES
@@ -127,14 +155,15 @@ Output = %(FILEOUT)s.out
 Error = %(FILEOUT)s.err
 Log = %(FILEOUT)s.log
 Notification = Never
-Arguments = %(FILEIN)s %(FILEOUT)s %(TCL)s %(PARTICLE)s %(OUTDIR)s
+Arguments = "%(FILEIN)s %(FILEOUT)s %(TCL)s %(PARTICLE)s '%(IDLIST)s' %(OUTDIR)s"
 
 Queue 1"""%dict)
-            jdf.close()
-            os.chdir(logDir)
-            os.system('condor_submit '+jdfName)
-            os.system('sleep 0.5')
-            os.chdir(runDir)
-            print str(count), "jobs submitted!"
+                jdf.close()
+                os.chdir(logDir)
+                os.system('condor_submit '+jdfName)
+                os.system('sleep 0.5')
+                os.chdir(runDir)
+                print str(count), "jobs submitted!"
 
 print("--- %s minutes ---" % (round(time.time() - start_time, 2)/60))
+
