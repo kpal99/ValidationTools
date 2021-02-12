@@ -58,12 +58,12 @@ parser = optparse.OptionParser(usage)
 parser.add_option('-d', '--inFileDelphes',
                   dest='inFileD',
                   help='path to input file delphes [%default]',  
-                  default='histo_delp/val_jet.root',                                                                                                           
+                  default='histo_delp/val_jet.root',
                   type='string')
 parser.add_option('-f', '--inFileFullsim',
                   dest='inFileF',
                   help='path to input file fullsim [%default]',  
-                  default='histo_full/val_jet.root',                                                                                                           
+                  default='histo_full/val_jet.root',  
                   type='string')
 parser.add_option('-o', '--outDir',          
                   dest='printoutdir',       
@@ -101,7 +101,7 @@ mean_and_sigmas_f = OrderedDict()
 
 
 hist_names = []
-# hist_names += [ # select hists to print -- CAN be empty -> will take all 
+#hist_names += [ # select hists to print -- CAN be empty -> will take all 
 # "jet_pt", "jet_eta", "jet_phi", "jet_mass",
 # "jet_ptresponse_to_eta","jet_ptresponse_to_pt", 
 # "jet_ptresponse_to_eta_20to50","jet_ptresponse_to_eta_50to100","jet_ptresponse_to_eta_100to200",
@@ -109,11 +109,11 @@ hist_names = []
 # "jet_multiplicity", "jet_multiplicity_20to50", "jet_multiplicity_50to100", "jet_multiplicity_100to200",
 # "jet_multiplicity_200to400", "jet_multiplicity_400up",
 # "jet_multiplicity_0to1p3", "jet_multiplicity_1p3to2p5", "jet_multiplicity_2p5to3", "jet_multiplicity_3up",
-# "jet_matchefficiency_to_eta",
+#"jetpuppi_efficiency_to_pt_reco",
 # "jet_matchefficiency_to_eta_20to50", "jet_matchefficiency_to_eta_50to100", "jet_matchefficiency_to_eta_100to200",
 # "jet_matchefficiency_to_eta_200to400", "jet_matchefficiency_to_eta_400up",
 # "jet_matchefficiency_to_pt", "jet_matchefficiency_to_pt_0to1p3", "jet_matchefficiency_to_pt_1p3to2p5", "jet_matchefficiency_to_pt_2p5to3", "jet_matchefficiency_to_pt_3up",
-
+# 'z_pt', 'met', 'met_p', 'met_t', 'u_p', 'u_t', 'genz_pt'
 #  ]
 
 if not hist_names: 
@@ -164,10 +164,10 @@ for name in hist_names:
         mean_and_sigmas_f[ntup_in] = get_mean_and_sigma(hf, wmin=0.2, wmax=1.8, step=0.001, epsilon=0.007)
 
 
-    if 'efficiency2D' in name or 'fakerate2D' in name or 'fakenonisorate2D' in name:
+    if 'efficiency2D' in name or 'fakerate2D' in name or 'fakenonisorate2D' in name or 'Rate_2D' in name:
         rt.gStyle.SetPaintTextFormat("1.2f")
         hd.SetStats(rt.kFALSE)
-        if 'efficiency' in name: 
+        if 'efficiency' in name or 'Rate_2D' in name: 
             hd.GetZaxis().SetRangeUser(0,1)
             hf.GetZaxis().SetRangeUser(0,1)
             if hd.GetYaxis().GetBinUpEdge(hd.GetNbinsY()) > 10:
@@ -191,6 +191,8 @@ for name in hist_names:
         hf.Draw("colz texte")
         canv.Print(printoutdir+"/"+canv_name+"_fullsim.png")
     else:
+        canv.SetLogy()  # 1d plot logy -wz
+	canv_name += '_logy' # 1d plot logy -wz
         hf.SetLineColor(rt.kBlue)
         hf.SetMarkerStyle(21)
         hf.SetMarkerColor(rt.kBlue)
@@ -200,19 +202,18 @@ for name in hist_names:
         hd.SetMarkerColor(rt.kRed)
         hd.SetStats(rt.kFALSE)        
 
-        if 'efficiency' not in name and 'fake' not in name and 'nonprompt' not in name and 'ptresponse' not in name:
-            
+        if 'Rate' not in name and 'efficiency' not in name and 'fake' not in name and 'nonprompt' not in name and 'ptresponse' not in name:
             if hf.Integral() > 0:
                 hf.Scale(1.0/hf.Integral())
             if hd.Integral() > 0:
                 hd.Scale(1.0/hd.Integral())
-
 
         if 'efficiency' in name or 'fake' in name or 'nonprompt' in name or 'Rate' in name:
             hf.SetMaximum(1)
         else:
             hf.SetMaximum(max(hd.GetMaximum(),hf.GetMaximum())*1.1)
         hf.SetMinimum(0)
+	hf.SetMinimum(1e-6)  # 1d plot logy wz
 
         if '2D' not in name: 
             if 'Profile' in hf.ClassName() or 'Profile' in hd.ClassName():
@@ -242,12 +243,20 @@ for name in hist_names:
                 hR.GetUpperRefYaxis().SetRangeUser(0,1)
             else: hR.GetUpperRefYaxis().SetRangeUser(0,max(hd.GetMaximum(),hf.GetMaximum())*1.1)
             hR.GetLowerRefGraph().SetMarkerStyle(20)
+	    hR.GetUpperRefYaxis().SetRangeUser(hf.GetMinimum(), hf.GetMaximum())
             canv.Update()
+	    ## debug ratio plot
+#	    canv2 = rt.TCanvas("ratioCanv", canv_name, 900, 600) 
+#	    canv2.cd()
+#	    ratio = hd.Clone("ratio")
+#	    ratio.Divide(hf)
+#	    ratio.Draw()
+#	    canv2.Print(printoutdir+ "/ratio.png")
         else:
             hf.Draw()
             hd.Draw("same")
 
-
+#	canv.cd() # wz
         legend = rt.TLegend(.9,.9,.99,.99)
         legend.SetTextSize(0.03)
         legend.SetBorderSize(0) 

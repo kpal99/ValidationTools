@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import ROOT
 # from __future__ import print_function
 from bin.NtupleDataFormat import Ntuple
 from ROOT import TH1D, TFile, TLorentzVector, TProfile, TProfile2D
@@ -8,7 +7,6 @@ import optparse
 import itertools
 from array import array
 import math
-
 
 def findHadronFlav(genparts, jet, dR):
 
@@ -28,14 +26,13 @@ def findHadronFlav(genparts, jet, dR):
         return 5
     if iscHad:
         return 4
-    return 1  # any not 4 or 5 case
-
+    return 1 # any not 4 or 5 case  
 
 def findPartonFlav(genparts, jet, dR):
 
     isbPar = False
     iscPar = False
-    for g in genparts:  # check if there exists one b-hadron
+    for g in genparts: # check if there exists one b-hadron
         gVec = ROOT.TLorentzVector()
         gVec.SetPtEtaPhiM(g.pt(), g.eta(), g.phi(), g.mass())
         if jet.DeltaR(gVec) >= dR:
@@ -45,11 +42,12 @@ def findPartonFlav(genparts, jet, dR):
             break
         if abs(g.pid()) == 4:
             iscPar = True
+
     if isbPar:
         return 5
     if iscPar:
         return 4
-    return 1  # any not 4 or 5 case
+    return 1 # any not 4 or 5 case
 
 
 def doSum(objs, ptCut, etaCut):
@@ -82,7 +80,6 @@ def create2dHist(varname, params, title):
 
     h.Sumw2()
     return h
-
 
 def create2Dmap(varname, params, title, dumptcl):
 
@@ -117,7 +114,9 @@ def create2Dmap(varname, params, title, dumptcl):
     etabinsext = []
     for iedge in range(0, len(etabins)-1):
         # print "etabins"+str(etabins)
+
         binwidth = etabins[iedge+1]-etabins[iedge]
+
         if etabins[iedge+1] >= 9e4:
             etabinsext.append(etabins[iedge])
             continue  # don't subdivide the overflow bin
@@ -133,6 +132,7 @@ def create2Dmap(varname, params, title, dumptcl):
     # arrays for ROOT
     xbins = array('d', ptbinsext)
     ybins = array('d', etabinsext)
+
     if "efficiency" in varname:
         h = TProfile2D(varname, title, len(xbins) -
                        1, xbins, len(ybins)-1, ybins)
@@ -341,7 +341,6 @@ def main():
                             isTagged = int(bool(p.btag() & quality[1]))
                             hists[obj+"_lightMistagRate_to_pt_"+quality[0] +
                                   "_" + cutname].Fill(p.pt(), isTagged)
-
     outputF.cd()
     for h in hists.keys():
         hists[h].Write()
