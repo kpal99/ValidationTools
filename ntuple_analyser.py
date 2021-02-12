@@ -105,6 +105,7 @@ def create2dHist(varname, params, title):
             h.GetXaxis().SetTitle("jet #eta")
             h.GetYaxis().SetTitle("tagging efficiency")
 
+
     h.Sumw2()
 
     return h
@@ -356,7 +357,6 @@ def runBtagStudy(ntuple, maxEvents, outfileName):
         hists[h].Write()
 
     outputF.Close()
-
 
 def findZ(genparts, ptCut, etaCut):
     v= TVector2(0, 0)
