@@ -8,11 +8,13 @@ parser = optparse.OptionParser(usage)
 parser.add_option('-d', '--inFileDelphes',
                   dest='inFileD',
                   help='path to input file delphes [%default]',  
-                  default='histo_delp/val_jet.root',                                                                                                    type='string')
+                  default='histo_delp/val_jet.root',
+                  type='string')
 parser.add_option('-f', '--inFileFullsim',
                   dest='inFileF',
                   help='path to input file fullsim [%default]',  
-                  default='histo_full/val_jet.root',                                                                                                    type='string')
+                  default='histo_full/val_jet.root',  
+                  type='string')
 parser.add_option('-o', '--outDir',          
                   dest='printoutdir',       
                   help='output dir for plots [%default]',  
@@ -44,7 +46,7 @@ inputFile_d = rt.TFile.Open(inFileD)
 inputFile_f = rt.TFile.Open(inFileF)
 
 hist_names = []
-hist_names += [ # select hists to print -- CAN be empty -> will take all 
+#hist_names += [ # select hists to print -- CAN be empty -> will take all 
 # "jet_pt", "jet_eta", "jet_phi", "jet_mass",
 # "jet_ptresponse_to_eta","jet_ptresponse_to_pt", 
 # "jet_ptresponse_to_eta_20to50","jet_ptresponse_to_eta_50to100","jet_ptresponse_to_eta_100to200",
@@ -56,8 +58,8 @@ hist_names += [ # select hists to print -- CAN be empty -> will take all
 # "jet_matchefficiency_to_eta_20to50", "jet_matchefficiency_to_eta_50to100", "jet_matchefficiency_to_eta_100to200",
 # "jet_matchefficiency_to_eta_200to400", "jet_matchefficiency_to_eta_400up",
 # "jet_matchefficiency_to_pt", "jet_matchefficiency_to_pt_0to1p3", "jet_matchefficiency_to_pt_1p3to2p5", "jet_matchefficiency_to_pt_2p5to3", "jet_matchefficiency_to_pt_3up",
-#'z_pt', 'met', 'met_p', 'met_t', 'u_p', 'u_t'
-  ]
+# 'z_pt', 'met', 'met_p', 'met_t', 'u_p', 'u_t', 'genz_pt'
+#  ]
 
 if not hist_names: 
     keys = inputFile_d.GetListOfKeys()
@@ -99,8 +101,8 @@ for name in hist_names:
         hf.Draw("colz texte")
         canv.Print(printoutdir+"/"+canv_name+"_fullsim.png")
     else:
-#        canv.SetLogy()  # 1d plot logy -wz
-#	canv_name += '_logy' # 1d plot logy -wz
+        canv.SetLogy()  # 1d plot logy -wz
+	canv_name += '_logy' # 1d plot logy -wz
         hf.SetLineColor(rt.kBlue)
         hf.SetMarkerStyle(21)
         hf.SetMarkerColor(rt.kBlue)
@@ -119,7 +121,7 @@ for name in hist_names:
         else:
             hf.SetMaximum(max(hd.GetMaximum(),hf.GetMaximum())*1.1)
         hf.SetMinimum(0)
-	#hf.SetMinimum(1e-6)  # 1d plot logy wz
+	hf.SetMinimum(1e-6)  # 1d plot logy wz
 
         if '2D' not in name: 
             if 'Profile' in hf.ClassName() or 'Profile' in hd.ClassName():
