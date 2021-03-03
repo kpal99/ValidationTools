@@ -14,10 +14,13 @@ CURDIR=20200820/met
 
 while getopts "o:s:" opt; do
     case "$opt" in
-        o) COMMAND=$OPTARG
+        i) INFILE=$OPTARG
             ;;
-        s) STORAGE=$OPTARG
+        o) STORAGE=$OPTARG
             ;;
+	p) PARTICLE=$OPTARG
+	    ;;
+	c) COMMAND=$OPTARG  # analyze, plot, post
     esac
 done
 

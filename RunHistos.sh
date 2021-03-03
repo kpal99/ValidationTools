@@ -38,6 +38,8 @@ for ifile in $IDLIST; do
 	    python -u ntuple_analyser.py -p photon -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_photon_${ifile}.root --dumptcl
 	    echo "JETS:"
 	    python -u ntuple_analyser.py -p jetpuppi -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_jet_${ifile}.root --dumptcl
+	    echo "BTAGGING:"
+	    python -u ntuple_analyser.py -p btag -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_jet_${ifile}.root --dumptcl
 	    echo "MET:"
 	    python -u ntuple_analyser.py -p met -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_met_${ifile}.root --dumptcl
 	    
@@ -55,6 +57,8 @@ for ifile in $IDLIST; do
 	    python -u ntuple_analyser.py -p photon -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_photon_${ifile}.root
 	    echo "JETS":
 	    python -u ntuple_analyser.py -p jetpuppi -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_jet_${ifile}.root
+	    echo "BTAGGING":
+	    python -u ntuple_analyser.py -p btag -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_jet_${ifile}.root
 	    echo "MET":
 	    python -u ntuple_analyser.py -p met -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_met_${ifile}.root
 	else
