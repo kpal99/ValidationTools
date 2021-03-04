@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 import math
-import sys
 import optparse
-import itertools
 from array import array
 
 from ROOT import TFile, TLorentzVector, TProfile, TProfile2D
@@ -66,7 +64,6 @@ def create2Dmap(varname, params, title):
     etabins.append(params["etaSlices"][-1][1])
     ptbinsext = []
     for iedge in range(0, len(ptbins)-1):
-        # print "ptbins"+str(ptbins)
         binwidth = ptbins[iedge+1]-ptbins[iedge]
         if ptbins[iedge+1] >= 9e4:
             ptbinsext.append(ptbins[iedge])
@@ -78,11 +75,9 @@ def create2Dmap(varname, params, title):
             # low, low+0*width/3, low+width/3, low+2*width/3
             ptbinsext.append(ptbins[iedge] + int(j*binwidth/nsplits))
     ptbinsext.append(ptbins[-1])
-    # print ptbinsext
 
     etabinsext = []
     for iedge in range(0, len(etabins)-1):
-        # print "etabins"+str(etabins)
         binwidth = etabins[iedge+1]-etabins[iedge]
         if etabins[iedge+1] >= 9e4:
             etabinsext.append(etabins[iedge])
@@ -94,7 +89,7 @@ def create2Dmap(varname, params, title):
             # low, low+0*width/3, low+width/3, low+2*width/3
             etabinsext.append(etabins[iedge] + j*binwidth/nsplits)
     etabinsext.append(etabins[-1])
-    # print etabinsext
+
     # arrays for ROOT
     xbins = array('d', ptbinsext)
     ybins = array('d', etabinsext)
@@ -117,7 +112,7 @@ def main():
     parser.add_option('-o', '--outFile',
                       dest='outFile',
                       help='output file [%default]',
-                      default='tautag_analysis_default.root',
+                      default='tautag_analysis_output.root',
                       type='string')
     parser.add_option('-p', '--physObj',
                       dest='physobject',
@@ -132,7 +127,6 @@ def main():
     (opt, args) = parser.parse_args()
 
     inFile = opt.inFile
-    print(inFile)
     ntuple = Ntuple(inFile)
     maxEvents = opt.maxEvts
     tot_nevents = 0
