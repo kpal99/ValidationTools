@@ -5,17 +5,16 @@ import optparse
 import itertools
 from array import array
 
-import ROOT
 from ROOT import TFile, TLorentzVector, TProfile, TProfile2D
 
 from bin.NtupleDataFormat import Ntuple
 
 def nDaughters(gen):
-    """Returns the number of daughters. """
+    """Returns the number of daughters of a genparticle. """
     return gen.d2() - gen.d1()
 
 def findDaughters(gen, daughters=None):
-    """Returns the list of all the daughters. """
+    """Returns the list of all the daughters of a genparticle."""
     if daughters is None:
         daughters = []
     for i in range(gen.d1(), gen.d2()+1):
@@ -32,14 +31,14 @@ def fourmomentum(gen):
     Py = gen.pt()*math.sin(gen.phi())
     Pz = gen.pt()*math.sinh(gen.eta())
     M = gen.mass()
-    pVec = ROOT.TLorentzVector()
+    pVec = TLorentzVector()
     pVec.SetPxPyPzE(Px, Py, Pz, M)
     return pVec
 
 def visibleP4(gen):
-    """ Returns the four momentum of the hadronic decay of tau objects."""
+    """Returns the four momentum of the hadronic decay of tau objects."""
     daughter = findDaughters(gen)
-    taumomentum = ROOT.TLorentzVector()
+    taumomentum = TLorentzVector()
     for d in daughter:
         if abs(d.pid()) != 16:
             taumomentum += fourmomentum(d)
@@ -47,12 +46,12 @@ def visibleP4(gen):
 
 def create2dHist(varname, params, title):
     if "to_pt" in varname and "tagRate" in varname:
-        h = ROOT.TProfile(varname, title, 50,
+        h = TProfile(varname, title, 50,
                           params["plotPtRange"][0], params["plotPtRange"][1])
         h.GetXaxis().SetTitle("tau p_{T} [GeV]")
         h.GetYaxis().SetTitle("tagging efficiency")
     if "to_eta" in varname and "tagRate" in varname:
-        h = ROOT.TProfile(varname, title, 50,
+        h = TProfile(varname, title, 50,
                           params["plotEtaRange"][0], params["plotEtaRange"][1])
         h.GetXaxis().SetTitle("tau #eta")
         h.GetYaxis().SetTitle("tagging efficiency")
@@ -137,7 +136,7 @@ def main():
     ntuple = Ntuple(inFile)
     maxEvents = opt.maxEvts
     tot_nevents = 0
-    outputF = ROOT.TFile(opt.outFile, "RECREATE")
+    outputF = TFile(opt.outFile, "RECREATE")
     obj = opt.physobject
 
     params = {
