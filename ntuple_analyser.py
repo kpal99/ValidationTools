@@ -214,6 +214,41 @@ def findPartonFlav(genparts, jet, dR):
         return 4
     return 1 # any not 4 or 5 case
 
+def nDaughters(gen):
+    """Returns the number of daughters of a genparticle."""
+    return gen.d2() - gen.d1()
+
+def findDaughters(gen, daughters=None):
+    """Returns the list of all the daughters of a genparticle."""
+    if daughters is None:
+        daughters = []
+    for i in range(gen.d1(), gen.d2()+1):
+        daughter = genparts[i]
+        if nDaughters(daughter) == 0:
+            daughters.append(daughter)
+        else:
+            findDaughters(daughter, daughters)
+    return daughters
+
+def fourmomentum(gen):
+    """Returns the four-momentum representation of a particle."""
+    Px = gen.pt()*math.cos(gen.phi())
+    Py = gen.pt()*math.sin(gen.phi())
+    Pz = gen.pt()*math.sinh(gen.eta())
+    M = gen.mass()
+    pVec = TLorentzVector()
+    pVec.SetPxPyPzE(Px, Py, Pz, M)
+    return pVec
+
+def visibleP4(gen):
+    """Returns the four-momentum of the hadronic decay of tau objects."""
+    daughter = findDaughters(gen)
+    taumomentum = TLorentzVector()
+    for d in daughter:
+        if abs(d.pid()) != 16:
+            taumomentum += fourmomentum(d)
+    return taumomentum
+
 def runBtagStudy(ntuple, maxEvents, outfileName):
 
     tot_nevents = 0
@@ -516,6 +551,187 @@ def runMETStudy(ntuple, maxEvents, outfileName):
 
     outputF.Close()
 
+def runTautagStudy(ntuple, maxEvents, outfileName):
+    """Tautagging study."""
+    tot_nevents = 0
+    outputF = TFile(outfileName, "RECREATE")
+    obj = "tau"
+    dumptcl = False
+
+    params = {
+        "dR": 0.5,
+        "ptRatio": 2.0,
+        "ptMin": 20,
+        "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5]],
+        "etaSlices2D": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 4]],
+        "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5]],
+        "sliceSplit": 1,
+        "plotPtRange": [0, 500],
+        "plotEtaRange": [-5, 5],
+        "ids": [
+            ["looseID", 1, "#varepsilon(looseID)"],
+            ["mediumID", 3, "#varepsilon(mediumID)"],
+            ["tightID", 7, "#varepsilon(tightID)"],
+        ],
+        "bitids": [
+            ["looseID", (1 << 0), "#varepsilon(looseID)"],
+            ["mediumID", (1 << 1), "#varepsilon(mediumID)"],
+            ["tightID", (1 << 2), "#varepsilon(tightID)"],
+        ]
+
+    }
+    ## create histos#
+    hists = {}
+    for cut in ["nocut"]+params["etaSlices"]:
+        hnames = ["tautagRate_to_pt",
+                  "elecMistagRate_to_pt", "lightMistagRate_to_pt"]
+        for hname in hnames:
+            for quality in params["bitids"]:
+                newname = hname+"_"+quality[0]+"_" + \
+                    str(cut[0]) + "to" + str(cut[1])
+                newname = ((newname.replace('.', 'p')).replace(
+                    '100000p0', 'Inf')).replace('_ntoo', '')
+                hists[obj+"_" +
+                      newname] = create2dHist(obj+"_"+newname, params, quality[2])
+
+    for cut in ["nocut"]+params["ptSlices"]:
+        hnames = ["tautagRate_to_eta",
+                  "elecMistagRate_to_eta", "lightMistagRate_to_eta"]
+        for hname in hnames:
+            for quality in params["bitids"]:
+                newname = hname+"_"+quality[0]+"_" + \
+                    str(cut[0]) + "to" + str(cut[1])
+                newname = ((newname.replace('.', 'p')).replace(
+                    '100000p0', 'Inf')).replace('_ntoo', '')
+                hists[obj+"_" +
+                      newname] = create2dHist(obj+"_"+newname, params, quality[2])
+
+    hnames2D = ["tautagRate_efficiency2D",
+                "elecMistagRate_efficiency2D", "lightMistagRate_efficiency2D"]
+    for hname in hnames2D:
+        for quality in params["ids"]:
+            newname = hname+"_"+quality[0]
+            hists[obj+"_"+newname] = create2Dmap(
+                obj+"_"+newname, params, quality[2], dumptcl)
+
+    #study
+    for event in ntuple:
+        if maxEvents > 0 and event.entry() >= maxEvents:
+            break
+        if (tot_nevents % 1000) == 0:
+            print '... processed {} events ...'.format(event.entry()+1)
+
+        tot_nevents += 1
+        global genparts
+        genparts = event.genparticles()
+        visiblegentaus = [visibleP4(p) for p in genparts if abs(p.pid()) == 15]
+        genelectrons = [p for p in genparts if abs(p.pid() == 11)]
+        genlight = [p for p in genparts if abs(p.pid()) == 4 or abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1 ]
+        taus = event.taus()
+
+        for tau in taus:
+            if tau.pt() < params["ptMin"]:
+                continue
+            tVec = TLorentzVector()
+            tVec.SetPtEtaPhiM(tau.pt(), tau.eta(), tau.phi(), tau.mass())
+            for gentau in visiblegentaus:
+                gentauVec = TLorentzVector()
+                gentauVec.SetPtEtaPhiM(gentau.Pt(), gentau.Eta(), gentau.Phi(), gentau.M())
+                if tVec.DeltaR(gentauVec) >= params["dR"]:
+                    continue
+                for quality in params["bitids"]:
+                    isTagged = int(bool(tau.isopass() & quality[1]))
+                    hists[obj+"_tautagRate_to_eta_" +
+                          quality[0]].Fill(tau.eta(), isTagged)
+                    hists[obj+"_tautagRate_to_pt_" +
+                          quality[0]].Fill(tau.pt(), isTagged)
+                    hists[obj+"_tautagRate_efficiency2D_" +
+                          quality[0]].Fill(tau.pt(), tau.eta(), isTagged)
+                for cut in params["ptSlices"]:
+                    cutname = str(cut[0]) + "to" + str(cut[1])
+                    cutname = (cutname.replace('.', 'p')
+                               ).replace('100000p0', 'Inf')
+                    if cut[0] <= tau.pt() < cut[1]:
+                        for quality in params["bitids"]:
+                            isTagged = int(bool(tau.isopass() & quality[1]))
+                            hists[obj+"_tautagRate_to_eta_"+quality[0] +
+                                  "_" + cutname].Fill(tau.eta(), isTagged)
+                for cut in params["etaSlices"]:
+                    cutname = str(cut[0]) + "to" + str(cut[1])
+                    cutname = (cutname.replace('.', 'p')
+                               ).replace('100000p0', 'Inf')
+                    if cut[0] < abs(tau.eta()) <= cut[1]:
+                        for quality in params["bitids"]:
+                            isTagged = int(bool(tau.isopass() & quality[1]))
+                            hists[obj+"_tautagRate_to_pt_"+quality[0] +
+                                  "_" + cutname].Fill(tau.pt(), isTagged)
+            for e in genelectrons:
+                eVec = TLorentzVector()
+                eVec.SetPtEtaPhiM(e.pt(), e.eta(), e.phi(), e.mass())
+                if tVec.DeltaR(eVec) >= params["dR"]:
+                    continue
+                for quality in params["bitids"]:
+                    isTagged = int(bool(tau.isopass() & quality[1]))
+                    hists[obj+"_elecMistagRate_to_eta_" +
+                          quality[0]].Fill(tau.eta(), isTagged)
+                    hists[obj+"_elecMistagRate_to_pt_" +
+                          quality[0]].Fill(tau.pt(), isTagged)
+                    hists[obj+"_elecMistagRate_efficiency2D_" +
+                          quality[0]].Fill(tau.pt(), tau.eta(), isTagged)
+                for cut in params["ptSlices"]:
+                    cutname = str(cut[0]) + "to" + str(cut[1])
+                    cutname = (cutname.replace('.', 'p')
+                               ).replace('100000p0', 'Inf')
+                    if cut[0] <= tau.pt() < cut[1]:
+                        for quality in params["bitids"]:
+                            isTagged = int(bool(tau.isopass() & quality[1]))
+                            hists[obj+"_elecMistagRate_to_eta_"+quality[0] +
+                                  "_" + cutname].Fill(tau.eta(), isTagged)
+                for cut in params["etaSlices"]:
+                    cutname = str(cut[0]) + "to" + str(cut[1])
+                    cutname = (cutname.replace('.', 'p')
+                               ).replace('100000p0', 'Inf')
+                    if cut[0] < abs(p.eta()) <= cut[1]:
+                        for quality in params["bitids"]:
+                            isTagged = int(bool(tau.isopass() & quality[1]))
+                            hists[obj+"_elecMistagRate_to_pt_"+quality[0] +
+                                  "_" + cutname].Fill(tau.pt(), isTagged)
+            for l in genlight:
+                lVec = TLorentzVector()
+                lVec.SetPtEtaPhiM(l.pt(), l.eta(), l.phi(), l.mass())
+                if tVec.DeltaR(lVec) >= params["dR"]:
+                    continue
+                for quality in params["bitids"]:
+                    isTagged = int(bool(tau.isopass() & quality[1]))
+                    hists[obj+"_lightMistagRate_to_eta_" +
+                          quality[0]].Fill(tau.eta(), isTagged)
+                    hists[obj+"_lightMistagRate_to_pt_" +
+                          quality[0]].Fill(tau.pt(), isTagged)
+                    hists[obj+"_lightMistagRate_efficiency2D_" +
+                          quality[0]].Fill(tau.pt(), tau.eta(), isTagged)
+                for cut in params["ptSlices"]:
+                    cutname = str(cut[0]) + "to" + str(cut[1])
+                    cutname = (cutname.replace('.', 'p')
+                               ).replace('100000p0', 'Inf')
+                    if cut[0] <= tau.pt() < cut[1]:
+                        for quality in params["bitids"]:
+                            isTagged = int(bool(tau.isopass() & quality[1]))
+                            hists[obj+"_lightMistagRate_to_eta_"+quality[0] +
+                                  "_" + cutname].Fill(tau.eta(), isTagged)
+                for cut in params["etaSlices"]:
+                    cutname = str(cut[0]) + "to" + str(cut[1])
+                    cutname = (cutname.replace('.', 'p')
+                               ).replace('100000p0', 'Inf')
+                    if cut[0] < abs(tau.eta()) <= cut[1]:
+                        for quality in params["bitids"]:
+                            isTagged = int(bool(tau.isopass() & quality[1]))
+                            hists[obj+"_lightMistagRate_to_pt_"+quality[0] +
+                                  "_" + cutname].Fill(tau.pt(), isTagged)
+    outputF.cd()
+    for h in hists.keys():
+        hists[h].Write()
+    outputF.Close()
+
 def main():
 
     usage = 'usage: %prog [options]'
@@ -560,6 +776,10 @@ def main():
 
     if opt.physobject == "btag":
     	runBtagStudy(ntuple, maxEvents, opt.outFile)
+        exit()
+    
+    if opt.physobject == "tau":
+    	runTautagStudy(ntuple, maxEvents, opt.outFile)
         exit()
 
     tot_nevents = 0
