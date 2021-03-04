@@ -105,7 +105,7 @@ def create2dHist(varname, params, title):
             h.GetXaxis().SetTitle("reco #eta [GeV]")
             h.GetYaxis().SetTitle("mistag rate")
         elif "tagRate" in varname:
-            if TauTagStudy:
+            if TauTagStudy == True:
                 h.GetXaxis().SetTitle("tau #eta")
 	    else:
 		h.GetXaxis().SetTitle("jet #eta")
