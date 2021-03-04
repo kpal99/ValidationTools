@@ -81,7 +81,7 @@ def create2dHist(varname, params, title):
             h.GetXaxis().SetTitle("reco p_{T} [GeV]")
             h.GetYaxis().SetTitle("mistag rate")
 	elif "tagRate" in varname:
-	    if obj == "tau":
+	    if TauTagStudy == True:
 		h.GetXaxis().SetTitle("tau p_{T} [GeV]")
 	    else:
 		h.GetXaxis().SetTitle("jet p_{T} [GeV]")
@@ -105,7 +105,7 @@ def create2dHist(varname, params, title):
             h.GetXaxis().SetTitle("reco #eta [GeV]")
             h.GetYaxis().SetTitle("mistag rate")
         elif "tagRate" in varname:
-            if obj == "tau":
+            if TauTagStudy:
                 h.GetXaxis().SetTitle("tau #eta")
 	    else:
 		h.GetXaxis().SetTitle("jet #eta")
@@ -771,6 +771,8 @@ def main():
     ntuple = Ntuple(inFile)
     maxEvents = opt.maxEvts
     dumptcl = opt.dumptcl
+    global TauTagStudy
+    TauTagStudy = False
 
     if opt.physobject == "met":
         runMETStudy(ntuple, maxEvents, opt.outFile)
@@ -781,8 +783,7 @@ def main():
         exit()
     
     if opt.physobject == "tau":
-        global obj
-        obj = "tau"
+        TauTagStudy = True
     	runTautagStudy(ntuple, maxEvents, opt.outFile)
         exit()
 
