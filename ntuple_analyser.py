@@ -81,8 +81,11 @@ def create2dHist(varname, params, title):
             h.GetXaxis().SetTitle("reco p_{T} [GeV]")
             h.GetYaxis().SetTitle("mistag rate")
 	elif "tagRate" in varname:
-            h.GetXaxis().SetTitle("jet p_{T} [GeV]")
-            h.GetYaxis().SetTitle("tagging efficiency")
+	    if obj == "tau":
+		h.GetXaxis().SetTitle("tau p_{T} [GeV]")
+	    else:
+		h.GetXaxis().SetTitle("jet p_{T} [GeV]")
+	    h.GetYaxis().SetTitle("tagging efficiency")
 
     elif "to_eta" in varname:
         h = TProfile(varname, title, 50, params["plotEtaRange"][0], params["plotEtaRange"][1])
@@ -102,7 +105,10 @@ def create2dHist(varname, params, title):
             h.GetXaxis().SetTitle("reco #eta [GeV]")
             h.GetYaxis().SetTitle("mistag rate")
         elif "tagRate" in varname:
-            h.GetXaxis().SetTitle("jet #eta")
+            if obj == "tau":
+                h.GetXaxis().SetTitle("tau #eta")
+	    else:
+		h.GetXaxis().SetTitle("jet #eta")
             h.GetYaxis().SetTitle("tagging efficiency")
 
 
@@ -555,16 +561,13 @@ def runTautagStudy(ntuple, maxEvents, outfileName):
     """Tautagging study."""
     tot_nevents = 0
     outputF = TFile(outfileName, "RECREATE")
-    obj = "tau"
     dumptcl = False
 
     params = {
         "dR": 0.5,
-        "ptRatio": 2.0,
         "ptMin": 20,
-        "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 1e5]],
-        "etaSlices2D": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 4]],
-        "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5]],
+        "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 4]],
+        "ptSlices": [[20, 50], [50, 100], [100, 500]],
         "sliceSplit": 1,
         "plotPtRange": [0, 500],
         "plotEtaRange": [-5, 5],
@@ -779,6 +782,8 @@ def main():
         exit()
     
     if opt.physobject == "tau":
+        global obj
+        obj = "tau"
     	runTautagStudy(ntuple, maxEvents, opt.outFile)
         exit()
 
