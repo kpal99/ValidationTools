@@ -220,41 +220,6 @@ def findPartonFlav(genparts, jet, dR):
         return 4
     return 1 # any not 4 or 5 case
 
-def nDaughters(gen):
-    """Returns the number of daughters of a genparticle."""
-    return gen.d2() - gen.d1()
-
-def findDaughters(gen, daughters=None):
-    """Returns the list of all the daughters of a genparticle."""
-    if daughters is None:
-        daughters = []
-    for i in range(gen.d1(), gen.d2()+1):
-        daughter = genparts[i]
-        if nDaughters(daughter) == 0:
-            daughters.append(daughter)
-        else:
-            findDaughters(daughter, daughters)
-    return daughters
-
-def fourmomentum(gen):
-    """Returns the four-momentum representation of a particle."""
-    Px = gen.pt()*math.cos(gen.phi())
-    Py = gen.pt()*math.sin(gen.phi())
-    Pz = gen.pt()*math.sinh(gen.eta())
-    M = gen.mass()
-    pVec = TLorentzVector()
-    pVec.SetPxPyPzE(Px, Py, Pz, M)
-    return pVec
-
-def visibleP4(gen):
-    """Returns the four-momentum of the hadronic decay of tau objects."""
-    daughter = findDaughters(gen)
-    taumomentum = TLorentzVector()
-    for d in daughter:
-        if abs(d.pid()) != 16:
-            taumomentum += fourmomentum(d)
-    return taumomentum
-
 def runBtagStudy(ntuple, maxEvents, outfileName):
 
     tot_nevents = 0
@@ -557,12 +522,46 @@ def runMETStudy(ntuple, maxEvents, outfileName):
 
     outputF.Close()
 
+def nDaughters(gen):
+    """Returns the number of daughters of a genparticle."""
+    return gen.d2() - gen.d1()
+
+def findDaughters(gen, daughters=None):
+    """Returns the list of all the daughters of a genparticle."""
+    if daughters is None:
+        daughters = []
+    for i in range(gen.d1(), gen.d2()+1):
+        daughter = genparts[i]
+        if nDaughters(daughter) == 0:
+            daughters.append(daughter)
+        else:
+            findDaughters(daughter, daughters)
+    return daughters
+
+def fourmomentum(gen):
+    """Returns the four-momentum representation of a particle."""
+    Px = gen.pt()*math.cos(gen.phi())
+    Py = gen.pt()*math.sin(gen.phi())
+    Pz = gen.pt()*math.sinh(gen.eta())
+    M = gen.mass()
+    pVec = TLorentzVector()
+    pVec.SetPxPyPzE(Px, Py, Pz, M)
+    return pVec
+
+def visibleP4(gen):
+    """Returns the four-momentum of the hadronic decay of tau objects."""
+    daughter = findDaughters(gen)
+    taumomentum = TLorentzVector()
+    for d in daughter:
+        if abs(d.pid()) != 16:
+            taumomentum += fourmomentum(d)
+    return taumomentum
+
 def runTautagStudy(ntuple, maxEvents, outfileName):
-    """Tautagging study."""
+    """Creates Tautagging histograms."""
     tot_nevents = 0
     outputF = TFile(outfileName, "RECREATE")
     dumptcl = False
-
     params = {
         "dR": 0.5,
         "ptMin": 20,
