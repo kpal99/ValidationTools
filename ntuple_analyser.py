@@ -561,6 +561,7 @@ def runTautagStudy(ntuple, maxEvents, outfileName):
     """Creates Tautagging histograms."""
     tot_nevents = 0
     outputF = TFile(outfileName, "RECREATE")
+    obj = "tau"
     dumptcl = False
     params = {
         "dR": 0.5,
