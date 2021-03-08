@@ -1562,11 +1562,17 @@ module BTagging BTaggingPUPPILoose {
 
   set BitNumber 0
 
+  ## DUMMY_BTAG_LIGHTMISTAG_LOOSEID_DUMP
   add EfficiencyFormula {0}      {0.1}
+  ## ENDDUMMY_BTAG_LIGHTMISTAG_LOOSEID_DUMP
 
+  ## DUMMY_BTAG_BTAG_LOOSEID_DUMP
   add EfficiencyFormula {5}      {1.0}
+  ## ENDDUMMY_BTAG_BTAG_LOOSEID_DUMP
 
+  ## DUMMY_BTAG_CMISTAG_LOOSEID_DUMP
   add EfficiencyFormula {4}      {1.0}
+  ## ENDDUMMY_BTAG_CMISTAG_LOOSEID_DUMP
 }
 
 module BTagging BTaggingPUPPIMedium {
@@ -1575,11 +1581,17 @@ module BTagging BTaggingPUPPIMedium {
 
   set BitNumber 1
 
+  ## DUMMY_BTAG_LIGHTMISTAG_MEDIUMID_DUMP
   add EfficiencyFormula {0}      {0.01}
+  ## ENDDUMMY_BTAG_LIGHTMISTAG_MEDIUMID_DUMP
 
+  ## DUMMY_BTAG_BTAG_MEDIUMID_DUMP
   add EfficiencyFormula {5}      {1.0}
+  ## ENDDUMMY_BTAG_BTAG_MEDIUMID_DUMP
 
+  ## DUMMY_BTAG_CMISTAG_MEDIUMID_DUMP
   add EfficiencyFormula {4}      {1.0}
+  ## ENDDUMMY_BTAG_CMISTAG_MEDIUMID_DUMP
 }
 
 module BTagging BTaggingPUPPITight {
@@ -1588,11 +1600,17 @@ module BTagging BTaggingPUPPITight {
 
   set BitNumber 2
 
+  ## DUMMY_BTAG_LIGHTMISTAG_TIGHTID_DUMP
   add EfficiencyFormula {0}      {0.001}
+  ## ENDDUMMY_BTAG_LIGHTMISTAG_TIGHTID_DUMP
 
+  ## DUMMY_BTAG_BTAG_TIGHTID_DUMP
   add EfficiencyFormula {5}      {1.0}
+  ## ENDDUMMY_BTAG_BTAG_TIGHTID_DUMP
 
+  ## DUMMY_BTAG_CMISTAG_TIGHTID_DUMP
   add EfficiencyFormula {4}      {1.0}
+  ## ENDDUMMY_BTAG_CMISTAG_TIGHTID_DUMP
 
 }
 
@@ -1661,9 +1679,14 @@ module TauTagging TauTaggingPUPPILoose {
 
   set BitNumber 0
 
+  ## DUMMY_TAUTAG_LIGHTMISTAG_LOOSEID_DUMP
   add EfficiencyFormula {0}      {0.1}
+  ## ENDDUMMY_TAUTAG_LIGHTMISTAG_LOOSEID_DUMP
 
+  ## DUMMY_TAUTAG_TAUMISTAG_LOOSEID_DUMP
   add EfficiencyFormula {15}      {1.0}
+  ## ENDDUMMY_TAUTAG_TAUMISTAG_LOOSEID_DUMP
+
 }
 
 module TauTagging TauTaggingPUPPIMedium {
@@ -1674,9 +1697,13 @@ module TauTagging TauTaggingPUPPIMedium {
 
   set BitNumber 1
 
-  add EfficiencyFormula {0}      {0.01}
+  ## DUMMY_TAUTAG_LIGHTMISTAG_MEDIUMID_DUMP
+  add EfficiencyFormula {0}      {0.1}
+  ## ENDDUMMY_TAUTAG_LIGHTMISTAG_MEDIUMID_DUMP
 
+  ## DUMMY_TAUTAG_TAUMISTAG_MEDIUMID_DUMP
   add EfficiencyFormula {15}      {1.0}
+  ## ENDDUMMY_TAUTAG_TAUMISTAG_MEDIUMID_DUMP
 }
 
 module TauTagging TauTaggingPUPPITight {
@@ -1687,9 +1714,13 @@ module TauTagging TauTaggingPUPPITight {
 
   set BitNumber 2
 
-  add EfficiencyFormula {0}      {0.001}
+  ## DUMMY_TAUTAG_LIGHTMISTAG_TIGHTID_DUMP
+  add EfficiencyFormula {0}      {0.1}
+  ## ENDDUMMY_TAUTAG_LIGHTMISTAG_TIGHTID_DUMP
 
+  ## DUMMY_TAUTAG_TAUMISTAG_TIGHTID_DUMP
   add EfficiencyFormula {15}      {1.0}
+  ## ENDDUMMY_TAUTAG_TAUMISTAG_TIGHTID_DUMP
 
 }
 
@@ -1708,15 +1739,15 @@ module JetFakeParticle JetFakeMakerLoose {
   set JetOutputArray jets
 
   set EfficiencyFormula {
-  ## DUMMY_ELECTRON_LOOSEID_FAKERATE
+  ## DUMMY_ELECTRON_LOOSEID_DUMP
       {11} {0.02}
-  ## ENDDUMMY_ELECTRON_LOOSEID_FAKERATE
-  ## DUMMY_MUON_LOOSEID_FAKERATE
+  ## ENDDUMMY_ELECTRON_LOOSEID_DUMP
+  ## DUMMY_MUON_LOOSEID_DUMP
       {13} {0.02}
-  ## ENDDUMMY_MUON_LOOSEID_FAKERATE
-  ## DUMMY_PHOTON_LOOSEID_FAKERATE
+  ## ENDDUMMY_MUON_LOOSEID_DUMP
+  ## DUMMY_PHOTON_LOOSEID_DUMP
       {22} {0.10} 
-  ## ENDDUMMY_PHOTON_LOOSEID_FAKERATE
+  ## ENDDUMMY_PHOTON_LOOSEID_DUMP
   }
 
 }
@@ -1735,15 +1766,15 @@ module JetFakeParticle JetFakeMakerMedium {
   set JetOutputArray jets
 
   set EfficiencyFormula {
-  ## DUMMY_ELECTRON_MEDIUMID_FAKERATE
+  ## DUMMY_ELECTRON_MEDIUMID_DUMP
       {11} {0.01}
-  ## ENDDUMMY_ELECTRON_MEDIUMID_FAKERATE
-  ## DUMMY_MUON_MEDIUMID_FAKERATE
+  ## ENDDUMMY_ELECTRON_MEDIUMID_DUMP
+  ## DUMMY_MUON_MEDIUMID_DUMP
       {13} {0.01}
-  ## ENDDUMMY_MUON_MEDIUMID_FAKERATE
-  ## DUMMY_PHOTON_MEDIUMID_FAKERATE
+  ## ENDDUMMY_MUON_MEDIUMID_DUMP
+  ## DUMMY_PHOTON_MEDIUMID_DUMP
       {22} {0.05} 
-  ## ENDDUMMY_PHOTON_MEDIUMID_FAKERATE
+  ## ENDDUMMY_PHOTON_MEDIUMID_DUMP
   }
 
 }
@@ -1761,15 +1792,15 @@ module JetFakeParticle JetFakeMakerTight {
   set JetOutputArray jets
 
   set EfficiencyFormula {
-  ## DUMMY_ELECTRON_TIGHTID_FAKERATE
+  ## DUMMY_ELECTRON_TIGHTID_DUMP
       {11} {0.005}
-  ## ENDDUMMY_ELECTRON_TIGHTID_FAKERATE
-  ## DUMMY_MUON_TIGHTID_FAKERATE
+  ## ENDDUMMY_ELECTRON_TIGHTID_DUMP
+  ## DUMMY_MUON_TIGHTID_DUMP
       {13} {0.005}
-  ## ENDDUMMY_MUON_TIGHTID_FAKERATE
-  ## DUMMY_PHOTON_TIGHTID_FAKERATE
+  ## ENDDUMMY_MUON_TIGHTID_DUMP
+  ## DUMMY_PHOTON_TIGHTID_DUMP
       {22} {0.025} 
-  ## ENDDUMMY_PHOTON_TIGHTID_FAKERATE
+  ## ENDDUMMY_PHOTON_TIGHTID_DUMP
   }
 
 }
