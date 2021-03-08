@@ -80,12 +80,12 @@ def create2dHist(varname, params, title):
             title = title.replace("#varepsilon","fakerate")
             h.GetXaxis().SetTitle("reco p_{T} [GeV]")
             h.GetYaxis().SetTitle("mistag rate")
-	elif "tagRate" in varname:
-	    if TauTagStudy:
-		h.GetXaxis().SetTitle("tau p_{T} [GeV]")
-	    else:
-		h.GetXaxis().SetTitle("jet p_{T} [GeV]")
-	    h.GetYaxis().SetTitle("tagging efficiency")
+        elif "tagRate" in varname:
+            if TauTagStudy:
+                h.GetXaxis().SetTitle("tau p_{T} [GeV]")
+            else:
+                h.GetXaxis().SetTitle("jet p_{T} [GeV]")
+            h.GetYaxis().SetTitle("tagging efficiency")
 
     elif "to_eta" in varname:
         h = TProfile(varname, title, 50, params["plotEtaRange"][0], params["plotEtaRange"][1])
@@ -107,8 +107,8 @@ def create2dHist(varname, params, title):
         elif "tagRate" in varname:
             if TauTagStudy:
                 h.GetXaxis().SetTitle("tau #eta")
-	    else:
-		h.GetXaxis().SetTitle("jet #eta")
+            else:
+                h.GetXaxis().SetTitle("jet #eta")
             h.GetYaxis().SetTitle("tagging efficiency")
 
 
@@ -183,13 +183,13 @@ def findHadronFlav(genparts, jet, dR):
     isbHad = False
     iscHad = False
     for g in genparts: # check if there exists one b-hadron
-	gVec = TLorentzVector()
+        gVec = TLorentzVector()
         gVec.SetPtEtaPhiM(g.pt(), g.eta(), g.phi(), g.mass())
         if jet.DeltaR(gVec) >= dR:
-	    continue
-	if 500 < abs(g.pid()) < 600 or 5000 < abs(g.pid()) < 6000:
-	    isbHad = True
-	    break
+            continue
+        if 500 < abs(g.pid()) < 600 or 5000 < abs(g.pid()) < 6000:
+            isbHad = True
+            break
         if 400 < abs(g.pid()) < 500 or 4000 < abs(g.pid()) < 5000:
             iscHad = True
 
@@ -230,21 +230,21 @@ def runBtagStudy(ntuple, maxEvents, outfileName):
     params = {
             "dR": 0.5,
             "ptMin": 20,
-            "etaSlices": [[0, 1.5], [1.5, 2.5], [2.5, 4] ], ## use 1e5 as "Inf"
-            "ptSlices": [[20, 50], [50, 100], [100, 500] ],
+            "etaSlices": [[0, 1.5], [1.5, 2.5], [2.5, 4], [4, 1e5]  ], ## use 1e5 as "Inf"
+            "ptSlices": [[20, 50], [50, 100], [100, 500], [500, 1e5]  ],
             "sliceSplit": 1, # for 2D map, make N divisions of each slice
             "plotPtRange": [0, 500],
             "plotEtaRange": [-5, 5],
-	    "ids": [
-	        ["looseID",1,"#varepsilon(looseID)"], # btag >= 1
-		["mediumID",3,"#varepsilon(mediumID)"], 
+            "ids": [
+                ["looseID",1,"#varepsilon(looseID)"], # btag >= 1
+                ["mediumID",3,"#varepsilon(mediumID)"], 
                 ["tightID",7,"#varepsilon(tightID)"],
-		],
-	    "bitids": [
-		["looseID",(1<<0),"#varepsilon(looseID)"], # btag & (1<<0)
-		["mediumID",(1<<1),"#varepsilon(mediumID)"],
-		["tightID",(1<<2),"#varepsilon(tightID)"],
-		]
+                ],
+            "bitids": [
+                ["looseID",(1<<0),"#varepsilon(looseID)"], # btag & (1<<0)
+                ["mediumID",(1<<1),"#varepsilon(mediumID)"],
+                ["tightID",(1<<2),"#varepsilon(tightID)"],
+                ]
     }
 
     ## create histo#
@@ -279,44 +279,44 @@ def runBtagStudy(ntuple, maxEvents, outfileName):
             break
         if (tot_nevents %1000) == 0 : # 1000
             print '... processed {} events ...'.format(event.entry()+1)
-	
-	tot_nevents += 1
-	genparts = event.genparticles()
+        
+        tot_nevents += 1
+        genparts = event.genparticles()
         jets = event.jetspuppi()
 
  
-	for p in jets:
-	  
-	    if p.pt() < params['ptMin']: continue
-	    pVec = TLorentzVector()
-	    pVec.SetPtEtaPhiM(p.pt(), p.eta(), p.phi(), p.mass())
-	    jetParFlav = findPartonFlav(genparts, pVec, params['dR'])
-	   
-	    #print "pt ", p.pt(), " eta ", p.eta(), " HadFlav ", jetHadFlav, " btag ", p.btag() 
+        for p in jets:
+          
+            if p.pt() < params['ptMin']: continue
+            pVec = TLorentzVector()
+            pVec.SetPtEtaPhiM(p.pt(), p.eta(), p.phi(), p.mass())
+            jetParFlav = findPartonFlav(genparts, pVec, params['dR'])
+           
+            #print "pt ", p.pt(), " eta ", p.eta(), " HadFlav ", jetHadFlav, " btag ", p.btag() 
 
-	    if jetParFlav == 5:
-		for quality in params["bitids"]:
-		    isTagged = int(bool(p.btag() & quality[1]))
-		    hists[obj+"_btagRate_to_eta_"+quality[0]].Fill(p.eta(), isTagged)
-	    	    hists[obj+"_btagRate_to_pt_"+quality[0]].Fill(p.pt(), isTagged)
+            if jetParFlav == 5:
+                for quality in params["bitids"]:
+                    isTagged = int(bool(p.btag() & quality[1]))
+                    hists[obj+"_btagRate_to_eta_"+quality[0]].Fill(p.eta(), isTagged)
+                    hists[obj+"_btagRate_to_pt_"+quality[0]].Fill(p.pt(), isTagged)
                     hists[obj+"_btagRate_2D_" + quality[0]].Fill(p.pt(), p.eta(), isTagged)
-	        for cut in params["ptSlices"]:
+                for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
                     if cut[0] <= p.pt() < cut[1]: 
- 			for quality in params["bitids"]:
-                    	    isTagged = int(bool(p.btag() & quality[1]))
-			    hists[obj+"_btagRate_to_eta_"+quality[0]+"_" + cutname].Fill(p.eta(), isTagged)
-            	for cut in params["etaSlices"]:
+                        for quality in params["bitids"]:
+                            isTagged = int(bool(p.btag() & quality[1]))
+                            hists[obj+"_btagRate_to_eta_"+quality[0]+"_" + cutname].Fill(p.eta(), isTagged)
+                for cut in params["etaSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
                     if cut[0] < abs(p.eta()) <= cut[1]: 
-			for quality in params["bitids"]:
+                        for quality in params["bitids"]:
                             isTagged = int(bool(p.btag() & quality[1]))
                             hists[obj+"_btagRate_to_pt_"+quality[0]+"_" + cutname].Fill(p.pt(), isTagged)
 
 
-	    elif jetParFlav == 4:
+            elif jetParFlav == 4:
                 for quality in params["bitids"]:
                     isTagged = int(bool(p.btag() & quality[1]))
                     hists[obj+"_cMistagRate_to_eta_"+quality[0]].Fill(p.eta(), isTagged)
@@ -335,10 +335,10 @@ def runBtagStudy(ntuple, maxEvents, outfileName):
                     if cut[0] < abs(p.eta()) <= cut[1]:
                         for quality in params["bitids"]:
                             isTagged = int(bool(p.btag() & quality[1]))
-                            hists[obj+"_cMistagRate_to_pt_"+quality[0]+"_" + cutname].Fill(p.pt(), isTagged)	         
+                            hists[obj+"_cMistagRate_to_pt_"+quality[0]+"_" + cutname].Fill(p.pt(), isTagged)             
 
-	    else:
-		for quality in params["bitids"]:
+            else:
+                for quality in params["bitids"]:
                     isTagged = int(bool(p.btag() & quality[1]))
                     hists[obj+"_lightMistagRate_to_eta_"+quality[0]].Fill(p.eta(), isTagged)
                     hists[obj+"_lightMistagRate_to_pt_"+quality[0]].Fill(p.pt(), isTagged)
@@ -566,8 +566,8 @@ def runTautagStudy(ntuple, maxEvents, outfileName):
     params = {
         "dR": 0.5,
         "ptMin": 20,
-        "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 4]],
-        "ptSlices": [[20, 50], [50, 100], [100, 500]],
+        "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 4], [4, 1e5] ],
+        "ptSlices": [[20, 50], [50, 100], [100, 500], [500, 1e5] ],
         "sliceSplit": 1,
         "plotPtRange": [0, 500],
         "plotEtaRange": [-5, 5],
@@ -780,12 +780,12 @@ def main():
         exit()
 
     if opt.physobject == "btag":
-    	runBtagStudy(ntuple, maxEvents, opt.outFile)
+        runBtagStudy(ntuple, maxEvents, opt.outFile)
         exit()
     
     if opt.physobject == "tau":
         TauTagStudy = True
-    	runTautagStudy(ntuple, maxEvents, opt.outFile)
+        runTautagStudy(ntuple, maxEvents, opt.outFile)
         exit()
 
     tot_nevents = 0
@@ -813,8 +813,8 @@ def main():
             "dR": 0.2,
             "ptRatio": 2.0,
             "ptMin": 20,
-            "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 3], [3, 5], [5,1e5] ], ## use 1e5 as "Inf"
-            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 400], [400, 1e5] ],
+            "etaSlices": [[0, 1.5], [1.5, 3.0], [3.0, 4.0], [4.0, 5.0], [5.0,1e5] ], ## use 1e5 as "Inf"
+            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 500], [500, 1e5] ],
             "sliceSplit": 1, # for 2D map, make N divisions of each slice
             "plotPtRange": [0, 1500],
             "plotEtaRange": [-5, 5],
@@ -841,8 +841,8 @@ def main():
             "ptRatio": 100.0,
             "ptMin": 8,
             "etaSlices": [[0, 1.5], [1.5, 3], [3, 4], [4,1e5]],
-            "ptSlices": [[10, 20], [20, 50], [50, 100], [100, 150], [150, 1e5]],
-            "sliceSplit": 3,
+            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 500], [500, 1e5] ],
+            "sliceSplit": 1,
             "plotPtRange": [0, 250],
             "plotEtaRange": [-4, 4],
             "plotPhiRange": [-4, 4],
@@ -883,8 +883,8 @@ def main():
             "ptRatio": 2.0,
             "ptMin": 10,
             "etaSlices": [[0, 1.5], [1.5, 2.8], [2.8, 1e5] ],
-            "ptSlices": [[10, 20], [20, 50], [50, 100], [100, 150], [150, 1e5] ],
-            "sliceSplit": 2,
+            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 500], [500, 1e5] ],
+            "sliceSplit": 1,
             "plotPtRange": [0, 250],
             "plotEtaRange": [-5, 5],
             "plotPhiRange": [-5, 5],
@@ -921,7 +921,7 @@ def main():
         if obj == 'electron': 
             #params["ptSlices"] = [[10,20], [20, 50], [50, 100], [100, 200], [200, 300], [300, 400], [400, 1e5]]
             params["etaSlices"] = [[0, 1.5], [1.5, 3], [3, 4], [4, 1e5] ]
-        if dumptcl: params["sliceSplit"] = 2                
+        if dumptcl: params["sliceSplit"] = 1                
     else: 
         print 'Physics object not recognized! Choose jetchs, jetpuppi, photon, electron, or muon.'            
         exit()
@@ -1038,15 +1038,15 @@ def main():
         #tot_jetAK8 += len(event.jetsAK8())
 
         ## Set the reco and generated object collections
-	if obj=="jetpuppi":
+        if obj=="jetpuppi":
             recoobjs = event.jetspuppi()
             genobjs = event.genjets()
-	    fakeobjs = event.jetspuppi()	
-	elif obj=="jetchs":
+            fakeobjs = event.jetspuppi()        
+        elif obj=="jetchs":
             recoobjs = event.jetschs()
             genobjs = event.genjets()
-	    fakeobjs = event.jetschs()
-	elif obj == "photon": 
+            fakeobjs = event.jetschs()
+        elif obj == "photon": 
             recoobjs = event.gammas()
             genobjs = event.genparticles()
             fakeobjs = event.jetspuppi()
