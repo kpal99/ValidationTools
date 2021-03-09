@@ -136,8 +136,8 @@ def create2Dmap(varname, params, title, dumptcl):
             ptbinsext.append(ptbins[iedge])
             continue # don't subdivide the overflow bin
         nsplits = params["sliceSplit"]
-        if ptbins[iedge+1] >= 150 or ptbins[iedge] == 100:
-            nsplits = 2
+        #if ptbins[iedge+1] >= 150 or ptbins[iedge] == 100:
+        #    nsplits = 2
         for j in range(0,nsplits): # 0, 1, 2 if sliceSplit = 3
             ptbinsext.append(ptbins[iedge] + int(j*binwidth/nsplits)) # low, low+0*width/3, low+width/3, low+2*width/3
     ptbinsext.append(ptbins[-1])
@@ -151,7 +151,7 @@ def create2Dmap(varname, params, title, dumptcl):
             etabinsext.append(etabins[iedge])
             continue # don't subdivide the overflow bin
         nsplits = params ["sliceSplit"]
-        if 'electron' in varname and etabins[iedge] == 1.5: nsplits = 7
+        #if 'electron' in varname and etabins[iedge] == 1.5: nsplits = 7
         for j in range(0,nsplits): # 0, 1, 2 if sliceSplit = 3
             etabinsext.append(etabins[iedge] + j*binwidth/nsplits) # low, low+0*width/3, low+width/3, low+2*width/3
     etabinsext.append(etabins[-1])
@@ -225,7 +225,7 @@ def runBtagStudy(ntuple, maxEvents, outfileName):
     tot_nevents = 0
     outputF = TFile(outfileName, "RECREATE")
     obj = "jetpuppi"
-    dumptcl = False
+    #dumptcl = False
 
     params = {
             "dR": 0.5,
@@ -562,7 +562,7 @@ def runTautagStudy(ntuple, maxEvents, outfileName):
     tot_nevents = 0
     outputF = TFile(outfileName, "RECREATE")
     obj = "tau"
-    dumptcl = False
+    #dumptcl = False
     params = {
         "dR": 0.5,
         "ptMin": 20,
@@ -834,7 +834,7 @@ def main():
                 ["tightIDifReco",2,-1,1,"#varepsilon(tightID)"],      ## IDs on reco-matched gen (eff only)
                 ], 
             }
-        if dumptcl: params["sliceSplit"] = 2
+        if dumptcl: params["sliceSplit"] = 1
     elif obj == "photon": 
         params = {
             "dR": 0.1,
@@ -876,7 +876,7 @@ def main():
                 ["tightIDISOifReco",2,2,1,"#varepsilon(tightID)*#varepsilon(tightISO)"], ## ID+ISOs on reco-matched gen (eff only)
                 ],
             }
-        if dumptcl: params["sliceSplit"] = 2
+        if dumptcl: params["sliceSplit"] = 1
     elif obj == "electron" or obj == "muon":
         params = {
             "dR": 0.2,
