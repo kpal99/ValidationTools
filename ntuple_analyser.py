@@ -82,7 +82,7 @@ def create2dHist(varname, params, title):
             h.GetYaxis().SetTitle("mistag rate")
         elif "tagRate" in varname:
             if TauTagStudy:
-                h.GetXaxis().SetTitle("tau_{vis} p_{T} [GeV]")
+                h.GetXaxis().SetTitle("#tau_{vis} p_{T} [GeV]")
             else:
                 h.GetXaxis().SetTitle("jet p_{T} [GeV]")
             h.GetYaxis().SetTitle("tagging efficiency")
@@ -106,7 +106,7 @@ def create2dHist(varname, params, title):
             h.GetYaxis().SetTitle("mistag rate")
         elif "tagRate" in varname:
             if TauTagStudy:
-                h.GetXaxis().SetTitle("tau_{vis} #eta")
+                h.GetXaxis().SetTitle("#tau_{vis} #eta")
             else:
                 h.GetXaxis().SetTitle("jet #eta")
             h.GetYaxis().SetTitle("tagging efficiency")
@@ -631,16 +631,17 @@ def runTautagStudy(ntuple, maxEvents, outfileName):
         taus = event.taus()
         global genparts
         genparts = event.genparticles()
-        genelectrons = [p for p in genparts if abs(p.pid() == 11)]
+        genelectrons = [p for p in genparts if abs(p.pid()) == 11]
         genmuons = [p for p in genparts if abs(p.pid()) == 13]
         gentaus = [p for p in genparts if abs(p.pid()) == 15]
         visibletaus = [visibleP4(p) for p in gentaus if abs(genparts[p.d1()].pid()) not in [11, 13]] # excluding leptonic decay modes of tau
-        genlight = [p for p in genparts if abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1] # creating a list here makes code run slower
+        genlight = [p for p in genparts if abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1] # creating a list here for the light quark pids makes code run slower
 
         for tau in taus:
             if tau.pt() < params["ptMin"]: continue
             tVec = TLorentzVector()
             tVec.SetPtEtaPhiM(tau.pt(), tau.eta(), tau.phi(), tau.mass())
+            
             for gentau in visiblegentaus:
                 if gentau.Pt() < params["ptMin"]: continue
                 gentauVec = TLorentzVector()
