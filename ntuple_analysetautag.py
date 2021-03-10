@@ -205,7 +205,12 @@ def main():
         genelectrons = [p for p in genparts if abs(p.pid()) == 11]
         genmuons = [p for p in genparts if abs(p.pid()) == 13]
         gentaus = [p for p in genparts if abs(p.pid()) == 15]
-        visibletaus = [visibleP4(p) for p in gentaus if abs(genparts[p.d1()].pid()) not in [11, 13]] # excluding leptonic decay modes of tau
+        hadronictaus = []
+        for tau in gentaus:
+            for i in range(tau.d1(), tau.d2() + 1):
+                if genparts[i].pid() not in [11, 13]:
+                    hadronictaus.append(tau)
+        visibletaus = [visibleP4(p) for p in hadronictaus]
         genlight = [p for p in genparts if abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1] # creating a list here makes code run slower
 
         for tau in taus:
