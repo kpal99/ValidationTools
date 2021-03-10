@@ -634,7 +634,12 @@ def runTautagStudy(ntuple, maxEvents, outfileName):
         genelectrons = [p for p in genparts if abs(p.pid()) == 11]
         genmuons = [p for p in genparts if abs(p.pid()) == 13]
         gentaus = [p for p in genparts if abs(p.pid()) == 15]
-        visiblegentaus = [visibleP4(p) for p in gentaus if abs(genparts[p.d1()].pid()) not in [11, 13]] # excluding leptonic decay modes of tau
+        hadronictaus = []
+        for tau in gentaus:
+            for i in range(tau.d1(), tau.d2() + 1):
+                if genparts[i].pid() not in [11, 13]:
+                    hadronictaus.append(tau)
+        genvisibletaus = [visibleP4(p) for p in hadronictaus]
         genlight = [p for p in genparts if abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1] # creating a list here for the light quark pids makes code run slower
 
         for tau in taus:
@@ -642,7 +647,7 @@ def runTautagStudy(ntuple, maxEvents, outfileName):
             tVec = TLorentzVector()
             tVec.SetPtEtaPhiM(tau.pt(), tau.eta(), tau.phi(), tau.mass())
             
-            for gentau in visiblegentaus:
+            for gentau in genvisibletaus:
                 if gentau.Pt() < params["ptMin"]: continue
                 gentauVec = TLorentzVector()
                 gentauVec.SetPtEtaPhiM(gentau.Pt(), gentau.Eta(), gentau.Phi(), gentau.M())
