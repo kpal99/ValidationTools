@@ -24,6 +24,7 @@ def findDaughters(gen, daughters=None):
     return daughters
 
 def hadronic(tau):
+    """Returns the given object if it is a hadronic tau."""
 	hadronic = True
 	firstdaughters = []
 	for i in range(tau.d1(), tau.d2() + 1):
