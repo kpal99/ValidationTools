@@ -538,6 +538,17 @@ def findDaughters(gen, daughters=None):
             findDaughters(daughter, daughters)
     return daughters
 
+def hadronic(tau):
+	hadronic = True
+	firstdaughters = []
+	for i in range(tau.d1(), tau.d2() + 1):
+		firstdaughters.append(genparts[i])
+	for d in firstdaughters:
+		if abs(d.pid()) in [11, 13]:
+		    hadronic = False
+	if hadronic:
+		return tau
+
 def fourmomentum(gen):
     """Returns the four-momentum representation of a particle."""
     Px = gen.pt()*math.cos(gen.phi())
@@ -634,11 +645,7 @@ def runTautagStudy(ntuple, maxEvents, outfileName):
         genelectrons = [p for p in genparts if abs(p.pid()) == 11]
         genmuons = [p for p in genparts if abs(p.pid()) == 13]
         gentaus = [p for p in genparts if abs(p.pid()) == 15]
-        hadronictaus = []
-        for tau in gentaus:
-            for i in range(tau.d1(), tau.d2() + 1):
-                if genparts[i].pid() not in [11, 13]:
-                    hadronictaus.append(tau)
+        hadronictaus = [hadronic(tau) for tau in gentaus if hadronic(tau) != None]
         genvisibletaus = [visibleP4(p) for p in hadronictaus]
         genlight = [p for p in genparts if abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1] # creating a list here for the light quark pids makes code run slower
 
