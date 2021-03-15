@@ -216,18 +216,25 @@ def main():
         isolated_electrons = [p for p in electrons if p.pt() > 20 and (p.isopass() & 1) == 1 and (p.idpass() & 1) == 1]
         isolated_muons= [p for p in muons if p.pt() > 20 and (p.isopass() & 1) == 1 and (p.idpass() & 1) == 1]
         #filtered_taus = [taus that are DR > 0.3 from all isolated_electrons and isolated_muons] # fix here, produce plots & push code
-        filtered_taus = []
+        elec_filtered_taus = []
+        all_filtered_taus = []
         for tau in taus:
             tVec = TLorentzVector()
             tVec.SetPtEtaPhiM(tau.pt(), tau.eta(), tau.phi(), tau.mass())
             for e in isolated_electrons:
                 eVec = TLorentzVector()
                 eVec.SetPtEtaPhiM(e.pt(), e.eta(), e.phi(), e.mass())
+                if tVec.DeltaR(eVec) > 0.3:
+                    elec_filtered_taus.append(tau)
+        
+        for tau in elec_filtered_taus:
+            tVec = TLorentzVector()
+            tVec.SetPtEtaPhiM(tau.pt(), tau.eta(), tau.phi(), tau.mass())
             for m in isolated_muons:
                 mVec = TLorentzVector()
                 mVec.SetPtEtaPhiM(m.pt(), m.eta(), m.phi(), m.mass())
-            if tVec.DeltaR(eVec) > 0.3 and tVec.DeltaR(mVec) > 0.3:
-                filtered_taus.append(tau)
+                if tVec.DeltaR(mVec) > 0.3:
+                    all_filtered_taus.append(tau)
         
         global genparts
         genparts = event.genparticles()
@@ -239,7 +246,7 @@ def main():
 
         genlight = [p for p in genparts if abs(p.pid()) == 4 or abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1] # creating a list here for the pids makes code run slower
 
-        for tau in filtered_taus:
+        for tau in all_filtered_taus:
             if tau.pt() < params["ptMin"]: continue
             tVec = TLorentzVector()
             tVec.SetPtEtaPhiM(tau.pt(), tau.eta(), tau.phi(), tau.mass())
