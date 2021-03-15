@@ -55,7 +55,7 @@ def visibleP4(gen):
     return taumomentum
 
 def filterDR(obj, collection):
-    """Returns the given object filtered from the collection."""
+    """Returns the given object filtered from the given collection."""
     objVec = TLorentzVector()
     objVec.SetPtEtaPhiM(obj.pt(), obj.eta(), obj.phi(), obj.mass())   
     for p in collection:
