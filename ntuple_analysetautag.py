@@ -54,6 +54,16 @@ def visibleP4(gen):
             taumomentum += fourmomentum(d)
     return taumomentum
 
+def filterDR(obj, collection):
+    """Returns the given object filtered from the collection."""
+    objVec = TLorentzVector()
+    objVec.SetPtEtaPhiM(obj.pt(), obj.eta(), obj.phi(), obj.mass())   
+    for p in collection:
+        pVec = TLorentzVector()
+        pVec.SetPtEtaPhiM(p.pt(), p.eta(), p.phi(), p.mass())
+        if objVec.DeltaR(pVec) > 0.3:
+            return obj
+
 def create2dHist(varname, params, title):
     if "to_pt" in varname and "tagRate" in varname:
         h = TProfile(varname, title, 50,
@@ -209,32 +219,14 @@ def main():
 
         tot_nevents += 1
 
-        taus = event.taus() # puppi jets that are tau tagged
+        taus = event.taus() # these are puppi jets that are tau tagged
         electrons = event.electrons()
         muons = event.muons()
-
-        isolated_electrons = [p for p in electrons if p.pt() > 20 and (p.isopass() & 1) == 1 and (p.idpass() & 1) == 1]
+        isolated_electrons = [p for p in electrons if p.pt() > 20 and (p.isopass() & 1) == 0 and (p.idpass() & 1) == 1]
         isolated_muons= [p for p in muons if p.pt() > 20 and (p.isopass() & 1) == 1 and (p.idpass() & 1) == 1]
         #filtered_taus = [taus that are DR > 0.3 from all isolated_electrons and isolated_muons] # fix here, produce plots & push code
-        elec_filtered_taus = []
-        all_filtered_taus = []
-        for tau in taus:
-            tVec = TLorentzVector()
-            tVec.SetPtEtaPhiM(tau.pt(), tau.eta(), tau.phi(), tau.mass())
-            for e in isolated_electrons:
-                eVec = TLorentzVector()
-                eVec.SetPtEtaPhiM(e.pt(), e.eta(), e.phi(), e.mass())
-                if tVec.DeltaR(eVec) > 0.3:
-                    elec_filtered_taus.append(tau)
-        
-        for tau in elec_filtered_taus:
-            tVec = TLorentzVector()
-            tVec.SetPtEtaPhiM(tau.pt(), tau.eta(), tau.phi(), tau.mass())
-            for m in isolated_muons:
-                mVec = TLorentzVector()
-                mVec.SetPtEtaPhiM(m.pt(), m.eta(), m.phi(), m.mass())
-                if tVec.DeltaR(mVec) > 0.3:
-                    all_filtered_taus.append(tau)
+        elec_filtered_taus = [filterDR(tau, isolated_electrons) for tau in taus if filterDR(tau, isolated_electrons) is not None]
+        all_filtered_taus = [filterDR(tau, isolated_muons) for tau in elec_filtered_taus if filterDR(tau, isolated_muons) is not None]
         
         global genparts
         genparts = event.genparticles()
