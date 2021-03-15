@@ -146,7 +146,7 @@ def main():
     obj = opt.physobject
 
     params = {
-        "dR": 0.3,
+        "dR": 0.5,
         "ptMin": 20,
         "etaSlices": [[0, 1.5], [1.5, 2.5], [2.5, 3.5], [3.5, 5]],
         "ptSlices": [[20, 50], [50, 100], [100, 500]],
@@ -223,13 +223,11 @@ def main():
             for e in isolated_electrons:
                 eVec = TLorentzVector()
                 eVec.SetPtEtaPhiM(e.pt(), e.eta(), e.phi(), e.mass())
-                if tVec.DeltaR(eVec) > params["dR"]:
-                    filtered_taus.append(tau)
             for m in isolated_muons:
                 mVec = TLorentzVector()
                 mVec.SetPtEtaPhiM(m.pt(), m.eta(), m.phi(), m.mass())
-                if tVec.DeltaR(mVec) > params["dR"]:
-                    filtered_taus.append(tau)
+            if tVec.DeltaR(eVec) > 0.3 and tVec.DeltaR(mVec) > 0.3:
+                filtered_taus.append(tau)
         
         global genparts
         genparts = event.genparticles()
