@@ -213,8 +213,8 @@ def main():
         electrons = event.electrons()
         muons = event.muons()
 
-        isolated_electrons = [p for p in electrons if p.pt() > 20 and (p.isopass() & 1) and (p.idpass() & 1)]
-        isolated_muons= [p for p in muons if p.pt() > 20 and (p.isopass() & 1) and (p.idpass() & 1)]
+        isolated_electrons = [p for p in electrons if p.pt() > 20 and (p.isopass() & 1) == 1 and (p.idpass() & 1) == 1]
+        isolated_muons= [p for p in muons if p.pt() > 20 and (p.isopass() & 1) == 1 and (p.idpass() & 1) == 1]
         #filtered_taus = [taus that are DR > 0.3 from all isolated_electrons and isolated_muons] # fix here, produce plots & push code
         filtered_taus = []
         for tau in taus:
@@ -223,18 +223,18 @@ def main():
             for e in isolated_electrons:
                 eVec = TLorentzVector()
                 eVec.SetPtEtaPhiM(e.pt(), e.eta(), e.phi(), e.mass())
-                if tVec.DeltaR(eVec) <= params["dR"]:
+                if tVec.DeltaR(eVec) > params["dR"]:
                     filtered_taus.append(tau)
             for m in isolated_muons:
                 mVec = TLorentzVector()
                 mVec.SetPtEtaPhiM(m.pt(), m.eta(), m.phi(), m.mass())
-                if tVec.DeltaR(mVec) <= params["dR"]:
+                if tVec.DeltaR(mVec) > params["dR"]:
                     filtered_taus.append(tau)
         
         global genparts
         genparts = event.genparticles()
-        # genelectrons = [p for p in genparts if abs(p.pid()) == 11]
-        # genmuons = [p for p in genparts if abs(p.pid()) == 13]
+        genelectrons = [p for p in genparts if abs(p.pid()) == 11]
+        genmuons = [p for p in genparts if abs(p.pid()) == 13]
 
         gentaus = [p for p in genparts if abs(p.pid()) == 15]
         hadronictaus = [visibleP4(hadronic(tau)) for tau in gentaus if hadronic(tau) != None]
@@ -280,7 +280,7 @@ def main():
                             hists[obj+"_tautagRate_to_pt_"+quality[0] +
                                   "_" + cutname].Fill(tau.pt(), isTagged)
 
-            for e in isolated_electrons:
+            for e in genelectrons:
                 if e.pt() < params["ptMin"]: continue
                 eVec = TLorentzVector()
                 eVec.SetPtEtaPhiM(e.pt(), e.eta(), e.phi(), e.mass())
@@ -314,7 +314,7 @@ def main():
                             hists[obj+"_elecMistagRate_to_pt_"+quality[0] +
                                   "_" + cutname].Fill(tau.pt(), isTagged)
 
-            for m in isolated_muons:
+            for m in genmuons:
                 if m.pt() < params["ptMin"]: continue
                 mVec = TLorentzVector()
                 mVec.SetPtEtaPhiM(m.pt(), m.eta(), m.phi(), m.mass())
