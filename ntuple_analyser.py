@@ -543,9 +543,9 @@ def hadronic(tau):
     hadronic = True
     for d in finalDaughters(tau):
         if abs(d.pid()) in [11, 13]:
-		    hadronic = False
-	if hadronic:
-		return tau
+                    hadronic = False
+        if hadronic:
+                return tau
 
 def fourmomentum(gen):
     """Returns the four-momentum representation of a particle."""
@@ -569,6 +569,13 @@ def visibleP4(gen):
             taumomentum += fourmomentum(d)
     return taumomentum
 
+
+def Momentum(gen):
+    """Returns the four-momentum of the particle"""
+    momentum = TLorentzVector()
+    momentum.SetPtEtaPhiM(gen.pt(), gen.eta(), gen.phi(), gen.mass())
+    return momentum
+
 def filterDR(obj, collection):
     """Returns the given object filtered from the given collection."""
     objVec = TLorentzVector()
@@ -584,11 +591,11 @@ def runTautagStudy(ntuple, maxEvents, outfileName):
     tot_nevents = 0
     outputF = TFile(outfileName, "RECREATE")
     obj = "tau"
-    #dumptcl = False
+    dumptcl = False
     params = {
-        "dR": 0.5,
+        "dR": 0.4,
         "ptMin": 20,
-        "etaSlices": [[0, 1.3], [1.3, 2.5], [2.5, 4], [4, 1e5] ],
+        "etaSlices": [[0, 1.5], [1.5, 3.0], [3.0, 4.0], [4.0, 1e5] ],
         "ptSlices": [[20, 50], [50, 100], [100, 500], [500, 1e5] ],
         "sliceSplit": 1,
         "plotPtRange": [0, 500],
@@ -648,163 +655,105 @@ def runTautagStudy(ntuple, maxEvents, outfileName):
         electrons = event.electrons()
         muons = event.muons()
 
-        isolated_electrons = [p for p in electrons if p.pt() > 20 and (p.isopass() & 1) == 0 and (p.idpass() & 1) == 1]
-        isolated_muons= [p for p in muons if p.pt() > 20 and (p.isopass() & 1) == 1 and (p.idpass() & 1) == 1]
+        #isolated_electrons = [p for p in electrons if p.pt() > params["ptMin"] and bool((p.isopass() & 1)) and bool(p.idpass() & 1)]
+        #isolated_muons= [p for p in muons if p.pt() > params["ptMin"] and (p.isopass() & 1) == 1 and (p.idpass() & 1) == 1]
 
-        elec_filtered_taus = [filterDR(tau, isolated_electrons) for tau in taus if filterDR(tau, isolated_electrons) is not None]
-        all_filtered_taus = [filterDR(tau, isolated_muons) for tau in elec_filtered_taus if filterDR(tau, isolated_muons) is not None]
+        #elec_filtered_taus = [filterDR(tau, isolated_electrons) for tau in taus if filterDR(tau, isolated_electrons) is not None]
+        #all_filtered_taus  = [filterDR(tau, isolated_muons) for tau in elec_filtered_taus if filterDR(tau, isolated_muons) is not None]
+        #all_filtered_taus  = elec_filtered_taus
+        
+        filtered_taus = []
+        for tau in taus:
+            #print '---   tau  ----'
+            #print tau.pt(), tau.eta(), tau.phi(), tau.mass()
+            mom_tau = TLorentzVector()
+            mom_tau.SetPtEtaPhiM(tau.pt(), tau.eta(), tau.phi(), tau.mass())
+            #print '---   electrons  ----'
+            bad_tau=False
+            for p in electrons:
+                mom_lep = TLorentzVector()
+                mom_lep.SetPtEtaPhiM(p.pt(), p.eta(), p.phi(), p.mass())
+                #print '   ', p.pt(), p.eta(), p.phi(), p.mass(), mom_lep.DeltaR(mom_tau), bool((p.isopass() & 0)) and bool(p.idpass() & 0)
+                if p.pt() > params["ptMin"] and bool((p.isopass() & 1)) and bool(p.idpass() & 1) and mom_lep.DeltaR(mom_tau) < 0.4:
+                    bad_tau=True
+
+            for p in muons:
+                mom_lep = TLorentzVector()
+                mom_lep.SetPtEtaPhiM(p.pt(), p.eta(), p.phi(), p.mass())
+                #print '   ', p.pt(), p.eta(), p.phi(), p.mass(), mom_lep.DeltaR(mom_tau), bool((p.isopass() & 0)) and bool(p.idpass() & 0)
+                if p.pt() > params["ptMin"] and bool((p.isopass() & 1)) and bool(p.idpass() & 1) and mom_lep.DeltaR(mom_tau) < 0.4:
+                    bad_tau=True
+
+            if not bad_tau: 
+                filtered_taus.append(tau)
+
+        #print taus
+        #print filtered_taus
 
         global genparts
         genparts = event.genparticles()
 
-        genelectrons = [p for p in genparts if abs(p.pid()) == 11 and p.pt() > params["ptMin"]]
-        genmuons = [p for p in genparts if abs(p.pid()) == 13 and p.pt() > params["ptMin"]]
-
+        genelectrons = [Momentum(p) for p in genparts if abs(p.pid()) == 11 and p.pt() > params["ptMin"] and p.status()==1]
+        genmuons = [Momentum(p) for p in genparts if abs(p.pid()) == 13 and p.pt() > params["ptMin"] and p.status()==1]
         gentaus = [p for p in genparts if abs(p.pid()) == 15 and p.pt() > params["ptMin"]]
+        hadronictaus = [visibleP4(hadronic(tau)) for tau in gentaus if hadronic(tau) != None and visibleP4(hadronic(tau)).Pt() > params["ptMin"]] # visible hadronic taus
+        genlight = [Momentum(p) for p in genparts if p.pt() > params["ptMin"] and (abs(p.pid()) == 4 or abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1)] # creating a list here for the pids makes code run slower
 
-        hadronictaus = [visibleP4(hadronic(tau)) for tau in gentaus if hadronic(tau) != None] # visible hadronic taus
+        #def fillHistos(obj, gen, reco, params, isTagged):
 
-        genlight = [p for p in genparts if p.pt() > params["ptMin"] and (abs(p.pid()) == 4 or abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1)] # creating a list here for the pids makes code run slower
+        def fillEfficiencyHistos(obj, gen_coll, reco_coll, params, histlabel):
+        
+            for gen in gen_coll:
 
-        for tau in all_filtered_taus:
-            tVec = TLorentzVector()
-            tVec.SetPtEtaPhiM(tau.pt(), tau.eta(), tau.phi(), tau.mass())
-            
-            for gentau in hadronictaus:
-                gentauVec = TLorentzVector()
-                gentauVec.SetPtEtaPhiM(gentau.Pt(), gentau.Eta(), gentau.Phi(), gentau.M())
-                if tVec.DeltaR(gentauVec) >= params["dR"]: continue
+                isTagged = dict()
+                for quality in params["bitids"]:
+                    isTagged[quality[0]] = 0
+
+                #print 'gen: ', gen.Pt(),  gen.Eta(),  gen.Phi(), gen.M()
+
+                for tau in reco_coll:
+                    #print '     tau ', tau.pt(),  tau.eta(),  tau.phi(), tau.mass(), tau.isopass(), quality[0], quality[1], '{0:03b}'.format((tau.isopass() & quality[1]))
+                    tVec = TLorentzVector()
+                    tVec.SetPtEtaPhiM(tau.pt(), tau.eta(), tau.phi(), tau.mass())
+
+                    if tVec.DeltaR(gen) < params["dR"]: 
+                        for quality in params["bitids"]:
+                            #print '     tau ', tau.pt(),  tau.eta(),  tau.phi(), tau.mass(), tau.isopass(), quality[0], quality[1], int(bool((tau.isopass() & quality[1]))), '{0:03b}'.format((tau.isopass() & quality[1]))
+                            isTagged[quality[0]] = int(bool(tau.isopass() & quality[1]))
+                            #print '     tau ', tau.pt(),  tau.eta(),  tau.phi(), tau.mass(), isTagged[quality[0]], tVec.DeltaR(gen)
 
                 for quality in params["bitids"]:
-                    isTagged = int(bool(tau.isopass() & quality[1]))
-                    hists[obj+"_tautagRate_to_eta_" +
-                          quality[0]].Fill(tau.eta(), isTagged)
-                    hists[obj+"_tautagRate_to_pt_" +
-                          quality[0]].Fill(tau.pt(), isTagged)
-                    hists[obj+"_tautagRate_efficiency2D_" +
-                          quality[0]].Fill(tau.pt(), tau.eta(), isTagged)
+                    hists[obj+"_"+histlabel+"_to_eta_" +
+                          quality[0]].Fill(gen.Eta(), isTagged[quality[0]])
+                    hists[obj+"_"+histlabel+"_to_pt_" +
+                          quality[0]].Fill(gen.Pt(), isTagged[quality[0]])
+                    hists[obj+"_"+histlabel+"_efficiency2D_" +
+                          quality[0]].Fill(gen.Pt(), gen.Eta(), isTagged[quality[0]])
 
                 for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.', 'p')
                                ).replace('100000p0', 'Inf')
-                    if cut[0] <= tau.pt() < cut[1]:
+                    if cut[0] <= gen.Pt() < cut[1]:
                         for quality in params["bitids"]:
-                            isTagged = int(bool(tau.isopass() & quality[1]))
-                            hists[obj+"_tautagRate_to_eta_"+quality[0] +
-                                  "_" + cutname].Fill(tau.eta(), isTagged)
+                            hists[obj+"_"+histlabel+"_to_eta_"+quality[0] +
+                                  "_" + cutname].Fill(gen.Eta(), isTagged[quality[0]])
 
                 for cut in params["etaSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.', 'p')
                                ).replace('100000p0', 'Inf')
-                    if cut[0] < abs(tau.eta()) <= cut[1]:
+                    if cut[0] < abs(gen.Eta()) <= cut[1]:
                         for quality in params["bitids"]:
-                            isTagged = int(bool(tau.isopass() & quality[1]))
-                            hists[obj+"_tautagRate_to_pt_"+quality[0] +
-                                  "_" + cutname].Fill(tau.pt(), isTagged)
+                            hists[obj+"_"+histlabel+"_to_pt_"+quality[0] +
+                                  "_" + cutname].Fill(gen.Pt(), isTagged[quality[0]])
 
-            for e in genelectrons:
-                eVec = TLorentzVector()
-                eVec.SetPtEtaPhiM(e.pt(), e.eta(), e.phi(), e.mass())
-                if tVec.DeltaR(eVec) >= params["dR"]: continue
+        fillEfficiencyHistos(obj, hadronictaus, filtered_taus, params, 'tautagRate')
+        fillEfficiencyHistos(obj, genelectrons, filtered_taus, params, 'elecMistagRate')
+        fillEfficiencyHistos(obj, genmuons, filtered_taus, params, 'muonMistagRate')
+        fillEfficiencyHistos(obj, genlight, filtered_taus, params, 'lightMistagRate')
 
-                for quality in params["bitids"]:
-                    isTagged = int(bool(tau.isopass() & quality[1]))
-                    hists[obj+"_elecMistagRate_to_eta_" +
-                          quality[0]].Fill(tau.eta(), isTagged)
-                    hists[obj+"_elecMistagRate_to_pt_" +
-                          quality[0]].Fill(tau.pt(), isTagged)
-                    hists[obj+"_elecMistagRate_efficiency2D_" +
-                          quality[0]].Fill(tau.pt(), tau.eta(), isTagged)
 
-                for cut in params["ptSlices"]:
-                    cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
-                    if cut[0] <= tau.pt() < cut[1]:
-                        for quality in params["bitids"]:
-                            isTagged = int(bool(tau.isopass() & quality[1]))
-                            hists[obj+"_elecMistagRate_to_eta_"+quality[0] +
-                                  "_" + cutname].Fill(tau.eta(), isTagged)
-
-                for cut in params["etaSlices"]:
-                    cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
-                    if cut[0] < abs(p.eta()) <= cut[1]:
-                        for quality in params["bitids"]:
-                            isTagged = int(bool(tau.isopass() & quality[1]))
-                            hists[obj+"_elecMistagRate_to_pt_"+quality[0] +
-                                  "_" + cutname].Fill(tau.pt(), isTagged)
-            for m in genmuons:
-                mVec = TLorentzVector()
-                mVec.SetPtEtaPhiM(m.pt(), m.eta(), m.phi(), m.mass())
-                if tVec.DeltaR(mVec) >= params["dR"]: continue
-
-                for quality in params["bitids"]:
-                    isTagged = int(bool(tau.isopass() & quality[1]))
-                    hists[obj+"_muonMistagRate_to_eta_" +
-                          quality[0]].Fill(tau.eta(), isTagged)
-                    hists[obj+"_muonMistagRate_to_pt_" +
-                          quality[0]].Fill(tau.pt(), isTagged)
-                    hists[obj+"_muonMistagRate_efficiency2D_" +
-                          quality[0]].Fill(tau.pt(), tau.eta(), isTagged)
-
-                for cut in params["ptSlices"]:
-                    cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
-                    if cut[0] <= tau.pt() < cut[1]:
-                        for quality in params["bitids"]:
-                            isTagged = int(bool(tau.isopass() & quality[1]))
-                            hists[obj+"_muonMistagRate_to_eta_"+quality[0] +
-                                  "_" + cutname].Fill(tau.eta(), isTagged)
-
-                for cut in params["etaSlices"]:
-                    cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
-                    if cut[0] < abs(p.eta()) <= cut[1]:
-                        for quality in params["bitids"]:
-                            isTagged = int(bool(tau.isopass() & quality[1]))
-                            hists[obj+"_muonMistagRate_to_pt_"+quality[0] +
-                                  "_" + cutname].Fill(tau.pt(), isTagged)
-
-            for l in genlight:
-                lVec = TLorentzVector()
-                lVec.SetPtEtaPhiM(l.pt(), l.eta(), l.phi(), l.mass())
-                if tVec.DeltaR(lVec) >= params["dR"]: continue
-
-                for quality in params["bitids"]:
-                    isTagged = int(bool(tau.isopass() & quality[1]))
-                    hists[obj+"_lightMistagRate_to_eta_" +
-                          quality[0]].Fill(tau.eta(), isTagged)
-                    hists[obj+"_lightMistagRate_to_pt_" +
-                          quality[0]].Fill(tau.pt(), isTagged)
-                    hists[obj+"_lightMistagRate_efficiency2D_" +
-                          quality[0]].Fill(tau.pt(), tau.eta(), isTagged)
-
-                for cut in params["ptSlices"]:
-                    cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
-                    if cut[0] <= tau.pt() < cut[1]:
-                        for quality in params["bitids"]:
-                            isTagged = int(bool(tau.isopass() & quality[1]))
-                            hists[obj+"_lightMistagRate_to_eta_"+quality[0] +
-                                  "_" + cutname].Fill(tau.eta(), isTagged)
-
-                for cut in params["etaSlices"]:
-                    cutname = str(cut[0]) + "to" + str(cut[1])
-                    cutname = (cutname.replace('.', 'p')
-                               ).replace('100000p0', 'Inf')
-                    if cut[0] < abs(tau.eta()) <= cut[1]:
-                        for quality in params["bitids"]:
-                            isTagged = int(bool(tau.isopass() & quality[1]))
-                            hists[obj+"_lightMistagRate_to_pt_"+quality[0] +
-                                  "_" + cutname].Fill(tau.pt(), isTagged)
-                                  
     outputF.cd()
     for h in hists.keys():
         hists[h].Write()
