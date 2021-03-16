@@ -12,7 +12,7 @@ def nDaughters(gen):
     return gen.d2() - gen.d1()
 
 def finalDaughters(gen, daughters=None):
-    """Returns the list of the final daughters of a genparticle."""
+    """Returns the list of final daughters of a genparticle."""
     if daughters is None:
         daughters = []
     for i in range(gen.d1(), gen.d2()+1):
@@ -163,11 +163,6 @@ def main():
         "sliceSplit": 1,
         "plotPtRange": [0, 500],
         "plotEtaRange": [-5, 5],
-        "ids": [
-            ["looseID", 1, "#varepsilon(looseID)"],
-            ["mediumID", 3, "#varepsilon(mediumID)"],
-            ["tightID", 7, "#varepsilon(tightID)"],
-        ],
         "bitids": [
             ["looseID", (1 << 0), "#varepsilon(looseID)"],
             ["mediumID", (1 << 1), "#varepsilon(mediumID)"],
@@ -205,7 +200,7 @@ def main():
     hnames2D = ["tautagRate_efficiency2D",
                 "elecMistagRate_efficiency2D", "muonMistagRate_efficiency2D", "lightMistagRate_efficiency2D"]
     for hname in hnames2D:
-        for quality in params["ids"]:
+        for quality in params["bitids"]:
             newname = hname+"_"+quality[0]
             hists[obj+"_"+newname] = create2Dmap(
                 obj+"_"+newname, params, quality[2])
@@ -214,37 +209,38 @@ def main():
     for event in ntuple:
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
-        if (tot_nevents % 10) == 0:
+        if (tot_nevents % 1000) == 0:
             print '... processed {} events ...'.format(event.entry()+1)
 
         tot_nevents += 1
 
-        taus = event.taus() # these are puppi jets that are tau tagged
+        taus = [p for p in event.taus() if p.pt() > params["ptMin"]]
+
         electrons = event.electrons()
         muons = event.muons()
+
         isolated_electrons = [p for p in electrons if p.pt() > 20 and (p.isopass() & 1) == 0 and (p.idpass() & 1) == 1]
         isolated_muons= [p for p in muons if p.pt() > 20 and (p.isopass() & 1) == 1 and (p.idpass() & 1) == 1]
-        #filtered_taus = [taus that are DR > 0.3 from all isolated_electrons and isolated_muons] # fix here, produce plots & push code
+
         elec_filtered_taus = [filterDR(tau, isolated_electrons) for tau in taus if filterDR(tau, isolated_electrons) is not None]
         all_filtered_taus = [filterDR(tau, isolated_muons) for tau in elec_filtered_taus if filterDR(tau, isolated_muons) is not None]
         
         global genparts
         genparts = event.genparticles()
-        genelectrons = [p for p in genparts if abs(p.pid()) == 11]
-        genmuons = [p for p in genparts if abs(p.pid()) == 13]
 
-        gentaus = [p for p in genparts if abs(p.pid()) == 15]
+        genelectrons = [p for p in genparts if abs(p.pid()) == 11 and p.pt() > params["ptMin"]]
+        genmuons = [p for p in genparts if abs(p.pid()) == 13 and p.pt() > params["ptMin"]]
+
+        gentaus = [p for p in genparts if abs(p.pid()) == 15 and p.pt() > params["ptMin"]]
         hadronictaus = [visibleP4(hadronic(tau)) for tau in gentaus if hadronic(tau) != None]
 
-        genlight = [p for p in genparts if abs(p.pid()) == 4 or abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1] # creating a list here for the pids makes code run slower
+        genlight = [p for p in genparts if p.pt() > params["ptMin"] and (abs(p.pid()) == 4 or abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1)] # creating a list here for the pids makes code run slower
 
         for tau in all_filtered_taus:
-            if tau.pt() < params["ptMin"]: continue
             tVec = TLorentzVector()
             tVec.SetPtEtaPhiM(tau.pt(), tau.eta(), tau.phi(), tau.mass())
 
             for gentau in hadronictaus:
-                if gentau.Pt() < params["ptMin"]: continue
                 gentauVec = TLorentzVector()
                 gentauVec.SetPtEtaPhiM(gentau.Pt(), gentau.Eta(), gentau.Phi(), gentau.M())
                 if tVec.DeltaR(gentauVec) >= params["dR"]: continue
@@ -278,10 +274,10 @@ def main():
                                   "_" + cutname].Fill(tau.pt(), isTagged)
 
             for e in genelectrons:
-                if e.pt() < params["ptMin"]: continue
                 eVec = TLorentzVector()
                 eVec.SetPtEtaPhiM(e.pt(), e.eta(), e.phi(), e.mass())
                 if tVec.DeltaR(eVec) >= params["dR"]: continue
+
                 for quality in params["bitids"]:
                     isTagged = int(bool(tau.isopass() & quality[1]))
                     hists[obj+"_elecMistagRate_to_eta_" +
@@ -312,10 +308,10 @@ def main():
                                   "_" + cutname].Fill(tau.pt(), isTagged)
 
             for m in genmuons:
-                if m.pt() < params["ptMin"]: continue
                 mVec = TLorentzVector()
                 mVec.SetPtEtaPhiM(m.pt(), m.eta(), m.phi(), m.mass())
                 if tVec.DeltaR(mVec) >= params["dR"]: continue
+
                 for quality in params["bitids"]:
                     isTagged = int(bool(tau.isopass() & quality[1]))
                     hists[obj+"_muonMistagRate_to_eta_" +
@@ -346,10 +342,10 @@ def main():
                                   "_" + cutname].Fill(tau.pt(), isTagged)
 
             for l in genlight:
-                if l.pt() < params["ptMin"]: continue
                 lVec = TLorentzVector()
                 lVec.SetPtEtaPhiM(l.pt(), l.eta(), l.phi(), l.mass())
                 if tVec.DeltaR(lVec) >= params["dR"]: continue
+                
                 for quality in params["bitids"]:
                     isTagged = int(bool(tau.isopass() & quality[1]))
                     hists[obj+"_lightMistagRate_to_eta_" +
