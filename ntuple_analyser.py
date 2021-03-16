@@ -661,7 +661,7 @@ def runTautagStudy(ntuple, maxEvents, outfileName):
         genmuons = [p for p in genparts if abs(p.pid()) == 13 and p.pt() > params["ptMin"]]
 
         gentaus = [p for p in genparts if abs(p.pid()) == 15 and p.pt() > params["ptMin"]]
-        hadronictaus = [hadronic(tau) for tau in gentaus if hadronic(tau) != None]
+
         hadronictaus = [visibleP4(hadronic(tau)) for tau in gentaus if hadronic(tau) != None] # visible hadronic taus
 
         genlight = [p for p in genparts if p.pt() > params["ptMin"] and (abs(p.pid()) == 4 or abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1)] # creating a list here for the pids makes code run slower
