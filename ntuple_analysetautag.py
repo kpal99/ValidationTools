@@ -12,7 +12,7 @@ def nDaughters(gen):
     return gen.d2() - gen.d1()
 
 def finalDaughters(gen, daughters=None):
-    """Returns the list of the final daughters of a genparticle."""
+    """Returns the list of final daughters of a genparticle."""
     if daughters is None:
         daughters = []
     for i in range(gen.d1(), gen.d2()+1):
@@ -234,7 +234,7 @@ def main():
         gentaus = [p for p in genparts if abs(p.pid()) == 15 and p.pt() > params["ptMin"]]
         hadronictaus = [visibleP4(hadronic(tau)) for tau in gentaus if hadronic(tau) != None]
 
-        genlight = [p for p in genparts if abs(p.pid()) == 4 or abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1] # creating a list here for the pids makes code run slower
+        genlight = [p for p in genparts if p.pt() > params["ptMin"] and (abs(p.pid()) == 4 or abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1)] # creating a list here for the pids makes code run slower
 
         for tau in all_filtered_taus:
             tVec = TLorentzVector()
@@ -277,6 +277,7 @@ def main():
                 eVec = TLorentzVector()
                 eVec.SetPtEtaPhiM(e.pt(), e.eta(), e.phi(), e.mass())
                 if tVec.DeltaR(eVec) >= params["dR"]: continue
+
                 for quality in params["bitids"]:
                     isTagged = int(bool(tau.isopass() & quality[1]))
                     hists[obj+"_elecMistagRate_to_eta_" +
@@ -310,6 +311,7 @@ def main():
                 mVec = TLorentzVector()
                 mVec.SetPtEtaPhiM(m.pt(), m.eta(), m.phi(), m.mass())
                 if tVec.DeltaR(mVec) >= params["dR"]: continue
+
                 for quality in params["bitids"]:
                     isTagged = int(bool(tau.isopass() & quality[1]))
                     hists[obj+"_muonMistagRate_to_eta_" +
@@ -340,10 +342,10 @@ def main():
                                   "_" + cutname].Fill(tau.pt(), isTagged)
 
             for l in genlight:
-                if l.pt() < params["ptMin"]: continue
                 lVec = TLorentzVector()
                 lVec.SetPtEtaPhiM(l.pt(), l.eta(), l.phi(), l.mass())
                 if tVec.DeltaR(lVec) >= params["dR"]: continue
+                
                 for quality in params["bitids"]:
                     isTagged = int(bool(tau.isopass() & quality[1]))
                     hists[obj+"_lightMistagRate_to_eta_" +
