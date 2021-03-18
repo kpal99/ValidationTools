@@ -85,8 +85,6 @@ def replaced(base, content, starting, ending):
     final=before+content+after
     return final 
 
-
-
 #_________________________________________________________________________________
 
 ## this function computes efficiencies ratio scale factors and dumps them into card
@@ -295,8 +293,8 @@ object_dict={
                                    'lightMistag': 0
                                    }, ## here store mapping between efficiencies labels and PID
 
-                        'file_prompt_F':path+'/Fullsim_TTbar_v2.root',
-                        'file_prompt_D':path+'/Delphes_TTbar_v2.root',
+                        'file_prompt_F':path+'/Fullsim_TTbar_v3.root',
+                        'file_prompt_D':path+'/Delphes_TTbar_v3.root',
               },
 
               'tautag':{
@@ -305,11 +303,13 @@ object_dict={
                         'scale_quality':'dummy', ## dummy values for b/tau tagging
                         'qualities':['loose','medium','tight'], ## here store qualities used to produce efficiencies
                         'tag_pid':{'tautag': 15,
-                                   'lightMistag': 0
+                                   'lightMistag': 0,
+                                   'elecMistag': 11,
+                                   'muonMistag': 13
                                    }, ## here store mapping between efficiencies labels and PID
 
-                        'file_prompt_F':path+'/Fullsim_HTauTau.root',
-                        'file_prompt_D':path+'/Fullsim_HTauTau.root',
+                        'file_prompt_F':path+'/Fullsim_Taus.root',
+                        'file_prompt_D':path+'/Delphes_Taus.root',
               },
 
 
@@ -331,6 +331,7 @@ for obj, params in object_dict.items():
 
     print obj
     #if obj != 'tautag': continue
+    #if obj != 'btag': continue
     #if obj != 'muon': continue
 
     #obj['']
@@ -529,7 +530,7 @@ for obj, params in object_dict.items():
                 
                 dumpname=tag+'Rate_2D_'+quality+'ID'
                 if obj == 'tautag' :
-		    dumpname=tag+'Rate_efficiency2D_'+quality+'ID'
+                    dumpname=tag+'Rate_efficiency2D_'+quality+'ID'
 
                 name=collection+'_'+dumpname
 
@@ -539,6 +540,7 @@ for obj, params in object_dict.items():
                 eff2D_f = inputFile_f.Get(name)
                 lines_eff = []
 
+                print obj, tag+'_'+quality,pdgcode
                 content = dump_efficiencies(obj, tag+'_'+quality, lines_eff, pdgcode, eff2D_f, content)
 
         if 'file_fake_F' in params: ## exclude jets
