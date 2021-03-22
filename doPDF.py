@@ -1,5 +1,7 @@
 import os, optparse
 import re as r
+import operator
+import collections
 
 usage = 'usage: %prog [options]'
 parser = optparse.OptionParser(usage)
@@ -59,6 +61,8 @@ def texoutput(plt_type, obj, var, wp, plot_list, tex_line, plot2D=False):
     for name in plot_list:
         if plt_type in name and obj in name and var in name and (wp+"." in name or wp+"_" in name):
             name_list[name] = sliceName(name)
+            name_list = sorted(name_list.items(), key=operator.itemgetter(1))
+            name_list = collections.OrderedDict(name_list)
     tex_line += add_figures(name_list) + "\n" + r"\end{frame}" + "\n" + r"\newpage"
     return tex_line
 
@@ -78,7 +82,7 @@ tex_lines += "\n".join("{}".format(ln) for ln in
 r"""} }
 \usepackage[utf8]{inputenc}
 
-\title{All plots}
+\title{TTbar}
 
 \author{RTB}
 \institute{CMS}
