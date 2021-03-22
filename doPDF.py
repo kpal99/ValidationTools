@@ -1,5 +1,5 @@
 import os, optparse
-import re
+import re as r
 
 usage = 'usage: %prog [options]'
 parser = optparse.OptionParser(usage)
@@ -25,7 +25,12 @@ if not os.path.exists(printoutdir):
 plots_list = os.listdir(plotsdir)
 os.system('touch all_plots.tex')
 
-def subfigure(figure, caption):
+def sliceName(name):
+    slice_pattern = r"(\d+\w+\d+)"
+    sliced_name = r.findall(slice_pattern, name)
+    return sliced_name
+
+def subfigure(figure, caption='default'):
     """Defines figures."""
     if figure == None:
         return ''
@@ -37,12 +42,13 @@ def subfigure(figure, caption):
         tex_line += "}\n" + r"\end{subfigure}\hfil"
         return tex_line
 
-def add_figures(first, second, third, fourth, fifth, sixth=None):
+def add_figures(figure_list):
     """Adds figure structure to the script."""
     tex_line = r"""
     \begin{figure}[htb]
     \centering""" + "\n"
-    tex_line += subfigure(first, caption="1") + "\n" + subfigure(second, caption="2")+ "\n" + subfigure(third, caption="3")+ "\n" + subfigure(fourth, caption="4")+ "\n" + subfigure(fifth, caption="5")+ "\n" + subfigure(sixth, caption="6")
+    for figure in figure_list:
+        tex_line += subfigure(figure, str(figure_list[figure])) + "\n"
     tex_line += r"\caption{caption}" + "\n" + r"\end{figure}"
     return tex_line
 
@@ -51,14 +57,15 @@ def texoutput(plt_type, obj, var, wp, plot_list, tex_line, plot2D=False):
         plot type, object, variable (eta, pt), working point, list of all plot files, tex output."""
     tex_line = r"\begin{frame}"
     tex_line += r"\frametitle{" + obj + " " + plt_type + " vs " + var + " " + wp + r"}"
-    name_list = []
+    name_list = {}
     for name in plot_list:
         if plt_type in name and obj in name and var in name and (wp+"." in name or wp+"_" in name):
-            name_list.append(name)
+            name_list[name] = sliceName(name)
     if var == 'pt':
-        tex_line += add_figures(name_list[0], name_list[1], name_list[2], name_list[3], name_list[4] ) + "\n" + r"\end{frame}" + "\n" + r"\newpage"
+        tex_line += add_figures(name_list) + "\n" + r"\end{frame}" + "\n" + r"\newpage"
     else:
-       tex_line += add_figures(name_list[0], name_list[1], name_list[2], name_list[3], name_list[4], name_list[5]) + "\n" + r"\end{frame}" + "\n" + r"\newpage" 
+       tex_line += add_figures(name_list) + "\n" + r"\end{frame}" + "\n" + r"\newpage" 
+    print(name_list)
     return tex_line
 
 
@@ -104,8 +111,14 @@ tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID', plots_list, t
 tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'looseID', plots_list, tex_lines)
 tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID', plots_list, tex_lines)
 
+tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'looseID', plots_list, tex_lines)
+tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID', plots_list, tex_lines)
+tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'looseID', plots_list, tex_lines)
+tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID', plots_list, tex_lines)
+
 tex_lines += "\n" + r"\end{document}"
 
 
 with open('all_plots.tex', 'w') as tex_output:
     tex_output.write(tex_lines)
+    
