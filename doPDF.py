@@ -26,6 +26,7 @@ plots_list = os.listdir(plotsdir)
 os.system('touch all_plots.tex')
 
 def sliceName(name):
+    """Returns the cut interval of the plots."""
     slice_pattern = r"(\d+\w+\d+)"
     sliced_name = r.findall(slice_pattern, name)
     return sliced_name
@@ -62,7 +63,6 @@ def texoutput(plt_type, obj, var, wp, plot_list, tex_line, plot2D=False):
         if plt_type in name and obj in name and var in name and (wp+"." in name or wp+"_" in name):
             name_list[name] = sliceName(name)
     tex_line += add_figures(name_list) + "\n" + r"\end{frame}" + "\n" + r"\newpage"
-    print(name_list)
     return tex_line
 
 
