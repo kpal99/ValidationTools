@@ -31,17 +31,14 @@ def sliceName(name):
     sliced_name = r.findall(slice_pattern, name)
     return sliced_name
 
-def subfigure(figure, caption='default'):
+def subfigure(figure, caption):
     """Defines figures."""
-    if figure == None:
-        return ''
-    else:
-        tex_line = r"\begin{subfigure}{0.3\textwidth}" + "\n" + "\includegraphics[width=\linewidth]{"
-        tex_line += figure
-        tex_line += r"}"+ "\n" + r"\caption{"
-        tex_line += caption
-        tex_line += "}\n" + r"\end{subfigure}\hfil"
-        return tex_line
+    tex_line = r"\begin{subfigure}{0.3\textwidth}" + "\n" + "\includegraphics[width=\linewidth]{"
+    tex_line += figure
+    tex_line += r"}"+ "\n" + r"\caption{"
+    tex_line += caption
+    tex_line += "}\n" + r"\end{subfigure}\hfil"
+    return tex_line
 
 def add_figures(figure_list):
     """Adds figure structure to the script."""
@@ -55,7 +52,7 @@ def add_figures(figure_list):
 
 def texoutput(plt_type, obj, var, wp, plot_list, tex_line, plot2D=False):
     """ Generates tex script with the following variables respectively:
-        plot type, object, variable (eta, pt), working point, list of all plot files, tex output."""
+        plot type (eff, fakerate etc.), object, variable (eta, pt), working point, list of all plot files, tex output."""
     tex_line = r"\begin{frame}"
     tex_line += r"\frametitle{" + obj + " " + plt_type + " vs " + var + " " + wp + r"}"
     name_list = {}
