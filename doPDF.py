@@ -61,10 +61,7 @@ def texoutput(plt_type, obj, var, wp, plot_list, tex_line, plot2D=False):
     for name in plot_list:
         if plt_type in name and obj in name and var in name and (wp+"." in name or wp+"_" in name):
             name_list[name] = sliceName(name)
-    if var == 'pt':
-        tex_line += add_figures(name_list) + "\n" + r"\end{frame}" + "\n" + r"\newpage"
-    else:
-       tex_line += add_figures(name_list) + "\n" + r"\end{frame}" + "\n" + r"\newpage" 
+    tex_line += add_figures(name_list) + "\n" + r"\end{frame}" + "\n" + r"\newpage"
     print(name_list)
     return tex_line
 
