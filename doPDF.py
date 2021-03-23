@@ -15,17 +15,24 @@ parser.add_option('-o', '--outDir',
                   help='output directory for PDFs [%default]',  
                   default='TTbar_PDFs',       
                   type='string')
+parser.add_option('-p', '--object',          
+                  dest='physObject',       
+                  help='object name for plots [%default]',  
+                  default='jetpuppi',       
+                  type='string')
 
 (opt, args) = parser.parse_args()
 
 plotsdir = opt.plotsdir
 printoutdir = opt.printoutdir
+physobj = opt.physObject
 
 if not os.path.exists(printoutdir):
     os.system('mkdir -p %s'%printoutdir)
 
+global plots_list
 plots_list = os.listdir(plotsdir)
-os.system('touch all_plots.tex')
+os.system('touch %s/all_plots.tex'%printoutdir)
 
 def sliceName(name):
     """Returns the cut interval of the plots."""
@@ -52,13 +59,13 @@ def add_figures(figure_list):
     tex_line += r"\caption{caption}" + "\n" + r"\end{figure}"
     return tex_line
 
-def texoutput(plt_type, obj, var, wp, plot_list, tex_line, plot2D=False):
+def texoutput(plt_type, obj, var, wp, plot2D=False):
     """ Generates tex script with the following variables respectively:
-        plot type (eff, fakerate etc.), object, variable (eta, pt), working point, list of all plot files, tex output."""
+        plot type (eff, fakerate etc.), object, variable (eta, pt), working point"""
     tex_line = r"\begin{frame}"
     tex_line += r"\frametitle{" + obj + " " + plt_type + " vs " + var + " " + wp + r"}"
     name_list = {}
-    for name in plot_list:
+    for name in plots_list:
         if plt_type in name and obj in name and var in name and (wp+"." in name or wp+"_" in name):
             name_list[name] = sliceName(name)
             name_list = sorted(name_list.items(), key=operator.itemgetter(1))
@@ -93,30 +100,50 @@ r"""} }
 \frame{\titlepage}
 
 """.split("\n"))
+
+if physobj == 'jetpuppi':
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
     
-tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID', plots_list, tex_lines)
-tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID', plots_list, tex_lines)
-tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID', plots_list, tex_lines)
-tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID', plots_list, tex_lines)
+    tex_lines += texoutput('fakerate', 'jetpuppi', 'eta', 'looseID')
+    tex_lines += texoutput('fakerate', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('fakerate', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('fakerate', 'jetpuppi', 'pt', 'tightID')
 
-tex_lines += texoutput('fakerate', 'jetpuppi', 'eta', 'looseID', plots_list, tex_lines)
-tex_lines += texoutput('fakerate', 'jetpuppi', 'eta', 'tightID', plots_list, tex_lines)
-tex_lines += texoutput('fakerate', 'jetpuppi', 'pt', 'looseID', plots_list, tex_lines)
-tex_lines += texoutput('fakerate', 'jetpuppi', 'pt', 'tightID', plots_list, tex_lines)
 
-tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'looseID', plots_list, tex_lines)
-tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID', plots_list, tex_lines)
-tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'looseID', plots_list, tex_lines)
-tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID', plots_list, tex_lines)
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'looseID')
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
+    
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'looseID')
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
 
-tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'looseID', plots_list, tex_lines)
-tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID', plots_list, tex_lines)
-tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'looseID', plots_list, tex_lines)
-tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID', plots_list, tex_lines)
+if physobj == 'muon':
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseID')
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumID')
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightID')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseID')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumID')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightID')
+    
+    tex_lines += texoutput('ptresponse', 'muon', 'eta', 'looseID')
+    tex_lines += texoutput('ptresponse', 'muon', 'eta', 'mediumID')
+    tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'muon', 'pt', 'looseID')
+    tex_lines += texoutput('ptresponse', 'muon', 'pt', 'mediumID')
+    tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
 
 tex_lines += "\n" + r"\end{document}"
 
 
 with open('all_plots.tex', 'w') as tex_output:
     tex_output.write(tex_lines)
+    
+#os.system('pdflatex %s/all_plots.tex'%printoutdir)
+
     
