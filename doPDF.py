@@ -34,13 +34,16 @@ global plots_list
 plots_list = os.listdir(plotsdir)
 os.system('touch %s/all_plots.tex'%printoutdir)
 
-def cutName(name):
+def cutName(name, plt_type):
     """Returns the cut interval of the plots."""
-    cut_pattern = "(\d+\w+\d+)"
+    if plt_type == 'resolution':
+        cut_pattern = r"(\w\w\w\d+\w+\d+)"
+    else:
+        cut_pattern = r"(\d+\w+\d+)"
     cut_name = r.findall(cut_pattern, name)
     return cut_name
 
-def subfigure(figure, caption):
+def subfigure(figure, caption, plt_type):
     """Defines figures."""
     tex_line = r"\begin{subfigure}{0.32\textwidth}" + "\n" + "\includegraphics[width=\linewidth]{"
     tex_line += figure
@@ -48,7 +51,9 @@ def subfigure(figure, caption):
     if caption == '':
         caption = 'no slice'
     if caption == "500":
-        tex_line += "500toInf"
+        caption = "500toInf"
+    if plt_type == 'resolution':
+        tex_line += caption.replace("_", " ").replace("p", ".").replace(".t", "pt")
     else:
         tex_line += caption.replace("p", ".").replace("_", "\_")
     tex_line += "}\n" + r"\end{subfigure}" + "\n" + r"\hfil"
@@ -57,7 +62,10 @@ def subfigure(figure, caption):
 def beginFrame(plt_type, obj, var, wp, extra):
     """Returns the beginning lines for a new page."""
     tex_line = r"\begin{frame}" + "\n"
-    tex_line += r"\frametitle{" + obj + " " + plt_type + " to " + var + " " + wp + extra + r"}" + "\n" + r"\begin{figure}" 
+    if plt_type == 'resolution':
+        tex_line += r"\frametitle{" + obj + " " + plt_type + " to pt vs eta" + " " + wp + extra + r"}" + "\n" + r"\begin{figure}"
+    else:
+        tex_line += r"\frametitle{" + obj + " " + plt_type + " to " + var + " " + wp + extra + r"}" + "\n" + r"\begin{figure}" 
     return tex_line
 
 def add_figures(figure_list):
@@ -68,8 +76,8 @@ def add_figures(figure_list):
             tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
             tex_line += "\n" + beginFrame(plt, object_, variable, workingp, " cont'd")
         tex_line += r"\centering" + "\n"
-        tex_line += subfigure(figure, str(figure_list[figure]).strip("'[]")) + "\n"
-        if "eta" in figure:
+        tex_line += subfigure(figure_list[figure], str(figure).strip("'[]"), plt) + "\n"
+        if "eta" in figure_list[figure]:
             capt = "pt slices"
         else:
             capt = "eta slices"
@@ -96,9 +104,22 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
         var = "pt_" # to avoid the ptresponse to be taken as pt
     for name in plots_list:
         if plt_type in name and obj in name and var in name and (wp+"." in name or wp+"_" in name):
-            name_list[name] = cutName(name)
+            name_list[str(cutName(name, plt_type))] = name
             name_list = sorted(name_list.items(), key=operator.itemgetter(1))
             name_list = collections.OrderedDict(name_list)
+    if var == "eta" and plt_type != 'resolution':
+        name_list.move_to_end("['100to200']")
+        name_list.move_to_end("['200to500']")
+        name_list.move_to_end("['500']")
+    if plt_type == 'resolution':
+        name_list.move_to_end("['pt_50_100_eta_4p0_5p0']", last=False)
+        name_list.move_to_end("['pt_50_100_eta_3p0_4p0']", last=False)
+        name_list.move_to_end("['pt_50_100_eta_1p5_3p0']", last=False)
+        name_list.move_to_end("['pt_50_100_eta_0_1p5']", last=False)
+        name_list.move_to_end("['pt_20_50_eta_4p0_5p0']", last=False)
+        name_list.move_to_end("['pt_20_50_eta_3p0_4p0']", last=False)
+        name_list.move_to_end("['pt_20_50_eta_1p5_3p0']", last=False)
+        name_list.move_to_end("['pt_20_50_eta_0_1p5']", last=False)
     if len(name_list) > 6:
         tex_line += add_figures(name_list)
     else:
@@ -132,6 +153,12 @@ r"""} }
 
 """.split("\n"))
 
+params = {
+    "plot_types" : ["efficiency", "fakerate", "ptresponse", "resolution", "multiplicity"],
+    "objects" : ["electron", "jetpuppi", "muon", "photon"],
+    "variables" : ["pt", "eta"]
+}
+
 if physobj == 'jetpuppi':
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
@@ -151,7 +178,7 @@ if physobj == 'jetpuppi':
     
     tex_lines += texoutput('resolution', 'jetpuppi', 'pt', 'tightID')
 
-if physobj == 'muon':
+#if physobj == 'muon':
     tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseID')
     tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumID')
     tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightID')
@@ -161,6 +188,19 @@ if physobj == 'muon':
     
     tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
+
+#if physobj == 'electron':
+    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'looseID')
+    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'looseIDISO')
+    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'looseISO')
+    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'mediumID')
+    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'mediumIDISO')
+    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'mediumISO')
+    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'reco')
+    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'tightID')
+    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'tightIDISO')
+    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'tightISO')
+
 
 tex_lines += "\n" + r"\end{document}"
 
