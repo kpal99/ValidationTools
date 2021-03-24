@@ -70,7 +70,7 @@ def beginFrame(plt_type, obj, var, wp, extra):
 
 def add_figures(figure_list):
     """Adds figure structure to the script."""
-    tex_line = "\n" #+ r"\begin{figure}[htb]"
+    tex_line = "\n"
     for i, figure in enumerate(figure_list):
         if i % 6 == 0 and i != 0:
             tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
@@ -111,7 +111,7 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
         name_list.move_to_end("['100to200']")
         name_list.move_to_end("['200to500']")
         name_list.move_to_end("['500']")
-    if plt_type == 'resolution':
+    if plt_type == 'resolution' and obj == 'jetpuppi':
         name_list.move_to_end("['pt_50_100_eta_4p0_5p0']", last=False)
         name_list.move_to_end("['pt_50_100_eta_3p0_4p0']", last=False)
         name_list.move_to_end("['pt_50_100_eta_1p5_3p0']", last=False)
@@ -119,6 +119,11 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
         name_list.move_to_end("['pt_20_50_eta_4p0_5p0']", last=False)
         name_list.move_to_end("['pt_20_50_eta_3p0_4p0']", last=False)
         name_list.move_to_end("['pt_20_50_eta_1p5_3p0']", last=False)
+        name_list.move_to_end("['pt_20_50_eta_0_1p5']", last=False)
+    if plt_type == 'resolution' and obj == "muon":
+        name_list.move_to_end("['pt_50_100_eta_1p5_2p8']", last=False)
+        name_list.move_to_end("['pt_50_100_eta_0_1p5']", last=False)
+        name_list.move_to_end("['pt_20_50_eta_1p5_2p8']", last=False)
         name_list.move_to_end("['pt_20_50_eta_0_1p5']", last=False)
     if len(name_list) > 6:
         tex_line += add_figures(name_list)
@@ -155,9 +160,17 @@ r"""} }
 
 params = {
     "plot_types" : ["efficiency", "fakerate", "ptresponse", "resolution", "multiplicity"],
-    "objects" : ["electron", "jetpuppi", "muon", "photon"],
-    "variables" : ["pt", "eta"]
+    "objects" : ["jetpuppi"],
+    "variables" : ["pt", "eta"],
+    "wp_jetpuppi" : ["looseID", "tightID"]
 }
+
+# for plot_type in params["plot_types"]:
+#     for obj in params["objects"]:
+#         for var in params["variables"]:
+#             for wp in params["wp_jetpuppi"]:
+#                 tex_lines += texoutput(plot_type, obj, var, wp)
+
 
 if physobj == 'jetpuppi':
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
@@ -173,33 +186,18 @@ if physobj == 'jetpuppi':
     tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
     
-    tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
-    tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
-    
     tex_lines += texoutput('resolution', 'jetpuppi', 'pt', 'tightID')
 
 #if physobj == 'muon':
     tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseID')
-    tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumID')
     tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightID')
     tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseID')
-    tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumID')
     tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightID')
     
     tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
 
-#if physobj == 'electron':
-    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'looseID')
-    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'looseIDISO')
-    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'looseISO')
-    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'mediumID')
-    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'mediumIDISO')
-    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'mediumISO')
-    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'reco')
-    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'tightID')
-    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'tightIDISO')
-    tex_lines += texoutput('multiplicity', 'electron', 'electron', 'tightISO')
+    tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
 
 
 tex_lines += "\n" + r"\end{document}"
