@@ -8,17 +8,25 @@ parser = optparse.OptionParser(usage)
 parser.add_option('-i', '--plotsDir',
                   dest='plotsdir',
                   help='path to input plots [%default]',  
-                  default='TTbar/',
+                  default='Photon_Efficiency/',
                   type='string')
+
 parser.add_option('-o', '--outDir',          
                   dest='printoutdir',       
                   help='output directory for PDFs [%default]',  
                   default='TTbar_PDFs',       
                   type='string')
+
 parser.add_option('-p', '--object',          
                   dest='physObject',       
                   help='object name for plots [%default]',  
                   default='jetpuppi',       
+                  type='string')
+
+parser.add_option('-s', '--sample',          
+                  dest='smp',       
+                  help='sample [%default]',  
+                  default='Photon_Efficiency',       
                   type='string')
 
 (opt, args) = parser.parse_args()
@@ -26,6 +34,7 @@ parser.add_option('-p', '--object',
 plotsdir = opt.plotsdir
 printoutdir = opt.printoutdir
 physobj = opt.physObject
+smp = opt.smp
 
 if not os.path.exists(printoutdir):
     os.system('mkdir -p %s'%printoutdir)
@@ -41,7 +50,9 @@ def cutName(name, plt_type):
     else:
         cut_pattern = r"(\d+\w+\d+)"
     cut_name = r.findall(cut_pattern, name)
-    return cut_name
+    cut_name_prop = [name.replace("p", ".").replace(".t", "pt") for name in cut_name]
+    #print(cut_name_prop)
+    return cut_name_prop
 
 def subfigure(figure, caption, plt_type):
     """Defines figures."""
@@ -50,12 +61,80 @@ def subfigure(figure, caption, plt_type):
     tex_line += r"}"+ "\n" + r"\caption{"
     if caption == '':
         caption = 'no slice'
+    if caption == '20to50':
+        caption = r"$ 20 < p_{T} < 50 $"
+    if caption == '50to100':
+        caption = r"$ 50 < p_{T} < 100 $"
+    if caption == '100to200':
+        caption = r"$ 100 < p_{T} < 200 $"
+    if caption == '200to500':
+        caption = r"$ 200 < p_{T} < 500 $"
     if caption == "500":
-        caption = "500toInf"
-    if plt_type == 'resolution':
-        tex_line += caption.replace("_", " ").replace("p", ".").replace(".t", "pt")
-    else:
-        tex_line += caption.replace("p", ".").replace("_", "\_")
+        caption = "$ p_{T} > 500 $"
+    
+    if caption == "0to1.5":
+        caption = r"$ 0 < |\eta| < 1.5 $"
+    if caption == "1.5to2.8":
+        caption = r"$ 1.5 < |\eta| < 2.8 $"
+    if caption == "2.8":
+        caption = r"$ |\eta| > 2.8 $"
+    if caption == "1.5to3.0" or caption == "1.5to3":
+        caption = r"$ 1.5 < |\eta| < 3 $"
+    if caption == "3.0to4.0" or caption == "3to4":
+        caption = r"$ 3 < |\eta| < 4 $"
+    if caption == "4.0to5.0":
+        caption = r"$ 4 < |\eta| < 5 $"
+
+    if caption == "pt_20_50_eta_0_1.5":
+        caption = r"$ 20 < p_{T} < 50  \,\&\, 0 < |\eta| < 1.5$"
+    if caption == "pt_20_50_eta_1.5_2.8":
+        caption = r"$ 20 < p_{T} < 50  \,\&\, 1.5 < |\eta| < 2.8$"
+    if caption == "pt_20_50_eta_1.5_3.0" or caption == "pt_20_50_eta_1.5_3":
+        caption = r"$ 20 < p_{T} < 50  \,\&\, 1.5 < |\eta| < 3$"
+    if caption == "pt_20_50_eta_3.0_4.0":
+        caption = r"$ 20 < p_{T} < 50  \,\&\, 3 < |\eta| < 4$"
+    if caption == "pt_20_50_eta_4.0_5.0":
+        caption = r"$ 20 < p_{T} < 50  \,\&\, 4 < |\eta| < 5$"
+
+    if caption == "pt_50_100_eta_0_1.5":
+        caption = r"$ 50 < p_{T} < 100 \,\&\, 0 < |\eta| < 1.5$"
+    if caption == "pt_50_100_eta_1.5_2.8":
+        caption = r"$ 50 < p_{T} < 100  \,\&\, 1.5 < |\eta| < 2.8$"
+    if caption == "pt_50_100_eta_1.5_3.0" or caption == "pt_50_100_eta_1.5_3":
+        caption = r"$ 50 < p_{T} < 100 \,\&\, 1.5 < |\eta| < 3$"
+    if caption == "pt_50_100_eta_3.0_4.0" or caption == "pt_50_100_eta_3_4":
+        caption = r"$ 50 < p_{T} < 100 \,\&\, 3 < |\eta| < 4$"
+    if caption == "pt_50_100_eta_4.0_5.0":
+        caption = r"$ 50 < p_{T} < 100 \,\&\, 4 < |\eta| < 5$"
+
+    if caption == "pt_100_200_eta_0_1.5":
+        caption = r"$ 100 < p_{T} < 200 \,\&\, 0 < |\eta| < 1.5$"
+    if caption == "pt_100_200_eta_1.5_2.8":
+        caption = r"$ 100 < p_{T} < 200  \,\&\, 1.5 < |\eta| < 2.8$"
+    if caption == "pt_100_200_eta_1.5_3.0" or caption == "pt_100_200_eta_1.5_3":
+        caption = r"$ 100 < p_{T} < 200 \,\&\, 1.5 < |\eta| < 3$"
+    if caption == "pt_100_200_eta_3.0_4.0":
+        caption = r"$ 100 < p_{T} < 200 \,\&\, 3 < |\eta| < 4$"
+    if caption == "pt_100_200_eta_4.0_5.0":
+        caption = r"$ 100 < p_{T} < 200 \,\&\, 4 < |\eta| < 5$"
+
+    if caption == "pt_200_500_eta_0_1.5":
+        caption = r"$ 200 < p_{T} < 500 \,\&\, 0 < |\eta| < 1.5$"
+    if caption == "pt_200_500_eta_1.5_2.8":
+        caption = r"$ 200 < p_{T} < 500  \,\&\, 1.5 < |\eta| < 2.8$"
+    if caption == "pt_200_500_eta_1.5_3.0" or caption == "pt_200_500_eta_1.5_3":
+        caption = r"$ 200 < p_{T} < 500 \,\&\, 1.5 < |\eta| < 3$"
+    if caption == "pt_200_500_eta_3.0_4.0":
+        caption = r"$ 200 < p_{T} < 500 \,\&\, 3 < |\eta| < 4$"
+    if caption == "pt_200_500_eta_4.0_5.0":
+        caption = r"$ 200 < p_{T} < 500 \,\&\, 4 < |\eta| < 5$"
+
+    if caption == "pt_500_Inf_eta_0_1.5":
+        caption = r"$ p_{T} > 500 \,\&\, 0 < |\eta| < 1.5$"
+    if caption == "pt_500_Inf_eta_1.5_3.0":
+        caption = r"$ p_{T} > 500 \,\&\,1.5 < |\eta| < 3$"
+
+    tex_line += caption#.replace("_", " ")
     tex_line += "}\n" + r"\end{subfigure}" + "\n" + r"\hfil"
     return tex_line
 
@@ -63,9 +142,9 @@ def beginFrame(plt_type, obj, var, wp, extra):
     """Returns the beginning lines for a new page."""
     tex_line = r"\begin{frame}" + "\n"
     if plt_type == 'resolution':
-        tex_line += r"\frametitle{" + obj + " " + plt_type + " to pt vs eta" + " " + wp + extra + r"}" + "\n" + r"\begin{figure}"
+        tex_line += r"\frametitle{" + obj + " " + plt_type + r" vs pt \& eta" + " " + wp + extra + r"}" + "\n" + r"\begin{figure}"
     else:
-        tex_line += r"\frametitle{" + obj + " " + plt_type + " to " + var + " " + wp + extra + r"}" + "\n" + r"\begin{figure}" 
+        tex_line += r"\frametitle{" + obj + " " + plt_type + " vs " + var + " " + wp + extra + r"}" + "\n" + r"\begin{figure}" 
     return tex_line
 
 def add_figures(figure_list):
@@ -77,11 +156,7 @@ def add_figures(figure_list):
             tex_line += "\n" + beginFrame(plt, object_, variable, workingp, " cont'd")
         tex_line += r"\centering" + "\n"
         tex_line += subfigure(figure_list[figure], str(figure).strip("'[]"), plt) + "\n"
-        if "eta" in figure_list[figure]:
-            capt = "pt slices"
-        else:
-            capt = "eta slices"
-    tex_line += r"\caption{" + capt + r"}" + "\n" + r"\end{figure}"
+    tex_line += r"\end{figure}"
     for i in range(len(figure_list)):
         if i == 6:
             tex_line += "\n" + r"\end{frame}" + "\n" + r"\newpage" + 2*"\n"
@@ -107,24 +182,27 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
             name_list[str(cutName(name, plt_type))] = name
             name_list = sorted(name_list.items(), key=operator.itemgetter(1))
             name_list = collections.OrderedDict(name_list)
-    if var == "eta" and plt_type != 'resolution':
+    if var == "eta" and (plt_type != 'resolution' or plt_type == 'fakerate'):
         name_list.move_to_end("['100to200']")
         name_list.move_to_end("['200to500']")
-        name_list.move_to_end("['500']")
+        if obj != 'muon' and plt_type == 'efficiency':
+            name_list.move_to_end("['500']")
+        if plt_type == 'fakerate':
+            name_list.move_to_end("['500']")
     if plt_type == 'resolution' and obj == 'jetpuppi':
-        name_list.move_to_end("['pt_50_100_eta_4p0_5p0']", last=False)
-        name_list.move_to_end("['pt_50_100_eta_3p0_4p0']", last=False)
-        name_list.move_to_end("['pt_50_100_eta_1p5_3p0']", last=False)
-        name_list.move_to_end("['pt_50_100_eta_0_1p5']", last=False)
-        name_list.move_to_end("['pt_20_50_eta_4p0_5p0']", last=False)
-        name_list.move_to_end("['pt_20_50_eta_3p0_4p0']", last=False)
-        name_list.move_to_end("['pt_20_50_eta_1p5_3p0']", last=False)
-        name_list.move_to_end("['pt_20_50_eta_0_1p5']", last=False)
+        name_list.move_to_end("['pt_50_100_eta_4.0_5.0']", last=False)
+        name_list.move_to_end("['pt_50_100_eta_3.0_4.0']", last=False)
+        name_list.move_to_end("['pt_50_100_eta_1.5_3.0']", last=False)
+        name_list.move_to_end("['pt_50_100_eta_0_1.5']", last=False)
+        name_list.move_to_end("['pt_20_50_eta_4.0_5.0']", last=False)
+        name_list.move_to_end("['pt_20_50_eta_3.0_4.0']", last=False)
+        name_list.move_to_end("['pt_20_50_eta_1.5_3.0']", last=False)
+        name_list.move_to_end("['pt_20_50_eta_0_1.5']", last=False)
     if plt_type == 'resolution' and obj == "muon":
-        name_list.move_to_end("['pt_50_100_eta_1p5_2p8']", last=False)
-        name_list.move_to_end("['pt_50_100_eta_0_1p5']", last=False)
-        name_list.move_to_end("['pt_20_50_eta_1p5_2p8']", last=False)
-        name_list.move_to_end("['pt_20_50_eta_0_1p5']", last=False)
+        name_list.move_to_end("['pt_50_100_eta_1.5_2.8']", last=False)
+        name_list.move_to_end("['pt_50_100_eta_0_1.5']", last=False)
+        name_list.move_to_end("['pt_20_50_eta_1.5_2.8']", last=False)
+        name_list.move_to_end("['pt_20_50_eta_0_1.5']", last=False)
     if len(name_list) > 6:
         tex_line += add_figures(name_list)
     else:
@@ -132,7 +210,7 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
     return tex_line
 
 tex_lines = "\n".join("{}".format(ln) for ln in
-r"""\documentclass[10pt]{beamer}
+r"""\documentclass[8pt]{beamer}
 \setbeamertemplate{footline}[frame number]{}
 \setbeamertemplate{navigation symbols}{}
 \setbeamersize{text margin left=1mm,text margin right=1mm}
@@ -142,11 +220,13 @@ r"""\documentclass[10pt]{beamer}
                 
 tex_lines += plotsdir
 
-tex_lines += "\n".join("{}".format(ln) for ln in
-r"""} }
-\usepackage[utf8]{inputenc}
+tex_lines += r"} }" + "\n" + r"\usepackage[utf8]{inputenc}"
 
-\title{TTbar}
+tex_lines += r"\title{" + "{}".format(smp).replace("_", " ") + r"}"
+
+
+tex_lines += "\n".join("{}".format(ln) for ln in
+r"""
 
 \author{RTB}
 \institute{CMS}
@@ -158,46 +238,81 @@ r"""} }
 
 """.split("\n"))
 
-params = {
-    "plot_types" : ["efficiency", "fakerate", "ptresponse", "resolution", "multiplicity"],
-    "objects" : ["jetpuppi"],
-    "variables" : ["pt", "eta"],
-    "wp_jetpuppi" : ["looseID", "tightID"]
-}
-
-# for plot_type in params["plot_types"]:
-#     for obj in params["objects"]:
-#         for var in params["variables"]:
-#             for wp in params["wp_jetpuppi"]:
-#                 tex_lines += texoutput(plot_type, obj, var, wp)
-
-
 if physobj == 'jetpuppi':
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
-    
-    tex_lines += texoutput('fakerate', 'jetpuppi', 'eta', 'looseID')
-    tex_lines += texoutput('fakerate', 'jetpuppi', 'eta', 'tightID')
-    tex_lines += texoutput('fakerate', 'jetpuppi', 'pt', 'looseID')
-    tex_lines += texoutput('fakerate', 'jetpuppi', 'pt', 'tightID')
 
     tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
     
     tex_lines += texoutput('resolution', 'jetpuppi', 'pt', 'tightID')
 
-#if physobj == 'muon':
+if smp == 'ElMu_Efficiency' and (physobj == 'muon' or physobj == 'electron'):
+    #electron
+    tex_lines += texoutput('efficiency', 'electron', 'eta', 'looseID')
+    tex_lines += texoutput('efficiency', 'electron', 'eta', 'mediumID')
+    tex_lines += texoutput('efficiency', 'electron', 'eta', 'tightID')
+    tex_lines += texoutput('efficiency', 'electron', 'pt', 'looseID')
+    tex_lines += texoutput('efficiency', 'electron', 'pt', 'mediumID')
+    tex_lines += texoutput('efficiency', 'electron', 'pt', 'tightID')
+
+    tex_lines += texoutput('ptresponse', 'electron', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'electron', 'pt', 'tightID')
+
+    tex_lines += texoutput('resolution', 'electron', 'pt', 'tightID')
+
+    #muon
     tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseID')
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumID')
     tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightID')
     tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseID')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumID')
     tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightID')
-    
+
     tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
 
     tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
+
+if smp == 'Photon_Efficiency' and physobj == "photon":
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'looseID')
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'mediumID')
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'tightID')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseID')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumID')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightID')
+
+    tex_lines += texoutput('ptresponse', 'photon', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'photon', 'pt', 'tightID')
+
+    tex_lines += texoutput('resolution', 'photon', 'pt', 'tightID')
+
+if (physobj == 'muon' or physobj == 'electron' or physobj == 'photon') and smp == 'QCD':
+    #electron
+    tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseID')
+    tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumID')
+    tex_lines += texoutput('fakerate', 'electron', 'eta', 'tightID')
+    tex_lines += texoutput('fakerate', 'electron', 'pt', 'looseID')
+    tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumID')
+    tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightID')
+
+    #muon
+    tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseID')
+    tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumID')
+    tex_lines += texoutput('fakerate', 'muon', 'eta', 'tightID')
+    tex_lines += texoutput('fakerate', 'muon', 'pt', 'looseID')
+    tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumID')
+    tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightID')
+
+    #photon
+    tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseID')
+    tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumID')
+    tex_lines += texoutput('fakerate', 'photon', 'eta', 'tightID')
+    tex_lines += texoutput('fakerate', 'photon', 'pt', 'looseID')
+    tex_lines += texoutput('fakerate', 'photon', 'pt', 'mediumID')
+    tex_lines += texoutput('fakerate', 'photon', 'pt', 'tightID')
 
 
 tex_lines += "\n" + r"\end{document}"
