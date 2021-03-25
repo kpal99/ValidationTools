@@ -8,7 +8,7 @@ parser = optparse.OptionParser(usage)
 parser.add_option('-i', '--plotsDir',
                   dest='plotsdir',
                   help='path to input plots [%default]',  
-                  default='Photon_Efficiency/',
+                  default='TTbar/',
                   type='string')
 
 parser.add_option('-o', '--outDir',          
@@ -26,7 +26,7 @@ parser.add_option('-p', '--object',
 parser.add_option('-s', '--sample',          
                   dest='smp',       
                   help='sample [%default]',  
-                  default='Photon_Efficiency',       
+                  default='TTbar',       
                   type='string')
 
 (opt, args) = parser.parse_args()
@@ -44,14 +44,13 @@ plots_list = os.listdir(plotsdir)
 os.system('touch %s/all_plots.tex'%printoutdir)
 
 def cutName(name, plt_type):
-    """Returns the cut interval of the plots."""
+    """Returns the bin of the plots."""
     if plt_type == 'resolution':
         cut_pattern = r"(\w\w\w\d+\w+\d+)"
     else:
         cut_pattern = r"(\d+\w+\d+)"
     cut_name = r.findall(cut_pattern, name)
     cut_name_prop = [name.replace("p", ".").replace(".t", "pt") for name in cut_name]
-    #print(cut_name_prop)
     return cut_name_prop
 
 def subfigure(figure, caption, plt_type):
@@ -60,7 +59,7 @@ def subfigure(figure, caption, plt_type):
     tex_line += figure
     tex_line += r"}"+ "\n" + r"\caption{"
     if caption == '':
-        caption = 'no slice'
+        caption = 'no bin'
     if caption == '20to50':
         caption = r"$ 20 < p_{T} < 50 $"
     if caption == '50to100':
@@ -85,54 +84,54 @@ def subfigure(figure, caption, plt_type):
     if caption == "4.0to5.0":
         caption = r"$ 4 < |\eta| < 5 $"
 
-    if caption == "pt_20_50_eta_0_1.5":
-        caption = r"$ 20 < p_{T} < 50  \,\&\, 0 < |\eta| < 1.5$"
+    if caption == "eta_0_1.5_pt_20_50":
+        caption = r"$ 0 < |\eta| < 1.5  \,\&\,  20 < p_{T} < 50 $"
     if caption == "pt_20_50_eta_1.5_2.8":
-        caption = r"$ 20 < p_{T} < 50  \,\&\, 1.5 < |\eta| < 2.8$"
-    if caption == "pt_20_50_eta_1.5_3.0" or caption == "pt_20_50_eta_1.5_3":
-        caption = r"$ 20 < p_{T} < 50  \,\&\, 1.5 < |\eta| < 3$"
-    if caption == "pt_20_50_eta_3.0_4.0":
-        caption = r"$ 20 < p_{T} < 50  \,\&\, 3 < |\eta| < 4$"
-    if caption == "pt_20_50_eta_4.0_5.0":
-        caption = r"$ 20 < p_{T} < 50  \,\&\, 4 < |\eta| < 5$"
+        caption = r"$ 1.5 < |\eta| < 2.8 \,\&\, 20 < p_{T} < 50$"
+    if caption == "eta_1.5_3.0_pt_20_50" or caption == "pt_20_50_eta_1.5_3":
+        caption = r"$ 1.5 < |\eta| < 3 \,\&\, 20 < p_{T} < 50$"
+    if caption == "eta_3.0_4.0_pt_20_50":
+        caption = r"$  3 < |\eta| < 4 \,\&\, 20 < p_{T} < 50$"
+    if caption == "eta_4.0_5.0_pt_20_50":
+        caption = r"$  4 < |\eta| < 5 \,\&\, 20 < p_{T} < 50$"
 
-    if caption == "pt_50_100_eta_0_1.5":
-        caption = r"$ 50 < p_{T} < 100 \,\&\, 0 < |\eta| < 1.5$"
+    if caption == "eta_0_1.5_pt_50_100":
+        caption = r"$ 0 < |\eta| < 1.5 \,\&\, 50 < p_{T} < 100$"
     if caption == "pt_50_100_eta_1.5_2.8":
-        caption = r"$ 50 < p_{T} < 100  \,\&\, 1.5 < |\eta| < 2.8$"
-    if caption == "pt_50_100_eta_1.5_3.0" or caption == "pt_50_100_eta_1.5_3":
-        caption = r"$ 50 < p_{T} < 100 \,\&\, 1.5 < |\eta| < 3$"
-    if caption == "pt_50_100_eta_3.0_4.0" or caption == "pt_50_100_eta_3_4":
-        caption = r"$ 50 < p_{T} < 100 \,\&\, 3 < |\eta| < 4$"
-    if caption == "pt_50_100_eta_4.0_5.0":
-        caption = r"$ 50 < p_{T} < 100 \,\&\, 4 < |\eta| < 5$"
+        caption = r"$ 1.5 < |\eta| < 2.8 \,\&\, 50 < p_{T} < 100$"
+    if caption == "eta_1.5_3.0_pt_50_100" or caption == "pt_50_100_eta_1.5_3":
+        caption = r"$ 1.5 < |\eta| < 3 \,\&\, 50 < p_{T} < 100$"
+    if caption == "eta_3.0_4.0_pt_50_100" or caption == "pt_50_100_eta_3_4":
+        caption = r"$ 3 < |\eta| < 4 \,\&\, 50 < p_{T} < 100$"
+    if caption == "eta_4.0_5.0_pt_50_100":
+        caption = r"$ 4 < |\eta| < 5 \,\&\, 50 < p_{T} < 100$"
 
-    if caption == "pt_100_200_eta_0_1.5":
-        caption = r"$ 100 < p_{T} < 200 \,\&\, 0 < |\eta| < 1.5$"
+    if caption == "eta_0_1.5_pt_100_200":
+        caption = r"$ 0 < |\eta| < 1.5 \,\&\, 100 < p_{T} < 200$"
     if caption == "pt_100_200_eta_1.5_2.8":
-        caption = r"$ 100 < p_{T} < 200  \,\&\, 1.5 < |\eta| < 2.8$"
-    if caption == "pt_100_200_eta_1.5_3.0" or caption == "pt_100_200_eta_1.5_3":
-        caption = r"$ 100 < p_{T} < 200 \,\&\, 1.5 < |\eta| < 3$"
-    if caption == "pt_100_200_eta_3.0_4.0":
-        caption = r"$ 100 < p_{T} < 200 \,\&\, 3 < |\eta| < 4$"
-    if caption == "pt_100_200_eta_4.0_5.0":
-        caption = r"$ 100 < p_{T} < 200 \,\&\, 4 < |\eta| < 5$"
+        caption = r"$ 1.5 < |\eta| < 2.8 \,\&\, 100 < p_{T} < 200$"
+    if caption == "eta_1.5_3.0_pt_100_200" or caption == "pt_100_200_eta_1.5_3":
+        caption = r"$ 1.5 < |\eta| < 3 \,\&\, 100 < p_{T} < 200$"
+    if caption == "eta_3.0_4.0_pt_100_200":
+        caption = r"$ 3 < |\eta| < 4 \,\&\, 100 < p_{T} < 200$"
+    if caption == "eta_4.0_5.0_pt_100_200":
+        caption = r"$ 4 < |\eta| < 5 \,\&\, 100 < p_{T} < 200$"
 
-    if caption == "pt_200_500_eta_0_1.5":
-        caption = r"$ 200 < p_{T} < 500 \,\&\, 0 < |\eta| < 1.5$"
+    if caption == "eta_0_1.5_pt_200_500":
+        caption = r"$ 0 < |\eta| < 1.5 \,\&\, 200 < p_{T} < 500$"
     if caption == "pt_200_500_eta_1.5_2.8":
-        caption = r"$ 200 < p_{T} < 500  \,\&\, 1.5 < |\eta| < 2.8$"
-    if caption == "pt_200_500_eta_1.5_3.0" or caption == "pt_200_500_eta_1.5_3":
-        caption = r"$ 200 < p_{T} < 500 \,\&\, 1.5 < |\eta| < 3$"
-    if caption == "pt_200_500_eta_3.0_4.0":
-        caption = r"$ 200 < p_{T} < 500 \,\&\, 3 < |\eta| < 4$"
+        caption = r"$ 1.5 < |\eta| < 2.8 \,\&\, 200 < p_{T} < 500$"
+    if caption == "eta_1.5_3.0_pt_200_500" or caption == "pt_200_500_eta_1.5_3":
+        caption = r"$ 1.5 < |\eta| < 3 \,\&\, 200 < p_{T} < 500$"
+    if caption == "eta_3.0_4.0_pt_200_500":
+        caption = r"$ 3 < |\eta| < 4 \,\&\, 200 < p_{T} < 500$"
     if caption == "pt_200_500_eta_4.0_5.0":
-        caption = r"$ 200 < p_{T} < 500 \,\&\, 4 < |\eta| < 5$"
+        caption = r"$ 4 < |\eta| < 5 \,\&\, 200 < p_{T} < 500$"
 
-    if caption == "pt_500_Inf_eta_0_1.5":
-        caption = r"$ p_{T} > 500 \,\&\, 0 < |\eta| < 1.5$"
-    if caption == "pt_500_Inf_eta_1.5_3.0":
-        caption = r"$ p_{T} > 500 \,\&\,1.5 < |\eta| < 3$"
+    if caption == "eta_0_1.5_pt_500_Inf":
+        caption = r"$ 0 < |\eta| < 1.5 \,\&\, p_{T} > 500$"
+    if caption == "eta_1.5_3.0_pt_500_Inf":
+        caption = r"$ 1.5 < |\eta| < 3 \,\&\,p_{T} > 500$"
 
     tex_line += caption#.replace("_", " ")
     tex_line += "}\n" + r"\end{subfigure}" + "\n" + r"\hfil"
@@ -151,7 +150,7 @@ def add_figures(figure_list):
     """Adds figure structure to the script."""
     tex_line = "\n"
     for i, figure in enumerate(figure_list):
-        if i % 6 == 0 and i != 0:
+        if plt == 'resolution' and (i == 5 or i == 10 or i == 14) and i != 0:
             tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
             tex_line += "\n" + beginFrame(plt, object_, variable, workingp, " cont'd")
         tex_line += r"\centering" + "\n"
@@ -161,6 +160,19 @@ def add_figures(figure_list):
         if i == 6:
             tex_line += "\n" + r"\end{frame}" + "\n" + r"\newpage" + 2*"\n"
     return tex_line
+
+def remove_ch(name):
+    """Removes excess dirt."""
+    new_name = name.replace("[", "").replace("]", "").replace("'", "").replace('"', "")
+    return new_name
+
+def reversebins(plot_name):
+    """Reverses the bins in the plot name."""
+    eta_pattern = r"[e][t][a].+"
+    pt_pattern = r".+[e][t][a]"
+    eta_bin = r.findall(eta_pattern, plot_name)
+    pt_bin = r.findall(pt_pattern, plot_name)
+    return remove_ch(str(eta_bin)+"_"+str(pt_bin)).rstrip("_eta")
 
 def texoutput(plt_type, obj, var, wp, plot2D=False):
     """ Generates tex script with the following variables respectively:
@@ -179,8 +191,14 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
         var = "pt_" # to avoid the ptresponse to be taken as pt
     for name in plots_list:
         if plt_type in name and obj in name and var in name and (wp+"." in name or wp+"_" in name):
-            name_list[str(cutName(name, plt_type))] = name
-            name_list = sorted(name_list.items(), key=operator.itemgetter(1))
+            if plt_type == 'resolution':
+                eta_bin = reversebins((str(cutName(name, plt_type))))
+                name_list[str(eta_bin)] = name
+                name_list = sorted(name_list.items(), key=operator.itemgetter(0))
+            else:
+                name_list[str(cutName(name, plt_type))] = name
+                name_list = sorted(name_list.items(), key=operator.itemgetter(1))
+            print(name_list) # will correct for resoulution plots other than jetpuppi *
             name_list = collections.OrderedDict(name_list)
     if var == "eta" and (plt_type != 'resolution' or plt_type == 'fakerate'):
         name_list.move_to_end("['100to200']")
@@ -190,19 +208,30 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
         if plt_type == 'fakerate':
             name_list.move_to_end("['500']")
     if plt_type == 'resolution' and obj == 'jetpuppi':
-        name_list.move_to_end("['pt_50_100_eta_4.0_5.0']", last=False)
-        name_list.move_to_end("['pt_50_100_eta_3.0_4.0']", last=False)
-        name_list.move_to_end("['pt_50_100_eta_1.5_3.0']", last=False)
-        name_list.move_to_end("['pt_50_100_eta_0_1.5']", last=False)
-        name_list.move_to_end("['pt_20_50_eta_4.0_5.0']", last=False)
-        name_list.move_to_end("['pt_20_50_eta_3.0_4.0']", last=False)
-        name_list.move_to_end("['pt_20_50_eta_1.5_3.0']", last=False)
-        name_list.move_to_end("['pt_20_50_eta_0_1.5']", last=False)
-    if plt_type == 'resolution' and obj == "muon":
-        name_list.move_to_end("['pt_50_100_eta_1.5_2.8']", last=False)
-        name_list.move_to_end("['pt_50_100_eta_0_1.5']", last=False)
-        name_list.move_to_end("['pt_20_50_eta_1.5_2.8']", last=False)
-        name_list.move_to_end("['pt_20_50_eta_0_1.5']", last=False)
+        name_list.move_to_end("eta_0_1.5_pt_100_200")
+        name_list.move_to_end("eta_0_1.5_pt_200_500")
+        name_list.move_to_end("eta_0_1.5_pt_500_Inf")
+
+        name_list.move_to_end("eta_1.5_3.0_pt_20_50")
+        name_list.move_to_end("eta_1.5_3.0_pt_50_100")
+        name_list.move_to_end("eta_1.5_3.0_pt_100_200")
+        name_list.move_to_end("eta_1.5_3.0_pt_200_500")
+        name_list.move_to_end("eta_1.5_3.0_pt_500_Inf")
+
+        name_list.move_to_end("eta_3.0_4.0_pt_20_50")
+        name_list.move_to_end("eta_3.0_4.0_pt_50_100")
+        name_list.move_to_end("eta_3.0_4.0_pt_100_200")
+        name_list.move_to_end("eta_3.0_4.0_pt_200_500")
+
+        name_list.move_to_end("eta_4.0_5.0_pt_20_50")
+        name_list.move_to_end("eta_4.0_5.0_pt_50_100")
+        name_list.move_to_end("eta_4.0_5.0_pt_100_200")
+
+    # if plt_type == 'resolution' and obj == "muon":
+    #     name_list.move_to_end("['pt_50_100_eta_1.5_2.8']", last=False)
+    #     name_list.move_to_end("['pt_50_100_eta_0_1.5']", last=False)
+    #     name_list.move_to_end("['pt_20_50_eta_1.5_2.8']", last=False)
+    #     name_list.move_to_end("['pt_20_50_eta_0_1.5']", last=False)
     if len(name_list) > 6:
         tex_line += add_figures(name_list)
     else:
