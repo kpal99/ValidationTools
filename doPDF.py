@@ -104,14 +104,14 @@ def subfigure(figure, caption, plt_type):
     return tex_line
 
 
-def beginFrame(plt_type, obj, var, wp, extra):
+def beginFrame(extra=''):
     """Returns the beginning lines for a new page."""
-    tex_line = r"\begin{frame}" + "\n" + r"\frametitle{" + obj + " " + plt_type
-    if plt_type == 'resolution':
+    tex_line = r"\begin{frame}" + "\n" + r"\frametitle{" + object_ + " " + plt
+    if plt == 'resolution':
         tex_line += r" vs pt and eta"
     else:
-        tex_line += " vs " + var
-    tex_line += " " + wp + extra + r"}" + "\n" + r"\begin{figure}"
+        tex_line += " vs " + variable
+    tex_line += " " + workingp + extra + r"}" + "\n" + r"\begin{figure}"
     return tex_line
 
 
@@ -123,11 +123,11 @@ def add_figures(figure_list):
             if i != 0 and (i == 5 or i == 10 or i == 14) and object_ != 'muon':
                 tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
                 tex_line += "\n" + \
-                    beginFrame(plt, object_, variable, workingp, " cont'd")
+                    beginFrame(" cont'd")
             if object_ == 'muon' and i == 4:
                 tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
                 tex_line += "\n" + \
-                    beginFrame(plt, object_, variable, workingp, " cont'd")
+                    beginFrame(" cont'd")
 
         #tex_line += r"\centering" + "\n"
         tex_line += subfigure(figure_list[figure],
@@ -139,7 +139,7 @@ def add_figures(figure_list):
     return tex_line
 
 
-def reversebins(plot_name):  # will omit this function since it is now unnecessary
+def reversebins(plot_name): # to easily sort the plot list according to eta bins
     """Reverses the bins in the plot name."""
     eta_pattern = r"[e][t][a].+"
     pt_pattern = r".+[e][t][a]"
@@ -159,7 +159,7 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
     object_ = obj
     variable = var
     workingp = wp
-    tex_line = beginFrame(plt_type, obj, var, wp, '')
+    tex_line = beginFrame()
     name_list = {}
     if var == "pt":
         var = "pt_"  # to avoid the ptresponse to be taken as pt
