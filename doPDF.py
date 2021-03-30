@@ -24,7 +24,7 @@ def cutName(name, plt_type):
     return cut_name_prop
 
 
-def bin_edit(caption):
+def res_bin_edit(caption):
     """Returns nicely edited version of the bins for the resolution plot captions."""
     eta_low_pattern = r"[e][t][a][_]\d\.*\d*"
     eta_high_pattern = r"[e][t][a][_]\d\.*\d*[_]\d\.*\d*"
@@ -47,13 +47,30 @@ def bin_edit(caption):
     return new_caption
 
 
-def subfigure(figure, caption, plt_type):
-    """Defines figures."""
+def beginFrame(extra=''):
+    """Returns the beginning lines for a new page."""
+    tex_line = r"\begin{frame}" + "\n" + r"\frametitle{" + object_ + " " + plt
+    if plt == 'resolution':
+        tex_line += r" vs pt and eta"
+    else:
+        tex_line += " vs " + variable
+    tex_line += " " + workingp + extra + r"}" + "\n" + r"\begin{figure}"
+    # remove the numbering under the subfigures
+    tex_line += "\n" + r"\captionsetup[subfigure]{labelformat=empty}"
+    return tex_line
+
+
+def subfigure(figure, caption):
+    """Returns subfigure lines for tex."""
     tex_line = r"\begin{subfigure}{0.32\textwidth}" + \
         "\n" + r"\includegraphics[width=\linewidth]{"
-    tex_line += path + r"/" + figure
+    if caption == "ghost":
+        caption = ' '
+        tex_line += "./" + figure
+    else:
+        tex_line += path + figure
     tex_line += r"}" + "\n" + r"\caption{"
-    if caption == '':  # will compose a function for the following lines or include in bin_edit function
+    if caption == '':
         caption = 'no bin'
     if caption == '20to50':
         caption = r"$ 20 < p_{T} < 50 $"
@@ -97,21 +114,10 @@ def subfigure(figure, caption, plt_type):
     ]
 
     if caption in resolution_bins:
-        caption = bin_edit(caption)
+        caption = res_bin_edit(caption)
 
     tex_line += caption
     tex_line += "}\n" + r"\end{subfigure}" + "\n" + r"\hfil"
-    return tex_line
-
-
-def beginFrame(extra=''):
-    """Returns the beginning lines for a new page."""
-    tex_line = r"\begin{frame}" + "\n" + r"\frametitle{" + object_ + " " + plt
-    if plt == 'resolution':
-        tex_line += r" vs pt and eta"
-    else:
-        tex_line += " vs " + variable
-    tex_line += " " + workingp + extra + r"}" + "\n" + r"\begin{figure}"
     return tex_line
 
 
@@ -120,6 +126,8 @@ def add_figures(figure_list):
     tex_line = "\n"
     for i, figure in enumerate(figure_list):
         if plt == 'resolution':
+            if i == 14:
+                tex_line += subfigure("empty.png", "ghost")
             if i != 0 and (i == 5 or i == 10 or i == 14) and object_ != 'muon':
                 tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
                 tex_line += "\n" + \
@@ -131,7 +139,13 @@ def add_figures(figure_list):
 
         #tex_line += r"\centering" + "\n"
         tex_line += subfigure(figure_list[figure],
-                              str(figure).strip("'[]"), plt) + "\n"
+                              str(figure).strip("'[]")) + "\n"
+    for i in range(len(figure_list)):
+        if plt == 'resolution':
+            if i == 8 and object_ == 'photon':
+                tex_line += subfigure("empty.png", "ghost")
+            if i == 16 and object_ == "jetpuppi":
+                tex_line += 2*subfigure("empty.png", "ghost")
     tex_line += r"\end{figure}"
     for i in range(len(figure_list)):
         if i == 6:
@@ -139,7 +153,7 @@ def add_figures(figure_list):
     return tex_line
 
 
-def reversebins(plot_name): # to easily sort the plot list according to eta bins
+def reversebins(plot_name):  # to easily sort the plot list according to eta bins
     """Reverses the bins in the plot name."""
     eta_pattern = r"[e][t][a].+"
     pt_pattern = r".+[e][t][a]"
@@ -303,31 +317,31 @@ def main():
 
     # TTbar
     path = ttbarpath
-    os.system('cd TTbar')
-    plot_title = "Jetpuppi Efficiency"
+    os.system('cd {}'.format(path))
     #obj = 'jetpuppi'
     #object_ = obj
 
-    tex_lines += "\n" + r"\section{Jetpuppi}"
+    tex_lines += "\n" + r"\section{Jetpuppi}" + \
+        "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
 
+    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
     tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
 
+    tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'jetpuppi', 'pt', 'tightID')
 
     # ElMu_Efficiency
     plots_list = os.listdir(elmupath)
     path = elmupath
-    os.system("cd ..")
-    os.system('cd ElMu_Efficiency')
-    plot_title = "Electron and Muon Efficiency"
+    os.system('cd {}'.format(path))
 
-    tex_lines += r"\section{Electron Efficiency}"
     # electron
+    tex_lines += r"\section{Electron}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'electron', 'eta', 'looseID')
     tex_lines += texoutput('efficiency', 'electron', 'eta', 'mediumID')
     tex_lines += texoutput('efficiency', 'electron', 'eta', 'tightID')
@@ -335,52 +349,17 @@ def main():
     tex_lines += texoutput('efficiency', 'electron', 'pt', 'mediumID')
     tex_lines += texoutput('efficiency', 'electron', 'pt', 'tightID')
 
+    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
     tex_lines += texoutput('ptresponse', 'electron', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'electron', 'pt', 'tightID')
 
+    tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'electron', 'pt', 'tightID')
 
-    # muon
-    tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseID')
-    tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumID')
-    tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightID')
-    tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseID')
-    tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumID')
-    tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightID')
-
-    tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
-    tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
-
-    tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
-
-    # Photon_Efficiency
-    plots_list = os.listdir(gammapath)
-    path = gammapath
-    os.system("cd ..")
-    os.system('cd Photon_Efficiency')
-    plot_title = "Photon Efficiency"
-
-    tex_lines += "\n" + r"\section{Photon Efficiency}"
-    tex_lines += texoutput('efficiency', 'photon', 'eta', 'looseID')
-    tex_lines += texoutput('efficiency', 'photon', 'eta', 'mediumID')
-    tex_lines += texoutput('efficiency', 'photon', 'eta', 'tightID')
-    tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseID')
-    tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumID')
-    tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightID')
-
-    tex_lines += texoutput('ptresponse', 'photon', 'eta', 'tightID')
-    tex_lines += texoutput('ptresponse', 'photon', 'pt', 'tightID')
-
-    tex_lines += texoutput('resolution', 'photon', 'pt', 'tightID')
-
-    # QCD
     plots_list = os.listdir(qcdpath)
     path = qcdpath
-    os.system("cd ..")
-    os.system('cd QCD')
-    plot_title = "Electron-Muon-Photon Fakerate"
-    tex_lines += "\n" + r"\section{Electron Fakerate}"
-    # electron
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseID')
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumID')
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'tightID')
@@ -388,8 +367,31 @@ def main():
     tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumID')
     tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightID')
 
+    plots_list = os.listdir(elmupath)
+    path = elmupath
+    os.system('cd {}'.format(path))
+
     # muon
-    tex_lines += "\n" + r"\section{Muon Fakerate}"
+    tex_lines += r"\section{Muon}" + "\n" + r"\subsection{Efficiency}"
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseID')
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumID')
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightID')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseID')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumID')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
+    tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{Resolution}"
+    tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
+
+    plots_list = os.listdir(qcdpath)
+    path = qcdpath
+    os.system('cd {}'.format(path))
+
+    tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseID')
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumID')
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'tightID')
@@ -397,8 +399,33 @@ def main():
     tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumID')
     tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightID')
 
+    # Photon_Efficiency
+    plots_list = os.listdir(gammapath)
+    path = gammapath
+    os.system('cd {}'.format(path))
+
+    tex_lines += r"\section{Photon}" + "\n" + r"\subsection{Efficiency}"
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'looseID')
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'mediumID')
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'tightID')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseID')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumID')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
+    tex_lines += texoutput('ptresponse', 'photon', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'photon', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{Resolution}"
+    tex_lines += texoutput('resolution', 'photon', 'pt', 'tightID')
+
+    # QCD
+    plots_list = os.listdir(qcdpath)
+    path = qcdpath
+    os.system('cd {}'.format(path))
+
     # photon
-    tex_lines += "\n" + r"\section{Photon Fakerate}"
+    tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseID')
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumID')
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'tightID')
