@@ -136,8 +136,11 @@ def add_figures(figure_list):
                 tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
                 tex_line += "\n" + \
                     beginFrame(" cont'd")
-
-        #tex_line += r"\centering" + "\n"
+        if plt == 'fakerate' and i == 2 and variable == "pt":
+            if object_ == "electron"  and workingp == "tightID":
+                tex_line += subfigure("empty.png", "ghost")
+            if object_ == "photon" and (workingp == "mediumID" or workingp == "tightID"):
+                tex_line += subfigure("empty.png", "ghost")
         tex_line += subfigure(figure_list[figure],
                               str(figure).strip("'[]")) + "\n"
     for i in range(len(figure_list)):
@@ -189,13 +192,6 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
                 name_list = sorted(name_list.items(),
                                    key=operator.itemgetter(1))
             name_list = collections.OrderedDict(name_list)
-    if var == "eta" and plt_type != 'resolution':  # or plt_type == 'fakerate'):
-        name_list.move_to_end("['100to200']")
-        name_list.move_to_end("['200to500']")
-        if obj != 'muon' and plt_type == 'efficiency':
-            name_list.move_to_end("['500']")
-        if plt_type == 'fakerate' or plt_type == "ptresponse" and obj != "muon":
-            name_list.move_to_end("['500']")
     if plt_type == 'resolution':
         name_list.move_to_end("eta_0_1.5_pt_50_100", last=False)
         name_list.move_to_end("eta_0_1.5_pt_20_50", last=False)
@@ -229,6 +225,11 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
             name_list.move_to_end("eta_1.5_3_pt_50_100")
             name_list.move_to_end("eta_1.5_3_pt_100_200")
             name_list.move_to_end("eta_1.5_3_pt_200_500")
+    else:
+        if var == "eta":
+            name_list.move_to_end("['50to100']", last=False)
+            name_list.move_to_end("['20to50']", last=False)
+            name_list.move_to_end("[]", last=False)
 
     if len(name_list) > 6:
         tex_line += add_figures(name_list)
