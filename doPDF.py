@@ -23,13 +23,50 @@ def cutName(name, plt_type):
         ".t", "pt") for name in cut_name]
     return cut_name_prop
 
+def pt_bin(caption):
+    """Returns edited pt bins for subfigure captions."""
+    pt_low_pattern = r"\d\d+[t][o]"
+    pt_high_pattern = r"[t][o]\d\d+"
+    pt_highest_pattern = r"\b\d\d\d+\b"
+
+    pt_low = remove_ch(str(r.findall(pt_low_pattern, caption))).rstrip("to")
+    pt_high = remove_ch(str(r.findall(pt_high_pattern, caption))).lstrip("to")
+    pt_highest = remove_ch(str(r.findall(pt_highest_pattern, caption)))
+
+    if caption == '':
+        new_name = 'no bin'
+    elif pt_highest:
+        new_name = "$ p_{T} > " + pt_highest + " $"
+    else:
+        new_name = "$ " + pt_low + " < p_{T} < " + pt_high + " $"
+    return new_name
+
+
+def eta_bin(caption):
+    """Returns edited eta bins for subfigure captions."""
+    eta_low_pattern = r"\A\d\.*\d*"
+    eta_high_pattern = r"[t][o]\d\.*\d*"
+    eta_highest_pattern = r"\b\d\.\d\b"
+
+    eta_low = remove_ch(str(r.findall(eta_low_pattern, caption))).rstrip("to")
+    eta_high = remove_ch(str(r.findall(eta_high_pattern, caption))).lstrip("to")
+    eta_highest = remove_ch(str(r.findall(eta_highest_pattern, caption)))
+
+    if caption == '':
+        new_name = 'no bin'
+    elif eta_highest:
+        new_name = "$ |\eta| > " + eta_highest + " $"
+    else:
+        new_name = "$ " + eta_low + r" < |\eta| < " + eta_high + " $"
+    return new_name
 
 def res_bin_edit(caption):
-    """Returns nicely edited version of the bins for the resolution plot captions."""
+    """Returns nicely edited version of the resolution plot captions."""
     eta_low_pattern = r"[e][t][a][_]\d\.*\d*"
     eta_high_pattern = r"[e][t][a][_]\d\.*\d*[_]\d\.*\d*"
     pt_low_pattern = r"[p][t][_]\d+"
     pt_high_pattern = r"[p][t][_]\d+[_]\d+"
+    pt_highest_pattern = r"[p][t][_]\d+[_]\D+"
 
     eta_low = remove_ch(
         str(r.findall(eta_low_pattern, caption))).lstrip("eta_")
@@ -38,9 +75,11 @@ def res_bin_edit(caption):
     pt_low = remove_ch(str(r.findall(pt_low_pattern, caption))).lstrip("pt_")
     pt_high = remove_ch(
         str(r.findall(pt_high_pattern, caption))).lstrip("pt_" + pt_low)
-
-    new_caption = "$ " + eta_low + r" < |\eta| < " + eta_high + r" \,\text{and}\, "
-    if pt_low == "500":
+    pt_highest = remove_ch(
+        str(r.findall(pt_highest_pattern, caption)))
+    new_caption = "$ " + eta_low + r" < |\eta| < " + \
+        eta_high + r" \,\text{and}\, "
+    if pt_highest:
         new_caption += " p_{T} > " + pt_low + " $"
     else:
         new_caption += pt_low + " < p_{T} < " + pt_high + " $"
@@ -70,34 +109,18 @@ def subfigure(figure, caption):
     else:
         tex_line += path + figure
     tex_line += r"}" + "\n" + r"\caption{"
+
+    if 'eta' in figure and 'pt_' not in figure: # 'pt_': underscore is used to exclude 'ptresponse'
+        caption = pt_bin(caption)
+
+    if 'pt_' in figure and 'eta' not in figure:
+        caption = eta_bin(caption)
+
+    if 'eta' in figure and 'pt_' in figure: # resolution bins
+        caption = res_bin_edit(caption)
+    
     if caption == '':
         caption = 'no bin'
-    if caption == '20to50':
-        caption = r"$ 20 < p_{T} < 50 $"
-    if caption == '50to100':
-        caption = r"$ 50 < p_{T} < 100 $"
-    if caption == '100to200':
-        caption = r"$ 100 < p_{T} < 200 $"
-    if caption == '200to500':
-        caption = r"$ 200 < p_{T} < 500 $"
-    if caption == "500":
-        caption = "$ p_{T} > 500 $"
-
-    if caption == "0to1.5":
-        caption = r"$ 0 < |\eta| < 1.5 $"
-    if caption == "1.5to2.8":
-        caption = r"$ 1.5 < |\eta| < 2.8 $"
-    if caption == "2.8":
-        caption = r"$ |\eta| > 2.8 $"
-    if caption == "1.5to3.0" or caption == "1.5to3":
-        caption = r"$ 1.5 < |\eta| < 3 $"
-    if caption == "3.0to4.0" or caption == "3to4":
-        caption = r"$ 3 < |\eta| < 4 $"
-    if caption == "4.0to5.0":
-        caption = r"$ 4 < |\eta| < 5 $"
-
-    if 'eta' in caption and 'pt' in caption: # resolution bins
-        caption = res_bin_edit(caption)
 
     tex_line += caption
     tex_line += "}\n" + r"\end{subfigure}" + "\n" + r"\hfil"
@@ -213,8 +236,8 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
             name_list.move_to_end("['50to100']", last=False)
             name_list.move_to_end("['20to50']", last=False)
             name_list.move_to_end("[]", last=False)
-        # if var == "pt_":
-        #     name_list.move_to_end("[]", last=False)
+    # if var == "pt_":
+    #     var = "pt"
     if len(name_list) > 6:
         tex_line += add_figures(name_list)
     else:
