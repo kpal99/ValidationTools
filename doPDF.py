@@ -39,7 +39,7 @@ def res_bin_edit(caption):
     pt_high = remove_ch(
         str(r.findall(pt_high_pattern, caption))).lstrip("pt_" + pt_low)
 
-    new_caption = "$ " + eta_low + r" < |\eta| < " + eta_high + r" \,and\, "
+    new_caption = "$ " + eta_low + r" < |\eta| < " + eta_high + r" \,\text{and}\, "
     if pt_low == "500":
         new_caption += " p_{T} > " + pt_low + " $"
     else:
@@ -96,24 +96,7 @@ def subfigure(figure, caption):
     if caption == "4.0to5.0":
         caption = r"$ 4 < |\eta| < 5 $"
 
-    resolution_bins = [
-        "eta_0_1.5_pt_20_50", "eta_1.5_2.8_pt_20_50",
-        "eta_1.5_3.0_pt_20_50", "eta_1.5_3_pt_20_50",
-        "eta_3.0_4.0_pt_20_50", "eta_4.0_5.0_pt_20_50",
-        "eta_0_1.5_pt_50_100", "eta_1.5_2.8_pt_50_100",
-        "eta_1.5_3.0_pt_50_100", "eta_1.5_3_pt_50_100",
-        "eta_3.0_4.0_pt_50_100", "eta_3_4_pt_50_100",
-        "eta_4.0_5.0_pt_50_100", "eta_0_1.5_pt_100_200",
-        "eta_1.5_2.8_pt_100_200", "eta_1.5_3.0_pt_100_200",
-        "eta_1.5_3_pt_100_200", "eta_3.0_4.0_pt_100_200",
-        "eta_4.0_5.0_pt_100_200", "eta_0_1.5_pt_200_500",
-        "eta_1.5_2.8_pt_200_500", "eta_1.5_3.0_pt_200_500",
-        "eta_1.5_3_pt_200_500", "eta_3.0_4.0_pt_200_500",
-        "eta_4.0_5.0_pt_200_500", "eta_0_1.5_pt_500_Inf",
-        "eta_1.5_3.0_pt_500_Inf"
-    ]
-
-    if caption in resolution_bins:
+    if 'eta' in caption and 'pt' in caption: # resolution bins
         caption = res_bin_edit(caption)
 
     tex_line += caption
@@ -121,10 +104,10 @@ def subfigure(figure, caption):
     return tex_line
 
 
-def add_figures(figure_list):
+def add_figures(figure_dict):
     """Adds figure structure to the script."""
     tex_line = "\n"
-    for i, figure in enumerate(figure_list):
+    for i, figure in enumerate(figure_dict):
         if plt == 'resolution':
             if i == 14:
                 tex_line += subfigure("empty.png", "ghost")
@@ -137,20 +120,20 @@ def add_figures(figure_list):
                 tex_line += "\n" + \
                     beginFrame(" cont'd")
         if plt == 'fakerate' and i == 2 and variable == "pt":
-            if object_ == "electron"  and workingp == "tightID":
+            if object_ == "electron" and workingp == "tightID":
                 tex_line += subfigure("empty.png", "ghost")
             if object_ == "photon" and (workingp == "mediumID" or workingp == "tightID"):
                 tex_line += subfigure("empty.png", "ghost")
-        tex_line += subfigure(figure_list[figure],
+        tex_line += subfigure(figure_dict[figure],
                               str(figure).strip("'[]")) + "\n"
-    for i in range(len(figure_list)):
+    for i in range(len(figure_dict)):
         if plt == 'resolution':
             if i == 8 and object_ == 'photon':
                 tex_line += subfigure("empty.png", "ghost")
             if i == 16 and object_ == "jetpuppi":
-                tex_line += 2*subfigure("empty.png", "ghost")
+                tex_line += subfigure("empty.png", "ghost")
     tex_line += r"\end{figure}"
-    for i in range(len(figure_list)):
+    for i in range(len(figure_dict)):
         if i == 6:
             tex_line += "\n" + r"\end{frame}" + "\n" + r"\newpage" + 2*"\n"
     return tex_line
@@ -226,11 +209,12 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
             name_list.move_to_end("eta_1.5_3_pt_100_200")
             name_list.move_to_end("eta_1.5_3_pt_200_500")
     else:
-        if var == "eta":
+        if var == "eta" and obj != 'tau':
             name_list.move_to_end("['50to100']", last=False)
             name_list.move_to_end("['20to50']", last=False)
             name_list.move_to_end("[]", last=False)
-
+        # if var == "pt_":
+        #     name_list.move_to_end("[]", last=False)
     if len(name_list) > 6:
         tex_line += add_figures(name_list)
     else:
@@ -269,6 +253,11 @@ def main():
                       help='path for QCD histo file [%default]',
                       default='QCD/',
                       type='string')
+    parser.add_option('-a', '--taupath',
+                      dest='taupath',
+                      help='path for QCD histo file [%default]',
+                      default='Taus/',
+                      type='string')
 
     (opt, args) = parser.parse_args()
 
@@ -277,6 +266,7 @@ def main():
     ttbarpath = opt.ttbarpath
     elmupath = opt.elmupath
     gammapath = opt.gammapath
+    taupath = opt.taupath
 
     if not os.path.exists(printoutdir):
         os.system('mkdir -p %s' % printoutdir)
@@ -284,7 +274,7 @@ def main():
     os.system('touch %s/validation_plots.tex' % printoutdir)
 
     tex_lines = "\n".join("{}".format(ln) for ln in
-                          r"""\documentclass[8pt]{beamer}
+    r"""\documentclass[8pt]{beamer}
     \setbeamertemplate{footline}[frame number]{}
     \setbeamertemplate{navigation symbols}{}
     \setbeamersize{text margin left=0mm,text margin right=0mm}
@@ -316,32 +306,25 @@ def main():
 
     global path
 
-    # TTbar
+    # Jetpuppi
     path = ttbarpath
     os.system('cd {}'.format(path))
-    #obj = 'jetpuppi'
-    #object_ = obj
-
     tex_lines += "\n" + r"\section{Jetpuppi}" + \
         "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
-    tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
-    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
-    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
-
-    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
-    tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
-    tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
-
+    # tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
+    # tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
+    # tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
+    # tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
+    # tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
+    # tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
     tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'jetpuppi', 'pt', 'tightID')
 
-    # ElMu_Efficiency
+    # Electron
     plots_list = os.listdir(elmupath)
     path = elmupath
     os.system('cd {}'.format(path))
-
-    # electron
     tex_lines += r"\section{Electron}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'electron', 'eta', 'looseID')
     tex_lines += texoutput('efficiency', 'electron', 'eta', 'mediumID')
@@ -349,14 +332,11 @@ def main():
     tex_lines += texoutput('efficiency', 'electron', 'pt', 'looseID')
     tex_lines += texoutput('efficiency', 'electron', 'pt', 'mediumID')
     tex_lines += texoutput('efficiency', 'electron', 'pt', 'tightID')
-
     tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
     tex_lines += texoutput('ptresponse', 'electron', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'electron', 'pt', 'tightID')
-
     tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'electron', 'pt', 'tightID')
-
     plots_list = os.listdir(qcdpath)
     path = qcdpath
     os.system('cd {}'.format(path))
@@ -368,11 +348,10 @@ def main():
     tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumID')
     tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightID')
 
+    # Muon
     plots_list = os.listdir(elmupath)
     path = elmupath
     os.system('cd {}'.format(path))
-
-    # muon
     tex_lines += r"\section{Muon}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseID')
     tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumID')
@@ -380,18 +359,14 @@ def main():
     tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseID')
     tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumID')
     tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightID')
-
     tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
     tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
-
     tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
-
     plots_list = os.listdir(qcdpath)
     path = qcdpath
     os.system('cd {}'.format(path))
-
     tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseID')
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumID')
@@ -400,11 +375,10 @@ def main():
     tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumID')
     tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightID')
 
-    # Photon_Efficiency
+    # Photon
     plots_list = os.listdir(gammapath)
     path = gammapath
     os.system('cd {}'.format(path))
-
     tex_lines += r"\section{Photon}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'photon', 'eta', 'looseID')
     tex_lines += texoutput('efficiency', 'photon', 'eta', 'mediumID')
@@ -412,20 +386,14 @@ def main():
     tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseID')
     tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumID')
     tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightID')
-
     tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
     tex_lines += texoutput('ptresponse', 'photon', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'photon', 'pt', 'tightID')
-
     tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'photon', 'pt', 'tightID')
-
-    # QCD
     plots_list = os.listdir(qcdpath)
     path = qcdpath
     os.system('cd {}'.format(path))
-
-    # photon
     tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseID')
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumID')
@@ -433,6 +401,18 @@ def main():
     tex_lines += texoutput('fakerate', 'photon', 'pt', 'looseID')
     tex_lines += texoutput('fakerate', 'photon', 'pt', 'mediumID')
     tex_lines += texoutput('fakerate', 'photon', 'pt', 'tightID')
+
+    # Tau
+    plots_list = os.listdir(taupath)
+    path = taupath
+    os.system('cd {}'.format(path))
+    tex_lines += r"\section{Tau}" + "\n" + r"\subsection{Efficiency}"
+    tex_lines += texoutput('tautagRate', 'tau', 'eta', 'looseID')
+    tex_lines += texoutput('tautagRate', 'tau', 'eta', 'mediumID')
+    tex_lines += texoutput('tautagRate', 'tau', 'eta', 'tightID')
+    tex_lines += texoutput('tautagRate', 'tau', 'pt', 'looseID')
+    tex_lines += texoutput('tautagRate', 'tau', 'pt', 'mediumID')
+    tex_lines += texoutput('tautagRate', 'tau', 'pt', 'tightID')
 
     tex_lines += "\n" + r"\end{document}"
 
