@@ -220,7 +220,7 @@ def findPartonFlav(genparts, jet, dR):
         return 4
     return 1 # any not 4 or 5 case
 
-def runBtagStudy(ntuple, maxEvents, outfileName):
+def runBtagStudy(ntuple, maxEvents, outfileName, dumptcl):
 
     tot_nevents = 0
     outputF = TFile(outfileName, "RECREATE")
@@ -409,7 +409,7 @@ def createMetHist(varname, xTitle, nBinsX, xMin, xMax):
     h.GetYaxis().SetTitle("Events")
     return h
 
-def runMETStudy(ntuple, maxEvents, outfileName):
+def runMETStudy(ntuple, maxEvents, outfileName, dumptcl):
 
     tot_nevents = 0
     outputF = TFile(outfileName, "RECREATE")
@@ -586,12 +586,12 @@ def filterDR(obj, collection):
         if objVec.DeltaR(pVec) > 0.3:
             return obj
 
-def runTautagStudy(ntuple, maxEvents, outfileName):
+def runTautagStudy(ntuple, maxEvents, outfileName, dumptcl):
     """Creates Tautagging histograms."""
     tot_nevents = 0
     outputF = TFile(outfileName, "RECREATE")
     obj = "tau"
-    dumptcl = False
+    #dumptcl = False
     params = {
         "dR": 0.4,
         "ptMin": 20,
@@ -800,16 +800,16 @@ def main():
     TauTagStudy = False
 
     if opt.physobject == "met":
-        runMETStudy(ntuple, maxEvents, opt.outFile)
+        runMETStudy(ntuple, maxEvents, opt.outFile, dumptcl)
         exit()
 
     if opt.physobject == "btag":
-        runBtagStudy(ntuple, maxEvents, opt.outFile)
+        runBtagStudy(ntuple, maxEvents, opt.outFile, dumptcl)
         exit()
     
     if opt.physobject == "tau":
         TauTagStudy = True
-        runTautagStudy(ntuple, maxEvents, opt.outFile)
+        runTautagStudy(ntuple, maxEvents, opt.outFile, dumptcl)
         exit()
 
     tot_nevents = 0
@@ -1182,7 +1182,11 @@ def main():
                 if obj in pdgid:
                     if abs(g.pid()) != pdgid[obj]: continue  # check genparticle pid  
                     if obj != 'photon' and g.status() != 1: continue
-                    if obj == 'photon' and genobjs[g.m1()].pid() != 25: continue # always 2 if status 1 not required!
+                    if obj == 'photon':
+                        if 'Photon' not in inFile: # photon guns won't have Higgs
+                            if genobjs[g.m1()].pid() != 25: continue # always 2 if status 1 not required!
+                        else:
+                            if g.status() != 1: continue
         
                 ## Fill gen object hists
                 hists["gen"+obj+"_pt"].Fill(g.pt())

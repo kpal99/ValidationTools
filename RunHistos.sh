@@ -39,7 +39,9 @@ for ifile in $IDLIST; do
 	    echo "JETS:"
 	    python -u ntuple_analyser.py -p jetpuppi -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_jet_${ifile}.root --dumptcl
 	    echo "BTAGGING:"
-	    python -u ntuple_analyser.py -p btag -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_jet_${ifile}.root --dumptcl
+	    python -u ntuple_analyser.py -p btag -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_bjet_${ifile}.root --dumptcl
+	    echo "TAUTAGGING:"
+	    python -u ntuple_analyser.py -p tau -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_tau_${ifile}.root --dumptcl
 	    echo "MET:"
 	    python -u ntuple_analyser.py -p met -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_met_${ifile}.root --dumptcl
 	    
@@ -58,7 +60,9 @@ for ifile in $IDLIST; do
 	    echo "JETS":
 	    python -u ntuple_analyser.py -p jetpuppi -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_jet_${ifile}.root
 	    echo "BTAGGING":
-	    python -u ntuple_analyser.py -p btag -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_jet_${ifile}.root
+	    python -u ntuple_analyser.py -p btag -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_bjet_${ifile}.root
+	    echo "TAUTAGGING":
+	    python -u ntuple_analyser.py -p tau -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_tau_${ifile}.root
 	    echo "MET":
 	    python -u ntuple_analyser.py -p met -i root://eoscms.cern.ch/${FILEIN}_${ifile}.root -o ${FILEOUT}_met_${ifile}.root
 	else
@@ -68,13 +72,14 @@ for ifile in $IDLIST; do
 done
 
 echo "HADDING:"
+ls *.root
 hadd -k ${FILEOUT}.root ${FILEOUT}_*.root
 
 echo "Copying the file to eos"
 
 if [[ -f ${FILEOUT}.root ]]
 then
-    xrdcp ${FILEOUT}.root root://eoscms.cern.ch/${OUTDIR}/${FILEOUT}.root
+    xrdcp -f ${FILEOUT}.root root://eoscms.cern.ch/${OUTDIR}/${FILEOUT}.root
     XRDEXIT=$?
     if [[ $XRDEXIT -ne 0 ]]; then
 	echo "exit code $XRDEXIT, failure in xrdcp of ROOT"
