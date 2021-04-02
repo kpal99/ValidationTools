@@ -23,6 +23,7 @@ def cutName(name, plt_type):
         ".t", "pt") for name in cut_name]
     return cut_name_prop
 
+
 def pt_bin(caption):
     """Returns edited pt bins for subfigure captions."""
     pt_low_pattern = r"\d\d+[t][o]"
@@ -49,16 +50,18 @@ def eta_bin(caption):
     eta_highest_pattern = r"\b\d\.\d\b"
 
     eta_low = remove_ch(str(r.findall(eta_low_pattern, caption))).rstrip("to")
-    eta_high = remove_ch(str(r.findall(eta_high_pattern, caption))).lstrip("to")
+    eta_high = remove_ch(
+        str(r.findall(eta_high_pattern, caption))).lstrip("to")
     eta_highest = remove_ch(str(r.findall(eta_highest_pattern, caption)))
 
     if caption == '':
         new_name = 'no bin'
     elif eta_highest:
-        new_name = "$ |\eta| > " + eta_highest + " $"
+        new_name = r"$ |\eta| > " + eta_highest + " $"
     else:
         new_name = "$ " + eta_low + r" < |\eta| < " + eta_high + " $"
     return new_name
+
 
 def res_bin_edit(caption):
     """Returns nicely edited version of the resolution plot captions."""
@@ -110,15 +113,15 @@ def subfigure(figure, caption):
         tex_line += path + figure
     tex_line += r"}" + "\n" + r"\caption{"
 
-    if 'eta' in figure and 'pt_' not in figure: # 'pt_': underscore is used to exclude 'ptresponse'
+    if 'eta' in figure and 'pt_' not in figure:  # 'pt_': underscore is used to exclude 'ptresponse'
         caption = pt_bin(caption)
 
     if 'pt_' in figure and 'eta' not in figure:
         caption = eta_bin(caption)
 
-    if 'eta' in figure and 'pt_' in figure: # resolution bins
+    if 'eta' in figure and 'pt_' in figure:  # resolution bins
         caption = res_bin_edit(caption)
-    
+
     if caption == '':
         caption = 'no bin'
 
@@ -132,7 +135,13 @@ def add_figures(figure_dict):
     tex_line = "\n"
     for i, figure in enumerate(figure_dict):
         if plt == 'resolution':
-            if i == 14:
+            if i == 9 and object_ == 'electron':
+                tex_line += subfigure("empty.png", "ghost")
+                tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
+                tex_line += "\n" + \
+                    beginFrame(" cont'd")
+                tex_line += subfigure("empty.png", "ghost")
+            if i == 14 and object_ == 'jetpuppi':
                 tex_line += subfigure("empty.png", "ghost")
             if i != 0 and (i == 5 or i == 10 or i == 14) and object_ != 'muon':
                 tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
@@ -147,13 +156,18 @@ def add_figures(figure_dict):
                 tex_line += subfigure("empty.png", "ghost")
             if object_ == "photon" and (workingp == "mediumID" or workingp == "tightID"):
                 tex_line += subfigure("empty.png", "ghost")
+        if plt == 'efficiency' and i == 2 and variable == "pt":
+            if object_ == "muon" and workingp == "tightID":
+                tex_line += subfigure("empty.png", "ghost")
         tex_line += subfigure(figure_dict[figure],
                               str(figure).strip("'[]")) + "\n"
     for i in range(len(figure_dict)):
         if plt == 'resolution':
-            if i == 8 and object_ == 'photon':
-                tex_line += subfigure("empty.png", "ghost")
             if i == 16 and object_ == "jetpuppi":
+                tex_line += subfigure("empty.png", "ghost")
+            if i == 9 and object_ == "electron":
+                tex_line += 2*subfigure("empty.png", "ghost")
+            if i == 8 and object_ == "photon":
                 tex_line += subfigure("empty.png", "ghost")
     tex_line += r"\end{figure}"
     for i in range(len(figure_dict)):
@@ -232,12 +246,10 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
             name_list.move_to_end("eta_1.5_3_pt_100_200")
             name_list.move_to_end("eta_1.5_3_pt_200_500")
     else:
-        if var == "eta" and obj != 'tau':
+        if var == "eta":
             name_list.move_to_end("['50to100']", last=False)
             name_list.move_to_end("['20to50']", last=False)
             name_list.move_to_end("[]", last=False)
-    # if var == "pt_":
-    #     var = "pt"
     if len(name_list) > 6:
         tex_line += add_figures(name_list)
     else:
@@ -297,7 +309,7 @@ def main():
     os.system('touch %s/validation_plots.tex' % printoutdir)
 
     tex_lines = "\n".join("{}".format(ln) for ln in
-    r"""\documentclass[8pt]{beamer}
+                          r"""\documentclass[8pt]{beamer}
     \setbeamertemplate{footline}[frame number]{}
     \setbeamertemplate{navigation symbols}{}
     \setbeamersize{text margin left=0mm,text margin right=0mm}
@@ -313,14 +325,10 @@ def main():
     \date{\today}
 
     \begin{document}
-
+    
+    \section{Cover}
+    
     \frame{\titlepage}
-    \setbeamertemplate{section in toc}{\inserttocsection}
-    \begin{frame}
-        \frametitle{Table of Contents}
-        \tableofcontents
-        \clearpage
-    \end{frame}
 
     """.split("\n"))
 
@@ -335,12 +343,12 @@ def main():
     tex_lines += "\n" + r"\section{Jetpuppi}" + \
         "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
-    # tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
-    # tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
-    # tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
-    # tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
-    # tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
-    # tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
+    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
     tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'jetpuppi', 'pt', 'tightID')
 
@@ -360,6 +368,7 @@ def main():
     tex_lines += texoutput('ptresponse', 'electron', 'pt', 'tightID')
     tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'electron', 'pt', 'tightID')
+
     plots_list = os.listdir(qcdpath)
     path = qcdpath
     os.system('cd {}'.format(path))
@@ -387,6 +396,7 @@ def main():
     tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
     tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
+
     plots_list = os.listdir(qcdpath)
     path = qcdpath
     os.system('cd {}'.format(path))
@@ -414,6 +424,7 @@ def main():
     tex_lines += texoutput('ptresponse', 'photon', 'pt', 'tightID')
     tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'photon', 'pt', 'tightID')
+
     plots_list = os.listdir(qcdpath)
     path = qcdpath
     os.system('cd {}'.format(path))
@@ -436,6 +447,67 @@ def main():
     tex_lines += texoutput('tautagRate', 'tau', 'pt', 'looseID')
     tex_lines += texoutput('tautagRate', 'tau', 'pt', 'mediumID')
     tex_lines += texoutput('tautagRate', 'tau', 'pt', 'tightID')
+
+    plots_list = os.listdir(qcdpath)
+    path = qcdpath
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\subsection{Tau Light MisTag Rate}"
+    tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'looseID')
+    tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'mediumID')
+    tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'tightID')
+    tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'looseID')
+    tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'mediumID')
+    tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'tightID')
+
+    plots_list = os.listdir(elmupath)
+    path = elmupath
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\subsection{Tau Electron MisTag Rate}"
+    tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'looseID')
+    tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'mediumID')
+    tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'tightID')
+    tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'looseID')
+    tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'mediumID')
+    tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{Tau Muon MisTag Rate}"
+    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'looseID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'mediumID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'tightID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'looseID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'mediumID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
+
+    # Btag
+    plots_list = os.listdir(ttbarpath)
+    path = ttbarpath
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\section{Btag}" + "\n" + r"\subsection{Efficiency}"
+    tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'looseID')
+    tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'mediumID')
+    tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'mediumID')
+    tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'tightID')
+
+    plots_list = os.listdir(qcdpath)
+    path = qcdpath
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\subsection{Btag Light MisTag Rate}"
+    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'looseID')
+    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'mediumID')
+    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'mediumID')
+    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{Btag c MisTag Rate}"
+    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'looseID')
+    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'mediumID')
+    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'mediumID')
+    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'tightID')
 
     tex_lines += "\n" + r"\end{document}"
 
