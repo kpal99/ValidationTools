@@ -696,7 +696,7 @@ def runTautagStudy(ntuple, maxEvents, outfileName, dumptcl):
         genelectrons = [Momentum(p) for p in genparts if abs(p.pid()) == 11 and p.pt() > params["ptMin"] and p.status()==1]
         genmuons = [Momentum(p) for p in genparts if abs(p.pid()) == 13 and p.pt() > params["ptMin"] and p.status()==1]
         gentaus = [p for p in genparts if abs(p.pid()) == 15 and p.pt() > params["ptMin"]]
-        hadronictaus = [visibleP4(hadronic(tau)) for tau in gentaus if hadronic(tau) != None and visibleP4(hadronic(tau)).Pt() > params["ptMin"]] # visible hadronic taus
+        genhadronictaus = [visibleP4(hadronic(tau)) for tau in gentaus if hadronic(tau) != None and visibleP4(hadronic(tau)).Pt() > params["ptMin"]] # visible hadronic taus
         genlight = [Momentum(p) for p in genparts if p.pt() > params["ptMin"] and (abs(p.pid()) == 4 or abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1)] # creating a list here for the pids makes code run slower
 
         #def fillHistos(obj, gen, reco, params, isTagged):
@@ -748,7 +748,7 @@ def runTautagStudy(ntuple, maxEvents, outfileName, dumptcl):
                             hists[obj+"_"+histlabel+"_to_pt_"+quality[0] +
                                   "_" + cutname].Fill(gen.Pt(), isTagged[quality[0]])
 
-        fillEfficiencyHistos(obj, hadronictaus, filtered_taus, params, 'tautagRate')
+        fillEfficiencyHistos(obj, genhadronictaus, filtered_taus, params, 'tautagRate')
         fillEfficiencyHistos(obj, genelectrons, filtered_taus, params, 'elecMistagRate')
         fillEfficiencyHistos(obj, genmuons, filtered_taus, params, 'muonMistagRate')
         fillEfficiencyHistos(obj, genlight, filtered_taus, params, 'lightMistagRate')
@@ -846,7 +846,7 @@ def main():
             "plotMassRange": [0, 500],
             "plotNObjRange_Delp": [0, 20],
             "plotNObjRange_Full": [0, 50],
-            "plotResoRange": [0.8, 1.2],
+            "plotResoRange": [0.0, 2.0],
             "ids": [
                 ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
                 ## NOTE: only efficiency plots get anything with value [3] > 0
@@ -915,7 +915,7 @@ def main():
             "plotMassRange": [-1, 1],
             "plotNObjRange_Delp": [0, 8],
             "plotNObjRange_Full": [0, 8],
-            "plotResoRange": [0.9, 1.1],
+            "plotResoRange": [0.8, 1.2],
             "ids": [  
                 ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, 
                 ##  denominator: 0(all)/1(reco matched)/2(reco+id), "efficiency title"]
