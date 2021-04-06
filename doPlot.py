@@ -191,8 +191,8 @@ for name in hist_names:
         hf.Draw("colz texte")
         canv.Print(printoutdir+"/"+canv_name+"_fullsim.png")
     else:
-        canv.SetLogy()  # 1d plot logy -wz
-	canv_name += '_logy' # 1d plot logy -wz
+        #canv.SetLogy()  # 1d plot logy -wz
+	#canv_name += '_logy' # 1d plot logy -wz
         hf.SetLineColor(rt.kBlue)
         hf.SetMarkerStyle(21)
         hf.SetMarkerColor(rt.kBlue)
@@ -434,4 +434,3 @@ if dumptcl:
         F = open("{}/{}_{}_reso.tcl".format(printoutdir,k[0],k[1]), "w")
         F.writelines(v)
         F.close()
-
