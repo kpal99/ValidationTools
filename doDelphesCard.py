@@ -227,11 +227,11 @@ rt.gROOT.SetBatch(True) ## avoid figures pop out to screen
 usage = 'usage: %prog [options]'
 parser = optparse.OptionParser(usage)
 
-parser.add_option('-i','--useIso',
+parser.add_option('-f','--flat',
                   action="store_true",
-                  dest='useIso',
+                  dest='flat',
                   default=False,
-                  help='true/false multiply by iso ratio in tcl file')
+                  help='true/false dump flat card for tuning')
 
 parser.add_option('--card-in',
                   dest='card_in',
@@ -244,6 +244,9 @@ parser.add_option('--card-out',
                   help='path to output delphes card [%default]',  
                   default='cards/out_card.tcl',                                                                                                           
                   type='string')
+
+
+
 
 
 path='/eos/cms/store/group/upgrade/RTB/ValidationHistos/v07VALclosure_v2/'
@@ -331,7 +334,7 @@ object_dict={
 
 (opt, args) = parser.parse_args()
 
-useIso = opt.useIso
+flat = opt.flat
 
 
 ### dump dummy card content into string
@@ -347,6 +350,7 @@ for obj, params in object_dict.items():
     #if obj != 'btag': continue
     #if obj != 'muon': continue
     #if obj == 'photon': continue
+    #if obj != 'jet': continue
 
     #obj['']
     collection=params['collection']
@@ -564,10 +568,12 @@ for obj, params in object_dict.items():
                 lines_eff = []
 
                 print obj, tag+'_'+quality,pdgcode
+                
                 content = dump_efficiencies(obj, tag+'_'+quality, lines_eff, pdgcode, eff2D_f, content)
 
 
         #if 'file_fake_F' in params: ## exclude jets
+        ## dump fake rates here
         if collection=='electron' or collection=='muon' or collection=='photon': ## exclude jets
 
             file_fake_F=params['file_fake_F']
@@ -586,7 +592,13 @@ for obj, params in object_dict.items():
 
             lines_fake = []
 
-            content = dump_efficiencies(collection, quality, lines_fake, pdgcode, fake2D_f, content)
+            if not flat:
+                content = dump_efficiencies(collection, quality, lines_fake, pdgcode, fake2D_f, content)
+            else:
+                flat_param='  {{{}}} {{0.01}}\n'.format(pdgcode)
+                starting_fake = '## DUMMY_' + collection.upper() + '_'+ quality.upper() + 'ID_DUMP'
+                ending_fake = starting_fake.replace('DUMMY','ENDDUMMY')
+                content=replaced(content, flat_param, starting_fake, ending_fake)
 
 ## dump new content into new delphes card
 
