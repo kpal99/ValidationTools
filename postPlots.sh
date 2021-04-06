@@ -4,9 +4,9 @@ while getopts "o:i:s:" opt; do
     case "$opt" in
         o) OUTPATH=$OPTARG
             ;;
-	i) INPATH=$OPTARG
-	    ;;
-	s) SAMPLE=$OPTARG
+        i) INPATH=$OPTARG
+            ;;
+        s) SAMPLE=$OPTARG
     esac
 done
 
@@ -16,28 +16,31 @@ FULLSIMCAMP="PhaseIIMTDTDRAutumn18MiniAOD"
 
 INITIAL="$(echo $USER | head -c 1)"
 WWWDIR=/eos/user/${INITIAL}/${USER}/www/${OUTPATH}
+WWWDIR=/afs/cern.ch/user/s/selvaggi/www/${OUTPATH}
 
 if [ ! -d "${WWWDIR}" ]; then
     mkdir -p ${WWWDIR}
 fi
 
 cp index.php ${WWWDIR}
-mkdir ${WWWDIR}/efficiencies
-mkdir ${WWWDIR}/efficiencies/loose
-mkdir ${WWWDIR}/efficiencies/medium
-mkdir ${WWWDIR}/efficiencies/tight
-mkdir ${WWWDIR}/fakerates
-mkdir ${WWWDIR}/fakerates/loose
-mkdir ${WWWDIR}/fakerates/medium
-mkdir ${WWWDIR}/fakerates/tight
-mkdir ${WWWDIR}/resolution
-mkdir ${WWWDIR}/resolution/loose
-mkdir ${WWWDIR}/resolution/medium
-mkdir ${WWWDIR}/resolution/tight
-mkdir ${WWWDIR}/ptresponse
-mkdir ${WWWDIR}/ptresponse/loose
-mkdir ${WWWDIR}/ptresponse/medium
-mkdir ${WWWDIR}/ptresponse/tight
+mkdir -p  ${WWWDIR}/efficiencies
+mkdir -p  ${WWWDIR}/efficiencies/loose
+mkdir -p  ${WWWDIR}/efficiencies/medium
+mkdir -p  ${WWWDIR}/efficiencies/tight
+mkdir -p  ${WWWDIR}/fakerates
+mkdir -p  ${WWWDIR}/fakerates/loose
+mkdir -p  ${WWWDIR}/fakerates/medium
+mkdir -p  ${WWWDIR}/fakerates/tight
+mkdir -p  ${WWWDIR}/resolution
+mkdir -p  ${WWWDIR}/resolution/loose
+mkdir -p  ${WWWDIR}/resolution/medium
+mkdir -p  ${WWWDIR}/resolution/tight
+mkdir -p  ${WWWDIR}/ptresponse
+mkdir -p  ${WWWDIR}/ptresponse/loose
+mkdir -p  ${WWWDIR}/ptresponse/medium
+mkdir -p  ${WWWDIR}/ptresponse/tight
+mkdir -p  ${WWWDIR}/multiplicity
+
 cp index.php ${WWWDIR}/multiplicity
 cp index.php ${WWWDIR}/efficiencies
 cp index.php ${WWWDIR}/efficiencies/loose
