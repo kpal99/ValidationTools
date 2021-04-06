@@ -110,9 +110,6 @@ set ExecutionPath {
   JetSmearPUPPI
   JetSmearPUPPIAK8
 
-  JetLooseID
-  JetTightID
-
   JetFlavorAssociationPUPPI
   JetFlavorAssociationPUPPIAK8
 
@@ -127,6 +124,9 @@ set ExecutionPath {
   TauTaggingPUPPILoose
   TauTaggingPUPPIMedium
   TauTaggingPUPPITight
+
+  JetLooseID
+  JetTightID
 
   JetFakeMakerLoose
   JetFakeMakerMedium
@@ -293,6 +293,8 @@ module Efficiency ChargedHadronTrackingEfficiency {
   set InputArray  DenseTrackFilter/chargedHadrons
   set OutputArray chargedHadrons
   # tracking efficiency formula for charged hadrons
+  set UseMomentumVector true
+
   set EfficiencyFormula {
       (pt <= 0.2) * (0.00) + \
           (abs(eta) <= 1.2) * (pt > 0.2 && pt <= 1.0) * (pt * 0.96) + \
@@ -313,6 +315,8 @@ module Efficiency ChargedHadronTrackingEfficiency {
 module Efficiency ElectronTrackingEfficiency {
   set InputArray  DenseTrackFilter/electrons
   set OutputArray electrons
+  set UseMomentumVector true
+
   # tracking efficiency formula for electrons
   set EfficiencyFormula {
       (pt <= 0.2) * (0.00) + \
@@ -337,6 +341,7 @@ module Efficiency ElectronTrackingEfficiency {
 module Efficiency MuonTrackingEfficiency {
   set InputArray DenseTrackFilter/muons
   set OutputArray muons
+  set UseMomentumVector true
   # tracking efficiency formula for muons
   set EfficiencyFormula {
       (pt <= 0.2) * (0.00) + \
@@ -1134,6 +1139,7 @@ module Efficiency JetLooseID {
   # set EfficiencyFormula {efficiency formula as a function of eta and pt}
   # efficiency formula for jets
 
+  set UseMomentumVector true
 
   ## DUMMY_JETPUPPI_LOOSEID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
@@ -1159,6 +1165,7 @@ module Efficiency JetTightID {
   # set EfficiencyFormula {efficiency formula as a function of eta and pt}
   # efficiency formula for jets
 
+  set UseMomentumVector true
 
   ## DUMMY_JETPUPPI_TIGHTID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
@@ -1262,6 +1269,7 @@ module Efficiency PhotonLooseID {
   # set EfficiencyFormula {efficiency formula as a function of eta and pt}
   # efficiency formula for photons
 
+  set UseMomentumVector true
 
   ## DUMMY_PHOTON_LOOSEID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
@@ -1285,6 +1293,7 @@ module Efficiency PhotonMediumID {
   set OutputArray photons
   # set EfficiencyFormula {efficiency formula as a function of eta and pt}
   # efficiency formula for photons
+  set UseMomentumVector true
 
   ## DUMMY_PHOTON_MEDIUMID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
@@ -1308,6 +1317,7 @@ module Efficiency PhotonTightID {
   set OutputArray photons
   # set EfficiencyFormula {efficiency formula as a function of eta and pt}
   # efficiency formula for photons
+  set UseMomentumVector true
 
   ## DUMMY_PHOTON_TIGHTID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
@@ -1379,6 +1389,7 @@ module Efficiency ElectronLooseEfficiency {
 
   set InputArray ElectronSmear/electrons
   set OutputArray electrons
+  set UseMomentumVector true
 
   ## DUMMY_ELECTRON_LOOSEID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
@@ -1394,11 +1405,11 @@ module Efficiency ElectronLooseEfficiency {
 # Electron medium ID efficiency #
 #######################
 
-##FIXME!!! sourcing LooseId tcl file because medium does not exists (yet ...)
 module Efficiency ElectronMediumEfficiency {
 
   set InputArray ElectronSmear/electrons
   set OutputArray electrons
+  set UseMomentumVector true
 
   ## DUMMY_ELECTRON_MEDIUMID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
@@ -1416,6 +1427,7 @@ module Efficiency ElectronTightEfficiency {
 
   set InputArray ElectronSmear/electrons
   set OutputArray electrons
+  set UseMomentumVector true
 
   ## DUMMY_ELECTRON_TIGHTID_EFFICIENCY
   set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
@@ -1484,6 +1496,7 @@ module MomentumSmearing MuonSmear {
 module Efficiency MuonLooseIdEfficiency {
     set InputArray MuonSmear/muons
     set OutputArray muons
+    set UseMomentumVector true
     
     ## DUMMY_MUON_LOOSEID_EFFICIENCY
     set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
@@ -1501,6 +1514,7 @@ module Efficiency MuonLooseIdEfficiency {
 module Efficiency MuonMediumIdEfficiency {
     set InputArray MuonSmear/muons
     set OutputArray muons
+    set UseMomentumVector true
 
     ## DUMMY_MUON_MEDIUMID_EFFICIENCY
     set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
@@ -1517,6 +1531,7 @@ module Efficiency MuonMediumIdEfficiency {
 module Efficiency MuonTightIdEfficiency {
     set InputArray MuonSmear/muons
     set OutputArray muons
+    set UseMomentumVector true
 
     ## DUMMY_MUON_TIGHTID_EFFICIENCY
     set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
@@ -1617,7 +1632,7 @@ module BTagging BTaggingPUPPITight {
 
 module BTagging BTaggingPUPPIAK8Loose {
 
-  set JetInputArray JetSmearPUPPI/jets
+  set JetInputArray JetSmearPUPPIAK8/jets
 
   set BitNumber 0
 
@@ -1630,7 +1645,7 @@ module BTagging BTaggingPUPPIAK8Loose {
 
 module BTagging BTaggingPUPPIAK8Medium {
 
-  set JetInputArray JetSmearPUPPI/jets
+  set JetInputArray JetSmearPUPPIAK8/jets
 
   set BitNumber 1
 
@@ -1643,7 +1658,7 @@ module BTagging BTaggingPUPPIAK8Medium {
 
 module BTagging BTaggingPUPPIAK8Tight {
 
-  set JetInputArray JetSmearPUPPI/jets
+  set JetInputArray JetSmearPUPPIAK8/jets
 
   set BitNumber 2
 
