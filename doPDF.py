@@ -15,12 +15,12 @@ def remove_ch(name):
 def cutName(name, plt_type):
     """Returns the bin of the plots."""
     if plt_type == 'resolution':
-        cut_pattern = r"(\w\w\w\d+\w+\d+\w+)"
+        cut_pattern = r"(\w\w\w\d+\w+\d+)"
     else:
-        cut_pattern = r"(\d+\w*\d*)"
+        cut_pattern = r"(\d+\w+\d+)"
     cut_name = r.findall(cut_pattern, name)
     cut_name_prop = [name.replace("p", ".").replace(
-        ".t", "pt").strip("_logy") for name in cut_name]
+        ".t", "pt") for name in cut_name]
     return cut_name_prop
 
 
@@ -28,11 +28,11 @@ def pt_bin(caption):
     """Returns edited pt bins for subfigure captions."""
     pt_low_pattern = r"\d\d+[t][o]"
     pt_high_pattern = r"[t][o]\d\d+"
-    pt_highest_pattern = r"\d\d\d[t][o][I][n][f]"
+    pt_highest_pattern = r"\b\d\d\d+\b"
 
     pt_low = remove_ch(str(r.findall(pt_low_pattern, caption))).rstrip("to")
     pt_high = remove_ch(str(r.findall(pt_high_pattern, caption))).lstrip("to")
-    pt_highest = remove_ch(str(r.findall(pt_highest_pattern, caption))).rstrip("toInf")
+    pt_highest = remove_ch(str(r.findall(pt_highest_pattern, caption)))
 
     if caption == '':
         new_name = 'no bin'
@@ -47,12 +47,12 @@ def eta_bin(caption):
     """Returns edited eta bins for subfigure captions."""
     eta_low_pattern = r"\A\d\.*\d*"
     eta_high_pattern = r"[t][o]\d\.*\d*"
-    eta_highest_pattern = r"\d\.*\d*[t][o][I][n][f]"
+    eta_highest_pattern = r"\b\d\.\d\b"
 
     eta_low = remove_ch(str(r.findall(eta_low_pattern, caption))).rstrip("to")
     eta_high = remove_ch(
         str(r.findall(eta_high_pattern, caption))).lstrip("to")
-    eta_highest = remove_ch(str(r.findall(eta_highest_pattern, caption))).strip("_toInf")
+    eta_highest = remove_ch(str(r.findall(eta_highest_pattern, caption)))
 
     if caption == '':
         new_name = 'no bin'
@@ -67,8 +67,6 @@ def res_bin_edit(caption):
     """Returns nicely edited version of the resolution plot captions."""
     eta_low_pattern = r"[e][t][a][_]\d\.*\d*"
     eta_high_pattern = r"[e][t][a][_]\d\.*\d*[_]\d\.*\d*"
-    eta_highest_pattern = r"[e][t][a][_]\d\.*\d*[_][I][n][f]"
-
     pt_low_pattern = r"[p][t][_]\d+"
     pt_high_pattern = r"[p][t][_]\d+[_]\d+"
     pt_highest_pattern = r"[p][t][_]\d+[_]\D+"
@@ -77,33 +75,23 @@ def res_bin_edit(caption):
         str(r.findall(eta_low_pattern, caption))).lstrip("eta_")
     eta_high = remove_ch(
         str(r.findall(eta_high_pattern, caption))).lstrip("eta_" + eta_low)
-    eta_highest = remove_ch(
-        str(r.findall(eta_highest_pattern, caption))).lstrip("eta_").strip("_Inf")
-
     pt_low = remove_ch(str(r.findall(pt_low_pattern, caption))).lstrip("pt_")
     pt_high = remove_ch(
         str(r.findall(pt_high_pattern, caption))).lstrip("pt_" + pt_low)
     pt_highest = remove_ch(
         str(r.findall(pt_highest_pattern, caption)))
-    
-    if eta_highest:
-        new_caption = "$ " + r" |\eta| > " + eta_highest + r" \,\text{and}\, "
-    else:
-        new_caption = "$ " + eta_low + r" < |\eta| < " + eta_high + r" \,\text{and}\, "
-
+    new_caption = "$ " + eta_low + r" < |\eta| < " + \
+        eta_high + r" \,\text{and}\, "
     if pt_highest:
         new_caption += " p_{T} > " + pt_low + " $"
     else:
         new_caption += pt_low + " < p_{T} < " + pt_high + " $"
-    
-    print(new_caption)
-        
     return new_caption
 
 
 def beginFrame(extra=''):
     """Returns the beginning lines for a new page."""
-    tex_line = "\n" r"\begin{frame}" + "\n" + r"\frametitle{" + object_ + " " + plt
+    tex_line = r"\begin{frame}" + "\n" + r"\frametitle{" + object_ + " " + plt
     if plt == 'resolution':
         tex_line += r" vs pt and eta"
     else:
@@ -118,7 +106,11 @@ def subfigure(figure, caption):
     """Returns subfigure lines for tex."""
     tex_line = r"\begin{subfigure}{0.32\textwidth}" + \
         "\n" + r"\includegraphics[width=\linewidth]{"
-    tex_line += path + figure
+    if caption == "ghost":
+        caption = ' '
+        tex_line += "./" + figure
+    else:
+        tex_line += path + figure
     tex_line += r"}" + "\n" + r"\caption{"
 
     if 'eta' in figure and 'pt_' not in figure:  # 'pt_': underscore is used to exclude 'ptresponse'
@@ -128,7 +120,6 @@ def subfigure(figure, caption):
         caption = eta_bin(caption)
 
     if 'eta' in figure and 'pt_' in figure:  # resolution bins
-        print(caption)
         caption = res_bin_edit(caption)
 
     if caption == '':
@@ -144,20 +135,32 @@ def add_figures(figure_dict):
     tex_line = "\n"
     for i, figure in enumerate(figure_dict):
         if plt == 'resolution':
-            if i != 0 and i % 5 == 0: # and object_ != 'muon':
+            # if i == 9 and object_ == 'electron':
+            #     tex_line += subfigure("empty.png", "ghost")
+            #     tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
+            #     tex_line += "\n" + \
+            #         beginFrame(" cont'd")
+            #     tex_line += subfigure("empty.png", "ghost")
+            if i == 14 and object_ == 'jetpuppi':
+                tex_line += subfigure("empty.png", "ghost")
+            if i != 0 and (i == 5 or i == 10 or i == 14) and object_ != 'muon':
                 tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
                 tex_line += "\n" + \
                     beginFrame(" cont'd")
-        #     if i == 9 and object_ == 'electron':
-        #         tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
-        #         tex_line += "\n" + \
-        #             beginFrame(" cont'd")
-        #     if object_ == 'muon' and i == 4:
-        #         tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
-        #         tex_line += "\n" + \
-        #             beginFrame(" cont'd")
+            if object_ == 'muon' and i == 4:
+                tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
+                tex_line += "\n" + \
+                    beginFrame(" cont'd")
         tex_line += subfigure(figure_dict[figure],
                               str(figure).strip("'[]")) + "\n"
+    for i in range(len(figure_dict)):
+        if plt == 'resolution':
+            if i == 16 and object_ == "jetpuppi":
+                tex_line += subfigure("empty.png", "ghost")
+            # if i == 9 and object_ == "electron":
+            #     tex_line += 2*subfigure("empty.png", "ghost")
+            if i == 8 and object_ == "photon":
+                tex_line += subfigure("empty.png", "ghost")
     tex_line += r"\end{figure}"
     for i in range(len(figure_dict)):
         if i == 6:
@@ -201,44 +204,44 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
                 name_list = sorted(name_list.items(),
                                    key=operator.itemgetter(1))
             name_list = collections.OrderedDict(name_list)
-    #if plt_type == 'resolution':
-        # name_list.move_to_end("eta_0_1.5_pt_50_100", last=False)
-        # name_list.move_to_end("eta_0_1.5_pt_20_50", last=False)
-        # if obj == 'jetpuppi':
-        #     name_list.move_to_end("eta_1.5_3.0_pt_20_50")
-        #     name_list.move_to_end("eta_1.5_3.0_pt_50_100")
-        #     name_list.move_to_end("eta_1.5_3.0_pt_100_200")
-        #     name_list.move_to_end("eta_1.5_3.0_pt_200_500")
-        #     name_list.move_to_end("eta_1.5_3.0_pt_500_Inf")
+    if plt_type == 'resolution':
+        name_list.move_to_end("eta_0_1.5_pt_50_100", last=False)
+        name_list.move_to_end("eta_0_1.5_pt_20_50", last=False)
+        if obj == 'jetpuppi':
+            name_list.move_to_end("eta_1.5_3.0_pt_20_50")
+            name_list.move_to_end("eta_1.5_3.0_pt_50_100")
+            name_list.move_to_end("eta_1.5_3.0_pt_100_200")
+            name_list.move_to_end("eta_1.5_3.0_pt_200_500")
+            name_list.move_to_end("eta_1.5_3.0_pt_500_Inf")
 
-        #     name_list.move_to_end("eta_3.0_4.0_pt_20_50")
-        #     name_list.move_to_end("eta_3.0_4.0_pt_50_100")
-        #     name_list.move_to_end("eta_3.0_4.0_pt_100_200")
-        #     name_list.move_to_end("eta_3.0_4.0_pt_200_500")
+            name_list.move_to_end("eta_3.0_4.0_pt_20_50")
+            name_list.move_to_end("eta_3.0_4.0_pt_50_100")
+            name_list.move_to_end("eta_3.0_4.0_pt_100_200")
+            name_list.move_to_end("eta_3.0_4.0_pt_200_500")
 
-        #     name_list.move_to_end("eta_4.0_5.0_pt_20_50")
-        #     name_list.move_to_end("eta_4.0_5.0_pt_50_100")
-        #     name_list.move_to_end("eta_4.0_5.0_pt_100_200")
+            name_list.move_to_end("eta_4.0_5.0_pt_20_50")
+            name_list.move_to_end("eta_4.0_5.0_pt_50_100")
+            name_list.move_to_end("eta_4.0_5.0_pt_100_200")
 
-        # if obj == "electron":
-        #     name_list.move_to_end("eta_1.5_3_pt_100_200")
-        #     name_list.move_to_end("eta_1.5_3_pt_200_500")
-        #     name_list.move_to_end("eta_3_4_pt_50_100")
+        if obj == "electron":
+            name_list.move_to_end("eta_1.5_3_pt_100_200")
+            name_list.move_to_end("eta_1.5_3_pt_200_500")
+            name_list.move_to_end("eta_3_4_pt_50_100")
 
-        # if obj == "muon":
-        #     name_list.move_to_end("eta_1.5_2.8_pt_100_200")
-        #     name_list.move_to_end("eta_1.5_2.8_pt_200_500")
+        if obj == "muon":
+            name_list.move_to_end("eta_1.5_2.8_pt_100_200")
+            name_list.move_to_end("eta_1.5_2.8_pt_200_500")
 
-        # if obj == "photon":
-        #     name_list.move_to_end("eta_1.5_3_pt_20_50")
-        #     name_list.move_to_end("eta_1.5_3_pt_50_100")
-        #     name_list.move_to_end("eta_1.5_3_pt_100_200")
-        #     name_list.move_to_end("eta_1.5_3_pt_200_500")
-    # else:
-    if plt_type != "resolution":
+        if obj == "photon":
+            name_list.move_to_end("eta_1.5_3_pt_20_50")
+            name_list.move_to_end("eta_1.5_3_pt_50_100")
+            name_list.move_to_end("eta_1.5_3_pt_100_200")
+            name_list.move_to_end("eta_1.5_3_pt_200_500")
+    else:
         if var == "eta":
             name_list.move_to_end("['50to100']", last=False)
             name_list.move_to_end("['20to50']", last=False)
+            name_list.move_to_end("[]", last=False)
     if len(name_list) > 6:
         tex_line += add_figures(name_list)
     else:
@@ -260,27 +263,27 @@ def main():
     parser.add_option('-t', '--ttbarpath',
                       dest='ttbarpath',
                       help='path for TTbar histo file [%default]',
-                      default='TTbar/',
+                      default='BTag/',
                       type='string')
     parser.add_option('-e', '--elmupath',
                       dest='elmupath',
                       help='path for ElMu_Efficiency histo file [%default]',
-                      default='ElMu_Efficiency/',
+                      default='ElMu/',
                       type='string')
     parser.add_option('-g', '--gammapath',
                       dest='gammapath',
                       help='path for Photon_Efficiency histo file [%default]',
-                      default='Photon_Efficiency/',
+                      default='Photon/',
                       type='string')
     parser.add_option('-q', '--qcdpath',
                       dest='qcdpath',
                       help='path for QCD histo file [%default]',
-                      default='QCD/',
+                      default='QCD-logy/',
                       type='string')
     parser.add_option('-a', '--taupath',
                       dest='taupath',
                       help='path for QCD histo file [%default]',
-                      default='Taus/',
+                      default='TauTag/',
                       type='string')
 
     (opt, args) = parser.parse_args()
@@ -291,6 +294,7 @@ def main():
     elmupath = opt.elmupath
     gammapath = opt.gammapath
     taupath = opt.taupath
+    elmupath_logy = "ElMu-logy/"
 
     if not os.path.exists(printoutdir):
         os.system('mkdir -p %s' % printoutdir)
@@ -306,19 +310,15 @@ def main():
     \usepackage{caption,subcaption}
     \graphicspath{ {.} }
     \usepackage[utf8]{inputenc}
-
     \title{Validation Plots}
-
     \author{RTB}
     \institute{CMS}
     \date{\today}
-
     \begin{document}
     
     \section{Cover}
     
     \frame{\titlepage}
-
     """.split("\n"))
 
     global plots_list
@@ -448,8 +448,8 @@ def main():
     tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'mediumID')
     tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'tightID')
 
-    plots_list = os.listdir(elmupath)
-    path = elmupath
+    plots_list = os.listdir(elmupath_logy)
+    path = elmupath_logy
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Tau Electron MisTag Rate}"
     tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'looseID')
