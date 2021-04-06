@@ -1085,28 +1085,9 @@ module EnergyScale JetScalePUPPI {
   set OutputArray jets
 
  # scale formula for jets
-    ### jetpuppi tightID momentum scale
-  set ScaleFormula {
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.82) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.82) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.87) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (0.91) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0 && pt <= 14000.0) * (0.94) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.77) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.59) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (0.59) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.61) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0 && pt <= 14000.0) * (0.65) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.64) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.42) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (0.42) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (0.87) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0 && pt <= 14000.0) * (0.87) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 20.0 && pt <= 50.0) * (0.94) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 50.0 && pt <= 100.0) * (0.78) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 100.0 && pt <= 200.0) * (0.78) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 200.0 && pt <= 500.0) * (0.78)  
-  }
+  ## DUMMY_JETPUPPI_SCALE
+  set ScaleFormula {1.00}
+  ## ENDDUMMY_JETPUPPI_SCALE
 }
 
 module EnergyScale JetScalePUPPIAK8 {
@@ -1129,28 +1110,9 @@ module MomentumSmearing JetSmearPUPPI {
   set OutputArray jets
 
  # scale formula for jets
-   ### jetpuppi tightID momentum resolution
-  set ResolutionFormula {
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.19) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.15) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.11) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (0.088) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0 && pt <= 14000.0) * (0.15) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.21) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.13) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (0.093) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.11) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0 && pt <= 14000.0) * (0.066) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.24) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.28) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (0.12) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (0.14) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0 && pt <= 14000.0) * (0.49) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 20.0 && pt <= 50.0) * (0.2) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 50.0 && pt <= 100.0) * (0.15) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 100.0 && pt <= 200.0) * (0.12) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 200.0 && pt <= 500.0) * (0.63)  
-  }
+ ## DUMMY_JETPUPPI_SMEAR
+  set ResolutionFormula {1.00e-10}
+ ## ENDDUMMY_JETPUPPI_SMEAR
 }
 
 module MomentumSmearing JetSmearPUPPIAK8 {
@@ -1179,36 +1141,12 @@ module Efficiency JetLooseID {
 
   set UseMomentumVector true
 
-    ### jetpuppi loose ID 
-
-  set EfficiencyFormula {
-
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.61) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.91) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.99) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (1.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.44) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.67) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (0.77) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.86) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.92) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.26) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.51) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (0.56) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (0.66) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 20.0 && pt <= 50.0) * (0.091) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 50.0 && pt <= 100.0) * (0.16) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 100.0 && pt <= 200.0) * (0.37) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 5.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-   (abs(eta) > 5.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-   (abs(eta) > 5.0) * (pt > 100.0 && pt <= 200.0) * (0.0) +
-   (abs(eta) > 5.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 5.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_JETPUPPI_LOOSEID_EFFICIENCY
+  set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
+                           (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 1.5 && abs(eta) <= 5.0) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 5.0)                                   * (0.00)}
+  ## ENDDUMMY_JETPUPPI_LOOSEID_EFFICIENCY
 
 }
 
@@ -1229,36 +1167,12 @@ module Efficiency JetTightID {
 
   set UseMomentumVector true
 
-    ### jetpuppi tight ID 
-
-  set EfficiencyFormula {
-
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.6) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.91) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.99) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (1.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.44) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.67) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (0.77) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.86) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.92) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.26) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.51) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (0.56) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (0.66) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 20.0 && pt <= 50.0) * (0.054) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 50.0 && pt <= 100.0) * (0.12) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 100.0 && pt <= 200.0) * (0.34) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 4.0 && abs(eta) <= 5.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 5.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-   (abs(eta) > 5.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-   (abs(eta) > 5.0) * (pt > 100.0 && pt <= 200.0) * (0.0) +
-   (abs(eta) > 5.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 5.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_JETPUPPI_TIGHTID_EFFICIENCY
+  set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
+                           (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 1.5 && abs(eta) <= 5.0) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 5.0)                                   * (0.00)}
+  ## ENDDUMMY_JETPUPPI_TIGHTID_EFFICIENCY
 
 }
 
@@ -1317,22 +1231,9 @@ module EnergyScale PhotonScale {
   set InputArray PhotonIsolation/photons
   set OutputArray photons
 
-    ### photon looseIDISO momentum scale
-  set ScaleFormula {
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0 && pt <= 14000.0) * (0.99) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (1.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (1.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (1.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.99) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (1.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.97) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (1.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (1.0)  
-  }
+  ## DUMMY_PHOTON_SCALE
+  set ScaleFormula {1.00}
+  ## ENDDUMMY_PHOTON_SCALE
 
 }
 
@@ -1346,22 +1247,9 @@ module MomentumSmearing PhotonSmear {
   set InputArray PhotonScale/photons
   set OutputArray photons
 
-    ### photon looseIDISO momentum resolution
-  set ResolutionFormula {
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (1e-06) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (1e-06) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (1e-06) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (0.0012) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0 && pt <= 14000.0) * (0.098) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.034) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.018) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (1e-06) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.035) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (1e-06) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (1e-06) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (1e-06) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (1e-06)  
-  }
+  ## DUMMY_PHOTON_SMEAR
+  set ResolutionFormula {1.00e-10}
+  ## ENDDUMMY_PHOTON_SMEAR
 
 }
 
@@ -1383,31 +1271,12 @@ module Efficiency PhotonLooseID {
 
   set UseMomentumVector true
 
-    ### photon loose ID 
-
-  set EfficiencyFormula {
-
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.86) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.9) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.89) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (0.91) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.84) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.84) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.89) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (0.88) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.79) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.35) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.46) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (0.78) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 100.0 && pt <= 200.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_PHOTON_LOOSEID_EFFICIENCY
+  set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
+                           (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 4.0)                                   * (0.00)}
+  ## ENDDUMMY_PHOTON_LOOSEID_EFFICIENCY
 
 }
 
@@ -1426,31 +1295,12 @@ module Efficiency PhotonMediumID {
   # efficiency formula for photons
   set UseMomentumVector true
 
-    ### photon medium ID 
-
-  set EfficiencyFormula {
-
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.74) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.79) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.79) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (0.81) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.72) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.75) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.82) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (0.78) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.62) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.34) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.47) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (0.76) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 100.0 && pt <= 200.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_PHOTON_MEDIUMID_EFFICIENCY
+  set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
+                           (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 4.0)                                   * (0.00)}
+  ## ENDDUMMY_PHOTON_MEDIUMID_EFFICIENCY
 
 }
 
@@ -1469,31 +1319,12 @@ module Efficiency PhotonTightID {
   # efficiency formula for photons
   set UseMomentumVector true
 
-    ### photon tight ID 
-
-  set EfficiencyFormula {
-
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.59) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.66) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.64) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (0.64) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.56) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.7) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.77) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (0.7) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.47) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.36) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.49) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (0.73) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 100.0 && pt <= 200.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_PHOTON_TIGHTID_EFFICIENCY
+  set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
+                           (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 4.0)                                   * (0.00)}
+  ## ENDDUMMY_PHOTON_TIGHTID_EFFICIENCY
 
 }
 
@@ -1527,22 +1358,9 @@ module EnergyScale ElectronScale {
   set InputArray ElectronIsolation/electrons
   set OutputArray electrons
 
-    ### electron looseIDISO momentum scale
-  set ScaleFormula {
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (0.92) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0 && pt <= 14000.0) * (1.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (1.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (1.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (1.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.98) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (1.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (1.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (1.4) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (0.98)  
-  }
+  ## DUMMY_ELECTRON_SCALE
+  set ScaleFormula {1.00}
+  ## ENDDUMMY_ELECTRON_SCALE
 
 }
 
@@ -1555,22 +1373,9 @@ module MomentumSmearing ElectronSmear {
   set InputArray ElectronScale/electrons
   set OutputArray electrons
 
-    ### electron looseIDISO momentum resolution
-  set ResolutionFormula {
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.024) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.0088) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.049) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (1e-06) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0 && pt <= 14000.0) * (1e-06) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.053) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.033) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (0.021) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.021) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.036) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (1e-06) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (0.069) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (0.019)  
-  }
+  ## DUMMY_ELECTRON_SMEAR
+  set ResolutionFormula {1.00e-10}
+  ## ENDDUMMY_ELECTRON_SMEAR
 
 }
 
@@ -1586,31 +1391,12 @@ module Efficiency ElectronLooseEfficiency {
   set OutputArray electrons
   set UseMomentumVector true
 
-    ### electron loose ID 
-
-  set EfficiencyFormula {
-
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.88) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.94) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.94) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (0.88) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.8) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.86) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (0.85) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.8) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.26) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.67) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (0.45) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 100.0 && pt <= 200.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_ELECTRON_LOOSEID_EFFICIENCY
+  set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
+                           (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 4.0)                                   * (0.00)}
+  ## ENDDUMMY_ELECTRON_LOOSEID_EFFICIENCY
 
 
 }
@@ -1625,31 +1411,12 @@ module Efficiency ElectronMediumEfficiency {
   set OutputArray electrons
   set UseMomentumVector true
 
-    ### electron medium ID 
-
-  set EfficiencyFormula {
-
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.81) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.92) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.94) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (0.84) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.67) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.76) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (0.73) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.6) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.26) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.65) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (0.46) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 100.0 && pt <= 200.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_ELECTRON_MEDIUMID_EFFICIENCY
+  set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
+                           (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 4.0)                                   * (0.00)}
+  ## ENDDUMMY_ELECTRON_MEDIUMID_EFFICIENCY
 }
 
 #######################
@@ -1662,31 +1429,12 @@ module Efficiency ElectronTightEfficiency {
   set OutputArray electrons
   set UseMomentumVector true
 
-    ### electron tight ID 
-
-  set EfficiencyFormula {
-
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.73) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.88) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.92) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (0.84) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.55) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.64) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 200.0) * (0.61) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 200.0 && pt <= 500.0) * (0.4) +
-   (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.26) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.61) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 200.0) * (0.37) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 100.0 && pt <= 200.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_ELECTRON_TIGHTID_EFFICIENCY
+  set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
+                           (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 4.0)                                   * (0.00)}
+  ## ENDDUMMY_ELECTRON_TIGHTID_EFFICIENCY
 }
 
 
@@ -1718,19 +1466,9 @@ module EnergyScale MuonScale {
   set InputArray MuonIsolation/muons
   set OutputArray muons
 
-    ### muon looseIDISO momentum scale
-  set ScaleFormula {
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (1.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 20.0 && pt <= 50.0) * (1.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 50.0 && pt <= 100.0) * (1.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 100.0 && pt <= 200.0) * (1.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 200.0 && pt <= 500.0) * (1.0) +
-   (abs(eta) > 2.8 && abs(eta) <= 5.0) * (pt > 20.0 && pt <= 50.0) * (1.0) +
-   (abs(eta) > 2.8 && abs(eta) <= 5.0) * (pt > 50.0 && pt <= 100.0) * (1.2)  
-  }
+  ## DUMMY_MUON_SCALE
+  set ScaleFormula {1.00}
+  ## ENDDUMMY_MUON_SCALE
 
 }
 
@@ -1744,19 +1482,9 @@ module MomentumSmearing MuonSmear {
   set InputArray MuonScale/muons
   set OutputArray muons
 
-    ### muon looseIDISO momentum resolution
-  set ResolutionFormula {
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.011) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.1) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.016) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (1e-06) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 20.0 && pt <= 50.0) * (0.00079) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 50.0 && pt <= 100.0) * (0.019) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 100.0 && pt <= 200.0) * (0.019) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 200.0 && pt <= 500.0) * (0.099) +
-   (abs(eta) > 2.8 && abs(eta) <= 5.0) * (pt > 20.0 && pt <= 50.0) * (0.082) +
-   (abs(eta) > 2.8 && abs(eta) <= 5.0) * (pt > 50.0 && pt <= 100.0) * (0.074)  
-  }
+  ## DUMMY_MUON_SMEAR
+  set ResolutionFormula {1.e-10}
+  ## ENDDUMMY_MUON_SMEAR
 
 }
 
@@ -1770,26 +1498,12 @@ module Efficiency MuonLooseIdEfficiency {
     set OutputArray muons
     set UseMomentumVector true
     
-      ### muon loose ID 
-
-  set EfficiencyFormula {
-
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.99) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 20.0 && pt <= 50.0) * (0.99) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 50.0 && pt <= 100.0) * (0.99) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 100.0 && pt <= 200.0) * (0.99) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 2.8) * (pt > 20.0 && pt <= 50.0) * (0.00032) +
-   (abs(eta) > 2.8) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-   (abs(eta) > 2.8) * (pt > 100.0 && pt <= 200.0) * (0.0) +
-   (abs(eta) > 2.8) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 2.8) * (pt > 500.0) * (0.0)  
-  }
+    ## DUMMY_MUON_LOOSEID_EFFICIENCY
+    set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
+                           (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 4.0)                                   * (0.00)}
+    ## ENDDUMMY_MUON_LOOSEID_EFFICIENCY
 }
 
 ##################
@@ -1802,26 +1516,12 @@ module Efficiency MuonMediumIdEfficiency {
     set OutputArray muons
     set UseMomentumVector true
 
-      ### muon medium ID 
-
-  set EfficiencyFormula {
-
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.99) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.99) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (1.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 20.0 && pt <= 50.0) * (0.99) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 50.0 && pt <= 100.0) * (0.99) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 100.0 && pt <= 200.0) * (0.99) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 2.8) * (pt > 20.0 && pt <= 50.0) * (0.00032) +
-   (abs(eta) > 2.8) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-   (abs(eta) > 2.8) * (pt > 100.0 && pt <= 200.0) * (0.0) +
-   (abs(eta) > 2.8) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 2.8) * (pt > 500.0) * (0.0)  
-  }
+    ## DUMMY_MUON_MEDIUMID_EFFICIENCY
+    set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
+                           (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 4.0)                                   * (0.00)}
+    ## ENDDUMMY_MUON_MEDIUMID_EFFICIENCY
 }
 
 ##################
@@ -1833,26 +1533,12 @@ module Efficiency MuonTightIdEfficiency {
     set OutputArray muons
     set UseMomentumVector true
 
-      ### muon tight ID 
-
-  set EfficiencyFormula {
-
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.82) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.88) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 200.0) * (0.97) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 200.0 && pt <= 500.0) * (0.92) +
-   (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 20.0 && pt <= 50.0) * (0.82) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 50.0 && pt <= 100.0) * (0.87) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 100.0 && pt <= 200.0) * (0.97) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 1.5 && abs(eta) <= 2.8) * (pt > 500.0) * (0.0) +
-   (abs(eta) > 2.8) * (pt > 20.0 && pt <= 50.0) * (0.0002) +
-   (abs(eta) > 2.8) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-   (abs(eta) > 2.8) * (pt > 100.0 && pt <= 200.0) * (0.0) +
-   (abs(eta) > 2.8) * (pt > 200.0 && pt <= 500.0) * (0.0) +
-   (abs(eta) > 2.8) * (pt > 500.0) * (0.0)  
-  }
+    ## DUMMY_MUON_TIGHTID_EFFICIENCY
+    set EfficiencyFormula {                      (pt <= 10.0) * (0.00) + \
+                           (abs(eta) <= 1.5) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 1.5 && abs(eta) <= 4.0) * (pt > 10.0)  * (1.0) + \
+         (abs(eta) > 4.0)                                   * (0.00)}
+    ## ENDDUMMY_MUON_TIGHTID_EFFICIENCY
 }
 
 
@@ -1891,65 +1577,17 @@ module BTagging BTaggingPUPPILoose {
 
   set BitNumber 0
 
-    add EfficiencyFormula {0} {
+  ## DUMMY_BTAG_LIGHTMISTAG_LOOSEID_DUMP
+  add EfficiencyFormula {0}      {0.1}
+  ## ENDDUMMY_BTAG_LIGHTMISTAG_LOOSEID_DUMP
 
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.12) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.065) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.036) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.089) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 20.0 && pt <= 50.0) * (0.11) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 50.0 && pt <= 100.0) * (0.055) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 100.0 && pt <= 500.0) * (0.048) +
-          (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 500.0) * (0.14) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.12) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.11) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.078) +
-          (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.48) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.6) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.5) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_BTAG_BTAG_LOOSEID_DUMP
+  add EfficiencyFormula {5}      {1.0}
+  ## ENDDUMMY_BTAG_BTAG_LOOSEID_DUMP
 
-    add EfficiencyFormula {5} {
-
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.78) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.84) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.84) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.84) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 20.0 && pt <= 50.0) * (0.79) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 50.0 && pt <= 100.0) * (0.83) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 100.0 && pt <= 500.0) * (0.83) +
-          (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 500.0) * (1.0) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.69) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.75) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.78) +
-          (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.7) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.73) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
-
-    add EfficiencyFormula {4} {
-
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.55) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.56) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.49) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.25) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 20.0 && pt <= 50.0) * (0.53) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 50.0 && pt <= 100.0) * (0.56) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 100.0 && pt <= 500.0) * (0.43) +
-          (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 500.0) * (0.5) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.4) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.46) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.39) +
-          (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.56) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.59) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_BTAG_CMISTAG_LOOSEID_DUMP
+  add EfficiencyFormula {4}      {1.0}
+  ## ENDDUMMY_BTAG_CMISTAG_LOOSEID_DUMP
 }
 
 module BTagging BTaggingPUPPIMedium {
@@ -1958,65 +1596,17 @@ module BTagging BTaggingPUPPIMedium {
 
   set BitNumber 1
 
-    add EfficiencyFormula {0} {
+  ## DUMMY_BTAG_LIGHTMISTAG_MEDIUMID_DUMP
+  add EfficiencyFormula {0}      {0.01}
+  ## ENDDUMMY_BTAG_LIGHTMISTAG_MEDIUMID_DUMP
 
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.013) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.0076) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.0054) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.028) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 20.0 && pt <= 50.0) * (0.011) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 50.0 && pt <= 100.0) * (0.0068) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 100.0 && pt <= 500.0) * (0.0069) +
-          (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 500.0) * (0.034) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0097) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.011) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0084) +
-          (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.00066) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.007) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_BTAG_BTAG_MEDIUMID_DUMP
+  add EfficiencyFormula {5}      {1.0}
+  ## ENDDUMMY_BTAG_BTAG_MEDIUMID_DUMP
 
-    add EfficiencyFormula {5} {
-
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.62) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.7) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.7) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.66) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 20.0 && pt <= 50.0) * (0.6) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 50.0 && pt <= 100.0) * (0.67) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 100.0 && pt <= 500.0) * (0.66) +
-          (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 500.0) * (1.0) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.46) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.51) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.57) +
-          (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.063) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
-
-    add EfficiencyFormula {4} {
-
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.24) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.21) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.19) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.088) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 20.0 && pt <= 50.0) * (0.21) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 50.0 && pt <= 100.0) * (0.21) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 100.0 && pt <= 500.0) * (0.17) +
-          (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 500.0) * (0.5) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.14) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.16) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.13) +
-          (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_BTAG_CMISTAG_MEDIUMID_DUMP
+  add EfficiencyFormula {4}      {1.0}
+  ## ENDDUMMY_BTAG_CMISTAG_MEDIUMID_DUMP
 }
 
 module BTagging BTaggingPUPPITight {
@@ -2025,65 +1615,17 @@ module BTagging BTaggingPUPPITight {
 
   set BitNumber 2
 
-    add EfficiencyFormula {0} {
+  ## DUMMY_BTAG_LIGHTMISTAG_TIGHTID_DUMP
+  add EfficiencyFormula {0}      {0.001}
+  ## ENDDUMMY_BTAG_LIGHTMISTAG_TIGHTID_DUMP
 
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.0017) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.00083) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.00082) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.013) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 20.0 && pt <= 50.0) * (0.0011) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 50.0 && pt <= 100.0) * (0.0006) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 100.0 && pt <= 500.0) * (0.0009) +
-          (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.00066) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.00099) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.00065) +
-          (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_BTAG_BTAG_TIGHTID_DUMP
+  add EfficiencyFormula {5}      {1.0}
+  ## ENDDUMMY_BTAG_BTAG_TIGHTID_DUMP
 
-    add EfficiencyFormula {5} {
-
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.44) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.54) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.54) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.48) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 20.0 && pt <= 50.0) * (0.42) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 50.0 && pt <= 100.0) * (0.49) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 100.0 && pt <= 500.0) * (0.5) +
-          (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 500.0) * (1.0) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.29) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.32) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.34) +
-          (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
-
-    add EfficiencyFormula {4} {
-
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.048) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.038) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.043) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.035) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 20.0 && pt <= 50.0) * (0.041) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 50.0 && pt <= 100.0) * (0.039) +
-         (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 100.0 && pt <= 500.0) * (0.026) +
-          (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.037) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.049) +
-         (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.074) +
-          (abs(eta) > 2.5 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_BTAG_CMISTAG_TIGHTID_DUMP
+  add EfficiencyFormula {4}      {1.0}
+  ## ENDDUMMY_BTAG_CMISTAG_TIGHTID_DUMP
 
 }
 
@@ -2152,85 +1694,21 @@ module TauTagging TauTaggingPUPPILoose {
 
   set BitNumber 0
 
-    add EfficiencyFormula {0} {
+  ## DUMMY_TAUTAG_LIGHTMISTAG_LOOSEID_DUMP
+  add EfficiencyFormula {0}      {0.1}
+  ## ENDDUMMY_TAUTAG_LIGHTMISTAG_LOOSEID_DUMP
 
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.016) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.023) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.0049) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.0068) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.021) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 500.0) * (0.026) +
-          (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0023) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0013) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_TAUTAG_ELECMISTAG_LOOSEID_DUMP
+  add EfficiencyFormula {11}      {0.1}
+  ## ENDDUMMY_TAUTAG_ELECMISTAG_LOOSEID_DUMP
 
-    add EfficiencyFormula {11} {
+  ## DUMMY_TAUTAG_MUONMISTAG_LOOSEID_DUMP
+  add EfficiencyFormula {13}      {0.1}
+  ## ENDDUMMY_TAUTAG_MUONMISTAG_LOOSEID_DUMP
 
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.091) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.042) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.044) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.081) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.055) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 500.0) * (0.05) +
-          (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0029) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0025) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
-
-    add EfficiencyFormula {13} {
-
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.0046) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.0024) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.0017) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.0024) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.00053) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.00018) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
-
-    add EfficiencyFormula {15} {
-
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.47) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.62) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.62) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.46) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.27) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.47) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 500.0) * (0.48) +
-          (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.005) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0099) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.026) +
-          (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_TAUTAG_TAUTAG_LOOSEID_DUMP
+  add EfficiencyFormula {15}      {1.0}
+  ## ENDDUMMY_TAUTAG_TAUTAG_LOOSEID_DUMP
 
 }
 
@@ -2242,86 +1720,22 @@ module TauTagging TauTaggingPUPPIMedium {
 
   set BitNumber 1
 
-    add EfficiencyFormula {0} {
+  ## DUMMY_TAUTAG_LIGHTMISTAG_MEDIUMID_DUMP
+  add EfficiencyFormula {0}      {0.1}
+  ## ENDDUMMY_TAUTAG_LIGHTMISTAG_MEDIUMID_DUMP
 
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.0072) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.011) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.0035) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.0031) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.0083) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 500.0) * (0.019) +
-          (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.00013) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_TAUTAG_ELECMISTAG_MEDIUMID_DUMP
+  add EfficiencyFormula {11}      {0.1}
+  ## ENDDUMMY_TAUTAG_ELECMISTAG_MEDIUMID_DUMP
 
-    add EfficiencyFormula {11} {
-
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.075) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.036) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.034) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.048) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.034) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 500.0) * (0.041) +
-          (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (8.3e-05) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0005) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
-
-    add EfficiencyFormula {13} {
-
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.0034) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.0018) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.0017) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.0017) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_TAUTAG_MUONMISTAG_MEDIUMID_DUMP
+  add EfficiencyFormula {13}      {0.1}
+  ## ENDDUMMY_TAUTAG_MUONMISTAG_MEDIUMID_DUMP
 
 
-    add EfficiencyFormula {15} {
-
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.39) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.52) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.52) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.25) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.21) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.39) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 500.0) * (0.41) +
-          (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.00074) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0049) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_TAUTAG_TAUTAG_MEDIUMID_DUMP
+  add EfficiencyFormula {15}      {1.0}
+  ## ENDDUMMY_TAUTAG_TAUTAG_MEDIUMID_DUMP
 }
 
 module TauTagging TauTaggingPUPPITight {
@@ -2332,85 +1746,21 @@ module TauTagging TauTaggingPUPPITight {
 
   set BitNumber 2
 
-    add EfficiencyFormula {0} {
+  ## DUMMY_TAUTAG_LIGHTMISTAG_TIGHTID_DUMP
+  add EfficiencyFormula {0}      {0.1}
+  ## ENDDUMMY_TAUTAG_LIGHTMISTAG_TIGHTID_DUMP
 
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.004) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.0067) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.0032) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.002) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.0045) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 500.0) * (0.012) +
-          (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_TAUTAG_ELECMISTAG_TIGHTID_DUMP
+  add EfficiencyFormula {11}      {0.1}
+  ## ENDDUMMY_TAUTAG_ELECMISTAG_TIGHTID_DUMP
 
-    add EfficiencyFormula {11} {
+  ## DUMMY_TAUTAG_MUONMISTAG_TIGHTID_DUMP
+  add EfficiencyFormula {13}      {0.1}
+  ## ENDDUMMY_TAUTAG_MUONMISTAG_TIGHTID_DUMP
 
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.058) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.029) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.027) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.03) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.021) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 500.0) * (0.027) +
-          (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (8.3e-05) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
-
-    add EfficiencyFormula {13} {
-
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.0026) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.0013) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.0017) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.0012) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
-
-    add EfficiencyFormula {15} {
-
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 20.0 && pt <= 50.0) * (0.31) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 50.0 && pt <= 100.0) * (0.43) +
-         (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 100.0 && pt <= 500.0) * (0.43) +
-          (abs(eta) > 0.0 && abs(eta) <= 1.5) * (pt > 500.0) * (0.14) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 20.0 && pt <= 50.0) * (0.16) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 50.0 && pt <= 100.0) * (0.31) +
-         (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 100.0 && pt <= 500.0) * (0.33) +
-          (abs(eta) > 1.5 && abs(eta) <= 3.0) * (pt > 500.0) * (0.0) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 20.0 && pt <= 50.0) * (0.00019) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0039) +
-         (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 3.0 && abs(eta) <= 4.0) * (pt > 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 20.0 && pt <= 50.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 50.0 && pt <= 100.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 100.0 && pt <= 500.0) * (0.0) +
-          (abs(eta) > 4.0) * (pt > 500.0) * (0.0)  
-  }
+  ## DUMMY_TAUTAG_TAUTAG_TIGHTID_DUMP
+  add EfficiencyFormula {15}      {1.0}
+  ## ENDDUMMY_TAUTAG_TAUTAG_TIGHTID_DUMP
 
 }
 
