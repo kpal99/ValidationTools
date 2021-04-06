@@ -278,7 +278,7 @@ def main():
     parser.add_option('-q', '--qcdpath',
                       dest='qcdpath',
                       help='path for QCD histo file [%default]',
-                      default='QCD-logy/',
+                      default='QCD/',
                       type='string')
     parser.add_option('-a', '--taupath',
                       dest='taupath',
@@ -294,7 +294,8 @@ def main():
     elmupath = opt.elmupath
     gammapath = opt.gammapath
     taupath = opt.taupath
-    elmupath_logy = "ElMu-logy/"
+    elmupath_logy = "ElMu_logy/"
+    qcdpath_logy = "QCD_logy/"
 
     if not os.path.exists(printoutdir):
         os.system('mkdir -p %s' % printoutdir)
@@ -322,13 +323,12 @@ def main():
     """.split("\n"))
 
     global plots_list
-    plots_list = os.listdir(ttbarpath)
-
     global path
 
     # Jetpuppi
-    path = ttbarpath
-    os.system('cd {}'.format(path))
+    plots_list = os.listdir(qcdpath)
+    path = qcdpath
+    os.system('cd {}'.format(qcdpath))
     tex_lines += "\n" + r"\section{Jetpuppi}" + \
         "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
@@ -358,8 +358,8 @@ def main():
     tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'electron', 'pt', 'tightID')
 
-    plots_list = os.listdir(qcdpath)
-    path = qcdpath
+    plots_list = os.listdir(qcdpath_logy)
+    path = qcdpath_logy
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseID')
@@ -386,8 +386,8 @@ def main():
     tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
 
-    plots_list = os.listdir(qcdpath)
-    path = qcdpath
+    plots_list = os.listdir(qcdpath_logy)
+    path = qcdpath_logy
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseID')
@@ -414,8 +414,8 @@ def main():
     tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'photon', 'pt', 'tightID')
 
-    plots_list = os.listdir(qcdpath)
-    path = qcdpath
+    plots_list = os.listdir(qcdpath_logy)
+    path = qcdpath_logy
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseID')
@@ -437,9 +437,6 @@ def main():
     tex_lines += texoutput('tautagRate', 'tau', 'pt', 'mediumID')
     tex_lines += texoutput('tautagRate', 'tau', 'pt', 'tightID')
 
-    plots_list = os.listdir(qcdpath)
-    path = qcdpath
-    os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Tau Light MisTag Rate}"
     tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'looseID')
     tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'mediumID')
@@ -447,6 +444,14 @@ def main():
     tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'looseID')
     tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'mediumID')
     tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{Tau Muon MisTag Rate}"
+    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'looseID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'mediumID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'tightID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'looseID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'mediumID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
 
     plots_list = os.listdir(elmupath_logy)
     path = elmupath_logy
@@ -458,14 +463,6 @@ def main():
     tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'looseID')
     tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'mediumID')
     tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'tightID')
-
-    tex_lines += "\n" + r"\subsection{Tau Muon MisTag Rate}"
-    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'looseID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'mediumID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'tightID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'looseID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'mediumID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
 
     # Btag
     plots_list = os.listdir(ttbarpath)
@@ -479,8 +476,8 @@ def main():
     tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'mediumID')
     tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'tightID')
 
-    plots_list = os.listdir(qcdpath)
-    path = qcdpath
+    plots_list = os.listdir(qcdpath_logy)
+    path = qcdpath_logy
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Btag Light MisTag Rate}"
     tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'looseID')
