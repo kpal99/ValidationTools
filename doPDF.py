@@ -145,7 +145,7 @@ def add_figures(figure_dict):
     tex_line = "\n"
     for i, figure in enumerate(figure_dict):
         if plt == 'resolution':
-            if i != 0 and i % 5 == 0:  # and object_ != 'muon':
+            if i != 0 and i % 5 == 0:
                 tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
                 tex_line += "\n" + \
                     beginFrame(" cont'd")
