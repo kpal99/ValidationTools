@@ -29,10 +29,7 @@ def get_mean_and_sigma(theHist, wmin=0.2, wmax=1.8, step=0.001, epsilon=0.007):
     for i in range(theHist.GetNbinsX()):
         weight += theHist.GetBinContent(i)
         if weight > epsilon:
-            try: # to prevent from stopping by the zerodivision error by the plots that have small statistics
-                points.append([theHist.GetBinCenter(i), weight/thesum])
-            except:
-                continue
+            points.append([theHist.GetBinCenter(i), weight/thesum])
     low = wmin
     high = wmax
 
@@ -198,8 +195,8 @@ for name in hist_names:
         hf.Draw("colz texte")
         canv.Print(printoutdir+"/"+canv_name+"_fullsim.png")
     else:
-        # canv.SetLogy()  # 1d plot logy -wz
-        # canv_name += '_logy' # 1d plot logy -wz
+        if "fakerate" in name or "MistagRate" in name:
+            canv.SetLogy()  # 1d plot logy -wz
         hf.SetLineColor(rt.kBlue)
         hf.SetMarkerStyle(21)
         hf.SetMarkerColor(rt.kBlue)
