@@ -135,7 +135,7 @@ def subfigure(figure, caption):
     if caption == '':
         caption = 'no bin'
 
-    tex_line += caption
+    tex_line += r"\text{" + caption + r"}"
     tex_line += "}\n" + r"\end{subfigure}" + "\n" + r"\hfil"
     return tex_line
 
