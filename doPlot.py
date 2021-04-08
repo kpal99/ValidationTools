@@ -190,10 +190,10 @@ for name in hist_names:
                 hd.GetXaxis().SetRange(1, hd.GetNbinsX()-1)
                 hf.GetXaxis().SetRange(1, hf.GetNbinsX()-1)
         hd.Draw("colz texte")
-        canv.Print(printoutdir+"/"+canv_name+"_delphes.png")
+        canv.Print(printoutdir+"/"+canv_name+"_delphes.pdf")
         hf.SetStats(rt.kFALSE)
         hf.Draw("colz texte")
-        canv.Print(printoutdir+"/"+canv_name+"_fullsim.png")
+        canv.Print(printoutdir+"/"+canv_name+"_fullsim.pdf")
     else:
         if "fakerate" in name or "MistagRate" in name:
             canv.SetLogy()  # 1d plot logy -wz
@@ -270,7 +270,7 @@ for name in hist_names:
         legend.AddEntry(hd, "Delphes", "l")
         legend.AddEntry(hf, "FullSim", "l")
         legend.Draw()
-        canv.Print(printoutdir + "/" + canv_name + ".png")
+        canv.Print(printoutdir + "/" + canv_name + ".pdf")
 
 if dumptcl:
 
