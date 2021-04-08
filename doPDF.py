@@ -149,14 +149,6 @@ def add_figures(figure_dict):
                 tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
                 tex_line += "\n" + \
                     beginFrame(" cont'd")
-        #     if i == 9 and object_ == 'electron':
-        #         tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
-        #         tex_line += "\n" + \
-        #             beginFrame(" cont'd")
-        #     if object_ == 'muon' and i == 4:
-        #         tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
-        #         tex_line += "\n" + \
-        #             beginFrame(" cont'd")
         tex_line += subfigure(figure_dict[figure],
                               str(figure).strip("'[]")) + "\n"
     tex_line += r"\end{figure}"
