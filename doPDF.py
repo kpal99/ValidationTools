@@ -20,7 +20,7 @@ def cutName(name, plt_type):
         cut_pattern = r"(\d+\w*\d*)"
     cut_name = r.findall(cut_pattern, name)
     cut_name_prop = [name.replace("p", ".").replace(
-        ".t", "pt").strip("_logy") for name in cut_name]
+        ".t", "pt") for name in cut_name]
     return cut_name_prop
 
 
@@ -256,9 +256,6 @@ def main():
     elmupath = parentpath+opt.elmupath
     gammapath = parentpath+opt.gammapath
     taupath = parentpath+opt.taupath
-    elmupath_logy = parentpath+"ELMu_logy/"
-    qcdpath_logy = parentpath+"QCD_logy/"
-    taupath_logy = parentpath+"TauTag_logy/"
 
     if not os.path.exists(printoutdir):
         os.system('mkdir -p %s' % printoutdir)
@@ -322,8 +319,8 @@ def main():
     tex_lines += texoutput('efficiency', 'electron', 'pt', 'mediumID')
     tex_lines += texoutput('efficiency', 'electron', 'pt', 'tightID')
 
-    plots_list = os.listdir(qcdpath_logy)
-    path = qcdpath_logy
+    plots_list = os.listdir(qcdpath)
+    path = qcdpath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseID')
@@ -354,8 +351,8 @@ def main():
     tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumID')
     tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightID')
 
-    plots_list = os.listdir(qcdpath_logy)
-    path = qcdpath_logy
+    plots_list = os.listdir(qcdpath)
+    path = qcdpath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseID')
@@ -385,8 +382,8 @@ def main():
     tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseID')
     tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumID')
     tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightID')
-    plots_list = os.listdir(qcdpath_logy)
-    path = qcdpath_logy
+    plots_list = os.listdir(qcdpath)
+    path = qcdpath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseID')
@@ -417,9 +414,6 @@ def main():
     tex_lines += texoutput('tautagRate', 'tau', 'pt', 'mediumID')
     tex_lines += texoutput('tautagRate', 'tau', 'pt', 'tightID')
 
-    plots_list = os.listdir(taupath_logy)
-    path = taupath_logy
-    os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Tau Light MisTag Rate}"
     tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'looseID')
     tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'mediumID')
@@ -436,8 +430,8 @@ def main():
     tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'mediumID')
     tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
 
-    plots_list = os.listdir(elmupath_logy)
-    path = elmupath_logy
+    plots_list = os.listdir(elmupath)
+    path = elmupath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Tau Electron MisTag Rate}"
     tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'looseID')
@@ -459,8 +453,8 @@ def main():
     tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'mediumID')
     tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'tightID')
 
-    plots_list = os.listdir(qcdpath_logy)
-    path = qcdpath_logy
+    plots_list = os.listdir(qcdpath)
+    path = qcdpath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Btag Light MisTag Rate}"
     tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'looseID')
