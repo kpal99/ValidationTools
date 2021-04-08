@@ -29,7 +29,10 @@ def get_mean_and_sigma(theHist, wmin=0.2, wmax=1.8, step=0.001, epsilon=0.007):
     for i in range(theHist.GetNbinsX()):
         weight += theHist.GetBinContent(i)
         if weight > epsilon:
-            points.append([theHist.GetBinCenter(i), weight/thesum])
+            try:
+                points.append([theHist.GetBinCenter(i), weight/thesum])
+            except:
+                continue
     low = wmin
     high = wmax
 
@@ -131,7 +134,7 @@ for name in hist_names:
     hd = inputFile_d.Get(name)
     hf = inputFile_f.Get(name)
 
-    # try: ## these 5 lines prevent plots that have small statistics to be plotted, we need them for the doPDF.py script, so they are commented out.
+    # try:
     #     test = hf.Integral()
     #     if test == 0: continue
     # except:
