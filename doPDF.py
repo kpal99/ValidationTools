@@ -214,7 +214,7 @@ def main():
     parser.add_option('-o', '--outDir',
                       dest='printoutdir',
                       help='output directory for PDF file [%default]',
-                      default='Plots/',
+                      default='pdfOutput/',
                       type='string')
     parser.add_option('-t', '--ttbarpath',
                       dest='ttbarpath',
@@ -236,12 +236,12 @@ def main():
                       help='path for QCD histo file [%default]',
                       default='QCD/',
                       type='string')
-    parser.add_option('-a', '--taupath',
+    parser.add_option('--taupath',
                       dest='taupath',
                       help='path for QCD histo file [%default]',
                       default='TauTag/',
                       type='string')
-    parser.add_option('-p', '--parentpath',
+    parser.add_option('--parentpath',
                       dest='parentpath',
                       help='parent path for all the plot directories [%default]',
                       default='/eos/cms/store/group/upgrade/RTB//ValidationPlots/fullsim_Iter6_delphes_343pre07_v09/',
@@ -258,9 +258,9 @@ def main():
     taupath = parentpath+opt.taupath
 
     if not os.path.exists(printoutdir):
-        os.system('mkdir -p %s' % printoutdir)
+        os.system('mkdir -p {}'.format(printoutdir))
 
-    os.system('touch %s/validation_plots.tex' % printoutdir)
+    os.system('touch {}/validation_plots.tex'.format(printoutdir))
 
     tex_lines = "\n".join("{}".format(ln) for ln in
                           r"""\documentclass[8pt]{beamer}
@@ -476,9 +476,11 @@ def main():
 
     with open(printoutdir+'validation_plots.tex', 'w') as tex_output:
         tex_output.write(tex_lines)
-    os.system("cd {}".format(printoutdir))
-    os.system('pdflatex %svalidation_plots.tex' % printoutdir)
+    print("\n {}validation_plots.tex file is created!\n".format(printoutdir))
 
+    os.system('pdflatex --interaction=batchmode {}/validation_plots.tex 2>&1 > /dev/null'.format(printoutdir))
+
+    print("\n validation_plots.pdf generated!")
 
 if __name__ == "__main__":
     main()
