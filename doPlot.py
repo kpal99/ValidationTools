@@ -87,6 +87,10 @@ parser.add_option('-i', '--useIso',
                   dest='useIso',
                   default=False,
                   help='true/false multiply by iso ratio in tcl file')
+parser.add_option('--outFormat',
+                  dest='outFormat',
+                  default="png",
+                  help='file format for output plots')
 
 (opt, args) = parser.parse_args()
 
@@ -95,6 +99,7 @@ inFileF = opt.inFileF
 printoutdir = opt.printoutdir
 dumptcl = opt.dumptcl
 useIso = opt.useIso
+outFormat = opt.outFormat
 
 if not os.path.exists(printoutdir):
     os.system('mkdir -p %s' % printoutdir)
@@ -193,10 +198,10 @@ for name in hist_names:
                 hd.GetXaxis().SetRange(1, hd.GetNbinsX()-1)
                 hf.GetXaxis().SetRange(1, hf.GetNbinsX()-1)
         hd.Draw("colz texte")
-        canv.Print(printoutdir+"/"+canv_name+"_delphes.pdf")
+        canv.Print(printoutdir+"/"+canv_name+"_delphes."+outFormat)
         hf.SetStats(rt.kFALSE)
         hf.Draw("colz texte")
-        canv.Print(printoutdir+"/"+canv_name+"_fullsim.pdf")
+        canv.Print(printoutdir+"/"+canv_name+"_fullsim."+outFormat)
     else:
         if "fakerate" in name or "MistagRate" in name:
             canv.SetLogy()  # 1d plot logy -wz
@@ -273,7 +278,7 @@ for name in hist_names:
         legend.AddEntry(hd, "Delphes", "l")
         legend.AddEntry(hf, "FullSim", "l")
         legend.Draw()
-        canv.Print(printoutdir + "/" + canv_name + ".pdf")
+        canv.Print(printoutdir + "/" + canv_name + "." + outFormat)
 
 if dumptcl:
 
