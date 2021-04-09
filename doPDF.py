@@ -230,12 +230,8 @@ def texoutput(plt_type, obj, var, wp, plot2D=False):
                 name_list = sorted(name_list.items(),
                                    key=operator.itemgetter(1))
             name_list = collections.OrderedDict(name_list)
-    if plt_type == 'resolution':
-        name_list = sorter(name_list)
-    if plt_type != "resolution":
-        if var == "eta":
-            name_list.move_to_end("['50to100']", last=False)
-            name_list.move_to_end("['20to50']", last=False)
+    # if plt_type == 'resolution':
+    #     name_list = sorter(name_list)
     if len(name_list) > 6:
         tex_line += add_figures(name_list)
     else:
@@ -335,182 +331,182 @@ def main():
     os.system('cd {}'.format(qcdpath))
     tex_lines += "\n" + r"\section{Jetpuppi}" + \
         "\n" + r"\subsection{Efficiency}"
-    # tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
-    # tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
-    # tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
-    # tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
-    # tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'reco')
-    # tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'reco')
-    # tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
-    # tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
-    # tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'reco')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'reco')
+    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
     tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'jetpuppi', 'pt', 'tightID')
 
-    # # Electron
-    # plots_list = os.listdir(elmupath)
-    # path = elmupath
-    # os.system('cd {}'.format(path))
-    # tex_lines += r"\section{Electron}" + "\n" + r"\subsection{Efficiency}"
-    # tex_lines += texoutput('efficiency', 'electron', 'eta', 'looseID')
-    # tex_lines += texoutput('efficiency', 'electron', 'eta', 'mediumID')
-    # tex_lines += texoutput('efficiency', 'electron', 'eta', 'tightID')
-    # tex_lines += texoutput('efficiency', 'electron', 'pt', 'looseID')
-    # tex_lines += texoutput('efficiency', 'electron', 'pt', 'mediumID')
-    # tex_lines += texoutput('efficiency', 'electron', 'pt', 'tightID')
+    # Electron
+    plots_list = os.listdir(elmupath)
+    path = elmupath
+    os.system('cd {}'.format(path))
+    tex_lines += r"\section{Electron}" + "\n" + r"\subsection{Efficiency}"
+    tex_lines += texoutput('efficiency', 'electron', 'eta', 'looseID')
+    tex_lines += texoutput('efficiency', 'electron', 'eta', 'mediumID')
+    tex_lines += texoutput('efficiency', 'electron', 'eta', 'tightID')
+    tex_lines += texoutput('efficiency', 'electron', 'pt', 'looseID')
+    tex_lines += texoutput('efficiency', 'electron', 'pt', 'mediumID')
+    tex_lines += texoutput('efficiency', 'electron', 'pt', 'tightID')
 
-    # plots_list = os.listdir(qcdpath)
-    # path = qcdpath
-    # os.system('cd {}'.format(path))
-    # tex_lines += "\n" + r"\subsection{Fakerate}"
-    # tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseID')
-    # tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumID')
-    # tex_lines += texoutput('fakerate', 'electron', 'eta', 'tightID')
-    # tex_lines += texoutput('fakerate', 'electron', 'pt', 'looseID')
-    # tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumID')
-    # tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightID')
+    plots_list = os.listdir(qcdpath)
+    path = qcdpath
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\subsection{Fakerate}"
+    tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseID')
+    tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumID')
+    tex_lines += texoutput('fakerate', 'electron', 'eta', 'tightID')
+    tex_lines += texoutput('fakerate', 'electron', 'pt', 'looseID')
+    tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumID')
+    tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightID')
 
-    # plots_list = os.listdir(elmupath)
-    # path = elmupath
-    # os.system('cd {}'.format(path))
-    # tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
-    # tex_lines += texoutput('ptresponse', 'electron', 'eta', 'tightID')
-    # tex_lines += texoutput('ptresponse', 'electron', 'pt', 'tightID')
-    # tex_lines += "\n" + r"\subsection{Resolution}"
-    # tex_lines += texoutput('resolution', 'electron', 'pt', 'tightID')
+    plots_list = os.listdir(elmupath)
+    path = elmupath
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
+    tex_lines += texoutput('ptresponse', 'electron', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'electron', 'pt', 'tightID')
+    tex_lines += "\n" + r"\subsection{Resolution}"
+    tex_lines += texoutput('resolution', 'electron', 'pt', 'tightID')
 
-    # # Muon
-    # plots_list = os.listdir(elmupath)
-    # path = elmupath
-    # os.system('cd {}'.format(path))
-    # tex_lines += r"\section{Muon}" + "\n" + r"\subsection{Efficiency}"
-    # tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseID')
-    # tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumID')
-    # tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightID')
-    # tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseID')
-    # tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumID')
-    # tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightID')
+    # Muon
+    plots_list = os.listdir(elmupath)
+    path = elmupath
+    os.system('cd {}'.format(path))
+    tex_lines += r"\section{Muon}" + "\n" + r"\subsection{Efficiency}"
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseID')
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumID')
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightID')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseID')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumID')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightID')
 
-    # plots_list = os.listdir(qcdpath)
-    # path = qcdpath
-    # os.system('cd {}'.format(path))
-    # tex_lines += "\n" + r"\subsection{Fakerate}"
-    # tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseID')
-    # tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumID')
-    # tex_lines += texoutput('fakerate', 'muon', 'eta', 'tightID')
-    # tex_lines += texoutput('fakerate', 'muon', 'pt', 'looseID')
-    # tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumID')
-    # tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightID')
+    plots_list = os.listdir(qcdpath)
+    path = qcdpath
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\subsection{Fakerate}"
+    tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseID')
+    tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumID')
+    tex_lines += texoutput('fakerate', 'muon', 'eta', 'tightID')
+    tex_lines += texoutput('fakerate', 'muon', 'pt', 'looseID')
+    tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumID')
+    tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightID')
 
-    # plots_list = os.listdir(elmupath)
-    # path = elmupath
-    # os.system('cd {}'.format(path))
-    # tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
-    # tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
-    # tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
-    # tex_lines += "\n" + r"\subsection{Resolution}"
-    # tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
+    plots_list = os.listdir(elmupath)
+    path = elmupath
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
+    tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
+    tex_lines += "\n" + r"\subsection{Resolution}"
+    tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
 
-    # # Photon
-    # plots_list = os.listdir(gammapath)
-    # path = gammapath
-    # os.system('cd {}'.format(path))
-    # tex_lines += r"\section{Photon}" + "\n" + r"\subsection{Efficiency}"
-    # tex_lines += texoutput('efficiency', 'photon', 'eta', 'looseID')
-    # tex_lines += texoutput('efficiency', 'photon', 'eta', 'mediumID')
-    # tex_lines += texoutput('efficiency', 'photon', 'eta', 'tightID')
-    # tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseID')
-    # tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumID')
-    # tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightID')
-    # plots_list = os.listdir(qcdpath)
-    # path = qcdpath
-    # os.system('cd {}'.format(path))
-    # tex_lines += "\n" + r"\subsection{Fakerate}"
-    # tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseID')
-    # tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumID')
-    # tex_lines += texoutput('fakerate', 'photon', 'eta', 'tightID')
-    # tex_lines += texoutput('fakerate', 'photon', 'pt', 'looseID')
-    # tex_lines += texoutput('fakerate', 'photon', 'pt', 'mediumID')
-    # tex_lines += texoutput('fakerate', 'photon', 'pt', 'tightID')
+    # Photon
+    plots_list = os.listdir(gammapath)
+    path = gammapath
+    os.system('cd {}'.format(path))
+    tex_lines += r"\section{Photon}" + "\n" + r"\subsection{Efficiency}"
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'looseID')
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'mediumID')
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'tightID')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseID')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumID')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightID')
+    plots_list = os.listdir(qcdpath)
+    path = qcdpath
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\subsection{Fakerate}"
+    tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseID')
+    tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumID')
+    tex_lines += texoutput('fakerate', 'photon', 'eta', 'tightID')
+    tex_lines += texoutput('fakerate', 'photon', 'pt', 'looseID')
+    tex_lines += texoutput('fakerate', 'photon', 'pt', 'mediumID')
+    tex_lines += texoutput('fakerate', 'photon', 'pt', 'tightID')
 
-    # plots_list = os.listdir(gammapath)
-    # path = gammapath
-    # os.system('cd {}'.format(path))
-    # tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
-    # tex_lines += texoutput('ptresponse', 'photon', 'eta', 'tightID')
-    # tex_lines += texoutput('ptresponse', 'photon', 'pt', 'tightID')
-    # tex_lines += "\n" + r"\subsection{Resolution}"
-    # tex_lines += texoutput('resolution', 'photon', 'pt', 'tightID')
+    plots_list = os.listdir(gammapath)
+    path = gammapath
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
+    tex_lines += texoutput('ptresponse', 'photon', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'photon', 'pt', 'tightID')
+    tex_lines += "\n" + r"\subsection{Resolution}"
+    tex_lines += texoutput('resolution', 'photon', 'pt', 'tightID')
 
-    # # Tau
-    # plots_list = os.listdir(taupath)
-    # path = taupath
-    # os.system('cd {}'.format(path))
-    # tex_lines += r"\section{Tau}" + "\n" + r"\subsection{Efficiency}"
-    # tex_lines += texoutput('tautagRate', 'tau', 'eta', 'looseID')
-    # tex_lines += texoutput('tautagRate', 'tau', 'eta', 'mediumID')
-    # tex_lines += texoutput('tautagRate', 'tau', 'eta', 'tightID')
-    # tex_lines += texoutput('tautagRate', 'tau', 'pt', 'looseID')
-    # tex_lines += texoutput('tautagRate', 'tau', 'pt', 'mediumID')
-    # tex_lines += texoutput('tautagRate', 'tau', 'pt', 'tightID')
+    # Tau
+    plots_list = os.listdir(taupath)
+    path = taupath
+    os.system('cd {}'.format(path))
+    tex_lines += r"\section{Tau}" + "\n" + r"\subsection{Efficiency}"
+    tex_lines += texoutput('tautagRate', 'tau', 'eta', 'looseID')
+    tex_lines += texoutput('tautagRate', 'tau', 'eta', 'mediumID')
+    tex_lines += texoutput('tautagRate', 'tau', 'eta', 'tightID')
+    tex_lines += texoutput('tautagRate', 'tau', 'pt', 'looseID')
+    tex_lines += texoutput('tautagRate', 'tau', 'pt', 'mediumID')
+    tex_lines += texoutput('tautagRate', 'tau', 'pt', 'tightID')
 
-    # tex_lines += "\n" + r"\subsection{Tau Light MisTag Rate}"
-    # tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'looseID')
-    # tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'mediumID')
-    # tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'tightID')
-    # tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'looseID')
-    # tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'mediumID')
-    # tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'tightID')
+    tex_lines += "\n" + r"\subsection{Tau Light MisTag Rate}"
+    tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'looseID')
+    tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'mediumID')
+    tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'tightID')
+    tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'looseID')
+    tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'mediumID')
+    tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'tightID')
 
-    # tex_lines += "\n" + r"\subsection{Tau Muon MisTag Rate}"
-    # tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'looseID')
-    # tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'mediumID')
-    # tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'tightID')
-    # tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'looseID')
-    # tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'mediumID')
-    # tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
+    tex_lines += "\n" + r"\subsection{Tau Muon MisTag Rate}"
+    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'looseID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'mediumID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'tightID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'looseID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'mediumID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
 
-    # plots_list = os.listdir(elmupath)
-    # path = elmupath
-    # os.system('cd {}'.format(path))
-    # tex_lines += "\n" + r"\subsection{Tau Electron MisTag Rate}"
-    # tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'looseID')
-    # tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'mediumID')
-    # tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'tightID')
-    # tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'looseID')
-    # tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'mediumID')
-    # tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'tightID')
+    plots_list = os.listdir(elmupath)
+    path = elmupath
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\subsection{Tau Electron MisTag Rate}"
+    tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'looseID')
+    tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'mediumID')
+    tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'tightID')
+    tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'looseID')
+    tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'mediumID')
+    tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'tightID')
 
-    # # Btag
-    # plots_list = os.listdir(ttbarpath)
-    # path = ttbarpath
-    # os.system('cd {}'.format(path))
-    # tex_lines += "\n" + r"\section{Btag}" + "\n" + r"\subsection{Efficiency}"
-    # tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'looseID')
-    # tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'mediumID')
-    # tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'tightID')
-    # tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'looseID')
-    # tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'mediumID')
-    # tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'tightID')
+    # Btag
+    plots_list = os.listdir(ttbarpath)
+    path = ttbarpath
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\section{Btag}" + "\n" + r"\subsection{Efficiency}"
+    tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'looseID')
+    tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'mediumID')
+    tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'mediumID')
+    tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'tightID')
 
-    # plots_list = os.listdir(qcdpath)
-    # path = qcdpath
-    # os.system('cd {}'.format(path))
-    # tex_lines += "\n" + r"\subsection{Btag Light MisTag Rate}"
-    # tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'looseID')
-    # tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'mediumID')
-    # tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'tightID')
-    # tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'looseID')
-    # tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'mediumID')
-    # tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'tightID')
+    plots_list = os.listdir(qcdpath)
+    path = qcdpath
+    os.system('cd {}'.format(path))
+    tex_lines += "\n" + r"\subsection{Btag Light MisTag Rate}"
+    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'looseID')
+    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'mediumID')
+    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'mediumID')
+    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'tightID')
 
-    # tex_lines += "\n" + r"\subsection{Btag c MisTag Rate}"
-    # tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'looseID')
-    # tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'mediumID')
-    # tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'tightID')
-    # tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'looseID')
-    # tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'mediumID')
-    # tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'tightID')
+    tex_lines += "\n" + r"\subsection{Btag c MisTag Rate}"
+    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'looseID')
+    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'mediumID')
+    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'mediumID')
+    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'tightID')
 
     tex_lines += "\n" + r"\end{document}"
 
