@@ -358,13 +358,21 @@ def main():
     plots_list = os.listdir(qcdpath)
     path = qcdpath
     os.system('cd {}'.format(path))
-    tex_lines += "\n" + r"\subsection{Fakerate}"
+    tex_lines += "\n" + r"\subsection{Fakerate reco*ID}"
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseID')
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumID')
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'tightID')
     tex_lines += texoutput('fakerate', 'electron', 'pt', 'looseID')
     tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumID')
     tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightID')
+    
+    tex_lines += "\n" + r"\subsection{Fakerate reco*ID*ISO}"
+    tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseIDISO')
+    tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumIDISO')
+    tex_lines += texoutput('fakerate', 'electron', 'eta', 'tightIDISO')
+    tex_lines += texoutput('fakerate', 'electron', 'pt', 'looseIDISO')
+    tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumIDISO')
+    tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightIDISO')
 
     plots_list = os.listdir(elmupath)
     path = elmupath
@@ -390,13 +398,21 @@ def main():
     plots_list = os.listdir(qcdpath)
     path = qcdpath
     os.system('cd {}'.format(path))
-    tex_lines += "\n" + r"\subsection{Fakerate}"
+    tex_lines += "\n" + r"\subsection{Fakerate reco*ID}"
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseID')
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumID')
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'tightID')
     tex_lines += texoutput('fakerate', 'muon', 'pt', 'looseID')
     tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumID')
     tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightID')
+    
+    tex_lines += "\n" + r"\subsection{Fakerate reco*ID*ISO}"
+    tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseIDISO')
+    tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumIDISO')
+    tex_lines += texoutput('fakerate', 'muon', 'eta', 'tightIDISO')
+    tex_lines += texoutput('fakerate', 'muon', 'pt', 'looseIDISO')
+    tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumIDISO')
+    tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightIDISO')
 
     plots_list = os.listdir(elmupath)
     path = elmupath
@@ -421,7 +437,7 @@ def main():
     plots_list = os.listdir(qcdpath)
     path = qcdpath
     os.system('cd {}'.format(path))
-    tex_lines += "\n" + r"\subsection{Fakerate}"
+    tex_lines += "\n" + r"\subsection{Fakerate reco*ID}"
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseID')
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumID')
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'tightID')
@@ -429,6 +445,13 @@ def main():
     tex_lines += texoutput('fakerate', 'photon', 'pt', 'mediumID')
     tex_lines += texoutput('fakerate', 'photon', 'pt', 'tightID')
 
+    tex_lines += "\n" + r"\subsection{Fakerate reco*ID*ISO}"
+    tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseIDISO')
+    tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumIDISO')
+    tex_lines += texoutput('fakerate', 'photon', 'eta', 'tightIDISO')
+    tex_lines += texoutput('fakerate', 'photon', 'pt', 'looseIDISO')
+    tex_lines += texoutput('fakerate', 'photon', 'pt', 'mediumIDISO')
+    tex_lines += texoutput('fakerate', 'photon', 'pt', 'tightIDISO')
     plots_list = os.listdir(gammapath)
     path = gammapath
     os.system('cd {}'.format(path))
