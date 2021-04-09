@@ -66,30 +66,39 @@ def eta_bin(caption):
 
 
 def sorter(dictt):
+    #print(dictt)
     pt_low_pattern = r"[p][t][_]\d+"
-    figure_dict = {}
+    batch = {}
+    batch0 = {}
+    batch1 = {}
+    batch2 = {}
+    batch3 = {}
+    batch4 = {}
+    batch_list = [batch0, batch1, batch2, batch3, batch4]
     for i, caption in enumerate(dictt):
-        #batch_str(i) = {}
         pt_low = remove_ch(
             str(r.findall(pt_low_pattern, caption))).lstrip("pt_")
         if i % 5 != 0 or i == 0:
             batch[int(remove_ch(str(pt_low)))] = [caption, dictt[caption]]
-        else:
             batch = sorted(batch.items(), key=operator.itemgetter(0))
             batch = collections.OrderedDict(batch)
-            figure_dict.update(batch)
+            div = i // 5
+            if div == 4:
+                batch_list[div].update(batch)
+        else:
+            batch_list[div].update(batch)
             batch = {}
             batch[int(remove_ch(str(pt_low)))] = [caption, dictt[caption]]
 
-    figure_dict = sorted(figure_dict.items(), key=operator.itemgetter(0))
-    figure_dict = collections.OrderedDict(figure_dict)
+    batch4 = sorted(batch4.items(), key=operator.itemgetter(0))
+    batch4 = collections.OrderedDict(batch4)
 
-    new_figure_dict = {}
-
+    figure_dict = []
+    figure_dict = [batch.values() for batch in batch_list]
     for figure in figure_dict:
-        new_figure_dict[figure_dict[figure][0]] = figure_dict[figure][1]
-    new_figure_dict = collections.OrderedDict(new_figure_dict)
-    return new_figure_dict
+        print(figure_dict[figure])
+
+    return figure_dict
 
 
 def res_bin_edit(caption):
@@ -509,8 +518,7 @@ def main():
         tex_output.write(tex_lines)
     print("\n {}validation_plots.tex file is created!\n".format(printoutdir))
 
-    os.system(
-        'pdflatex --interaction=batchmode {}/validation_plots.tex 2>&1 > /dev/null'.format(printoutdir))
+    os.system('pdflatex --interaction=batchmode {}/validation_plots.tex 2>&1 > /dev/null'.format(printoutdir))
 
     print("\n validation_plots.pdf generated!")
 
