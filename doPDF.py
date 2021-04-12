@@ -66,39 +66,33 @@ def eta_bin(caption):
 
 
 def sorter(dictt):
-    #print(dictt)
+    """Sort resolution plots."""
     pt_low_pattern = r"[p][t][_]\d+"
     batch = {}
-    batch0 = {}
-    batch1 = {}
-    batch2 = {}
-    batch3 = {}
-    batch4 = {}
-    batch_list = [batch0, batch1, batch2, batch3, batch4]
+    batch_list = []
+
+    for i in range(len(dictt) // 5):
+        batch_list.append({})
     for i, caption in enumerate(dictt):
         pt_low = remove_ch(
             str(r.findall(pt_low_pattern, caption))).lstrip("pt_")
-        if i % 5 != 0 or i == 0:
+        if i == 0 or i % 5 != 0:
             batch[int(remove_ch(str(pt_low)))] = [caption, dictt[caption]]
             batch = sorted(batch.items(), key=operator.itemgetter(0))
             batch = collections.OrderedDict(batch)
             div = i // 5
-            if div == 4:
+            if i + 1 == len(dictt):
                 batch_list[div].update(batch)
         else:
             batch_list[div].update(batch)
             batch = {}
             batch[int(remove_ch(str(pt_low)))] = [caption, dictt[caption]]
 
-    batch4 = sorted(batch4.items(), key=operator.itemgetter(0))
-    batch4 = collections.OrderedDict(batch4)
-
-    figure_dict = []
-    figure_dict = [batch.values() for batch in batch_list]
-    for figure in figure_dict:
-        print(figure_dict[figure])
-
-    return figure_dict
+    batched_dict = {}
+    for entry in batch_list:
+        for key in entry:
+            batched_dict[entry[key][0]] = entry[key][1]
+    return batched_dict
 
 
 def res_bin_edit(caption):
@@ -365,7 +359,7 @@ def main():
     tex_lines += texoutput('fakerate', 'electron', 'pt', 'looseID')
     tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumID')
     tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightID')
-    
+
     tex_lines += "\n" + r"\subsection{Fakerate reco*ID*ISO}"
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseIDISO')
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumIDISO')
@@ -405,7 +399,7 @@ def main():
     tex_lines += texoutput('fakerate', 'muon', 'pt', 'looseID')
     tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumID')
     tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightID')
-    
+
     tex_lines += "\n" + r"\subsection{Fakerate reco*ID*ISO}"
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseIDISO')
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumIDISO')
@@ -537,7 +531,8 @@ def main():
         tex_output.write(tex_lines)
     print("\n {}validation_plots.tex file is created!\n".format(printoutdir))
 
-    os.system('pdflatex --interaction=batchmode {}/validation_plots.tex 2>&1 > /dev/null'.format(printoutdir))
+    os.system(
+        'pdflatex --interaction=batchmode {}/validation_plots.tex 2>&1 > /dev/null'.format(printoutdir))
 
     print("\n validation_plots.pdf generated!")
 
