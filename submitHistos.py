@@ -87,7 +87,8 @@ FullsimPaths = [
         # FullsimDir2+'QCD_Pt_50to80_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1_ext1-v3_GEN-SIM-DIGI-RAW-MINIAOD',
         # FullsimDir2+'QCD_Pt_600oInf_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
         # FullsimDir2+'QCD_Pt_80to120_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        # FullsimDir+'MultiTau_PT15to500/crab_MultiTau_PT15to500_v2/210319_231350/0000',
+
+        FullsimDir+'MultiTau_PT15to500/crab_MultiTau_PT15to500_v2/210319_231350/0000',
         # FullsimDir+'MultiTau_PT15to500/crab_MultiTau_PT15to500_v3/210320_211709/0000',
         # FullsimDir+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8/crab_QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8/210319_144916/0000',
         # FullsimDir+'GluGluToHHTo2B2Tau_node_SM_TuneCP5_14TeV-madgraph-pythia8/crab_GluGluToHHTo2B2Tau_node_SM_TuneCP5_14TeV-madgraph-pythia8/210320_211639/0000',
