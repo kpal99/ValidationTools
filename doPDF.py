@@ -91,12 +91,11 @@ def sorter(dictt):
         for entry in batch_list:
             for key in entry:
                 sorted_dict[entry[key][0]] = entry[key][1]
-
+                
     elif variable == "eta":
         pt_low_pattern = r"\d\d+[t][o]"
         for caption in dictt:
-            pt_low = remove_ch(
-                str(r.findall(pt_low_pattern, dictt[caption]))).rstrip("to")
+            pt_low = remove_ch(str(r.findall(pt_low_pattern, dictt[caption]))).rstrip("to")
             if pt_low == '':
                 batch[0] = [caption, dictt[caption]]
             else:
@@ -109,7 +108,6 @@ def sorter(dictt):
     else:
         sorted_dict = dictt
     return sorted_dict
-
 
 
 def res_bin_edit(caption):
@@ -147,6 +145,15 @@ def res_bin_edit(caption):
         new_caption += pt_low + " < p_{T} < " + pt_high + " $"
 
     return new_caption
+
+
+def reversebins(plot_name):  # to easily sort the plot list according to eta bins
+    """Reverses the bins in the plot name."""
+    eta_pattern = r"[e][t][a].+"
+    pt_pattern = r".+[e][t][a]"
+    eta_bin = r.findall(eta_pattern, plot_name)
+    pt_bin = r.findall(pt_pattern, plot_name)
+    return remove_ch(str(eta_bin)+"_"+str(pt_bin)).rstrip("_eta")
 
 
 def beginFrame(extra=''):
@@ -205,15 +212,6 @@ def add_figures(figure_dict):
     return tex_line
 
 
-def reversebins(plot_name):  # to easily sort the plot list according to eta bins
-    """Reverses the bins in the plot name."""
-    eta_pattern = r"[e][t][a].+"
-    pt_pattern = r".+[e][t][a]"
-    eta_bin = r.findall(eta_pattern, plot_name)
-    pt_bin = r.findall(pt_pattern, plot_name)
-    return remove_ch(str(eta_bin)+"_"+str(pt_bin)).rstrip("_eta")
-
-
 def texoutput(plt_type, obj, var, wp, plot2D=False):
     """ Generates tex script with the following variables respectively:
         plot type (eff, fakerate etc.), object, variable (eta, pt), working point"""
@@ -260,8 +258,8 @@ def main():
                       help='output directory for PDF file [%default]',
                       default='pdfOutput/',
                       type='string')
-    parser.add_option('-t', '--ttbarpath',
-                      dest='ttbarpath',
+    parser.add_option('-b', '--btagpath',
+                      dest='btagpath',
                       help='path for TTbar histo file [%default]',
                       default='BTag/',
                       type='string')
@@ -280,7 +278,7 @@ def main():
                       help='path for QCD histo file [%default]',
                       default='QCD/',
                       type='string')
-    parser.add_option('--taupath',
+    parser.add_option('-t', '--taupath',
                       dest='taupath',
                       help='path for QCD histo file [%default]',
                       default='TauTag/',
@@ -288,18 +286,24 @@ def main():
     parser.add_option('--parentpath',
                       dest='parentpath',
                       help='parent path for all the plot directories [%default]',
-                      default='/eos/cms/store/group/upgrade/RTB//ValidationPlots/fullsim_Iter6_delphes_343pre07_v09/',
+                      default=None,
                       type='string')
 
     (opt, args) = parser.parse_args()
 
     printoutdir = opt.printoutdir
     parentpath = opt.parentpath
-    qcdpath = parentpath+opt.qcdpath
-    ttbarpath = parentpath+opt.ttbarpath
-    elmupath = parentpath+opt.elmupath
-    gammapath = parentpath+opt.gammapath
-    taupath = parentpath+opt.taupath
+    qcdpath = opt.qcdpath
+    btagpath = opt.btagpath
+    elmupath = opt.elmupath
+    gammapath = opt.gammapath
+    taupath = opt.taupath
+    if parentpath:
+        qcdpath = parentpath+opt.qcdpath
+        btagpath = parentpath+opt.btagpath
+        elmupath = parentpath+opt.elmupath
+        gammapath = parentpath+opt.gammapath
+        taupath = parentpath+opt.taupath
 
     if not os.path.exists(printoutdir):
         os.system('mkdir -p {}'.format(printoutdir))
@@ -331,7 +335,7 @@ def main():
     """.split("\n"))
 
     global plots_list
-    plots_list = os.listdir(ttbarpath)
+    plots_list = os.listdir(btagpath)
 
     global path
 
@@ -511,8 +515,8 @@ def main():
     tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'tightID')
 
     # Btag
-    plots_list = os.listdir(ttbarpath)
-    path = ttbarpath
+    plots_list = os.listdir(btagpath)
+    path = btagpath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\section{Btag}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'looseID')
@@ -547,11 +551,11 @@ def main():
         tex_output.write(tex_lines)
     print("\n {}validation_plots.tex file is created!\n".format(printoutdir))
 
-    os.system(
-        'pdflatex --interaction=batchmode {}/validation_plots.tex 2>&1 > /dev/null'.format(printoutdir))
+    os.system('pdflatex --interaction=batchmode {}/validation_plots.tex 2>&1 > /dev/null'.format(printoutdir))
 
     print("\n validation_plots.pdf generated!")
 
+    os.system('open validation_plots.pdf')
 
 if __name__ == "__main__":
     main()
