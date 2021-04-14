@@ -73,10 +73,21 @@ python -u doPlot.py -f path/to/fullsimplots.root -d path/to/delphesplots.root -o
 If you have run steps 1 and 2 on a computer network other than LXPLUS, copy your plot directories to lxplus and run step 3 from there. 
 
 3. Post (must be run on LXPLUS!). Pass arguments for the directory of plots to be copied, the destination on CERN EOS, and the sample name. The EOS path will be automatically prepended with: /eos/user/userinitial/username/www/. Instruction for setting up cernbox personal webpage can be found here <https://cernbox-manual.web.cern.ch/cernbox-manual/en/web/personal_website_content.html#create_personal_space>
-
-
+ 
 ```
 sh postPlots.sh -i mynewplotdir/ -o delphes_validation/mynewplotdir/ -s PhotonFlat0to150_0PU
+```
+
+4. Presentation file. If folders that contain the pdf/png files are stored inside a parent directory and named exactly as: "TauTag", "BTag", "ELMu", "Photon" and "QCD", then pass only that parent directory.
+
+```
+python -u doPDF.py --parentpath path/
+```
+
+Else, specify each of them such as:
+
+```
+python -u doPDF.py -b path/to/Btag_plots/ -e path/to/ELMu_plots/ -g path/to/Photon_plots/ -q path/to/QCD_plots/ -t path/to/TauTag_plots/
 ```
 
 Use steer script to do validation for any objects, plot and post
