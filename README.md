@@ -65,10 +65,10 @@ Analyze, plot, and post
 python -u ntuple_analyser.py -i path/to/input/ntuple.root -o outputplotfile.root -p particle --maxEvents NNNNNNN
 ```
 
-2. Plot. Pass arguments for the two input files (delphes and fullsim), and the output plot directory
+2. Plot. Pass arguments for the two input files (delphes and fullsim), the output plot directory and the output file format (pdf/png).
 
 ```
-python -u doPlot.py -f path/to/fullsimplots.root -d path/to/delphesplots.root -o mynewplotdir/
+python -u doPlot.py -f path/to/fullsimplots.root -d path/to/delphesplots.root -o mynewplotdir/ --outFormat pdf
 ```
 If you have run steps 1 and 2 on a computer network other than LXPLUS, copy your plot directories to lxplus and run step 3 from there. 
 
