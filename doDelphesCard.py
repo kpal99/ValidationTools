@@ -249,7 +249,22 @@ parser.add_option('--card-out',
 
 
 
-path='/eos/cms/store/group/upgrade/RTB/ValidationHistos/v07VALclosure_v2/'
+path_delphes='/eos/cms/store/group/upgrade/RTB/ValidationHistos/delphes343pre10_v11_dummy/'
+path_fullsim='/eos/cms/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6/'
+
+elmu_delphes=path_delphes+'/HistosDELPHES_ELMu.root'
+gamma_delphes=path_delphes+'/HistosDELPHES_Photon.root'
+jets_delphes=path_delphes+'/HistosDELPHES_QCD.root'
+btag_delphes=path_delphes+'/HistosDELPHES_BTag.root'
+tautag_delphes=path_delphes+'/HistosDELPHES_TauTag.root'
+
+
+elmu_fullsim=path_fullsim+'/HistosFS_ELMu_113X.root'
+gamma_fullsim=path_fullsim+'/HistosFS_Photon_113X.root'
+jets_fullsim=path_fullsim+'/HistosFS_QCD_113X.root'
+btag_fullsim=path_fullsim+'/HistosFS_BTag_112X.root'
+tautag_fullsim=path_fullsim+'/HistosFS_TauTag_112X.root'
+
 
 object_dict={
               'muon':{
@@ -257,11 +272,9 @@ object_dict={
                         'fit_range':[0.9,1.1],
                         'scale_quality':'looseIDISO', ## collection used for momentum scale and smearing
                         'qualities':['loose','medium','tight'], ## (will look for string "DUMMY_MUON_{quality}ID_EFFICIENCY or DUMMY_MUON_{quality}ID_FAKERATE )
-                        #'qualities':['loose'], ## (will look for string "DUMMY_MUON_{quality}ID_EFFICIENCY or DUMMY_MUON_{quality}ID_FAKERATE )
-                        #'file_prompt_F':path+'/Fullsim_ElMu_Efficiency.root',
-                        'file_prompt_F':'HistosFS_ELMu.root',
-                        'file_fake_F':'HistosFS_QCD.root',
-                        'file_prompt_D':path+'/Delphes_ElMu_Efficiency.root',
+                        'file_prompt_F':elmu_fullsim,
+                        'file_fake_F':jets_fullsim,
+                        'file_prompt_D':elmu_delphes,
               },
               
               'electron':{
@@ -269,9 +282,9 @@ object_dict={
                         'fit_range':[0.9,1.1],
                         'scale_quality':'looseIDISO', ## collection used for momentum scale and smearing
                         'qualities':['loose','medium','tight'], ## here store qualities used to produce efficiencies and fake-rate (dummy for now)
-                        'file_prompt_F':'HistosFS_ELMu.root',
-                        'file_fake_F':'HistosFS_QCD.root',
-                        'file_prompt_D':path+'/Delphes_ElMu_Efficiency.root',
+                        'file_prompt_F':elmu_fullsim,
+                        'file_fake_F':jets_fullsim,
+                        'file_prompt_D':elmu_delphes,
 
               },
 
@@ -280,10 +293,9 @@ object_dict={
                         'fit_range':[0.9,1.1],
                         'scale_quality':'looseIDISO', ## collection used for momentum scale and smearing
                         'qualities':['loose','medium','tight'], ## here store qualities used to produce efficiencies and fake-rate (dummy for now)
-                        'file_prompt_F':'HistosFS_Photon.root',
-                        #'file_prompt_F':path+'/Delphes_Photon_Efficiency.root',
-                        'file_fake_F':'HistosFS_QCD.root',
-                        'file_prompt_D':path+'/Delphes_Photon_Efficiency.root',
+                        'file_prompt_F':gamma_fullsim,
+                        'file_fake_F':jets_fullsim,
+                        'file_prompt_D':gamma_delphes,
                         
               },
 
@@ -292,8 +304,8 @@ object_dict={
                         'fit_range':[0.0,2.0],
                         'scale_quality':'tightID', ## collection used for momentum scale and smearing
                         'qualities':['loose','tight'], ## here store qualities used to produce efficiencies and fake-rate (dummy for now)
-                        'file_prompt_F':'HistosFS_QCD.root',
-                        'file_prompt_D':path+'/Delphes_QCD.root',
+                        'file_prompt_F':jets_fullsim,
+                        'file_prompt_D':jets_delphes,
               },
 
 
@@ -307,8 +319,8 @@ object_dict={
                                    'lightMistag': 0
                                    }, ## here store mapping between efficiencies labels and PID
 
-                        'file_prompt_F':'HistosFS_BTag.root',
-                        'file_prompt_D':path+'/Delphes_TTbar_v3.root',
+                        'file_prompt_F':btag_fullsim,
+                        'file_prompt_D':btag_delphes,
               },
 
               'tautag':{
@@ -322,10 +334,10 @@ object_dict={
                                    'muonMistag': 13
                                    }, ## here store mapping between efficiencies labels and PID
 
-                        'file_prompt_F':'HistosFS_TauTag.root',
+                        'file_prompt_F':tautag_fullsim,
                         ## have to do this because there are no electrons in 11_2 samples
-                        'file_fake_F':'HistosFS_ELMu.root',
-                        'file_prompt_D':path+'/Delphes_Taus.root',
+                        'file_fake_F':elmu_fullsim,
+                        'file_prompt_D':tautag_delphes,
               },
 
 
@@ -368,6 +380,9 @@ for obj, params in object_dict.items():
     fit_range_min=params['fit_range'][0]
     fit_range_max=params['fit_range'][1]
 
+    print file_prompt_F
+    print file_prompt_D
+    
     inputFile_d = rt.TFile.Open(file_prompt_D)
     inputFile_f = rt.TFile.Open(file_prompt_F)
 
@@ -518,11 +533,12 @@ for obj, params in object_dict.items():
 
         ## HERE REPLACE CONTENT OF THE CARD BETWEEN CONTROL STRINGS 
 
-        ## scale parametrisation
-        content=replaced(content, dump_scale, starting_scale, ending_scale)
+        if not flat:
+            ## scale parametrisation
+            content=replaced(content, dump_scale, starting_scale, ending_scale)
 
-        ## smear parametrisation  
-        content=replaced(content, dump_reso, starting_smear, ending_smear)
+            ## smear parametrisation  
+            content=replaced(content, dump_reso, starting_smear, ending_smear)
 
     ## ADD HERE VARIOUS EFFICIENCIES AND FAKE RATES
 
@@ -542,7 +558,8 @@ for obj, params in object_dict.items():
             id2D_d = inputFile_d.Get(name).ProjectionXY("id_"+name+"_d")
 
             lines_eff = []
-            content = dump_efficiencies_ratio(collection, quality, lines_eff, id2D_f, id2D_d, content)
+            if not flat:
+                content = dump_efficiencies_ratio(collection, quality, lines_eff, id2D_f, id2D_d, content)
 
 
         if obj == 'btag' or obj == 'tautag' :
@@ -569,7 +586,8 @@ for obj, params in object_dict.items():
 
                 print obj, tag+'_'+quality,pdgcode
                 
-                content = dump_efficiencies(obj, tag+'_'+quality, lines_eff, pdgcode, eff2D_f, content)
+                if not flat:
+                    content = dump_efficiencies(obj, tag+'_'+quality, lines_eff, pdgcode, eff2D_f, content)
 
 
         #if 'file_fake_F' in params: ## exclude jets
@@ -595,7 +613,7 @@ for obj, params in object_dict.items():
             if not flat:
                 content = dump_efficiencies(collection, quality, lines_fake, pdgcode, fake2D_f, content)
             else:
-                flat_param='  {{{}}} {{0.01}}\n'.format(pdgcode)
+                flat_param='  {{{}}} {{0.0001}}\n'.format(pdgcode)
                 starting_fake = '## DUMMY_' + collection.upper() + '_'+ quality.upper() + 'ID_DUMP'
                 ending_fake = starting_fake.replace('DUMMY','ENDDUMMY')
                 content=replaced(content, flat_param, starting_fake, ending_fake)
