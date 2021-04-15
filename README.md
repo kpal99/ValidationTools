@@ -78,13 +78,19 @@ If you have run steps 1 and 2 on a computer network other than LXPLUS, copy your
 sh postPlots.sh -i mynewplotdir/ -o delphes_validation/mynewplotdir/ -s PhotonFlat0to150_0PU
 ```
 
-4. Presentation file. If folders that contain the pdf/png files are stored inside a parent directory and named exactly as: "TauTag", "BTag", "ELMu", "Photon" and "QCD", then pass only that parent directory.
+4. Presentation file. The script requires python3,
+
+```
+source /cvmfs/sft.cern.ch/lcg/views/LCG_98python3/x86_64-centos7-gcc9-opt/setup.sh
+```
+
+If folders that contain the pdf/png files are stored inside a parent directory and named exactly as: "TauTag", "BTag", "ELMu", "Photon" and "QCD", then pass only that parent directory.
 
 ```
 python -u doPDF.py --parentpath path/
 ```
 
-Else, specify each of them such as:
+Else, specify each of them:
 
 ```
 python -u doPDF.py -b path/to/Btag_plots/ -e path/to/ELMu_plots/ -g path/to/Photon_plots/ -q path/to/QCD_plots/ -t path/to/TauTag_plots/
