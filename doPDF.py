@@ -68,17 +68,18 @@ def eta_bin(caption):
 def sorter(dictt):
     """Sort resolution plots."""
     batch = {}
+    sorted_dict = collections.OrderedDict()
     if plt == "resolution":
         pt_low_pattern = r"[p][t][_]\d+"
         batch_list = []
         for i in range(len(dictt) // 5):
-            batch_list.append({})
+            batch_list.append(collections.OrderedDict())
         for i, caption in enumerate(dictt):
             pt_low = remove_ch(
                 str(r.findall(pt_low_pattern, caption))).lstrip("pt_")
             if i == 0 or i % 5 != 0:
                 batch[int(remove_ch(str(pt_low)))] = [caption, dictt[caption]]
-                batch = sorted(batch.items(), key=operator.itemgetter(0))
+                batch = sorted(batch.items())
                 batch = collections.OrderedDict(batch)
                 div = i // 5
                 if i + 1 == len(dictt):
@@ -87,7 +88,6 @@ def sorter(dictt):
                 batch_list[div].update(batch)
                 batch = {}
                 batch[int(remove_ch(str(pt_low)))] = [caption, dictt[caption]]
-        sorted_dict = {}
         for entry in batch_list:
             for key in entry:
                 sorted_dict[entry[key][0]] = entry[key][1]
@@ -100,9 +100,8 @@ def sorter(dictt):
                 batch[0] = [caption, dictt[caption]]
             else:
                 batch[int(pt_low)] = [caption, dictt[caption]]
-                batch = sorted(batch.items(), key=operator.itemgetter(0))
+                batch = sorted(batch.items())
                 batch = collections.OrderedDict(batch)
-        sorted_dict = {}
         for key in batch:
             sorted_dict[batch[key][0]] = batch[key][1]
     else:
