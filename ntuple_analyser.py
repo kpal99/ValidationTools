@@ -220,6 +220,8 @@ def findPartonFlav(genparts, jet, dR):
         return 4
     return 1 # any not 4 or 5 case
 
+
+
 def runBtagStudy(ntuple, maxEvents, outfileName, dumptcl):
 
     tot_nevents = 0
@@ -547,8 +549,37 @@ def hadronic(tau):
         if hadronic:
                 return tau
 
+def hadronicTaus(ptmin, etamax):
+    """Returns the given object if it is a hadronic tau."""
+
+    hadtaus=[]
+    for part in genparts:
+        pdgCode = abs(part.pid())
+        if pdgCode != 15: continue
+        if part.pt() < ptmin: continue
+        if abs(part.eta()) > etamax: continue
+        if part.d1() < 0: continue
+        if part.d2() < part.d1(): continue
+
+        badtau=False
+	for i in range(part.d1(), part.d2()+1):
+            daughter1 = genparts[i]
+            pdgCode = abs(daughter1.pid()) 
+            if pdgCode in [11, 13, 15]: badtau=True
+            elif pdgCode == 24:
+                if daughter1.d1() < 0: badtau=True
+                for j in range(daughter1.d1(), daughter1.d2()+1):
+                    daughter2 = genparts[j]
+                    pdgCode = abs(daughter2.pid()) 
+                    if pdgCode in [11, 13]: badtau=True
+
+        if not badtau:
+	    hadtaus.append(part)
+    return hadtaus
+
 def fourmomentum(gen):
     """Returns the four-momentum representation of a particle."""
+    '''
     Px = gen.pt()*math.cos(gen.phi())
     Py = gen.pt()*math.sin(gen.phi())
     Pz = gen.pt()*math.sinh(gen.eta())
@@ -558,6 +589,10 @@ def fourmomentum(gen):
     E = math.sqrt(P**2*c**2 + M**2*c**4)
     pVec = TLorentzVector()
     pVec.SetPxPyPzE(Px, Py, Pz, E)
+    return pVec
+    '''
+    pVec = TLorentzVector()
+    pVec.SetPtEtaPhiM(gen.pt(), gen.eta(), gen.phi(), gen.mass())
     return pVec
 
 def visibleP4(gen):
@@ -585,6 +620,69 @@ def filterDR(obj, collection):
         pVec.SetPtEtaPhiM(p.pt(), p.eta(), p.phi(), p.mass())
         if objVec.DeltaR(pVec) > 0.3:
             return obj
+
+def findJetFlavourPtEta(jet, genhadronictaus, genlight, genelectrons, genmuons, dR):
+
+    flav=-1
+    pt=9999
+    eta=9999
+    jVec = TLorentzVector()
+    jVec.SetPtEtaPhiM(jet.pt(), jet.eta(), jet.phi(), jet.mass())
+    for g in genhadronictaus: # check if there exists one b-hadron
+        if jVec.DeltaR(g) < dR:
+            flav=15
+            pt=g.Pt()
+            eta=g.Eta()
+
+    if flav==-1:
+        for g in genlight: # check if there exists one b-hadron
+            if jVec.DeltaR(g) < dR:
+                flav=1
+                pt=g.Pt()
+                eta=g.Eta()
+
+    if flav==-1:
+        for g in genelectrons: # check if there exists one b-hadron
+            if jVec.DeltaR(g) < dR:
+                flav=11
+                pt=g.Pt()
+                eta=g.Eta()
+
+    if flav==-1:
+        for g in genmuons: # check if there exists one b-hadron
+            if jVec.DeltaR(g) < dR:
+                flav=13
+                pt=g.Pt()
+                eta=g.Eta()
+
+    ## pile-up jets will have light flavour 
+    if flav==-1:
+        flav=1
+        pt=jet.pt()
+        eta=jet.eta()
+  
+    return flav, pt, eta
+
+def findTauTag(jet, taus, dR):
+
+    tag=0
+    jVec = TLorentzVector()
+    jVec.SetPtEtaPhiM(jet.pt(), jet.eta(), jet.phi(), jet.mass())
+    
+    ## find closest reco tau
+    drmin=dR
+    best_tau=None
+    for tau in taus: # check if there exists one b-hadron
+        tauVec = TLorentzVector()
+        tauVec.SetPtEtaPhiM(tau.pt(), tau.eta(), tau.phi(), tau.mass())
+        if jVec.DeltaR(tauVec) < drmin:
+            drmin=jVec.DeltaR(tauVec)
+            best_tau=tau
+
+    if best_tau is not None:
+        tag=best_tau.isopass()
+
+    return tag
 
 def runTautagStudy(ntuple, maxEvents, outfileName, dumptcl):
     """Creates Tautagging histograms."""
@@ -654,6 +752,7 @@ def runTautagStudy(ntuple, maxEvents, outfileName, dumptcl):
 
         electrons = event.electrons()
         muons = event.muons()
+        jets = event.jetspuppi()
 
         #isolated_electrons = [p for p in electrons if p.pt() > params["ptMin"] and bool((p.isopass() & 1)) and bool(p.idpass() & 1)]
         #isolated_muons= [p for p in muons if p.pt() > params["ptMin"] and (p.isopass() & 1) == 1 and (p.idpass() & 1) == 1]
@@ -661,7 +760,6 @@ def runTautagStudy(ntuple, maxEvents, outfileName, dumptcl):
         #elec_filtered_taus = [filterDR(tau, isolated_electrons) for tau in taus if filterDR(tau, isolated_electrons) is not None]
         #all_filtered_taus  = [filterDR(tau, isolated_muons) for tau in elec_filtered_taus if filterDR(tau, isolated_muons) is not None]
         #all_filtered_taus  = elec_filtered_taus
-        
         filtered_taus = []
         for tau in taus:
             #print '---   tau  ----'
@@ -686,21 +784,43 @@ def runTautagStudy(ntuple, maxEvents, outfileName, dumptcl):
 
             if not bad_tau: 
                 filtered_taus.append(tau)
-
         #print taus
         #print filtered_taus
 
         global genparts
         genparts = event.genparticles()
+        n=0
+
 
         genelectrons = [Momentum(p) for p in genparts if abs(p.pid()) == 11 and p.pt() > params["ptMin"] and p.status()==1]
         genmuons = [Momentum(p) for p in genparts if abs(p.pid()) == 13 and p.pt() > params["ptMin"] and p.status()==1]
-        gentaus = [p for p in genparts if abs(p.pid()) == 15 and p.pt() > params["ptMin"]]
-        genhadronictaus = [visibleP4(hadronic(tau)) for tau in gentaus if hadronic(tau) != None and visibleP4(hadronic(tau)).Pt() > params["ptMin"]] # visible hadronic taus
-        genlight = [Momentum(p) for p in genparts if p.pt() > params["ptMin"] and (abs(p.pid()) == 4 or abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1)] # creating a list here for the pids makes code run slower
+        #gentaus = [p for p in genparts if abs(p.pid()) == 15 and p.pt() > params["ptMin"]]
+        #gentaus = [p for p in genparts if abs(p.pid()) == 15 and p.pt() > params["ptMin"]]
+        #genhadronictaus = [visibleP4(hadronic(tau)) for tau in gentaus if hadronic(tau) != None and visibleP4(hadronic(tau)).Pt() > params["ptMin"]] # visible hadronic taus
+        #genhadronictaus = [visibleP4(hadronic(tau)) for tau in gentaus if hadronic(tau) != None ] # visible hadronic taus
+        
+	gentaus = hadronicTaus(params["ptMin"], 4.0)
+	genhadronictaus = [visibleP4(tau) for tau in gentaus]
+	
+	genlight = [Momentum(p) for p in genparts if p.pt() > params["ptMin"] and (abs(p.pid()) == 4 or abs(p.pid()) == 3 or abs(p.pid()) == 2 or abs(p.pid()) == 1)] # creating a list here for the pids makes code run slower
 
-        #def fillHistos(obj, gen, reco, params, isTagged):
+        '''
+	print ' -- list of hadronic taus -- '
+	
+	n=0
+	for p in genparts:
+            #print n, p.pid(), visibleP4(p).Pt(), visibleP4(p).Eta()
+            #print n, p.pid(), p.pt(),  p.eta(),  p.phi(), p.mass(), p.d1(), p.d2()
+	    n+=1
 
+	n=0
+	for p in gentaus:
+            print n, p.pid(), visibleP4(p).Pt(), visibleP4(p).Eta()
+            #print n, p.pid(), p.pt(),  p.eta(),  p.phi(), p.mass(), p.d1(), p.d2()
+ 	    n+=1
+        '''
+
+        '''(
         def fillEfficiencyHistos(obj, gen_coll, reco_coll, params, histlabel):
         
             for gen in gen_coll:
@@ -748,11 +868,71 @@ def runTautagStudy(ntuple, maxEvents, outfileName, dumptcl):
                             hists[obj+"_"+histlabel+"_to_pt_"+quality[0] +
                                   "_" + cutname].Fill(gen.Pt(), isTagged[quality[0]])
 
-        fillEfficiencyHistos(obj, genhadronictaus, filtered_taus, params, 'tautagRate')
-        fillEfficiencyHistos(obj, genelectrons, filtered_taus, params, 'elecMistagRate')
-        fillEfficiencyHistos(obj, genmuons, filtered_taus, params, 'muonMistagRate')
-        fillEfficiencyHistos(obj, genlight, filtered_taus, params, 'lightMistagRate')
+        taucoll = filtered_taus
+        #taucoll = taus
+        
+        fillEfficiencyHistos(obj, genhadronictaus, taucoll, params, 'tautagRate')
+        fillEfficiencyHistos(obj, genelectrons, taucoll, params, 'elecMistagRate')
+        fillEfficiencyHistos(obj, genmuons, taucoll, params, 'muonMistagRate')
+        fillEfficiencyHistos(obj, genlight, taucoll, params, 'lightMistagRate')
+        '''
 
+        tau_coll = taus
+        #tau_coll = filtered_taus
+        ### alternative definition based on jets
+
+        #print "--- new event ---"
+        for jet in jets:
+            ### first find jet flavour 
+
+            jet_flavour_pt_eta = findJetFlavourPtEta(jet, genhadronictaus, genlight, genelectrons, genmuons, 0.5)
+            jet_tautag = findTauTag(jet, tau_coll, 0.5)
+
+            jet_flavour = jet_flavour_pt_eta[0]
+            jet_genpt = jet_flavour_pt_eta[1]
+            jet_geneta = jet_flavour_pt_eta[2]
+            
+            #if jet_flavour == 15:
+            #    print 'jet ', jet.pt(), jet_genpt,  jet.eta(),  jet_geneta, jet_flavour, jet_tautag
+
+            isTagged = dict()
+            for quality in params["bitids"]:
+                isTagged[quality[0]] = int(bool(jet_tautag & quality[1]))
+
+            def fillTauHistos(obj, gen_pt, gen_eta, params, histlabel):
+                    for quality in params["bitids"]:
+                        hists[obj+"_"+histlabel+"_to_eta_" +
+                              quality[0]].Fill(gen_eta, isTagged[quality[0]])
+                        hists[obj+"_"+histlabel+"_to_pt_" +
+                              quality[0]].Fill(gen_pt, isTagged[quality[0]])
+                        hists[obj+"_"+histlabel+"_efficiency2D_" +
+                              quality[0]].Fill(gen_pt, gen_eta, isTagged[quality[0]])
+
+                    for cut in params["ptSlices"]:
+                        cutname = str(cut[0]) + "to" + str(cut[1])
+                        cutname = (cutname.replace('.', 'p')
+                                   ).replace('100000p0', 'Inf')
+                        if cut[0] <= gen_pt < cut[1]:
+                            for quality in params["bitids"]:
+                                hists[obj+"_"+histlabel+"_to_eta_"+quality[0] +
+                                      "_" + cutname].Fill(gen_eta, isTagged[quality[0]])
+
+                    for cut in params["etaSlices"]:
+                        cutname = str(cut[0]) + "to" + str(cut[1])
+                        cutname = (cutname.replace('.', 'p')
+                                   ).replace('100000p0', 'Inf')
+                        if cut[0] < abs(gen_eta) <= cut[1]:
+                            for quality in params["bitids"]:
+                                hists[obj+"_"+histlabel+"_to_pt_"+quality[0] +
+                                      "_" + cutname].Fill(gen_pt, isTagged[quality[0]])
+            if jet_flavour == 15:
+                fillTauHistos(obj, jet_genpt, jet_geneta, params, 'tautagRate')
+            elif jet_flavour == 11:
+                fillTauHistos(obj, jet_genpt, jet_geneta, params, 'elecMistagRate')
+            elif jet_flavour == 13:
+                fillTauHistos(obj, jet_genpt, jet_geneta, params, 'muonMistagRate')
+            else:
+                fillTauHistos(obj, jet_genpt, jet_geneta, params, 'lightMistagRate')
 
     outputF.cd()
     for h in hists.keys():
@@ -947,7 +1127,7 @@ def main():
             params["etaSlices"] = [[0, 1.5], [1.5, 3], [3, 4], [4, 1e5] ]
         if dumptcl: params["sliceSplit"] = 1                
     else: 
-        print 'Physics object not recognized! Choose jetchs, jetpuppi, photon, electron, or muon.'            
+        print 'Physics object not recognized! Choose jetpuppi, photon, electron, or muon, tau or btag'            
         exit()
 
     ## BOOK HISTOGRAMS

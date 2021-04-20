@@ -5,13 +5,10 @@
 #
 #  Released on: Nov. 2020
 #
-#  Version: v07 base 
+#  Version: v13 base 
 #
-#  Notes: - added DNN tau tagging ( 01/04/2019)
-#         - removed BTaggingMTD, and replaced BTagging with latest DeepJet parameterisation (20/07/2019)
-#         - adding electrons, muons and photon fakes
-#         - removed ele/mu/gamma CHS collections
-#         - adding medium WPs for ele/mu/photons
+#  Notes: - correct tau acceptance
+#         - ele/mu/gamma/jet mom smearing now use now momentum vector smearing
 #
 #
 #######################################
@@ -605,11 +602,12 @@ module SimpleCalorimeter ECal {
   # for the ECAL barrel (|eta| < 1.5), see hep-ex/1306.2016 and 1502.02701
   # for the endcaps (1.5 < |eta| < 3.0), we take HGCAL  see LHCC-P-008, Fig. 3.39, p.117
 
-  set ResolutionFormula {  (abs(eta) <= 1.50)                    * sqrt(energy^2*0.009^2 + energy*0.12^2 + 0.45^2) +
+  ## add 0.5 factor now since this resolution seems to be worse than fullsim, will smear later to correct for
+  set ResolutionFormula {  0.5*((abs(eta) <= 1.50)                    * sqrt(energy^2*0.009^2 + energy*0.12^2 + 0.45^2) +
                            (abs(eta) > 1.50 && abs(eta) <= 1.75) * sqrt(energy^2*0.006^2 + energy*0.20^2) + \
                            (abs(eta) > 1.75 && abs(eta) <= 2.15) * sqrt(energy^2*0.007^2 + energy*0.21^2) + \
                            (abs(eta) > 2.15 && abs(eta) <= 3.00) * sqrt(energy^2*0.008^2 + energy*0.24^2) + \
-                           (abs(eta) >= 3.0 && abs(eta) <= 5.0)  * sqrt(energy^2*0.08^2 + energy*1.98^2)}
+                           (abs(eta) >= 3.0 && abs(eta) <= 5.0)  * sqrt(energy^2*0.08^2 + energy*1.98^2))}
 
 }
 
@@ -1108,6 +1106,7 @@ module EnergyScale JetScalePUPPIAK8 {
 module MomentumSmearing JetSmearPUPPI {
   set InputArray JetScalePUPPI/jets
   set OutputArray jets
+  set UseMomentumVector true
 
  # scale formula for jets
  ## DUMMY_JETPUPPI_SMEAR
@@ -1118,6 +1117,7 @@ module MomentumSmearing JetSmearPUPPI {
 module MomentumSmearing JetSmearPUPPIAK8 {
   set InputArray JetScalePUPPIAK8/jets
   set OutputArray jets
+  set UseMomentumVector true
 
  ## DUMMY_JETPUPPIAK8_SMEAR
   set ResolutionFormula {1.00e-10}
@@ -1246,6 +1246,7 @@ module MomentumSmearing PhotonSmear {
 
   set InputArray PhotonScale/photons
   set OutputArray photons
+  set UseMomentumVector true
 
   ## DUMMY_PHOTON_SMEAR
   set ResolutionFormula {1.00e-10}
@@ -1372,6 +1373,7 @@ module MomentumSmearing ElectronSmear {
 
   set InputArray ElectronScale/electrons
   set OutputArray electrons
+  set UseMomentumVector true
 
   ## DUMMY_ELECTRON_SMEAR
   set ResolutionFormula {1.00e-10}
@@ -1481,6 +1483,7 @@ module MomentumSmearing MuonSmear {
 
   set InputArray MuonScale/muons
   set OutputArray muons
+  set UseMomentumVector true
 
   ## DUMMY_MUON_SMEAR
   set ResolutionFormula {1.e-10}
@@ -1684,14 +1687,9 @@ module TauTagging TauTaggingPUPPILoose {
   set PartonInputArray Delphes/partons
   set JetInputArray JetSmearPUPPI/jets
 
-
-
   set DeltaR 0.5
-
   set TauPTMin 20.0
-
-  set TauEtaMax 2.3
-
+  set TauEtaMax 4.0
   set BitNumber 0
 
   ## DUMMY_TAUTAG_LIGHTMISTAG_LOOSEID_DUMP
@@ -1699,11 +1697,11 @@ module TauTagging TauTaggingPUPPILoose {
   ## ENDDUMMY_TAUTAG_LIGHTMISTAG_LOOSEID_DUMP
 
   ## DUMMY_TAUTAG_ELECMISTAG_LOOSEID_DUMP
-  add EfficiencyFormula {11}      {0.1}
+  add EfficiencyFormula {11}      {0.01}
   ## ENDDUMMY_TAUTAG_ELECMISTAG_LOOSEID_DUMP
 
   ## DUMMY_TAUTAG_MUONMISTAG_LOOSEID_DUMP
-  add EfficiencyFormula {13}      {0.1}
+  add EfficiencyFormula {13}      {0.01}
   ## ENDDUMMY_TAUTAG_MUONMISTAG_LOOSEID_DUMP
 
   ## DUMMY_TAUTAG_TAUTAG_LOOSEID_DUMP
@@ -1718,6 +1716,10 @@ module TauTagging TauTaggingPUPPIMedium {
   set PartonInputArray Delphes/partons
   set JetInputArray JetSmearPUPPI/jets
 
+  set DeltaR 0.5
+  set TauPTMin 20.0
+  set TauEtaMax 4.0
+
   set BitNumber 1
 
   ## DUMMY_TAUTAG_LIGHTMISTAG_MEDIUMID_DUMP
@@ -1725,11 +1727,11 @@ module TauTagging TauTaggingPUPPIMedium {
   ## ENDDUMMY_TAUTAG_LIGHTMISTAG_MEDIUMID_DUMP
 
   ## DUMMY_TAUTAG_ELECMISTAG_MEDIUMID_DUMP
-  add EfficiencyFormula {11}      {0.1}
+  add EfficiencyFormula {11}      {0.01}
   ## ENDDUMMY_TAUTAG_ELECMISTAG_MEDIUMID_DUMP
 
   ## DUMMY_TAUTAG_MUONMISTAG_MEDIUMID_DUMP
-  add EfficiencyFormula {13}      {0.1}
+  add EfficiencyFormula {13}      {0.01}
   ## ENDDUMMY_TAUTAG_MUONMISTAG_MEDIUMID_DUMP
 
 
@@ -1744,6 +1746,10 @@ module TauTagging TauTaggingPUPPITight {
   set PartonInputArray Delphes/partons
   set JetInputArray JetSmearPUPPI/jets
 
+  set DeltaR 0.5
+  set TauPTMin 20.0
+  set TauEtaMax 4.0
+
   set BitNumber 2
 
   ## DUMMY_TAUTAG_LIGHTMISTAG_TIGHTID_DUMP
@@ -1751,11 +1757,11 @@ module TauTagging TauTaggingPUPPITight {
   ## ENDDUMMY_TAUTAG_LIGHTMISTAG_TIGHTID_DUMP
 
   ## DUMMY_TAUTAG_ELECMISTAG_TIGHTID_DUMP
-  add EfficiencyFormula {11}      {0.1}
+  add EfficiencyFormula {11}      {0.01}
   ## ENDDUMMY_TAUTAG_ELECMISTAG_TIGHTID_DUMP
 
   ## DUMMY_TAUTAG_MUONMISTAG_TIGHTID_DUMP
-  add EfficiencyFormula {13}      {0.1}
+  add EfficiencyFormula {13}      {0.01}
   ## ENDDUMMY_TAUTAG_MUONMISTAG_TIGHTID_DUMP
 
   ## DUMMY_TAUTAG_TAUTAG_TIGHTID_DUMP
@@ -1780,13 +1786,13 @@ module JetFakeParticle JetFakeMakerLoose {
 
   set EfficiencyFormula {
   ## DUMMY_ELECTRON_LOOSEID_DUMP
-      {11} {0.02}
+      {11} {0.0001}
   ## ENDDUMMY_ELECTRON_LOOSEID_DUMP
   ## DUMMY_MUON_LOOSEID_DUMP
-      {13} {0.02}
+      {13} {0.0001}
   ## ENDDUMMY_MUON_LOOSEID_DUMP
   ## DUMMY_PHOTON_LOOSEID_DUMP
-      {22} {0.10} 
+      {22} {0.0001} 
   ## ENDDUMMY_PHOTON_LOOSEID_DUMP
   }
 
@@ -1807,13 +1813,13 @@ module JetFakeParticle JetFakeMakerMedium {
 
   set EfficiencyFormula {
   ## DUMMY_ELECTRON_MEDIUMID_DUMP
-      {11} {0.01}
+      {11} {0.0001}
   ## ENDDUMMY_ELECTRON_MEDIUMID_DUMP
   ## DUMMY_MUON_MEDIUMID_DUMP
-      {13} {0.01}
+      {13} {0.0001}
   ## ENDDUMMY_MUON_MEDIUMID_DUMP
   ## DUMMY_PHOTON_MEDIUMID_DUMP
-      {22} {0.05} 
+      {22} {0.0001} 
   ## ENDDUMMY_PHOTON_MEDIUMID_DUMP
   }
 
@@ -1833,13 +1839,13 @@ module JetFakeParticle JetFakeMakerTight {
 
   set EfficiencyFormula {
   ## DUMMY_ELECTRON_TIGHTID_DUMP
-      {11} {0.005}
+      {11} {0.0001}
   ## ENDDUMMY_ELECTRON_TIGHTID_DUMP
   ## DUMMY_MUON_TIGHTID_DUMP
-      {13} {0.005}
+      {13} {0.0001}
   ## ENDDUMMY_MUON_TIGHTID_DUMP
   ## DUMMY_PHOTON_TIGHTID_DUMP
-      {22} {0.025} 
+      {22} {0.0001} 
   ## ENDDUMMY_PHOTON_TIGHTID_DUMP
   }
 
@@ -2001,8 +2007,8 @@ module TreeWriter TreeWriter {
   add Branch JetSmearPUPPI/jets JetPUPPI Jet
   add Branch JetSmearPUPPIAK8/jets JetPUPPIAK8 Jet
 
-  add Branch JetLooseID/jets JetLoose Jet
-  add Branch JetTightID/jets JetTight Jet
+  add Branch JetLooseID/jets JetPUPPILoose Jet
+  add Branch JetTightID/jets JetPUPPITight Jet
 
   add Branch Rho/rho Rho Rho
   add Branch PuppiMissingET/momentum PuppiMissingET MissingET
