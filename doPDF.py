@@ -371,13 +371,6 @@ def main():
     plots_list = os.listdir(qcdpath)
     path = qcdpath
     os.system('cd {}'.format(path))
-    tex_lines += "\n" + r"\subsection{Fakerate reco*ID}"
-    tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseID')
-    tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumID')
-    tex_lines += texoutput('fakerate', 'electron', 'eta', 'tightID')
-    tex_lines += texoutput('fakerate', 'electron', 'pt', 'looseID')
-    tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumID')
-    tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightID')
 
     tex_lines += "\n" + r"\subsection{Fakerate reco*ID*ISO}"
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseIDISO')
@@ -412,12 +405,6 @@ def main():
     path = qcdpath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Fakerate reco*ID}"
-    tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseID')
-    tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumID')
-    tex_lines += texoutput('fakerate', 'muon', 'eta', 'tightID')
-    tex_lines += texoutput('fakerate', 'muon', 'pt', 'looseID')
-    tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumID')
-    tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightID')
 
     tex_lines += "\n" + r"\subsection{Fakerate reco*ID*ISO}"
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseIDISO')
@@ -451,12 +438,6 @@ def main():
     path = qcdpath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Fakerate reco*ID}"
-    tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseID')
-    tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumID')
-    tex_lines += texoutput('fakerate', 'photon', 'eta', 'tightID')
-    tex_lines += texoutput('fakerate', 'photon', 'pt', 'looseID')
-    tex_lines += texoutput('fakerate', 'photon', 'pt', 'mediumID')
-    tex_lines += texoutput('fakerate', 'photon', 'pt', 'tightID')
 
     tex_lines += "\n" + r"\subsection{Fakerate reco*ID*ISO}"
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseIDISO')
@@ -525,8 +506,8 @@ def main():
     tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'mediumID')
     tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'tightID')
 
-    plots_list = os.listdir(qcdpath)
-    path = qcdpath
+    plots_list = os.listdir(btagpath)
+    path = btagpath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Btag Light MisTag Rate}"
     tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'looseID')
