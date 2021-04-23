@@ -78,7 +78,7 @@ If you have run steps 1 and 2 on a computer network other than LXPLUS, copy your
 sh postPlots.sh -i mynewplotdir/ -o delphes_validation/mynewplotdir/ -s PhotonFlat0to150_0PU
 ```
 
-4. Presentation file. If folders that contain the pdf/png files are stored inside a parent directory and are named exactly as: "TauTag", "BTag", "ELMu", "Photon" and "QCD", then pass only that parent directory along with the directory for tex output:
+4. Presentation file. If folders that contain the pdf/png files are stored inside a parent directory and are named exactly as: "TauTag", "BTag", "ELMu", "Photon" and "QCD", then pass only that parent directory along with the directory for tex output (avoid giving "../" and such for the --parentpath option):
 
 ```
 python -u doPDF.py --parentpath path_to_plots/ -o output_dir/
