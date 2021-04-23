@@ -81,14 +81,20 @@ sh postPlots.sh -i mynewplotdir/ -o delphes_validation/mynewplotdir/ -s PhotonFl
 4. Presentation file. If folders that contain the pdf/png files are stored inside a parent directory and named exactly as: "TauTag", "BTag", "ELMu", "Photon" and "QCD", then pass only that parent directory.
 
 ```
-python -u doPDF.py --parentpath path/
+python -u doPDF.py --parentpath path_to_plots/ -o output_dir_path/
 ```
 
 Else, specify each of them such as:
 
 ```
-python -u doPDF.py -b path/to/Btag_plots/ -e path/to/ELMu_plots/ -g path/to/Photon_plots/ -q path/to/QCD_plots/ -t path/to/TauTag_plots/
+python -u doPDF.py -b path/to/Btag_plots/ -e path/to/ELMu_plots/ -g path/to/Photon_plots/ -q path/to/QCD_plots/ -t path/to/TauTag_plots/ -o output_dir_path/
 ```
+Finally run the tex file:
+```
+cd output_dir_path/
+pdflatex validation_plots.tex
+```
+
 
 Use steer script to do validation for any objects, plot and post
 ================================================================

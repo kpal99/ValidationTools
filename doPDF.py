@@ -454,10 +454,15 @@ def main():
     plots_list = os.listdir(elmupath)
     path = elmupath
     os.system('cd {}'.format(elmupath))
+    os.system('cp met_figure.pdf {}'.format(printoutdir))
     tex_lines += "\n" + r"\section{MET}" + "\n" + r"\subsection{MET}"
 
-    met_plots = {'met.pdf': 'Missing E_{T}', 'met_p.pdf': 'Parr. Miss. E_{T}',
-                 'met_t.pdf': 'Perp. Miss. E_{T}', 'u_t.pdf': 'u_{T}', 'z_pt.pdf': 'p_{T}(Z)'}
+    met_plots = {'met.pdf': 'Missing E$_{T}$',
+                 'met_p.pdf': 'Parr. Miss. E$_{T}$',
+                 'met_t.pdf': 'Perp. Miss. E$_{T}$',
+                 'u_t.pdf': 'u$_{T}$',
+                 'u_p.pdf': 'u$_{P}$',
+                 'z_pt.pdf': 'p$_{T}$(Z)'}
     tex_lines += r"""
     \begin{frame}
     \frametitle{MET}
@@ -476,6 +481,29 @@ def main():
     \includegraphics[width=\linewidth]{met_figure.pdf}
     \end{subfigure}
     \hfil
+    \end{figure}
+    \end{frame}
+    """
+
+    npu_plots = {'met_VS_npuVtx.pdf': 'MET vs nPU Vtx',
+                 'u_p_VS_npuVtx.pdf': 'u$_{P}$ vs nPU Vtx',
+                 'u_t_VS_npuVtx.pdf': 'u$_{T}$ vs nPU Vtx',
+                 'z_pt_VS_npuVtx.pdf': 'Z p$_{T}$ vs nPU Vtx'}
+
+    tex_lines += r"""
+    \begin{frame}
+    \frametitle{vs nPU}
+    \begin{figure}
+    \captionsetup[subfigure]{labelformat=empty}
+    """
+    for plot in npu_plots:
+        tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
+        tex_lines += r"\includegraphics[width=\linewidth]{"
+        tex_lines += elmupath + plot + r"}" + "\n"
+        tex_lines += r"\caption{" + npu_plots[plot] + r"}" + "\n"
+        tex_lines += r"\end{subfigure}" + "\n"
+        tex_lines += r"\hfil"
+    tex_lines += r"""
     \end{figure}
     \end{frame}
     """
@@ -554,15 +582,8 @@ def main():
 
     with open(printoutdir+'validation_plots.tex', 'w') as tex_output:
         tex_output.write(tex_lines)
+        
     print("\n {}validation_plots.tex file is created!\n".format(printoutdir))
-
-    print("Creating pdf output...")
-
-    os.system(
-        'pdflatex --interaction=batchmode {}/validation_plots.tex 2>&1 > /dev/null'.format(printoutdir))
-
-    os.system('open validation_plots.pdf')
-
 
 if __name__ == "__main__":
     main()
