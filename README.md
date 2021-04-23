@@ -78,23 +78,23 @@ If you have run steps 1 and 2 on a computer network other than LXPLUS, copy your
 sh postPlots.sh -i mynewplotdir/ -o delphes_validation/mynewplotdir/ -s PhotonFlat0to150_0PU
 ```
 
-4. Presentation file. If folders that contain the pdf/png files are stored inside a parent directory and named exactly as: "TauTag", "BTag", "ELMu", "Photon" and "QCD", then pass only that parent directory.
+4. Presentation file. If folders that contain the pdf/png files are stored inside a parent directory and are named exactly as: "TauTag", "BTag", "ELMu", "Photon" and "QCD", then pass only that parent directory along with the directory for tex output:
 
 ```
-python -u doPDF.py --parentpath path_to_plots/ -o output_dir_path/
+python -u doPDF.py --parentpath path_to_plots/ -o output_dir/
 ```
 
-Else, specify each of them such as:
+Else, specify each of them as in the followings:
 
 ```
-python -u doPDF.py -b path/to/Btag_plots/ -e path/to/ELMu_plots/ -g path/to/Photon_plots/ -q path/to/QCD_plots/ -t path/to/TauTag_plots/ -o output_dir_path/
+python -u doPDF.py -b path/to/Btag_plots/ -e path/to/ELMu_plots/ -g path/to/Photon_plots/ -q path/to/QCD_plots/ -t path/to/TauTag_plots/ -o output_dir/
 ```
+
 Finally run the tex file:
 ```
-cd output_dir_path/
+cd output_dir/
 pdflatex validation_plots.tex
 ```
-
 
 Use steer script to do validation for any objects, plot and post
 ================================================================
