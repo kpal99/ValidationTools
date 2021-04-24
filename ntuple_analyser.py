@@ -1015,11 +1015,13 @@ def main():
     elif obj=="jetchs" or obj=="jetpuppi":
         params = {
             "dR": 0.2,
-            "ptRatio": 2.0,
-            "ptMin": 20,
+            "ptRatio": 5.0,
+            "ptMin": 5,
+            "sliceSplit": 1,
+            #"etaSlices": [[0, 1.5], [1.5, 3.0], [3.0, 4.0], [4.0, 5.0], [5.0,1e5] ], ## use 1e5 as "Inf"
+            #"ptSlices": [[20, 50], [50, 100], [100, 200], [200, 500], [500, 1e5] ],
             "etaSlices": [[0, 1.5], [1.5, 3.0], [3.0, 4.0], [4.0, 5.0], [5.0,1e5] ], ## use 1e5 as "Inf"
-            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 500], [500, 1e5] ],
-            "sliceSplit": 1, # for 2D map, make N divisions of each slice
+            "ptSlices": [[15, 20],[20, 30],[30, 50], [50, 75],[75, 100], [100, 150], [150, 200], [200, 500], [500, 1000], [1000, 1e5] ],
             "plotPtRange": [0, 1500],
             "plotEtaRange": [-5, 5],
             "plotPhiRange": [-5, 5],
@@ -1038,7 +1040,7 @@ def main():
                 ["tightIDifReco",2,-1,1,"#varepsilon(tightID)"],      ## IDs on reco-matched gen (eff only)
                 ], 
             }
-        if dumptcl: params["sliceSplit"] = 1
+        if dumptcl: params["sliceSplit"] = 3
     elif obj == "photon": 
         params = {
             "dR": 0.1,
@@ -1416,7 +1418,12 @@ def main():
                     hists["gen"+obj+"_matched_eta"].Fill(g.eta())
                     hists["gen"+obj+"_matched_phi"].Fill(g.phi())
                     hists["gen"+obj+"_matched_mass"].Fill(g.mass())
-            
+           
+
+                    ### produce response plots vs in bin of RECO pt,eta instead of gen, since JECs with be applied based on RECO info only 
+                    reco_pt = p_tvectors[matchindex].Pt()
+                    reco_eta = p_tvectors[matchindex].Eta()
+ 
                     ## Fill ptresponse hists and resolution plots              
                     if len(params["ids"]) > 0:
                         for quality in params["ids"]:
@@ -1428,14 +1435,17 @@ def main():
                                 ## here fill resolution 
                                 for ptbin in params["ptSlices"]:
                                     for etabin in params["etaSlices"]:
-                                        if g.pt() > ptbin[0] and g.pt() < ptbin[1] and abs(g.eta()) > etabin[0] and abs(g.eta()) < etabin[1] :
+                                        #if g.pt() > ptbin[0] and g.pt() < ptbin[1] and abs(g.eta()) > etabin[0] and abs(g.eta()) < etabin[1] :
+                                        if reco_pt > ptbin[0] and reco_pt < ptbin[1] and abs(reco_eta) > etabin[0] and abs(reco_eta) < etabin[1] :
                                             hname = "{}_resolution_pt_{}_{}_eta_{}_{}".format(quality[0], ptbin[0],  ptbin[1], etabin[0], etabin[1])
                                             hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
                                             hists[obj+"_"+hname].Fill(p_tvectors[matchindex].Pt()/g.pt())
         
                     else:
-                        hists[obj+"_ptresponse_to_eta"].Fill(g.eta(), p_tvectors[matchindex].Pt()/g.pt())
-                        hists[obj+"_ptresponse_to_pt"].Fill(g.pt(), p_tvectors[matchindex].Pt()/g.pt())
+                        #hists[obj+"_ptresponse_to_eta"].Fill(g.eta(), p_tvectors[matchindex].Pt()/g.pt())
+                        hists[obj+"_ptresponse_to_eta"].Fill(reco_eta, reco_pt/g.pt())
+                        #hists[obj+"_ptresponse_to_pt"].Fill(g.pt(), p_tvectors[matchindex].Pt()/g.pt())
+                        hists[obj+"_ptresponse_to_pt"].Fill(reco_pt, reco_pt/g.pt())
         
                         for ptbin in params["ptSlices"]:
                             for etabin in params["etaSlices"]:
