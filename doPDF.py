@@ -256,7 +256,7 @@ def main():
     parser.add_option('-o', '--outDir',
                       dest='printoutdir',
                       help='output directory for PDF file [%default]',
-                      default='pdfOutput/',
+                      default='texOutput/',
                       type='string')
     parser.add_option('-b', '--btagpath',
                       dest='btagpath',
@@ -316,6 +316,7 @@ def main():
     \setbeamertemplate{navigation symbols}{}
     \setbeamersize{text margin left=0mm,text margin right=0mm}
     \usepackage{graphicx}
+    \usepackage{bookmark}
     \usepackage{caption,subcaption}
     \graphicspath{ {.} }
     \usepackage[utf8]{inputenc}
@@ -342,18 +343,18 @@ def main():
     path = elmupath
     os.system('cd {}'.format(path))
     tex_lines += r"\section{Electron}" + "\n" + r"\subsection{Efficiency}"
-    tex_lines += texoutput('efficiency', 'electron', 'eta', 'looseID')
-    tex_lines += texoutput('efficiency', 'electron', 'eta', 'mediumID')
-    tex_lines += texoutput('efficiency', 'electron', 'eta', 'tightID')
-    tex_lines += texoutput('efficiency', 'electron', 'pt', 'looseID')
-    tex_lines += texoutput('efficiency', 'electron', 'pt', 'mediumID')
-    tex_lines += texoutput('efficiency', 'electron', 'pt', 'tightID')
+    tex_lines += texoutput('efficiency', 'electron', 'eta', 'looseIDISO')
+    tex_lines += texoutput('efficiency', 'electron', 'eta', 'mediumIDISO')
+    tex_lines += texoutput('efficiency', 'electron', 'eta', 'tightIDISO')
+    tex_lines += texoutput('efficiency', 'electron', 'pt', 'looseIDISO')
+    tex_lines += texoutput('efficiency', 'electron', 'pt', 'mediumIDISO')
+    tex_lines += texoutput('efficiency', 'electron', 'pt', 'tightIDISO')
 
     plots_list = os.listdir(qcdpath)
     path = qcdpath
     os.system('cd {}'.format(path))
 
-    tex_lines += "\n" + r"\subsection{Fakerate reco*ID*ISO}"
+    tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseIDISO')
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumIDISO')
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'tightIDISO')
@@ -364,7 +365,7 @@ def main():
     plots_list = os.listdir(elmupath)
     path = elmupath
     os.system('cd {}'.format(path))
-    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
+    tex_lines += "\n" + r"\subsection{Response}"
     tex_lines += texoutput('ptresponse', 'electron', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'electron', 'pt', 'tightID')
     tex_lines += "\n" + r"\subsection{Resolution}"
@@ -375,17 +376,17 @@ def main():
     path = elmupath
     os.system('cd {}'.format(path))
     tex_lines += r"\section{Muon}" + "\n" + r"\subsection{Efficiency}"
-    tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseID')
-    tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumID')
-    tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightID')
-    tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseID')
-    tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumID')
-    tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightID')
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseIDISO')
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumIDISO')
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightIDISO')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseIDISO')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumIDISO')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightIDISO')
 
     plots_list = os.listdir(qcdpath)
     path = qcdpath
     os.system('cd {}'.format(path))
-    tex_lines += "\n" + r"\subsection{Fakerate reco*ID*ISO}"
+    tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseIDISO')
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumIDISO')
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'tightIDISO')
@@ -396,7 +397,7 @@ def main():
     plots_list = os.listdir(elmupath)
     path = elmupath
     os.system('cd {}'.format(path))
-    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
+    tex_lines += "\n" + r"\subsection{Response}"
     tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
     tex_lines += "\n" + r"\subsection{Resolution}"
@@ -407,16 +408,16 @@ def main():
     path = gammapath
     os.system('cd {}'.format(path))
     tex_lines += r"\section{Photon}" + "\n" + r"\subsection{Efficiency}"
-    tex_lines += texoutput('efficiency', 'photon', 'eta', 'looseID')
-    tex_lines += texoutput('efficiency', 'photon', 'eta', 'mediumID')
-    tex_lines += texoutput('efficiency', 'photon', 'eta', 'tightID')
-    tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseID')
-    tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumID')
-    tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightID')
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'looseIDISO')
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'mediumIDISO')
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'tightIDISO')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseIDISO')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumIDISO')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightIDISO')
     plots_list = os.listdir(qcdpath)
     path = qcdpath
     os.system('cd {}'.format(path))
-    tex_lines += "\n" + r"\subsection{Fakerate reco*ID*ISO}"
+    tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseIDISO')
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumIDISO')
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'tightIDISO')
@@ -426,7 +427,7 @@ def main():
     plots_list = os.listdir(gammapath)
     path = gammapath
     os.system('cd {}'.format(path))
-    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
+    tex_lines += "\n" + r"\subsection{Response}"
     tex_lines += texoutput('ptresponse', 'photon', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'photon', 'pt', 'tightID')
     tex_lines += "\n" + r"\subsection{Resolution}"
@@ -444,7 +445,7 @@ def main():
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'reco')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'reco')
-    tex_lines += "\n" + r"\subsection{$ p_{T} $ response}"
+    tex_lines += "\n" + r"\subsection{Response}"
     tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
     tex_lines += "\n" + r"\subsection{Resolution}"
@@ -455,14 +456,14 @@ def main():
     path = elmupath
     os.system('cd {}'.format(elmupath))
     os.system('cp met_figure.pdf {}'.format(printoutdir))
+    os.system('cp empty.png {}'.format(printoutdir))
     tex_lines += "\n" + r"\section{MET}" + "\n" + r"\subsection{MET}"
 
-    met_plots = {'met.pdf': 'Missing E$_{T}$',
-                 'met_p.pdf': 'Parr. Miss. E$_{T}$',
-                 'met_t.pdf': 'Perp. Miss. E$_{T}$',
-                 'u_t.pdf': 'u$_{T}$',
-                 'u_p.pdf': 'u$_{P}$',
-                 'z_pt.pdf': 'p$_{T}$(Z)'}
+    met_plots = {'met.pdf': 'MET',
+                 'met_VS_npuVtx.pdf': 'MET vs nPU Vertices',
+                 'met_VS_genz_pt.pdf': 'MET vs p$_{T}$(gen Z)',
+                 'met_VS_genht_pt30_eta5.pdf': 'MET vs H$_{T}$ gen',
+                 }
     tex_lines += r"""
     \begin{frame}
     \frametitle{MET}
@@ -484,26 +485,216 @@ def main():
     \end{figure}
     \end{frame}
     """
-
-    npu_plots = {'met_VS_npuVtx.pdf': 'MET vs nPU Vtx',
-                 'u_p_VS_npuVtx.pdf': 'u$_{P}$ vs nPU Vtx',
-                 'u_t_VS_npuVtx.pdf': 'u$_{T}$ vs nPU Vtx',
-                 'z_pt_VS_npuVtx.pdf': 'Z p$_{T}$ vs nPU Vtx'}
-
+    
+    # MET Transverse
+    
+    met_plots = {'met_t.pdf': 'MET$_{T}$',
+                 'met_t_VS_npuVtx.pdf': 'MET$_{T}$ vs nPU Vertices',
+                 'met_t_VS_genz_pt.pdf': 'MET$_{T}$ vs p$_{T}$(gen Z)',
+                 'met_t_VS_genht_pt30_eta5.pdf': 'MET$_{T}$ vs H$_{T}$ gen',
+                 }
     tex_lines += r"""
     \begin{frame}
-    \frametitle{vs nPU}
+    \frametitle{MET(Transverse)}
     \begin{figure}
     \captionsetup[subfigure]{labelformat=empty}
     """
-    for plot in npu_plots:
+    for plot in met_plots:
         tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
         tex_lines += r"\includegraphics[width=\linewidth]{"
         tex_lines += elmupath + plot + r"}" + "\n"
-        tex_lines += r"\caption{" + npu_plots[plot] + r"}" + "\n"
+        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
         tex_lines += r"\end{subfigure}" + "\n"
         tex_lines += r"\hfil"
     tex_lines += r"""
+    \begin{subfigure}{0.32\textwidth}
+    \includegraphics[width=\linewidth]{met_figure.pdf}
+    \end{subfigure}
+    \hfil
+    \end{figure}
+    \end{frame}
+    """
+
+    # MET Parallel
+    
+    met_plots = {'met_p.pdf': 'MET$_{P}$',
+                 'met_p_VS_npuVtx.pdf': 'MET$_{P}$ vs nPU Vertices',
+                 'met_p_VS_genz_pt.pdf': 'MET$_{P}$ vs p$_{T}$(gen Z)',
+                 'met_p_VS_genht_pt30_eta5.pdf': 'MET$_{P}$ vs H$_{T}$ gen',
+                 }
+    tex_lines += r"""
+    \begin{frame}
+    \frametitle{MET(Parallel)}
+    \begin{figure}
+    \captionsetup[subfigure]{labelformat=empty}
+    """
+    for plot in met_plots:
+        tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
+        tex_lines += r"\includegraphics[width=\linewidth]{"
+        tex_lines += elmupath + plot + r"}" + "\n"
+        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += r"\end{subfigure}" + "\n"
+        tex_lines += r"\hfil"
+    tex_lines += r"""
+    \begin{subfigure}{0.32\textwidth}
+    \includegraphics[width=\linewidth]{met_figure.pdf}
+    \end{subfigure}
+    \hfil
+    \end{figure}
+    \end{frame}
+    """
+
+    # Transverse Recoil
+
+    tex_lines += "\n" + r"\subsection{Recoil}"
+
+    met_plots = {'u_t.pdf': 'Recoil$_{T}$',
+                 'u_t_VS_npuVtx.pdf': 'Recoil$_{T}$ vs nPU Vertices',
+                 'u_t_VS_genz_pt.pdf': 'Recoil$_{T}$ vs p$_{T}$(gen Z)',
+                 'u_t_VS_genht_pt30_eta5.pdf': 'Recoil$_{T}$ vs H$_{T}$ gen',
+                 }
+    tex_lines += r"""
+    \begin{frame}
+    \frametitle{Recoil(Transverse)}
+    \begin{figure}
+    \captionsetup[subfigure]{labelformat=empty}
+    """
+    for plot in met_plots:
+        tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
+        tex_lines += r"\includegraphics[width=\linewidth]{"
+        tex_lines += elmupath + plot + r"}" + "\n"
+        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += r"\end{subfigure}" + "\n"
+        tex_lines += r"\hfil"
+    tex_lines += r"""
+    \begin{subfigure}{0.32\textwidth}
+    \includegraphics[width=\linewidth]{met_figure.pdf}
+    \end{subfigure}
+    \hfil
+    \end{figure}
+    \end{frame}
+    """
+
+    # Parallel Recoil
+
+    met_plots = {'u_p.pdf': 'Recoil$_{P}$',
+                 'u_p_VS_npuVtx.pdf': 'Recoil$_{P}$ vs nPU Vertices',
+                 'u_p_VS_genz_pt.pdf': 'Recoil$_{P}$ vs p$_{T}$(gen Z)',
+                 'u_p_VS_genht_pt30_eta5.pdf': 'Recoil$_{P}$ vs H$_{T}$ gen',
+                 }
+    tex_lines += r"""
+    \begin{frame}
+    \frametitle{Recoil(Parallel)}
+    \begin{figure}
+    \captionsetup[subfigure]{labelformat=empty}
+    """
+    for plot in met_plots:
+        tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
+        tex_lines += r"\includegraphics[width=\linewidth]{"
+        tex_lines += elmupath + plot + r"}" + "\n"
+        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += r"\end{subfigure}" + "\n"
+        tex_lines += r"\hfil"
+    tex_lines += r"""
+    \begin{subfigure}{0.32\textwidth}
+    \includegraphics[width=\linewidth]{met_figure.pdf}
+    \end{subfigure}
+    \hfil
+    \end{figure}
+    \end{frame}
+    """
+
+    # Transverse Recoil (RMS)
+
+    met_plots = {'ut_rms_VS_npuVtx.pdf': 'Recoil$_{T}$(RMS) vs nPU Vertices',
+                 'ut_rms_VS_genht_pt30_eta5.pdf': 'Recoil$_{T}$(RMS) vs H$_{T}$ gen',
+                 'ut_rms_VS_genz_pt.pdf': 'Recoil$_{T}$(RMS) vs p$_{T}$(gen Z)'
+                 }
+    tex_lines += r"""
+    \begin{frame}
+    \frametitle{Recoil(Transverse)(RMS)}
+    \begin{figure}
+    \captionsetup[subfigure]{labelformat=empty}
+    \begin{subfigure}{0.32\textwidth}
+    \includegraphics[width=\linewidth]{empty.png}
+    \end{subfigure}
+    \hfil
+    """
+    for plot in met_plots:
+        tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
+        tex_lines += r"\includegraphics[width=\linewidth]{"
+        tex_lines += elmupath + plot + r"}" + "\n"
+        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += r"\end{subfigure}" + "\n"
+        tex_lines += r"\hfil"
+    tex_lines += r"""
+    \begin{subfigure}{0.32\textwidth}
+    \includegraphics[width=\linewidth]{met_figure.pdf}
+    \end{subfigure}
+    \hfil
+    \end{figure}
+    \end{frame}
+    """
+    
+    # Parallel Recoil (RMS)
+
+    met_plots = {'up_plus_qt_rms_VS_npuVtx.pdf': 'u$_{P}+$q$_{T}$(RMS) vs nPU Vertices',
+                 'up_plus_qt_rms_VS_genht_pt30_eta5.pdf': 'u$_{P}+$q$_{T}$(RMS) vs H$_{T}$ gen',
+                 'up_plus_qt_rms_VS_genz_pt.pdf': 'u$_{P}+$q$_{T}$(RMS) vs p$_{T}$(gen Z)'
+                 }
+    tex_lines += r"""
+    \begin{frame}
+    \frametitle{u$_{P}+$q$_{T}$(RMS)}
+    \begin{figure}
+    \captionsetup[subfigure]{labelformat=empty}
+    \begin{subfigure}{0.32\textwidth}
+    \includegraphics[width=\linewidth]{empty.png}
+    \end{subfigure}
+    \hfil
+    """
+    for plot in met_plots:
+        tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
+        tex_lines += r"\includegraphics[width=\linewidth]{"
+        tex_lines += elmupath + plot + r"}" + "\n"
+        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += r"\end{subfigure}" + "\n"
+        tex_lines += r"\hfil"
+    tex_lines += r"""
+    \begin{subfigure}{0.32\textwidth}
+    \includegraphics[width=\linewidth]{met_figure.pdf}
+    \end{subfigure}
+    \hfil
+    \end{figure}
+    \end{frame}
+    """
+    
+    # Z
+    
+    tex_lines += "\n" + r"\subsection{Z}"
+
+    met_plots = {'z_pt.pdf': 'p$_{T}$(Z)',
+                 'z_pt_VS_npuVtx.pdf': 'p$_{T}$(Z) vs nPU Vertices',
+                 'z_pt_VS_genz_pt.pdf': 'p$_{T}$(Z) vs Gen p$_{T}$(gen Z)',
+                 'z_pt_VS_genht_pt30_eta5.pdf': 'p$_{T}$(Z) vs H$_{T}$ gen',
+                 }
+    tex_lines += r"""
+    \begin{frame}
+    \frametitle{Z}
+    \begin{figure}
+    \captionsetup[subfigure]{labelformat=empty}
+    """
+    for plot in met_plots:
+        tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
+        tex_lines += r"\includegraphics[width=\linewidth]{"
+        tex_lines += elmupath + plot + r"}" + "\n"
+        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += r"\end{subfigure}" + "\n"
+        tex_lines += r"\hfil"
+    tex_lines += r"""
+    \begin{subfigure}{0.32\textwidth}
+    \includegraphics[width=\linewidth]{met_figure.pdf}
+    \end{subfigure}
+    \hfil
     \end{figure}
     \end{frame}
     """
