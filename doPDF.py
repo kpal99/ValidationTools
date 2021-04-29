@@ -2,7 +2,7 @@ import os
 import optparse
 import re as r
 import operator
-import collections
+from collections import OrderedDict
 
 
 def remove_ch(name):
@@ -68,19 +68,19 @@ def eta_bin(caption):
 def sorter(dictt):
     """Sort resolution plots."""
     batch = {}
-    sorted_dict = collections.OrderedDict()
+    sorted_dict = OrderedDict()
     if plt == "resolution":
         pt_low_pattern = r"[p][t][_]\d+"
         batch_list = []
         for i in range(len(dictt) // 5):
-            batch_list.append(collections.OrderedDict())
+            batch_list.append(OrderedDict())
         for i, caption in enumerate(dictt):
             pt_low = remove_ch(
                 str(r.findall(pt_low_pattern, caption))).lstrip("pt_")
             if i == 0 or i % 5 != 0:
                 batch[int(remove_ch(str(pt_low)))] = [caption, dictt[caption]]
                 batch = sorted(batch.items())
-                batch = collections.OrderedDict(batch)
+                batch = OrderedDict(batch)
                 div = i // 5
                 if i + 1 == len(dictt):
                     batch_list[div].update(batch)
@@ -102,7 +102,7 @@ def sorter(dictt):
             else:
                 batch[int(pt_low)] = [caption, dictt[caption]]
                 batch = sorted(batch.items())
-                batch = collections.OrderedDict(batch)
+                batch = OrderedDict(batch)
         for key in batch:
             sorted_dict[batch[key][0]] = batch[key][1]
     else:
@@ -238,7 +238,7 @@ def texoutput(plt_type, obj, var, wp):
                 name_list[str(cutName(name, plt_type))] = name
                 name_list = sorted(name_list.items(),
                                    key=operator.itemgetter(1))
-            name_list = collections.OrderedDict(name_list)
+            name_list = OrderedDict(name_list)
     name_list = sorter(name_list)
     if len(name_list) > 6:
         tex_line += add_figures(name_list)
@@ -328,9 +328,9 @@ def main():
     \date{\today}
 
     \begin{document}
-    
+
     \section{Cover}
-    
+
     \frame{\titlepage}
 
     """.split("\n"))
@@ -459,11 +459,11 @@ def main():
     os.system('cp empty.png {}'.format(printoutdir))
     tex_lines += "\n" + r"\section{MET}" + "\n" + r"\subsection{MET}"
 
-    met_plots = {'met.pdf': 'MET',
-                 'met_VS_npuVtx.pdf': 'MET vs nPU Vertices',
-                 'met_VS_genz_pt.pdf': 'MET vs p$_{T}$(gen Z)',
-                 'met_VS_genht_pt30_eta5.pdf': 'MET vs H$_{T}$ gen',
-                 }
+    met_plots = [['met.pdf', 'MET'],
+                 ['met_VS_npuVtx.pdf', 'MET vs nPU Vertices'],
+                 ['met_VS_genz_pt.pdf', 'MET vs p$_{T}$(gen Z)'],
+                 ['met_VS_genht_pt30_eta5.pdf', 'MET vs H$_{T}$ gen'],
+                 ]
     tex_lines += r"""
     \begin{frame}
     \frametitle{MET}
@@ -473,8 +473,8 @@ def main():
     for plot in met_plots:
         tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
         tex_lines += r"\includegraphics[width=\linewidth]{"
-        tex_lines += elmupath + plot + r"}" + "\n"
-        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += elmupath + plot[0] + r"}" + "\n"
+        tex_lines += r"\caption{" + plot[1] + r"}" + "\n"
         tex_lines += r"\end{subfigure}" + "\n"
         tex_lines += r"\hfil"
     tex_lines += r"""
@@ -485,14 +485,14 @@ def main():
     \end{figure}
     \end{frame}
     """
-    
+
     # MET Transverse
-    
-    met_plots = {'met_t.pdf': 'MET$_{T}$',
-                 'met_t_VS_npuVtx.pdf': 'MET$_{T}$ vs nPU Vertices',
-                 'met_t_VS_genz_pt.pdf': 'MET$_{T}$ vs p$_{T}$(gen Z)',
-                 'met_t_VS_genht_pt30_eta5.pdf': 'MET$_{T}$ vs H$_{T}$ gen',
-                 }
+
+    met_plots = [['met_t.pdf', 'MET$_{T}$'],
+                 ['met_t_VS_npuVtx.pdf', 'MET$_{T}$ vs nPU Vertices'],
+                 ['met_t_VS_genz_pt.pdf', 'MET$_{T}$ vs p$_{T}$(gen Z)'],
+                 ['met_t_VS_genht_pt30_eta5.pdf', 'MET$_{T}$ vs H$_{T}$ gen'],
+                 ]
     tex_lines += r"""
     \begin{frame}
     \frametitle{MET(Transverse)}
@@ -502,8 +502,8 @@ def main():
     for plot in met_plots:
         tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
         tex_lines += r"\includegraphics[width=\linewidth]{"
-        tex_lines += elmupath + plot + r"}" + "\n"
-        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += elmupath + plot[0] + r"}" + "\n"
+        tex_lines += r"\caption{" + plot[1] + r"}" + "\n"
         tex_lines += r"\end{subfigure}" + "\n"
         tex_lines += r"\hfil"
     tex_lines += r"""
@@ -516,12 +516,13 @@ def main():
     """
 
     # MET Parallel
-    
-    met_plots = {'met_p.pdf': 'MET$_{P}$',
-                 'met_p_VS_npuVtx.pdf': 'MET$_{P}$ vs nPU Vertices',
-                 'met_p_VS_genz_pt.pdf': 'MET$_{P}$ vs p$_{T}$(gen Z)',
-                 'met_p_VS_genht_pt30_eta5.pdf': 'MET$_{P}$ vs H$_{T}$ gen',
-                 }
+
+    met_plots = [['met_p.pdf', 'MET$_{P}$'],
+                 ['met_p_VS_npuVtx.pdf', 'MET$_{P}$ vs nPU Vertices'],
+                 ['met_p_VS_genz_pt.pdf', 'MET$_{P}$ vs p$_{T}$(gen Z)'],
+                 ['met_p_VS_genht_pt30_eta5.pdf', 'MET$_{P}$ vs H$_{T}$ gen'],
+                 ]
+
     tex_lines += r"""
     \begin{frame}
     \frametitle{MET(Parallel)}
@@ -531,8 +532,8 @@ def main():
     for plot in met_plots:
         tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
         tex_lines += r"\includegraphics[width=\linewidth]{"
-        tex_lines += elmupath + plot + r"}" + "\n"
-        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += elmupath + plot[0] + r"}" + "\n"
+        tex_lines += r"\caption{" + plot[1] + r"}" + "\n"
         tex_lines += r"\end{subfigure}" + "\n"
         tex_lines += r"\hfil"
     tex_lines += r"""
@@ -548,11 +549,11 @@ def main():
 
     tex_lines += "\n" + r"\subsection{Recoil}"
 
-    met_plots = {'u_t.pdf': 'Recoil$_{T}$',
-                 'u_t_VS_npuVtx.pdf': 'Recoil$_{T}$ vs nPU Vertices',
-                 'u_t_VS_genz_pt.pdf': 'Recoil$_{T}$ vs p$_{T}$(gen Z)',
-                 'u_t_VS_genht_pt30_eta5.pdf': 'Recoil$_{T}$ vs H$_{T}$ gen',
-                 }
+    met_plots = [['u_t.pdf', 'Recoil$_{T}$'],
+                 ['u_t_VS_npuVtx.pdf', 'Recoil$_{T}$ vs nPU Vertices'],
+                 ['u_t_VS_genz_pt.pdf', 'Recoil$_{T}$ vs p$_{T}$(gen Z)'],
+                 ['u_t_VS_genht_pt30_eta5.pdf', 'Recoil$_{T}$ vs H$_{T}$ gen'],
+                 ]
     tex_lines += r"""
     \begin{frame}
     \frametitle{Recoil(Transverse)}
@@ -562,8 +563,8 @@ def main():
     for plot in met_plots:
         tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
         tex_lines += r"\includegraphics[width=\linewidth]{"
-        tex_lines += elmupath + plot + r"}" + "\n"
-        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += elmupath + plot[0] + r"}" + "\n"
+        tex_lines += r"\caption{" + plot[1] + r"}" + "\n"
         tex_lines += r"\end{subfigure}" + "\n"
         tex_lines += r"\hfil"
     tex_lines += r"""
@@ -577,11 +578,11 @@ def main():
 
     # Parallel Recoil
 
-    met_plots = {'u_p.pdf': 'Recoil$_{P}$',
-                 'u_p_VS_npuVtx.pdf': 'Recoil$_{P}$ vs nPU Vertices',
-                 'u_p_VS_genz_pt.pdf': 'Recoil$_{P}$ vs p$_{T}$(gen Z)',
-                 'u_p_VS_genht_pt30_eta5.pdf': 'Recoil$_{P}$ vs H$_{T}$ gen',
-                 }
+    met_plots = [['u_p.pdf', 'Recoil$_{P}$'],
+                 ['u_p_VS_npuVtx.pdf', 'Recoil$_{P}$ vs nPU Vertices'],
+                 ['u_p_VS_genz_pt.pdf', 'Recoil$_{P}$ vs p$_{T}$(gen Z)'],
+                 ['u_p_VS_genht_pt30_eta5.pdf', 'Recoil$_{P}$ vs H$_{T}$ gen'],
+                 ]
     tex_lines += r"""
     \begin{frame}
     \frametitle{Recoil(Parallel)}
@@ -591,8 +592,8 @@ def main():
     for plot in met_plots:
         tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
         tex_lines += r"\includegraphics[width=\linewidth]{"
-        tex_lines += elmupath + plot + r"}" + "\n"
-        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += elmupath + plot[0] + r"}" + "\n"
+        tex_lines += r"\caption{" + plot[1] + r"}" + "\n"
         tex_lines += r"\end{subfigure}" + "\n"
         tex_lines += r"\hfil"
     tex_lines += r"""
@@ -606,10 +607,10 @@ def main():
 
     # Transverse Recoil (RMS)
 
-    met_plots = {'ut_rms_VS_npuVtx.pdf': 'Recoil$_{T}$(RMS) vs nPU Vertices',
-                 'ut_rms_VS_genht_pt30_eta5.pdf': 'Recoil$_{T}$(RMS) vs H$_{T}$ gen',
-                 'ut_rms_VS_genz_pt.pdf': 'Recoil$_{T}$(RMS) vs p$_{T}$(gen Z)'
-                 }
+    met_plots = [['ut_rms_VS_npuVtx.pdf', 'Recoil$_{T}$(RMS) vs nPU Vertices'],
+                 ['ut_rms_VS_genht_pt30_eta5.pdf', 'Recoil$_{T}$(RMS) vs H$_{T}$ gen]'],
+                 ['ut_rms_VS_genz_pt.pdf', 'Recoil$_{T}$(RMS) vs p$_{T}$(gen Z)']]
+                 
     tex_lines += r"""
     \begin{frame}
     \frametitle{Recoil(Transverse)(RMS)}
@@ -623,8 +624,8 @@ def main():
     for plot in met_plots:
         tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
         tex_lines += r"\includegraphics[width=\linewidth]{"
-        tex_lines += elmupath + plot + r"}" + "\n"
-        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += elmupath + plot[0] + r"}" + "\n"
+        tex_lines += r"\caption{" + plot[1] + r"}" + "\n"
         tex_lines += r"\end{subfigure}" + "\n"
         tex_lines += r"\hfil"
     tex_lines += r"""
@@ -635,13 +636,15 @@ def main():
     \end{figure}
     \end{frame}
     """
-    
+
     # Parallel Recoil (RMS)
 
-    met_plots = {'up_plus_qt_rms_VS_npuVtx.pdf': 'u$_{P}+$q$_{T}$(RMS) vs nPU Vertices',
-                 'up_plus_qt_rms_VS_genht_pt30_eta5.pdf': 'u$_{P}+$q$_{T}$(RMS) vs H$_{T}$ gen',
-                 'up_plus_qt_rms_VS_genz_pt.pdf': 'u$_{P}+$q$_{T}$(RMS) vs p$_{T}$(gen Z)'
-                 }
+    met_plots= [['up_plus_qt_rms_VS_npuVtx.pdf', 'u$_{P}+$q$_{T}$(RMS) vs nPU Vertices'],
+                 ['up_plus_qt_rms_VS_genht_pt30_eta5.pdf',
+                     'u$_{P}+$q$_{T}$(RMS) vs H$_{T}$ gen'],
+                 ['up_plus_qt_rms_VS_genz_pt.pdf',
+                     'u$_{P}+$q$_{T}$(RMS) vs p$_{T}$(gen Z)']
+    ]
     tex_lines += r"""
     \begin{frame}
     \frametitle{u$_{P}+$q$_{T}$(RMS)}
@@ -655,8 +658,8 @@ def main():
     for plot in met_plots:
         tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
         tex_lines += r"\includegraphics[width=\linewidth]{"
-        tex_lines += elmupath + plot + r"}" + "\n"
-        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += elmupath + plot[0] + r"}" + "\n"
+        tex_lines += r"\caption{" + plot[1] + r"}" + "\n"
         tex_lines += r"\end{subfigure}" + "\n"
         tex_lines += r"\hfil"
     tex_lines += r"""
@@ -667,16 +670,16 @@ def main():
     \end{figure}
     \end{frame}
     """
-    
+
     # Z
-    
+
     tex_lines += "\n" + r"\subsection{Z}"
 
-    met_plots = {'z_pt.pdf': 'p$_{T}$(Z)',
-                 'z_pt_VS_npuVtx.pdf': 'p$_{T}$(Z) vs nPU Vertices',
-                 'z_pt_VS_genz_pt.pdf': 'p$_{T}$(Z) vs Gen p$_{T}$(gen Z)',
-                 'z_pt_VS_genht_pt30_eta5.pdf': 'p$_{T}$(Z) vs H$_{T}$ gen',
-                 }
+    met_plots= [['z_pt.pdf', 'p$_{T}$(Z)'],
+                 ['z_pt_VS_npuVtx.pdf', 'p$_{T}$(Z) vs nPU Vertices'],
+                 ['z_pt_VS_genz_pt.pdf', 'p$_{T}$(Z) vs Gen p$_{T}$(gen Z)'],
+                 ['z_pt_VS_genht_pt30_eta5.pdf', 'p$_{T}$(Z) vs H$_{T}$ gen'],
+    ]
     tex_lines += r"""
     \begin{frame}
     \frametitle{Z}
@@ -686,8 +689,8 @@ def main():
     for plot in met_plots:
         tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
         tex_lines += r"\includegraphics[width=\linewidth]{"
-        tex_lines += elmupath + plot + r"}" + "\n"
-        tex_lines += r"\caption{" + met_plots[plot] + r"}" + "\n"
+        tex_lines += elmupath + plot[0] + r"}" + "\n"
+        tex_lines += r"\caption{" + plot[1] + r"}" + "\n"
         tex_lines += r"\end{subfigure}" + "\n"
         tex_lines += r"\hfil"
     tex_lines += r"""
@@ -700,8 +703,8 @@ def main():
     """
 
     # Btag
-    plots_list = os.listdir(btagpath)
-    path = btagpath
+    plots_list= os.listdir(btagpath)
+    path= btagpath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\section{Btag}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'looseID')
@@ -711,8 +714,8 @@ def main():
     tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'mediumID')
     tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'tightID')
 
-    plots_list = os.listdir(btagpath)
-    path = btagpath
+    plots_list= os.listdir(btagpath)
+    path= btagpath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Btag Light MisTag Rate}"
     tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'looseID')
@@ -731,8 +734,8 @@ def main():
     tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'tightID')
 
     # Tau
-    plots_list = os.listdir(taupath)
-    path = taupath
+    plots_list= os.listdir(taupath)
+    path= taupath
     os.system('cd {}'.format(path))
     tex_lines += r"\section{Tau}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('tautagRate', 'tau', 'eta', 'looseID')
@@ -758,8 +761,8 @@ def main():
     tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'mediumID')
     tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
 
-    plots_list = os.listdir(elmupath)
-    path = elmupath
+    plots_list= os.listdir(elmupath)
+    path= elmupath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Tau Electron MisTag Rate}"
     tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'looseID')
@@ -773,8 +776,9 @@ def main():
 
     with open(printoutdir+'validation_plots.tex', 'w') as tex_output:
         tex_output.write(tex_lines)
-        
+
     print("\n {}validation_plots.tex file is created!\n".format(printoutdir))
+
 
 if __name__ == "__main__":
     main()
