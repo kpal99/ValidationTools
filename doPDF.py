@@ -4,6 +4,13 @@ import re as r
 import operator
 from collections import OrderedDict
 
+def change_path(plots_path):
+    global plots_list
+    global path
+    plots_list = os.listdir(plots_path)
+    path = plots_path
+    os.system('cd {}'.format(plots_path))
+    return plots_list, path
 
 def remove_ch(name):
     """Removes excess dirt."""
@@ -335,13 +342,8 @@ def main():
 
     """.split("\n"))
 
-    global plots_list
-    global path
-
     # Electron
-    plots_list = os.listdir(elmupath)
-    path = elmupath
-    os.system('cd {}'.format(path))
+    change_path(elmupath)
     tex_lines += r"\section{Electron}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'electron', 'eta', 'looseIDISO')
     tex_lines += texoutput('efficiency', 'electron', 'eta', 'mediumIDISO')
@@ -350,10 +352,7 @@ def main():
     tex_lines += texoutput('efficiency', 'electron', 'pt', 'mediumIDISO')
     tex_lines += texoutput('efficiency', 'electron', 'pt', 'tightIDISO')
 
-    plots_list = os.listdir(qcdpath)
-    path = qcdpath
-    os.system('cd {}'.format(path))
-
+    change_path(qcdpath)
     tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseIDISO')
     tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumIDISO')
@@ -362,9 +361,7 @@ def main():
     tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumIDISO')
     tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightIDISO')
 
-    plots_list = os.listdir(elmupath)
-    path = elmupath
-    os.system('cd {}'.format(path))
+    change_path(elmupath)
     tex_lines += "\n" + r"\subsection{Response}"
     tex_lines += texoutput('ptresponse', 'electron', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'electron', 'pt', 'tightID')
@@ -372,9 +369,6 @@ def main():
     tex_lines += texoutput('resolution', 'electron', 'pt', 'tightID')
 
     # Muon
-    plots_list = os.listdir(elmupath)
-    path = elmupath
-    os.system('cd {}'.format(path))
     tex_lines += r"\section{Muon}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseIDISO')
     tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumIDISO')
@@ -383,9 +377,7 @@ def main():
     tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumIDISO')
     tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightIDISO')
 
-    plots_list = os.listdir(qcdpath)
-    path = qcdpath
-    os.system('cd {}'.format(path))
+    change_path(qcdpath)
     tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseIDISO')
     tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumIDISO')
@@ -394,9 +386,7 @@ def main():
     tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumIDISO')
     tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightIDISO')
 
-    plots_list = os.listdir(elmupath)
-    path = elmupath
-    os.system('cd {}'.format(path))
+    change_path(elmupath)
     tex_lines += "\n" + r"\subsection{Response}"
     tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
@@ -404,9 +394,7 @@ def main():
     tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
 
     # Photon
-    plots_list = os.listdir(gammapath)
-    path = gammapath
-    os.system('cd {}'.format(path))
+    change_path(gammapath)
     tex_lines += r"\section{Photon}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'photon', 'eta', 'looseIDISO')
     tex_lines += texoutput('efficiency', 'photon', 'eta', 'mediumIDISO')
@@ -414,9 +402,8 @@ def main():
     tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseIDISO')
     tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumIDISO')
     tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightIDISO')
-    plots_list = os.listdir(qcdpath)
-    path = qcdpath
-    os.system('cd {}'.format(path))
+    
+    change_path(qcdpath)
     tex_lines += "\n" + r"\subsection{Fakerate}"
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseIDISO')
     tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumIDISO')
@@ -424,9 +411,8 @@ def main():
     tex_lines += texoutput('fakerate', 'photon', 'pt', 'looseIDISO')
     tex_lines += texoutput('fakerate', 'photon', 'pt', 'mediumIDISO')
     tex_lines += texoutput('fakerate', 'photon', 'pt', 'tightIDISO')
-    plots_list = os.listdir(gammapath)
-    path = gammapath
-    os.system('cd {}'.format(path))
+    
+    change_path(gammapath)
     tex_lines += "\n" + r"\subsection{Response}"
     tex_lines += texoutput('ptresponse', 'photon', 'eta', 'tightID')
     tex_lines += texoutput('ptresponse', 'photon', 'pt', 'tightID')
@@ -434,9 +420,7 @@ def main():
     tex_lines += texoutput('resolution', 'photon', 'pt', 'tightID')
 
     # Jetpuppi
-    plots_list = os.listdir(qcdpath)
-    path = qcdpath
-    os.system('cd {}'.format(qcdpath))
+    change_path(qcdpath)
     tex_lines += "\n" + r"\section{Jetpuppi}" + \
         "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
@@ -452,11 +436,8 @@ def main():
     tex_lines += texoutput('resolution', 'jetpuppi', 'pt', 'tightID')
 
     # MET
-    plots_list = os.listdir(elmupath)
-    path = elmupath
-    os.system('cd {}'.format(elmupath))
+    change_path(elmupath)
     os.system('cp met_figure.pdf {}'.format(printoutdir))
-    os.system('cp empty.png {}'.format(printoutdir))
     tex_lines += "\n" + r"\section{MET}" + "\n" + r"\subsection{MET}"
 
     met_plots = [['met.pdf', 'MET'],
@@ -545,18 +526,18 @@ def main():
     \end{frame}
     """
 
-    # Transverse Recoil
+    # U_{T}
 
-    tex_lines += "\n" + r"\subsection{Recoil}"
+    tex_lines += "\n" + r"\subsection{U}"
 
-    met_plots = [['u_t.pdf', 'Recoil$_{T}$'],
-                 ['u_t_VS_npuVtx.pdf', 'Recoil$_{T}$ vs nPU Vertices'],
-                 ['u_t_VS_genz_pt.pdf', 'Recoil$_{T}$ vs p$_{T}$(gen Z)'],
-                 ['u_t_VS_genht_pt30_eta5.pdf', 'Recoil$_{T}$ vs H$_{T}$ gen'],
+    met_plots = [['u_t.pdf', 'u$_{T}$'],
+                 ['u_t_VS_npuVtx.pdf', 'u$_{T}$ vs nPU Vertices'],
+                 ['u_t_VS_genz_pt.pdf', 'u$_{T}$ vs p$_{T}$(gen Z)'],
+                 ['u_t_VS_genht_pt30_eta5.pdf', 'u$_{T}$ vs H$_{T}$ gen'],
                  ]
     tex_lines += r"""
     \begin{frame}
-    \frametitle{Recoil(Transverse)}
+    \frametitle{U$_{T}$}
     \begin{figure}
     \captionsetup[subfigure]{labelformat=empty}
     """
@@ -576,16 +557,16 @@ def main():
     \end{frame}
     """
 
-    # Parallel Recoil
+    # U_{P}
 
-    met_plots = [['u_p.pdf', 'Recoil$_{P}$'],
-                 ['u_p_VS_npuVtx.pdf', 'Recoil$_{P}$ vs nPU Vertices'],
-                 ['u_p_VS_genz_pt.pdf', 'Recoil$_{P}$ vs p$_{T}$(gen Z)'],
-                 ['u_p_VS_genht_pt30_eta5.pdf', 'Recoil$_{P}$ vs H$_{T}$ gen'],
+    met_plots = [['u_p.pdf', 'u$_{P}$'],
+                 ['u_p_VS_npuVtx.pdf', 'u$_{P}$ vs nPU Vertices'],
+                 ['u_p_VS_genz_pt.pdf', 'u$_{P}$ vs p$_{T}$(gen Z)'],
+                 ['u_p_VS_genht_pt30_eta5.pdf', 'u$_{P}$ vs H$_{T}$ gen'],
                  ]
     tex_lines += r"""
     \begin{frame}
-    \frametitle{Recoil(Parallel)}
+    \frametitle{U$_{P}$}
     \begin{figure}
     \captionsetup[subfigure]{labelformat=empty}
     """
@@ -605,16 +586,16 @@ def main():
     \end{frame}
     """
 
-    # Transverse Recoil (RMS)
+    # U_{T} (RMS)
 
-    met_plots = [['u_t.pdf', 'Recoil$_{T}$'],
-                 ['ut_rms_VS_npuVtx.pdf', 'Recoil$_{T}$(RMS) vs nPU Vertices'],
-                 ['ut_rms_VS_genht_pt30_eta5.pdf', 'Recoil$_{T}$(RMS) vs H$_{T}$ gen]'],
-                 ['ut_rms_VS_genz_pt.pdf', 'Recoil$_{T}$(RMS) vs p$_{T}$(gen Z)']]
+    met_plots = [['u_t.pdf', 'u$_{T}$'],
+                 ['ut_rms_VS_npuVtx.pdf', 'u$_{T}$(RMS) vs nPU Vertices'],
+                 ['ut_rms_VS_genz_pt.pdf', 'u$_{T}$(RMS) vs p$_{T}$(gen Z)'],
+                 ['ut_rms_VS_genht_pt30_eta5.pdf', 'u$_{T}$(RMS) vs H$_{T}$ gen']]
 
     tex_lines += r"""
     \begin{frame}
-    \frametitle{Recoil(Transverse)(RMS)}
+    \frametitle{U$_{T}$(RMS)}
     \begin{figure}
     \captionsetup[subfigure]{labelformat=empty}
     """
@@ -634,14 +615,12 @@ def main():
     \end{frame}
     """
 
-    # Parallel Recoil (RMS)
+    # U_{P} (RMS)
 
-    met_plots = [['u_p.pdf', 'Recoil$_{P}$'],
+    met_plots = [['u_p.pdf', 'u$_{P}$'],
                  ['up_plus_qt_rms_VS_npuVtx.pdf', 'u$_{P}+$q$_{T}$(RMS) vs nPU Vertices'],
-                 ['up_plus_qt_rms_VS_genht_pt30_eta5.pdf',
-                  'u$_{P}+$q$_{T}$(RMS) vs H$_{T}$ gen'],
-                 ['up_plus_qt_rms_VS_genz_pt.pdf',
-                  'u$_{P}+$q$_{T}$(RMS) vs p$_{T}$(gen Z)']
+                 ['up_plus_qt_rms_VS_genz_pt.pdf', 'u$_{P}+$q$_{T}$(RMS) vs p$_{T}$(gen Z)'],
+                 ['up_plus_qt_rms_VS_genht_pt30_eta5.pdf', 'u$_{P}+$q$_{T}$(RMS) vs H$_{T}$ gen']
                  ]
     tex_lines += r"""
     \begin{frame}
@@ -671,7 +650,7 @@ def main():
 
     met_plots = [['z_pt.pdf', 'p$_{T}$(Z)'],
                  ['z_pt_VS_npuVtx.pdf', 'p$_{T}$(Z) vs nPU Vertices'],
-                 ['z_pt_VS_genz_pt.pdf', 'p$_{T}$(Z) vs Gen p$_{T}$(gen Z)'],
+                 ['z_pt_VS_genz_pt.pdf', 'p$_{T}$(Z) vs p$_{T}$(gen Z)'],
                  ['z_pt_VS_genht_pt30_eta5.pdf', 'p$_{T}$(Z) vs H$_{T}$ gen'],
                  ]
     tex_lines += r"""
@@ -697,9 +676,7 @@ def main():
     """
 
     # Btag
-    plots_list = os.listdir(btagpath)
-    path = btagpath
-    os.system('cd {}'.format(path))
+    change_path(btagpath)
     tex_lines += "\n" + r"\section{Btag}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'looseID')
     tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'mediumID')
@@ -708,9 +685,6 @@ def main():
     tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'mediumID')
     tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'tightID')
 
-    plots_list = os.listdir(btagpath)
-    path = btagpath
-    os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Btag Light MisTag Rate}"
     tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'looseID')
     tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'mediumID')
@@ -728,9 +702,7 @@ def main():
     tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'tightID')
 
     # Tau
-    plots_list = os.listdir(taupath)
-    path = taupath
-    os.system('cd {}'.format(path))
+    change_path(taupath)
     tex_lines += r"\section{Tau}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('tautagRate', 'tau', 'eta', 'looseID')
     tex_lines += texoutput('tautagRate', 'tau', 'eta', 'mediumID')
@@ -755,9 +727,7 @@ def main():
     tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'mediumID')
     tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
 
-    plots_list = os.listdir(elmupath)
-    path = elmupath
-    os.system('cd {}'.format(path))
+    change_path(elmupath)
     tex_lines += "\n" + r"\subsection{Tau Electron MisTag Rate}"
     tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'looseID')
     tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'mediumID')
@@ -772,7 +742,6 @@ def main():
         tex_output.write(tex_lines)
 
     print("\n {}validation_plots.tex file is created!\n".format(printoutdir))
-
 
 if __name__ == "__main__":
     main()
