@@ -607,10 +607,10 @@ def main():
 
     # Transverse Recoil (RMS)
 
-    met_plots = [['u_p.pdf', 'Recoil$_{P}$'],
+    met_plots = [['u_t.pdf', 'Recoil$_{T}$'],
                  ['ut_rms_VS_npuVtx.pdf', 'Recoil$_{T}$(RMS) vs nPU Vertices'],
-                ['ut_rms_VS_genht_pt30_eta5.pdf', 'Recoil$_{T}$(RMS) vs H$_{T}$ gen]'],
-                ['ut_rms_VS_genz_pt.pdf', 'Recoil$_{T}$(RMS) vs p$_{T}$(gen Z)']]
+                 ['ut_rms_VS_genht_pt30_eta5.pdf', 'Recoil$_{T}$(RMS) vs H$_{T}$ gen]'],
+                 ['ut_rms_VS_genz_pt.pdf', 'Recoil$_{T}$(RMS) vs p$_{T}$(gen Z)']]
 
     tex_lines += r"""
     \begin{frame}
@@ -636,7 +636,8 @@ def main():
 
     # Parallel Recoil (RMS)
 
-    met_plots = [['up_plus_qt_rms_VS_npuVtx.pdf', 'u$_{P}+$q$_{T}$(RMS) vs nPU Vertices'],
+    met_plots = [['u_p.pdf', 'Recoil$_{P}$'],
+                 ['up_plus_qt_rms_VS_npuVtx.pdf', 'u$_{P}+$q$_{T}$(RMS) vs nPU Vertices'],
                  ['up_plus_qt_rms_VS_genht_pt30_eta5.pdf',
                   'u$_{P}+$q$_{T}$(RMS) vs H$_{T}$ gen'],
                  ['up_plus_qt_rms_VS_genz_pt.pdf',
@@ -647,10 +648,6 @@ def main():
     \frametitle{u$_{P}+$q$_{T}$(RMS)}
     \begin{figure}
     \captionsetup[subfigure]{labelformat=empty}
-    \begin{subfigure}{0.32\textwidth}
-    \includegraphics[width=\linewidth]{empty.png}
-    \end{subfigure}
-    \hfil
     """
     for plot in met_plots:
         tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
