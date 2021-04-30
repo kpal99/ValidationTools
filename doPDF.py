@@ -264,7 +264,7 @@ def add_met_plots(title):
         \begin{frame}
         \frametitle{"""
     tex_lines += title
-    tex_lines += """}
+    tex_lines += r"""}
         \begin{figure}
         \captionsetup[subfigure]{labelformat=empty}
         """
