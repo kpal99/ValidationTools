@@ -607,19 +607,16 @@ def main():
 
     # Transverse Recoil (RMS)
 
-    met_plots = [['ut_rms_VS_npuVtx.pdf', 'Recoil$_{T}$(RMS) vs nPU Vertices'],
-                 ['ut_rms_VS_genht_pt30_eta5.pdf', 'Recoil$_{T}$(RMS) vs H$_{T}$ gen]'],
-                 ['ut_rms_VS_genz_pt.pdf', 'Recoil$_{T}$(RMS) vs p$_{T}$(gen Z)']]
-                 
+    met_plots = [['u_p.pdf', 'Recoil$_{P}$'],
+                 ['ut_rms_VS_npuVtx.pdf', 'Recoil$_{T}$(RMS) vs nPU Vertices'],
+                ['ut_rms_VS_genht_pt30_eta5.pdf', 'Recoil$_{T}$(RMS) vs H$_{T}$ gen]'],
+                ['ut_rms_VS_genz_pt.pdf', 'Recoil$_{T}$(RMS) vs p$_{T}$(gen Z)']]
+
     tex_lines += r"""
     \begin{frame}
     \frametitle{Recoil(Transverse)(RMS)}
     \begin{figure}
     \captionsetup[subfigure]{labelformat=empty}
-    \begin{subfigure}{0.32\textwidth}
-    \includegraphics[width=\linewidth]{empty.png}
-    \end{subfigure}
-    \hfil
     """
     for plot in met_plots:
         tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
@@ -639,12 +636,12 @@ def main():
 
     # Parallel Recoil (RMS)
 
-    met_plots= [['up_plus_qt_rms_VS_npuVtx.pdf', 'u$_{P}+$q$_{T}$(RMS) vs nPU Vertices'],
+    met_plots = [['up_plus_qt_rms_VS_npuVtx.pdf', 'u$_{P}+$q$_{T}$(RMS) vs nPU Vertices'],
                  ['up_plus_qt_rms_VS_genht_pt30_eta5.pdf',
-                     'u$_{P}+$q$_{T}$(RMS) vs H$_{T}$ gen'],
+                  'u$_{P}+$q$_{T}$(RMS) vs H$_{T}$ gen'],
                  ['up_plus_qt_rms_VS_genz_pt.pdf',
-                     'u$_{P}+$q$_{T}$(RMS) vs p$_{T}$(gen Z)']
-    ]
+                  'u$_{P}+$q$_{T}$(RMS) vs p$_{T}$(gen Z)']
+                 ]
     tex_lines += r"""
     \begin{frame}
     \frametitle{u$_{P}+$q$_{T}$(RMS)}
@@ -675,11 +672,11 @@ def main():
 
     tex_lines += "\n" + r"\subsection{Z}"
 
-    met_plots= [['z_pt.pdf', 'p$_{T}$(Z)'],
+    met_plots = [['z_pt.pdf', 'p$_{T}$(Z)'],
                  ['z_pt_VS_npuVtx.pdf', 'p$_{T}$(Z) vs nPU Vertices'],
                  ['z_pt_VS_genz_pt.pdf', 'p$_{T}$(Z) vs Gen p$_{T}$(gen Z)'],
                  ['z_pt_VS_genht_pt30_eta5.pdf', 'p$_{T}$(Z) vs H$_{T}$ gen'],
-    ]
+                 ]
     tex_lines += r"""
     \begin{frame}
     \frametitle{Z}
@@ -703,8 +700,8 @@ def main():
     """
 
     # Btag
-    plots_list= os.listdir(btagpath)
-    path= btagpath
+    plots_list = os.listdir(btagpath)
+    path = btagpath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\section{Btag}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'looseID')
@@ -714,8 +711,8 @@ def main():
     tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'mediumID')
     tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'tightID')
 
-    plots_list= os.listdir(btagpath)
-    path= btagpath
+    plots_list = os.listdir(btagpath)
+    path = btagpath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Btag Light MisTag Rate}"
     tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'looseID')
@@ -734,8 +731,8 @@ def main():
     tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'tightID')
 
     # Tau
-    plots_list= os.listdir(taupath)
-    path= taupath
+    plots_list = os.listdir(taupath)
+    path = taupath
     os.system('cd {}'.format(path))
     tex_lines += r"\section{Tau}" + "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('tautagRate', 'tau', 'eta', 'looseID')
@@ -761,8 +758,8 @@ def main():
     tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'mediumID')
     tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
 
-    plots_list= os.listdir(elmupath)
-    path= elmupath
+    plots_list = os.listdir(elmupath)
+    path = elmupath
     os.system('cd {}'.format(path))
     tex_lines += "\n" + r"\subsection{Tau Electron MisTag Rate}"
     tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'looseID')
