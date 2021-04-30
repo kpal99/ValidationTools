@@ -1779,15 +1779,12 @@ module JetFakeParticle JetFakeMakerLoose {
   set JetOutputArray jets
 
   set EfficiencyFormula {
-  ## DUMMY_ELECTRON_LOOSEID_DUMP
-      {11} {0.02}
-  ## ENDDUMMY_ELECTRON_LOOSEID_DUMP
-  ## DUMMY_MUON_LOOSEID_DUMP
-      {13} {0.02}
-  ## ENDDUMMY_MUON_LOOSEID_DUMP
-  ## DUMMY_PHOTON_LOOSEID_DUMP
-      {22} {0.10} 
-  ## ENDDUMMY_PHOTON_LOOSEID_DUMP
+    {11} {0.01}
+
+    {13} {0.01}
+
+    {22} {0.01}
+
   }
 
 }
@@ -1806,15 +1803,12 @@ module JetFakeParticle JetFakeMakerMedium {
   set JetOutputArray jets
 
   set EfficiencyFormula {
-  ## DUMMY_ELECTRON_MEDIUMID_DUMP
-      {11} {0.01}
-  ## ENDDUMMY_ELECTRON_MEDIUMID_DUMP
-  ## DUMMY_MUON_MEDIUMID_DUMP
-      {13} {0.01}
-  ## ENDDUMMY_MUON_MEDIUMID_DUMP
-  ## DUMMY_PHOTON_MEDIUMID_DUMP
-      {22} {0.05} 
-  ## ENDDUMMY_PHOTON_MEDIUMID_DUMP
+    {11} {0.01}
+
+    {13} {0.01}
+
+    {22} {0.01}
+
   }
 
 }
@@ -1832,15 +1826,12 @@ module JetFakeParticle JetFakeMakerTight {
   set JetOutputArray jets
 
   set EfficiencyFormula {
-  ## DUMMY_ELECTRON_TIGHTID_DUMP
-      {11} {0.005}
-  ## ENDDUMMY_ELECTRON_TIGHTID_DUMP
-  ## DUMMY_MUON_TIGHTID_DUMP
-      {13} {0.005}
-  ## ENDDUMMY_MUON_TIGHTID_DUMP
-  ## DUMMY_PHOTON_TIGHTID_DUMP
-      {22} {0.025} 
-  ## ENDDUMMY_PHOTON_TIGHTID_DUMP
+    {11} {0.01}
+
+    {13} {0.01}
+
+    {22} {0.01}
+
   }
 
 }
@@ -2001,8 +1992,8 @@ module TreeWriter TreeWriter {
   add Branch JetSmearPUPPI/jets JetPUPPI Jet
   add Branch JetSmearPUPPIAK8/jets JetPUPPIAK8 Jet
 
-  add Branch JetLooseID/jets JetLoose Jet
-  add Branch JetTightID/jets JetTight Jet
+  add Branch JetLooseID/jets JetPUPPILoose Jet
+  add Branch JetTightID/jets JetPUPPITight Jet
 
   add Branch Rho/rho Rho Rho
   add Branch PuppiMissingET/momentum PuppiMissingET MissingET
