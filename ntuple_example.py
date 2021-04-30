@@ -50,8 +50,9 @@ def main():
                etap = 999.
             if eta < -10:
                etap = -999.
-
-            print 'N: {:<5}, St: {:<5}, PID: {:<5}, PT: {:<5.2f}, Eta: {:<5.2f}, Phi: {:<5.2f}, M: {:<5.2f},  M1: {:<5}, M2: {:<5}, D1: {:<5}, D2: {:<5}'.format(i, p.status(), p.pid(), p.pt(), etap, p.phi(), p.mass(), p.m1(), p.m2(), p.d1(), p.d2())
+            if abs(p.pid()) == 13:
+            #if 1:
+                print 'N: {:<5}, St: {:<5}, PID: {:<5}, PT: {:<5.2f}, Eta: {:<5.2f}, Phi: {:<5.2f}, M: {:<5.2f},  M1: {:<5}, M2: {:<5}, D1: {:<5}, D2: {:<5}'.format(i, p.status(), p.pid(), p.pt(), etap, p.phi(), p.mass(), p.m1(), p.m2(), p.d1(), p.d2())
             i+=1
 
 
