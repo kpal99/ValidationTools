@@ -72,16 +72,16 @@ def sorter(dictt):
     if plt == "resolution":
         pt_low_pattern = r"[p][t][_]\d+"
         batch_list = []
-        for i in range(len(dictt) // 5):
+        for i in range(len(dictt) // 7):
             batch_list.append(OrderedDict())
         for i, caption in enumerate(dictt):
             pt_low = remove_ch(
                 str(r.findall(pt_low_pattern, caption))).lstrip("pt_")
-            if i == 0 or i % 5 != 0:
+            if i == 0 or i % 7 != 0:
                 batch[int(remove_ch(str(pt_low)))] = [caption, dictt[caption]]
                 batch = sorted(batch.items())
                 batch = OrderedDict(batch)
-                div = i // 5
+                div = i // 7
                 if i + 1 == len(dictt):
                     batch_list[div].update(batch)
             else:
@@ -143,7 +143,6 @@ def res_bin_edit(caption):
         new_caption += " p_{T} > " + pt_low + " $"
     else:
         new_caption += pt_low + " < p_{T} < " + pt_high + " $"
-
     return new_caption
 
 
