@@ -19,9 +19,9 @@ def cutName(name, plt_type):
     else:
         cut_pattern = r"(\d+\w*\d*)"
     cut_name = r.findall(cut_pattern, name)
-    cut_name_prop = [name.replace("p", ".").replace(
+    new_cut_name = [name.replace("p", ".").replace(
         ".t", "pt") for name in cut_name]
-    return cut_name_prop
+    return new_cut_name
 
 
 def pt_bin(caption):
@@ -72,16 +72,21 @@ def sorter(dictt):
     if plt == "resolution":
         pt_low_pattern = r"[p][t][_]\d+"
         batch_list = []
-        for i in range(len(dictt) // 7):
-            batch_list.append(OrderedDict())
+        unique_pt_values = []
+        for caption in dictt:
+            pt_low = remove_ch(str(r.findall(pt_low_pattern, caption))).lstrip("pt_")
+            if pt_low not in unique_pt_values:
+                unique_pt_values.append(pt_low)
+                batch_list.append(OrderedDict())
+        batch_size = len(batch_list)
         for i, caption in enumerate(dictt):
             pt_low = remove_ch(
                 str(r.findall(pt_low_pattern, caption))).lstrip("pt_")
-            if i == 0 or i % 7 != 0:
+            if i == 0 or i % batch_size != 0:
                 batch[int(remove_ch(str(pt_low)))] = [caption, dictt[caption]]
                 batch = sorted(batch.items())
                 batch = OrderedDict(batch)
-                div = i // 7
+                div = i // batch_size
                 if i + 1 == len(dictt):
                     batch_list[div].update(batch)
             else:
@@ -129,7 +134,7 @@ def res_bin_edit(caption):
 
     pt_low = remove_ch(str(r.findall(pt_low_pattern, caption))).lstrip("pt_")
     pt_high = remove_ch(
-        str(r.findall(pt_high_pattern, caption))).lstrip("pt_" + pt_low)
+        str(r.findall(pt_high_pattern, caption))).lstrip('pt_').replace(pt_low+'_', '')
     pt_highest = remove_ch(
         str(r.findall(pt_highest_pattern, caption)))
 
@@ -181,7 +186,6 @@ def subfigure(figure, caption):
 
     if 'pt_' in figure and 'eta' not in figure:
         caption = eta_bin(caption)
-
     if 'eta' in figure and 'pt_' in figure:  # resolution bins
         caption = res_bin_edit(caption)
 
@@ -372,98 +376,24 @@ def main():
 
     """.split("\n"))
 
-    # Electron
-    change_path(elmupath)
-    tex_lines += r"\section{Electron}" + "\n" + r"\subsection{Efficiency}"
-    tex_lines += texoutput('efficiency', 'electron', 'eta', 'looseIDISO')
-    tex_lines += texoutput('efficiency', 'electron', 'eta', 'mediumIDISO')
-    tex_lines += texoutput('efficiency', 'electron', 'eta', 'tightIDISO')
-    tex_lines += texoutput('efficiency', 'electron', 'pt', 'looseIDISO')
-    tex_lines += texoutput('efficiency', 'electron', 'pt', 'mediumIDISO')
-    tex_lines += texoutput('efficiency', 'electron', 'pt', 'tightIDISO')
-
-    change_path(qcdpath)
-    tex_lines += "\n" + r"\subsection{Fakerate}"
-    tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseIDISO')
-    tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumIDISO')
-    tex_lines += texoutput('fakerate', 'electron', 'eta', 'tightIDISO')
-    tex_lines += texoutput('fakerate', 'electron', 'pt', 'looseIDISO')
-    tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumIDISO')
-    tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightIDISO')
-
-    change_path(elmupath)
-    tex_lines += "\n" + r"\subsection{Response}"
-    tex_lines += texoutput('ptresponse', 'electron', 'eta', 'tightID')
-    tex_lines += texoutput('ptresponse', 'electron', 'pt', 'tightID')
-    tex_lines += "\n" + r"\subsection{Resolution}"
-    tex_lines += texoutput('resolution', 'electron', 'pt', 'tightID')
-
-    # Muon
-    tex_lines += r"\section{Muon}" + "\n" + r"\subsection{Efficiency}"
-    tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseIDISO')
-    tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumIDISO')
-    tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightIDISO')
-    tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseIDISO')
-    tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumIDISO')
-    tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightIDISO')
-
-    change_path(qcdpath)
-    tex_lines += "\n" + r"\subsection{Fakerate}"
-    tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseIDISO')
-    tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumIDISO')
-    tex_lines += texoutput('fakerate', 'muon', 'eta', 'tightIDISO')
-    tex_lines += texoutput('fakerate', 'muon', 'pt', 'looseIDISO')
-    tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumIDISO')
-    tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightIDISO')
-
-    change_path(elmupath)
-    tex_lines += "\n" + r"\subsection{Response}"
-    tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
-    tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
-    tex_lines += "\n" + r"\subsection{Resolution}"
-    tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
-
-    # Photon
-    change_path(gammapath)
-    tex_lines += r"\section{Photon}" + "\n" + r"\subsection{Efficiency}"
-    tex_lines += texoutput('efficiency', 'photon', 'eta', 'looseIDISO')
-    tex_lines += texoutput('efficiency', 'photon', 'eta', 'mediumIDISO')
-    tex_lines += texoutput('efficiency', 'photon', 'eta', 'tightIDISO')
-    tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseIDISO')
-    tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumIDISO')
-    tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightIDISO')
-
-    change_path(qcdpath)
-    tex_lines += "\n" + r"\subsection{Fakerate}"
-    tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseIDISO')
-    tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumIDISO')
-    tex_lines += texoutput('fakerate', 'photon', 'eta', 'tightIDISO')
-    tex_lines += texoutput('fakerate', 'photon', 'pt', 'looseIDISO')
-    tex_lines += texoutput('fakerate', 'photon', 'pt', 'mediumIDISO')
-    tex_lines += texoutput('fakerate', 'photon', 'pt', 'tightIDISO')
-
-    change_path(gammapath)
-    tex_lines += "\n" + r"\subsection{Response}"
-    tex_lines += texoutput('ptresponse', 'photon', 'eta', 'tightID')
-    tex_lines += texoutput('ptresponse', 'photon', 'pt', 'tightID')
-    tex_lines += "\n" + r"\subsection{Resolution}"
-    tex_lines += texoutput('resolution', 'photon', 'pt', 'tightID')
-
     # Jetpuppi
+
     change_path(qcdpath)
-    tex_lines += "\n" + r"\section{Jetpuppi}" + \
-        "\n" + r"\subsection{Efficiency}"
+
+    tex_lines += "\n" + r"\section{Jetpuppi}" + "\n" + r"\subsection{Response}"
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{Resolution}"
+    tex_lines += texoutput('resolution', 'jetpuppi', 'pt', 'tightID')
+
+    tex_lines +=  "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'reco')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'reco')
-    tex_lines += "\n" + r"\subsection{Response}"
-    tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
-    tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
-    tex_lines += "\n" + r"\subsection{Resolution}"
-    tex_lines += texoutput('resolution', 'jetpuppi', 'pt', 'tightID')
 
     # MET
     change_path(elmupath)
@@ -538,6 +468,87 @@ def main():
                  ]
     tex_lines += add_met_plots('Z')
 
+    # Photon
+
+    change_path(gammapath)
+    tex_lines += r"\section{Photon}" + "\n" + r"\subsection{Response}"
+    tex_lines += texoutput('ptresponse', 'photon', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'photon', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{Resolution}"
+    tex_lines += texoutput('resolution', 'photon', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{Efficiency}"
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'looseIDISO')
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'mediumIDISO')
+    tex_lines += texoutput('efficiency', 'photon', 'eta', 'tightIDISO')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseIDISO')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumIDISO')
+    tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightIDISO')
+
+    change_path(qcdpath)
+    tex_lines += "\n" + r"\subsection{Fakerate}"
+    tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseIDISO')
+    tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumIDISO')
+    tex_lines += texoutput('fakerate', 'photon', 'eta', 'tightIDISO')
+    tex_lines += texoutput('fakerate', 'photon', 'pt', 'looseIDISO')
+    tex_lines += texoutput('fakerate', 'photon', 'pt', 'mediumIDISO')
+    tex_lines += texoutput('fakerate', 'photon', 'pt', 'tightIDISO')
+
+    # Electron
+
+    change_path(elmupath)
+
+    tex_lines += r"\section{Electron}" + "\n" + r"\subsection{Response}"
+    tex_lines += texoutput('ptresponse', 'electron', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'electron', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{Resolution}"
+    tex_lines += texoutput('resolution', 'electron', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{Efficiency}"
+    tex_lines += texoutput('efficiency', 'electron', 'eta', 'looseIDISO')
+    tex_lines += texoutput('efficiency', 'electron', 'eta', 'mediumIDISO')
+    tex_lines += texoutput('efficiency', 'electron', 'eta', 'tightIDISO')
+    tex_lines += texoutput('efficiency', 'electron', 'pt', 'looseIDISO')
+    tex_lines += texoutput('efficiency', 'electron', 'pt', 'mediumIDISO')
+    tex_lines += texoutput('efficiency', 'electron', 'pt', 'tightIDISO')
+
+    change_path(qcdpath)
+    tex_lines += "\n" + r"\subsection{Fakerate}"
+    tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseIDISO')
+    tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumIDISO')
+    tex_lines += texoutput('fakerate', 'electron', 'eta', 'tightIDISO')
+    tex_lines += texoutput('fakerate', 'electron', 'pt', 'looseIDISO')
+    tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumIDISO')
+    tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightIDISO')
+
+    # Muon
+    change_path(elmupath)
+    tex_lines += r"\section{Muon}" + "\n" + r"\subsection{Response}"
+    tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
+    tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{Resolution}"
+    tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
+
+    tex_lines += "\n" + r"\subsection{Efficiency}"
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseIDISO')
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumIDISO')
+    tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightIDISO')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseIDISO')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumIDISO')
+    tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightIDISO')
+
+    change_path(qcdpath)
+    tex_lines += "\n" + r"\subsection{Fakerate}"
+    tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseIDISO')
+    tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumIDISO')
+    tex_lines += texoutput('fakerate', 'muon', 'eta', 'tightIDISO')
+    tex_lines += texoutput('fakerate', 'muon', 'pt', 'looseIDISO')
+    tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumIDISO')
+    tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightIDISO')
+
     # Btag
     change_path(btagpath)
     tex_lines += "\n" + r"\section{Btag}" + "\n" + r"\subsection{Efficiency}"
@@ -582,14 +593,6 @@ def main():
     tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'mediumID')
     tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'tightID')
 
-    tex_lines += "\n" + r"\subsection{Tau Muon MisTag Rate}"
-    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'looseID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'mediumID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'tightID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'looseID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'mediumID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
-
     change_path(elmupath)
     tex_lines += "\n" + r"\subsection{Tau Electron MisTag Rate}"
     tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'looseID')
@@ -598,6 +601,15 @@ def main():
     tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'looseID')
     tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'mediumID')
     tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'tightID')
+
+    change_path(taupath)
+    tex_lines += "\n" + r"\subsection{Tau Muon MisTag Rate}"
+    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'looseID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'mediumID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'tightID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'looseID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'mediumID')
+    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
 
     tex_lines += "\n" + r"\end{document}"
 
