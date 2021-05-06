@@ -26,9 +26,9 @@ def cutName(name, plt_type):
 
 def pt_bin(caption):
     """Return edited pt bins for subfigure captions."""
-    pt_low_pattern = r"\d\d+[t][o]"
-    pt_high_pattern = r"[t][o]\d\d+"
-    pt_highest_pattern = r"\d\d\d[t][o][I][n][f]"
+    pt_low_pattern = r"\d+[t][o]"
+    pt_high_pattern = r"[t][o]\d+"
+    pt_highest_pattern = r"\d+[t][o][I][n][f]"
 
     pt_low = remove_ch(str(r.findall(pt_low_pattern, caption))).rstrip("to")
     pt_high = remove_ch(str(r.findall(pt_high_pattern, caption))).lstrip("to")
@@ -74,10 +74,12 @@ def sorter(dictt):
         batch_list = []
         unique_pt_values = []
         for caption in dictt:
-            pt_low = remove_ch(str(r.findall(pt_low_pattern, caption))).lstrip("pt_")
+            pt_low = remove_ch(
+                str(r.findall(pt_low_pattern, caption))).lstrip("pt_")
             if pt_low not in unique_pt_values:
                 unique_pt_values.append(pt_low)
                 batch_list.append(OrderedDict())
+        global batch_size
         batch_size = len(batch_list)
         for i, caption in enumerate(dictt):
             pt_low = remove_ch(
@@ -151,7 +153,7 @@ def res_bin_edit(caption):
     return new_caption
 
 
-def reversebins(plot_name):  # to easily sort the plot list according to eta bins
+def reversebins(plot_name):  # easily sort the plot list according to eta bins
     """Reverse the bins in the plot name."""
     eta_pattern = r"[e][t][a].+"
     pt_pattern = r".+[e][t][a]"
@@ -175,79 +177,74 @@ def beginFrame(extra=''):
 
 
 def subfigure(figure, caption):
-    """Return subfigure lines for tex."""
+    """Return tex lines for subfigures."""
     tex_line = r"\begin{subfigure}{0.32\textwidth}" + \
         "\n" + r"\includegraphics[width=\linewidth]{"
     tex_line += path + figure
-    tex_line += r"}" + "\n" + r"\caption{"
+    tex_line += r"}" + "\n" + r"\vspace*{-0.15cm}" + "\n" + r"\caption{"
 
     if 'eta' in figure and 'pt_' not in figure:  # 'pt_': underscore is used to exclude 'ptresponse'
         caption = pt_bin(caption)
-
     if 'pt_' in figure and 'eta' not in figure:
         caption = eta_bin(caption)
     if 'eta' in figure and 'pt_' in figure:  # resolution bins
         caption = res_bin_edit(caption)
-
     if caption == '':
         caption = 'no bin'
 
-    tex_line += r"\text{" + caption + r"}"
-    tex_line += "}\n" + r"\end{subfigure}" + "\n" + r"\hfil"
+    tex_line += r"\text{{\tiny " + caption + r"}}}"
+    tex_line += "\n" + r"\end{subfigure}" + "\n" + r"\hfil"
     return tex_line
 
 
 def add_figures(figure_dict):
     """Add figure structure to the script."""
     tex_line = "\n"
+    plots_per_page = False
     for i, figure in enumerate(figure_dict):
         if plt == 'resolution':
-            if i != 0 and i % 5 == 0:
+            new_batch_size = batch_size
+            if batch_size > 9:  # at max. 9 figures can be displayed per page
+                new_batch_size = round(batch_size / 2)
+            if i != 0 and i % new_batch_size == 0:
                 tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
                 tex_line += "\n" + \
                     beginFrame(" cont'd")
+        elif len(figure_dict) > 9:
+            plots_per_page = round(float(len(figure_dict)) / 2)
+            if i != 0 and plots_per_page and i % plots_per_page == 0:
+                tex_line += "\n" + r"\end{figure}" + "\n" + r"\end{frame}"
+                tex_line += "\n" + beginFrame(" cont'd")
         tex_line += subfigure(figure_dict[figure],
                               str(figure).strip("'[]")) + "\n"
-    tex_line += r"\end{figure}"
-    for i in range(len(figure_dict)):
-        if i == 6:
-            tex_line += "\n" + r"\end{frame}" + "\n" + r"\newpage" + 2*"\n"
+    tex_line += r"\end{figure}" + "\n" + \
+        r"\end{frame}" + "\n" + r"\newpage" + 2*"\n"
     return tex_line
 
 
 def texoutput(plt_type, obj, var, wp):
     """ Generate tex script with the following variables respectively:
         plot type (eff, fakerate etc.), object, variable (eta, pt), working point"""
-    global plt
-    global object_
-    global variable
-    global workingp
-    plt = plt_type
-    object_ = obj
-    variable = var
-    workingp = wp
+    global plt, object_, variable, workingp
+    plt, object_, variable, workingp = plt_type, obj, var, wp
     tex_line = beginFrame()
-    name_list = {}
+    name_dict = {}
     if var == "pt":
-        var = "pt_"  # to avoid the ptresponse to be taken as pt
+        var = "pt_"  # avoid the ptresponse to be taken as pt
     for name in plots_list:
         if plt_type in name and obj in name and var in name and (wp+"." in name or wp+"_" in name):
             if plt_type == 'resolution':
-                eta_bin = reversebins((str(cutName(name, plt_type))))
-                name_list[str(eta_bin)] = name
-                name_list = sorted(name_list.items(),
+                new_bin = reversebins((str(cutName(name, plt_type))))
+                name_dict[str(new_bin)] = name
+                name_dict = sorted(name_dict.items(),
                                    key=operator.itemgetter(0))
             else:
-                name_list[str(cutName(name, plt_type))] = name
-                name_list = sorted(name_list.items(),
+                name_dict[str(cutName(name, plt_type))] = name
+                name_dict = sorted(name_dict.items(),
                                    key=operator.itemgetter(1))
-            name_list = OrderedDict(name_list)
-    name_list = sorter(name_list)
-    if len(name_list) > 6:
-        tex_line += add_figures(name_list)
-    else:
-        tex_line += add_figures(name_list) + "\n" + \
-            r"\end{frame}" + "\n" + r"\newpage" + 2*"\n"
+            name_dict = OrderedDict(name_dict)
+    name_dict = sorter(name_dict)
+    tex_line += add_figures(name_dict)
     return tex_line
 
 
@@ -353,6 +350,9 @@ def main():
 
     tex_lines = "\n".join("{}".format(ln) for ln in
                           r"""\documentclass[8pt]{beamer}
+    \setbeamertemplate{frametitle}{
+    \vspace{0cm}\\
+    \insertframetitle}
     \setbeamertemplate{footline}[frame number]{}
     \setbeamertemplate{navigation symbols}{}
     \setbeamersize{text margin left=0mm,text margin right=0mm}
@@ -387,7 +387,7 @@ def main():
     tex_lines += "\n" + r"\subsection{Resolution}"
     tex_lines += texoutput('resolution', 'jetpuppi', 'pt', 'tightID')
 
-    tex_lines +=  "\n" + r"\subsection{Efficiency}"
+    tex_lines += "\n" + r"\subsection{Efficiency}"
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
