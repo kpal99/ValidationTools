@@ -351,7 +351,6 @@ def main():
     tex_lines = "\n".join("{}".format(ln) for ln in
                           r"""\documentclass[8pt]{beamer}
     \setbeamertemplate{frametitle}{
-    \vspace{0cm}\\
     \insertframetitle}
     \setbeamertemplate{footline}[frame number]{}
     \setbeamertemplate{navigation symbols}{}
