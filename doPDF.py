@@ -272,7 +272,7 @@ def add_met_plots(title):
         tex_lines += r"\begin{subfigure}{0.32\textwidth}" + "\n"
         tex_lines += r"\includegraphics[width=\linewidth]{"
         tex_lines += path + plot[0] + r"}" + "\n"
-        tex_lines += r"\caption{" + plot[1] + r"}" + "\n"
+        tex_lines += r"\caption{{\tiny " + plot[1] + r"}}" + "\n"
         tex_lines += r"\end{subfigure}" + "\n"
         tex_lines += r"\hfil"
     tex_lines += r"""
