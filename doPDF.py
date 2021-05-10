@@ -612,19 +612,19 @@ def main():
     tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
 
     tex_lines += "\n" + r"\end{document}"
-    
+
     status, basename = getstatusoutput("basename {}".format(parentpath))
     file_name = basename
 
-    with open(printoutdir+'{}.tex'.format(file_name), 'w') as tex_output:
+    with open('{}{}.tex'.format(printoutdir, file_name), 'w') as tex_output:
         tex_output.write(tex_lines)
 
     print("\n {}{}.tex file is created!\n".format(printoutdir, file_name))
-    
+
     print("Creating pdf file... {}{}.pdf".format(printoutdir, file_name))
-    
+
     os.system("pdflatex {}{}.tex".format(printoutdir, file_name))
-    os.system("cp {}.pdf {}".format(file_name ,printoutdir))
+    os.system("cp {}.pdf {}".format(file_name, printoutdir))
     os.system("rm {}.aux".format(file_name))
     os.system("rm {}.log".format(file_name))
     os.system("rm {}.nav".format(file_name))
@@ -632,6 +632,9 @@ def main():
     os.system("rm {}.snm".format(file_name))
     os.system("rm {}.toc".format(file_name))
     os.system("rm met_figure.png")
-    
+
+    print("\nCreated {}{}.pdf".format(printoutdir, file_name))
+
+
 if __name__ == "__main__":
     main()
