@@ -3,6 +3,7 @@ import optparse
 import re as r
 import operator
 from collections import OrderedDict
+from commands import getstatusoutput
 
 
 def remove_ch(name):
@@ -277,7 +278,7 @@ def add_met_plots(title):
         tex_lines += r"\hfil"
     tex_lines += r"""
         \begin{subfigure}{0.32\textwidth}
-        \includegraphics[width=\linewidth]{met_figure.pdf}
+        \includegraphics[width=\linewidth]{met_figure.png}
         \end{subfigure}
         \hfil
         \end{figure}
@@ -346,13 +347,12 @@ def main():
     if not os.path.exists(printoutdir):
         os.system('mkdir -p {}'.format(printoutdir))
 
-    os.system('touch {}/validation_plots.tex'.format(printoutdir))
-
     tex_lines = "\n".join("{}".format(ln) for ln in
                           r"""\documentclass[8pt]{beamer}
     \setbeamertemplate{frametitle}{
     \insertframetitle}
-    \setbeamertemplate{footline}[frame number]{}
+    \setbeamertemplate{footline}{%
+      \raisebox{5pt}{\makebox[\paperwidth]{\hfill\makebox[10pt]{\scriptsize\insertframenumber}}}}
     \setbeamertemplate{navigation symbols}{}
     \setbeamersize{text margin left=0mm,text margin right=0mm}
     \usepackage{graphicx}
@@ -391,12 +391,13 @@ def main():
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
-    #tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'reco')
-    #tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'reco')
+    # tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'reco')
+    # tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'reco')
 
     # MET
     change_path(elmupath)
-    os.system('cp met_figure.pdf {}'.format(printoutdir))
+    os.system("wget https://cds.cern.ch/record/2205284/files/Figure_007-a.png")
+    os.system('mv Figure_007-a.png met_figure.png'.format(printoutdir))
     tex_lines += "\n" + r"\section{MET}" + "\n" + r"\subsection{MET}"
 
     global met_plots
@@ -612,10 +613,27 @@ def main():
 
     tex_lines += "\n" + r"\end{document}"
 
-    with open(printoutdir+'validation_plots.tex', 'w') as tex_output:
+    status, basename = getstatusoutput("basename {}".format(parentpath))
+    file_name = basename
+
+    with open('{}{}.tex'.format(printoutdir, file_name), 'w') as tex_output:
         tex_output.write(tex_lines)
 
-    print("\n {}validation_plots.tex file is created!\n".format(printoutdir))
+    print("\n {}{}.tex file is created!\n".format(printoutdir, file_name))
+
+    print("Creating pdf file... {}{}.pdf".format(printoutdir, file_name))
+
+    os.system("pdflatex {}{}.tex".format(printoutdir, file_name))
+    os.system("cp {}.pdf {}".format(file_name, printoutdir))
+    os.system("rm {}.aux".format(file_name))
+    os.system("rm {}.log".format(file_name))
+    os.system("rm {}.nav".format(file_name))
+    os.system("rm {}.pdf".format(file_name))
+    os.system("rm {}.snm".format(file_name))
+    os.system("rm {}.toc".format(file_name))
+    os.system("rm met_figure.png")
+
+    print("\nCreated {}{}.pdf".format(printoutdir, file_name))
 
 
 if __name__ == "__main__":
