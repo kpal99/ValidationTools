@@ -391,8 +391,8 @@ def main():
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
-    tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'reco')
-    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'reco')
+    #tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'reco')
+    #tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'reco')
 
     # MET
     change_path(elmupath)
