@@ -90,12 +90,6 @@ Else, specify each of them as in the followings:
 python -u doPDF.py -b path/to/Btag_plots/ -e path/to/ELMu_plots/ -g path/to/Photon_plots/ -q path/to/QCD_plots/ -t path/to/TauTag_plots/ -o output_dir/
 ```
 
-Finally run the tex file:
-```
-cd output_dir/
-pdflatex validation_plots.tex
-```
-
 Use steer script to do validation for any objects, plot and post
 ================================================================
 
