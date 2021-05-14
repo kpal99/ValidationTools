@@ -84,7 +84,7 @@ sh postPlots.sh -i mynewplotdir/ -o delphes_validation/mynewplotdir/ -s PhotonFl
 python -u doPDF.py --parentpath path_to_plots/ -o output_dir/
 ```
 
-Else, specify each of them as in the followings:
+Else, specify each of them as the followings:
 
 ```
 python -u doPDF.py -b path/to/Btag_plots/ -e path/to/ELMu_plots/ -g path/to/Photon_plots/ -q path/to/QCD_plots/ -t path/to/TauTag_plots/ -o output_dir/
