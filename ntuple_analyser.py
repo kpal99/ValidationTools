@@ -422,13 +422,15 @@ def runMETStudy(ntuple, maxEvents, outfileName, dumptcl):
     metHists['z_pt'] = createMetHist('z_pt', "p_{T}(Z) [GeV]", 40, 0, 150)
     metHists['genz_pt'] = createMetHist('genz_pt', "p_{T}(gen Z) [GeV]", 40, 0, 150)
     metHists['met'] = createMetHist('met', "p_{T,miss} [GeV]", 40, 0, 150)
+    metHists['met_reco'] = createMetHist('met_reco', "p_{T,miss} from puppi jets [GeV]", 40, 0, 150)
+    metHists['met_recoid'] = createMetHist('met_recoid', "p_{T,miss} from puppi jets w/ ID [GeV]", 40, 0, 150)
     metHists['met_p'] = createMetHist('met_p', "parallel p_{T,miss} [GeV]", 40, 0, 150)
     metHists['met_t'] = createMetHist('met_t', "transverse p_{T,miss} [GeV]", 40, 0, 150)
     metHists['u_p'] = createMetHist('u_p', "u_{p} [GeV]", 40, 0, 150)
     metHists['u_t'] = createMetHist('u_t', "u_{t} [GeV]", 40, 0, 150)
 
     twodvarList=['genz_pt','genht_pt30_eta5','npuVtx']
-    varList = ['z_pt', 'met', 'met_p', 'met_t', 'u_p', 'u_t']
+    varList = ['z_pt', 'met', 'met_p', 'met_t', 'u_p', 'u_t', 'met_reco', 'met_recoid']
     varAllList = varList +twodvarList
     for v in varList:
         for twodv in twodvarList:
@@ -449,6 +451,21 @@ def runMETStudy(ntuple, maxEvents, outfileName, dumptcl):
         mets = event.metspuppi()
         electrons = event.electrons()
         muons = event.muons()
+        jets = event.jetspuppi()
+
+        recometx = 0
+        recomety = 0
+        recoidmetx = 0
+        recoidmety = 0
+        for jet in jets:
+            if jet.pt() > 10 and abs(jet.eta()) < 5:
+                recometx = recometx - jet.pt()*math.cos(jet.phi())
+                recomety = recomety - jet.pt()*math.sin(jet.phi())
+                if jet.idpass() > 0:
+                    recoidmetx = recoidmetx - jet.pt()*math.cos(jet.phi())
+                    recoidmety = recoidmety - jet.pt()*math.sin(jet.phi())
+        recomet = math.sqrt(recometx**2 + recomety**2)
+        recoidmet = math.sqrt(recoidmetx**2 + recoidmety**2)
 
         if len(electrons)>1: 
             leptons = electrons
@@ -484,6 +501,8 @@ def runMETStudy(ntuple, maxEvents, outfileName, dumptcl):
         var['z_pt'] = z_pt
         var['genz_pt'] = genz_pt
         var['met'] = met
+        var['met_reco'] = recomet
+        var['met_recoid'] = recoidmet
         var['met_p'] = met_p
         var['met_t'] = met_t
         var['u_p']= u_p
