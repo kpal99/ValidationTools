@@ -146,6 +146,7 @@ for name in hist_names:
     #     continue
 
     if 'resolution' in name:
+	continue  # temp  wz
         items = name.split('_')
         print items
 

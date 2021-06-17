@@ -15,6 +15,7 @@ pdgid = {
     "photon": 22,
     "electron": 11,
     "muon": 13,
+    "elec_photon": 11,
 }
 
 def createHist(opt, varname, params):
@@ -1083,6 +1084,48 @@ def main():
                 ],
             }
         if dumptcl: params["sliceSplit"] = 1
+    elif obj == "elec_photon": 
+        params = {
+            "dR": 0.1,
+            "ptRatio": 5.,
+            "ptMin": 4,
+            "etaSlices": [[0, 1.5], [1.5, 3], [3, 4], [4,1e5]],
+            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 500], [500, 1e5] ],
+            "sliceSplit": 1,
+            "plotPtRange": [0, 250],
+            "plotEtaRange": [-4, 4],
+            "plotPhiRange": [-4, 4],
+            "plotMassRange": [-1, 1],
+            "plotNObjRange_Delp": [0, 4],
+            "plotNObjRange_Full": [0, 4],
+            "plotResoRange": [0.8, 1.2],
+            "ids": [  
+                ## ["nameforplot", numerator idpass threshold, numerator isopass threshold, 
+                ##  denominator: 0(all)/1(reco matched)/2(reco+id), "x-axis label"]
+                ## NOTE: only efficiency plots get anything with value [3] > 0 
+                ## Loose is bit 0, Medium is bit 1, Tight is bit 2, -1 is nothing
+                ["reco",-1,-1,0,"#varepsilon(reco)"],                         ## reco (eff, fakerate, response)
+                ["looseID",0,-1,0,"#varepsilon(reco)*#varepsilon(looseID)"], ## reco*ID (ID for fakerate)  
+                ["mediumID",1,-1,0,"#varepsilon(reco)*#varepsilon(mediumID)"],
+                ["tightID",2,-1,0,"#varepsilon(reco)*#varepsilon(tightID)"],
+                ["looseISO",-1,0,0,"#varepsilon(reco)*#varepsilon(looseISO)"],   ## reco*ISO (ISO for fakerate) 
+                ["mediumISO",-1,1,0,"#varepsilon(reco)*#varepsilon(mediumISO)"],
+                ["tightISO",-1,2,0,"#varepsilon(reco)*#varepsilon(tightISO)"],
+                ["looseIDISO",0,0,0,"#varepsilon(reco)*#varepsilon(looseID)*#varepsilon(looseISO)"], ## reco*ID*ISOs (ID+ISO for fakerate)
+                ["mediumIDISO",1,1,0,"#varepsilon(reco)*#varepsilon(mediumID)*#varepsilon(mediumISO)"], 
+                ["tightIDISO",2,2,0,"#varepsilon(reco)*#varepsilon(tightID)*#varepsilon(tightISO)"], 
+                ["looseIDifReco",0,-1,1,"#varepsilon(looseID)"], 
+                ["mediumIDifReco",1,-1,1,"#varepsilon(mediumID)"],      ## IDs on reco-matched gen (eff only)
+                ["tightIDifReco",2,-1,1,"#varepsilon(tightID)"],      ## IDs on reco-matched gen (eff only)
+                ["looseISOifReco",-1,0,1,"#varepsilon(looseISO)"], 
+                ["mediumISOifReco",-1,1,1,"#varepsilon(mediumISO)"],   ## ISOs on reco-matched gen (eff only) 
+                ["tightISOifReco",-1,2,1,"#varepsilon(tightISO)"],   ## ISOs on reco-matched gen (eff only) 
+                ["looseIDISOifReco",0,0,1,"#varepsilon(looseID)*#varepsilon(looseISO)"], 
+                ["mediumIDISOifReco",1,1,1,"#varepsilon(mediumID)*#varepsilon(mediumISO)"], ## ID+ISOs on reco-matched gen (eff only)
+                ["tightIDISOifReco",2,2,1,"#varepsilon(tightID)*#varepsilon(tightISO)"], ## ID+ISOs on reco-matched gen (eff only)
+                ],
+            }
+        if dumptcl: params["sliceSplit"] = 1
     elif obj == "electron" or obj == "muon":
         params = {
             "dR": 0.2,
@@ -1262,6 +1305,10 @@ def main():
             fakeobjs = event.jetspuppi()
         elif obj == "muon":
             recoobjs = event.muons()
+            genobjs = event.genparticles()
+            fakeobjs = event.jetspuppi()
+	elif obj == "elec_photon":
+            recoobjs = event.gammas()
             genobjs = event.genparticles()
             fakeobjs = event.jetspuppi()
         else: 
