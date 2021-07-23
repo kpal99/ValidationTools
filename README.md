@@ -78,16 +78,44 @@ If you have run steps 1 and 2 on a computer network other than LXPLUS, copy your
 sh postPlots.sh -i mynewplotdir/ -o delphes_validation/mynewplotdir/ -s PhotonFlat0to150_0PU
 ```
 
-4. Presentation file. If folders that contain the pdf/png files are stored inside a parent directory and named exactly as: "TauTag", "BTag", "ELMu", "Photon" and "QCD", then pass only that parent directory.
+4. Presentation file. If folders that contain the pdf/png files are stored inside a parent directory and are named exactly as: "TauTag", "BTag", "ELMu", "Photon" and "QCD", then pass only that parent directory along with the directory for tex output (avoid giving "../" and such for the --parentpath option):
+
+Condor submission (edit paths first):
+```
+python submitHistos.py delphes
+python submitHistos.py fullsim
 
 ```
-python -u doPDF.py --parentpath path/
-```
-
-Else, specify each of them such as:
+Hadd files (edit paths first):
 
 ```
-python -u doPDF.py -b path/to/Btag_plots/ -e path/to/ELMu_plots/ -g path/to/Photon_plots/ -q path/to/QCD_plots/ -t path/to/TauTag_plots/
+python hadd_histos.py delphes
+python hadd_histos.py fullsim
+
+```
+
+produce plots (edit paths):
+
+```
+python allPlots.py
+
+``
+
+
+```
+python -u doPDF.py --parentpath path_to_plots/ -o output_dir/
+```
+
+Else, specify each of them as in the followings:
+
+```
+python -u doPDF.py -b path/to/Btag_plots/ -e path/to/ELMu_plots/ -g path/to/Photon_plots/ -q path/to/QCD_plots/ -t path/to/TauTag_plots/ -o output_dir/
+```
+
+Finally run the tex file:
+```
+cd output_dir/
+pdflatex validation_plots.tex
 ```
 
 Use steer script to do validation for any objects, plot and post

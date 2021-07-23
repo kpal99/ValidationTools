@@ -11,12 +11,12 @@ sim = sys.argv[1]
 macro_samples_fullsim={
     'ELMu_113X':'113X_DYToLL:Zprime',
     'Photon_113X':'113X_GluGluToHHTo2B2G:113X_GluGluHToGG',
-    #'QCD_112X':'112X_QCD',
+    'QCD_112X':'112X_QCD',
     'QCD_113X':'113X_QCD',
     'TauTag_112X':'112X_GluGluToHHTo2B2Tau:112X_VBFHToTauTau:112X_GluGluHToTauTau:112X_TT_TuneCP5:112X_QCD',
     #'TauTag':'VBFHToTauTau',
-    #'BTag_112X':'112X_TT_TuneCP5:112X_GluGluToHHTo2B2Tau:112X_QCD',
-    'BTag_112X':'112X_TT_TuneCP5',
+    'BTag_112X':'112X_TT_TuneCP5:112X_GluGluToHHTo2B2Tau:112X_QCD',
+    #'BTag_112X':'112X_TT_TuneCP5',
 }
 
 macro_samples_delphes={
@@ -33,11 +33,21 @@ macro_samples_delphes={
 macro_samples=macro_samples_fullsim
 
 
-eospath='/eos/cms/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6/'
+#eospath='/eos/cms/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6/'
+#eospath='/eos/cms/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6_JEC/'
+eospath='/eos/cms/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6_JEC/'
 name='HistosFS'
 
 delphes_version='343pre11'
-card_version='v12a'
+delphes_version='343pre12'
+card_version='v13b'
+card_version='v13c'
+card_version='v14a'
+card_version='v14b'
+card_version='v14c'
+card_version='v14d'
+card_version='v14e'
+card_version='v14f'
 
 
 
@@ -66,7 +76,10 @@ with open("hadd_cmds.sh", "w") as text_file:
         #print '    '
         print 'hadding {} sample'.format(key)
 
-        if key != 'BTag_112X': continue
+        #if key != 'BTag_112X': continue
+        #if key != 'QCD_113X': continue
+        #if key != 'QCD': continue
+        #if key != 'Photon_113X': continue
         hadd_file='{}{}_{}.root'.format(haddpath, name, key)
         #print '    '
         #print 'hadding   ', hadd_file
@@ -85,17 +98,17 @@ with open("hadd_cmds.sh", "w") as text_file:
                     for root, dirs, files in os.walk(dire):
                         for filename in files:
                            abs_fname = '{}/{}'.format(dire,filename)
-                           print '                          ', abs_fname, '   ', os.stat(abs_fname).st_size == 0
+                           #print '                          ', abs_fname, '   ', os.stat(abs_fname).st_size == 0
 
                            ## quickly check whether file is not empty
                            if os.stat(abs_fname).st_size > 0:
                                hadd_cmd += ' {}'.format(abs_fname)
-    
-    hadd_cmd += '\n' 
-    hadd_cmd += '\n' 
 
-    if not debug:
-        text_file.write(hadd_cmd)
+        hadd_cmd += '\n' 
+        hadd_cmd += '\n' 
+
+        if not debug:
+            text_file.write(hadd_cmd)
 
 if not debug:
     os.chdir(working_dir)  

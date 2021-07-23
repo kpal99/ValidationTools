@@ -74,6 +74,9 @@ def create2dHist(varname, params, title):
             h.GetYaxis().SetTitle("Reco_pt/Gen_pt")
         elif 'efficiency' in varname:
             h.GetYaxis().SetTitle("gen object efficiency")
+        elif 'Effi' in varname:
+            h.GetXaxis().SetTitle("reco pt [GeV]")
+            h.GetYaxis().SetTitle("object efficiency")
         elif 'nonprompt' in varname:
             h.GetYaxis().SetTitle("gen object nonprompt efficiency")
         elif 'fakerate' in varname:
@@ -98,6 +101,10 @@ def create2dHist(varname, params, title):
             h.GetYaxis().SetTitle("Reco_pt/Gen_pt")
         elif 'efficiency' in varname:
             h.GetYaxis().SetTitle("gen object efficiency")
+
+        elif 'Effi' in varname:
+	    h.GetXaxis().SetTitle("reco #eta [GeV]")
+            h.GetYaxis().SetTitle("object efficiency")
         elif 'nonprompt' in varname:
             h.GetYaxis().SetTitle("gen object nonprompt efficiency")
         elif 'fakerate' in varname:
@@ -235,7 +242,7 @@ def runBtagStudy(ntuple, maxEvents, outfileName, dumptcl):
             "ptMin": 20,
             "etaSlices": [[0, 1.5], [1.5, 2.5], [2.5, 4], [4, 1e5]  ], ## use 1e5 as "Inf"
             "ptSlices": [[20, 50], [50, 100], [100, 500], [500, 1e5]  ],
-            "sliceSplit": 1, # for 2D map, make N divisions of each slice
+            "sliceSplit": 3, # for 2D map, make N divisions of each slice
             "plotPtRange": [0, 500],
             "plotEtaRange": [-5, 5],
             "ids": [
@@ -423,17 +430,23 @@ def runMETStudy(ntuple, maxEvents, outfileName, dumptcl):
     metHists['z_pt'] = createMetHist('z_pt', "p_{T}(Z) [GeV]", 40, 0, 150)
     metHists['genz_pt'] = createMetHist('genz_pt', "p_{T}(gen Z) [GeV]", 40, 0, 150)
     metHists['met'] = createMetHist('met', "p_{T,miss} [GeV]", 40, 0, 150)
+    metHists['met_reco10'] = createMetHist('met_reco10', "p_{T,miss} from puppi jets of 10 GeV [GeV]", 40, 0, 150)
+    metHists['met_reco20'] = createMetHist('met_reco20', "p_{T,miss} from puppi jets of 20 GeV [GeV]", 40, 0, 150)
+    metHists['met_reco30'] = createMetHist('met_reco30', "p_{T,miss} from puppi jets of 30 GeV [GeV]", 40, 0, 150)
+    metHists['met_recoid10'] = createMetHist('met_recoid10', "p_{T,miss} from puppi jets w/ ID of 10 GeV [GeV]", 40, 0, 150)
+    metHists['met_recoid20'] = createMetHist('met_recoid20', "p_{T,miss} from puppi jets w/ ID of 20 GeV [GeV]", 40, 0, 150)
+    metHists['met_recoid30'] = createMetHist('met_recoid30', "p_{T,miss} from puppi jets w/ ID of 30 GeV [GeV]", 40, 0, 150)
     metHists['met_p'] = createMetHist('met_p', "parallel p_{T,miss} [GeV]", 40, 0, 150)
     metHists['met_t'] = createMetHist('met_t', "transverse p_{T,miss} [GeV]", 40, 0, 150)
     metHists['u_p'] = createMetHist('u_p', "u_{p} [GeV]", 40, 0, 150)
     metHists['u_t'] = createMetHist('u_t', "u_{t} [GeV]", 40, 0, 150)
 
     twodvarList=['genz_pt','genht_pt30_eta5','npuVtx']
-    varList = ['z_pt', 'met', 'met_p', 'met_t', 'u_p', 'u_t']
+    varList = ['z_pt', 'met', 'met_p', 'met_t', 'u_p', 'u_t', 'met_reco10', 'met_reco20', 'met_reco30', 'met_recoid10', 'met_recoid20', 'met_recoid30']
     varAllList = varList +twodvarList
     for v in varList:
         for twodv in twodvarList:
-            metHists[v+'_VS_'+twodv] = TProfile(v+'_VS_'+twodv, "", metHists[twodv].GetNbinsX(), metHists[twodv].GetXaxis().GetBinLowEdge(1), metHists[twodv].GetXaxis().GetBinUpEdge(metHists[twodv].GetNbinsX()))
+            metHists[v+'_VS_'+twodv] = TProfile(v+'_VS_'+twodv, "", metHists[twodv].GetNbinsX(), metHists[twodv].GetXaxis().GetBinLowEdge(1), metHists[twodv].GetXaxis().GetBinUpEdge(metHists[twodv].GetNbinsX()), "S")
             metHists[v+'_VS_'+twodv].GetXaxis().SetTitle(metHists[twodv].GetXaxis().GetTitle())
             metHists[v+'_VS_'+twodv].GetYaxis().SetTitle(metHists[v].GetXaxis().GetTitle())
 
@@ -450,6 +463,45 @@ def runMETStudy(ntuple, maxEvents, outfileName, dumptcl):
         mets = event.metspuppi()
         electrons = event.electrons()
         muons = event.muons()
+        jets = event.jetspuppi()
+
+        recomet10x = 0
+        recomet10y = 0
+        recoidmet10x = 0
+        recoidmet10y = 0
+        recomet20x = 0
+        recomet20y = 0
+        recoidmet20x = 0
+        recoidmet20y = 0
+        recomet30x = 0
+        recomet30y = 0
+        recoidmet30x = 0
+        recoidmet30y = 0
+        for jet in jets:
+            if jet.pt() > 10 and abs(jet.eta()) < 5:
+                recomet10x = recomet10x - jet.pt()*math.cos(jet.phi())
+                recomet10y = recomet10y - jet.pt()*math.sin(jet.phi())
+                if jet.pt() > 20:
+                    recomet20x = recomet20x - jet.pt()*math.cos(jet.phi())
+                    recomet20y = recomet20y - jet.pt()*math.sin(jet.phi())
+                if jet.pt() > 30:
+                    recomet30x = recomet30x - jet.pt()*math.cos(jet.phi())
+                    recomet30y = recomet30y - jet.pt()*math.sin(jet.phi())                    
+                if jet.idpass() > 0:
+                    recoidmet10x = recoidmet10x - jet.pt()*math.cos(jet.phi())
+                    recoidmet10y = recoidmet10y - jet.pt()*math.sin(jet.phi())
+                    if jet.pt() > 20:
+                        recoidmet20x = recoidmet20x - jet.pt()*math.cos(jet.phi())
+                        recoidmet20y = recoidmet20y - jet.pt()*math.sin(jet.phi())
+                    if jet.pt() > 30:
+                        recoidmet30x = recoidmet30x - jet.pt()*math.cos(jet.phi())
+                        recoidmet30y = recoidmet30y - jet.pt()*math.sin(jet.phi())                    
+        recomet10 = math.sqrt(recomet10x**2 + recomet10y**2)
+        recoidmet10 = math.sqrt(recoidmet10x**2 + recoidmet10y**2)
+        recomet20 = math.sqrt(recomet20x**2 + recomet20y**2)
+        recoidmet20 = math.sqrt(recoidmet20x**2 + recoidmet20y**2)
+        recomet30 = math.sqrt(recomet30x**2 + recomet30y**2)
+        recoidmet30 = math.sqrt(recoidmet30x**2 + recoidmet30y**2)
 
         if len(electrons)>1: 
             leptons = electrons
@@ -485,6 +537,12 @@ def runMETStudy(ntuple, maxEvents, outfileName, dumptcl):
         var['z_pt'] = z_pt
         var['genz_pt'] = genz_pt
         var['met'] = met
+        var['met_reco10'] = recomet10
+        var['met_recoid10'] = recoidmet10
+        var['met_reco20'] = recomet20
+        var['met_recoid20'] = recoidmet20
+        var['met_reco30'] = recomet30
+        var['met_recoid30'] = recoidmet30
         var['met_p'] = met_p
         var['met_t'] = met_t
         var['u_p']= u_p
@@ -696,7 +754,7 @@ def runTautagStudy(ntuple, maxEvents, outfileName, dumptcl):
         "ptMin": 20,
         "etaSlices": [[0, 1.5], [1.5, 3.0], [3.0, 4.0], [4.0, 1e5] ],
         "ptSlices": [[20, 50], [50, 100], [100, 500], [500, 1e5] ],
-        "sliceSplit": 1,
+        "sliceSplit": 3,
         "plotPtRange": [0, 500],
         "plotEtaRange": [-5, 5],
         "bitids": [
@@ -1015,14 +1073,14 @@ def main():
         exit()
     elif obj=="jetchs" or obj=="jetpuppi":
         params = {
-            "dR": 0.2,
+            "dR": 0.4,
             "ptRatio": 5.0,
             "ptMin": 5,
             "sliceSplit": 1,
             #"etaSlices": [[0, 1.5], [1.5, 3.0], [3.0, 4.0], [4.0, 5.0], [5.0,1e5] ], ## use 1e5 as "Inf"
-            #"ptSlices": [[20, 50], [50, 100], [100, 200], [200, 500], [500, 1e5] ],
+            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 500], [500, 1e5] ],
             "etaSlices": [[0, 1.5], [1.5, 3.0], [3.0, 4.0], [4.0, 5.0], [5.0,1e5] ], ## use 1e5 as "Inf"
-            "ptSlices": [[15, 20],[20, 30],[30, 50], [50, 75],[75, 100], [100, 150], [150, 200], [200, 500], [500, 1000], [1000, 1e5] ],
+            #"ptSlices": [[15, 20],[20, 30],[30, 50], [50, 75],[75, 100], [100, 150], [150, 200], [200, 500], [500, 1000], [1000, 1e5] ],
             "plotPtRange": [0, 1500],
             "plotEtaRange": [-5, 5],
             "plotPhiRange": [-5, 5],
@@ -1046,9 +1104,9 @@ def main():
         params = {
             "dR": 0.1,
             "ptRatio": 100.0,
-            "ptMin": 8,
+            "ptMin": 2,
             "etaSlices": [[0, 1.5], [1.5, 3], [3, 4], [4,1e5]],
-            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 500], [500, 1e5] ],
+            "ptSlices": [[4,10], [10,20],[20, 50], [50, 100], [100, 200], [200, 500], [500, 1e5] ],
             "sliceSplit": 1,
             "plotPtRange": [0, 250],
             "plotEtaRange": [-4, 4],
@@ -1083,7 +1141,7 @@ def main():
                 ["tightIDISOifReco",2,2,1,"#varepsilon(tightID)*#varepsilon(tightISO)"], ## ID+ISOs on reco-matched gen (eff only)
                 ],
             }
-        if dumptcl: params["sliceSplit"] = 1
+        if dumptcl: params["sliceSplit"] = 3
     elif obj == "elec_photon": 
         params = {
             "dR": 0.1,
@@ -1129,10 +1187,10 @@ def main():
     elif obj == "electron" or obj == "muon":
         params = {
             "dR": 0.2,
-            "ptRatio": 2.0,
-            "ptMin": 10,
+            "ptRatio": 10.0,
+            "ptMin": 2,
             "etaSlices": [[0, 1.5], [1.5, 2.8], [2.8, 1e5] ],
-            "ptSlices": [[20, 50], [50, 100], [100, 200], [200, 500], [500, 1e5] ],
+            "ptSlices": [[4,10], [10,20],[20, 50], [50, 100], [100, 200], [200, 500], [500, 1e5] ],
             "sliceSplit": 1,
             "plotPtRange": [0, 250],
             "plotEtaRange": [-5, 5],
@@ -1170,7 +1228,7 @@ def main():
         if obj == 'electron': 
             #params["ptSlices"] = [[10,20], [20, 50], [50, 100], [100, 200], [200, 300], [300, 400], [400, 1e5]]
             params["etaSlices"] = [[0, 1.5], [1.5, 3], [3, 4], [4, 1e5] ]
-        if dumptcl: params["sliceSplit"] = 1                
+        if dumptcl: params["sliceSplit"] = 3                
     else: 
         print 'Physics object not recognized! Choose jetpuppi, photon, electron, or muon, tau or btag'            
         exit()
@@ -1225,6 +1283,12 @@ def main():
                     hists[obj+"_"+hname] = createHist(opt, obj+"_"+hname,params)
 
     for cut in ["nocut"]+params["etaSlices"]:
+
+        hname = "recoNomatchEffi_to_pt"
+        hname += "_"+ str(cut[0]) + "to" + str(cut[1])
+        hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
+        hists[obj+"_"+hname] = create2dHist(obj+"_"+hname,params,'')
+
         hnames = ["efficiency_to_pt", "ptresponse_to_pt", "fakerate_to_pt"]
         for hname in hnames:
             if len(params["ids"]) == 0:
@@ -1240,6 +1304,13 @@ def main():
                     hists[obj+"_"+newname] = create2dHist(obj+"_"+newname,params,quality[4])
 
     for cut in ["nocut"]+params["ptSlices"]:
+
+	hname = "recoNomatchEffi_to_eta"
+        hname += "_"+ str(cut[0]) + "to" + str(cut[1])
+        hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
+	print obj+"_"+hname
+        hists[obj+"_"+hname] = create2dHist(obj+"_"+hname,params,'')
+
         hnames = ["efficiency_to_eta", "ptresponse_to_eta", "fakerate_to_eta"]
         for hname in hnames:
             if len(params["ids"]) == 0:
@@ -1363,8 +1434,7 @@ def main():
                 hists[obj+"_idpass"].Fill(p.idpass())
                 hists[obj+"_isopass"].Fill(isopass)
 
-
-            if obj == "jet" and p.pt() < 25 : continue  # for jets
+            #if obj == "jet" and p.pt() < 25 : continue  # for jets
             
             ## Increment multiplicity counters
             if len(params["ids"]) > 0:
@@ -1396,9 +1466,19 @@ def main():
             p_vec = TLorentzVector()
             p_vec.SetPtEtaPhiM(p.pt(), p.eta(), p.phi(), p.mass())
             p_tvectors.append(p_vec)
-            p_idpass.append(p.idpass())
+            
+	    
+	    ## force pure HF jets to pass ID, otherwise ID kills all of them
+	    if obj == "jetpuppi" and abs(p.eta()) > 4:
+	        p_idpass.append(7)
+	    else:
+	        p_idpass.append(p.idpass())
             p_isopass.append(isopass)
 
+
+	## reco un-matched efficiency only for jets
+	unmatchMark = [1] * len(p_tvectors)
+	recojets = p_tvectors
 
         ## For lepton/photon only calculate efficiency, response, resolution in signal file
         if (obj != 'photon' and obj != 'electron' and obj != 'muon') or 'QCD' not in inFile:
@@ -1440,10 +1520,28 @@ def main():
                 if minDR < params["dR"] and ( 1./params["ptRatio"] < p_tvectors[minDRindex].Pt()/g.pt() < params["ptRatio"]) : # matched
                     match = 1
                     matchindex = minDRindex
+
                 
                 ## Work with only matched pairs first:
                 if match == 1:
                     
+        	    ## reco jet nomatch effi
+        	    if 'jet' in obj:
+        	        hists[obj+"_recoNomatchEffi_to_eta"].Fill(p_tvectors[matchindex].Eta(), 0)
+			hists[obj+"_recoNomatchEffi_to_pt"].Fill(p_tvectors[matchindex].Pt(), 0)
+
+        	        for cut in params["etaSlices"]:
+        	            cutname = str(cut[0]) + "to" + str(cut[1])
+        	            cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
+        	            if cut[0] < abs(p_tvectors[matchindex].Eta()) <= cut[1]:
+        	                hists[obj+"_recoNomatchEffi_to_pt_"+cutname].Fill(p_tvectors[matchindex].Pt(), 0)
+        	        for cut in params["ptSlices"]:
+        	            cutname = str(cut[0]) + "to" + str(cut[1])
+        	            cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
+        	            if cut[0] <= p_tvectors[matchindex].Pt() < cut[1]:
+        	                hists[obj+"_recoNomatchEffi_to_eta_"+cutname].Fill(p_tvectors[matchindex].Eta(), 0)
+
+
                     ## Fill matched reco and gen hists
                     if len(params["ids"]) > 0:
                         for quality in params["ids"]:
@@ -1454,7 +1552,7 @@ def main():
                                 hists[obj+"_matched_phi_"+quality[0]].Fill(p_tvectors[matchindex].Phi())
                                 hists[obj+"_matched_mass_"+quality[0]].Fill(p_tvectors[matchindex].M())
                                 hists[obj+"_matched_idpass_"+quality[0]].Fill(p_idpass[matchindex])
-        
+
                     else:
                         hists[obj+"_matched_pt"].Fill(p_tvectors[matchindex].Pt())
                         hists[obj+"_matched_eta"].Fill(p_tvectors[matchindex].Eta())
@@ -1470,6 +1568,9 @@ def main():
                     ### produce response plots vs in bin of RECO pt,eta instead of gen, since JECs with be applied based on RECO info only 
                     reco_pt = p_tvectors[matchindex].Pt()
                     reco_eta = p_tvectors[matchindex].Eta()
+ 
+                    #if obj == "jetpuppi" and abs(p.eta()) > 4:
+		    #    print reco_pt, reco_eta, p_idpass[matchindex]
  
                     ## Fill ptresponse hists and resolution plots              
                     if len(params["ids"]) > 0:
@@ -1606,6 +1707,24 @@ def main():
         
                 ## end of gen object loop
             ## end of check that this is a signal file for lepton/photon
+	
+	## reco jet nomatch effi
+	if 'jet' in obj:
+	    for i, pvec in enumerate(p_tvectors):
+		hists[obj+"_recoNomatchEffi_to_eta"].Fill(pvec.Eta(), 1)
+		hists[obj+"_recoNomatchEffi_to_pt"].Fill(pvec.Pt(), 1)
+
+	        for cut in params["etaSlices"]:
+                    cutname = str(cut[0]) + "to" + str(cut[1])
+                    cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
+                    if cut[0] < abs(pvec.Eta()) <= cut[1]:
+                        hists[obj+"_recoNomatchEffi_to_pt_"+cutname].Fill(pvec.Pt(), 1)
+                for cut in params["ptSlices"]:
+                    cutname = str(cut[0]) + "to" + str(cut[1])
+                    cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
+                    if cut[0] <= pvec.Pt() < cut[1]: 
+			hists[obj+"_recoNomatchEffi_to_eta_"+cutname].Fill(pvec.Eta(), 1)
+
 
         ## For lepton/photon, only calculate fake rates in QCD
         if (obj != 'photon' and obj != 'electron' and obj != 'muon') or 'QCD' in inFile:
