@@ -19,7 +19,7 @@ card_version='v14f'
 #delphes_version='343pre07'
 #card_version='v09'
 
-fullsim_version='Iter6_JEC'
+fullsim_version='Iter6'
 
 debug=False
 debug=True
@@ -37,11 +37,11 @@ fullsim_prefix='HistosFS'
 
 # format delphes:fullsim
 samples=[
-    'ELMu:ELMu_113X',
-    'Photon:Photon_113X',
-    'QCD:QCD_113X',
-    'TauTag:TauTag_112X',
-    'BTag:BTag_112X'
+    'DYToLL:DYToLL_113X',
+#    'Photon:Photon_113X',
+#    'QCD:QCD_113X',
+#    'TauTag:TauTag_112X',
+#    'BTag:BTag_112X'
 ]
 
 
@@ -54,13 +54,13 @@ for sample in samples:
    
     #if sample_d != 'BTag': continue
  
-    delphes_file='{}/delphes{}_{}/{}_{}.root'.format(histo_dir,delphes_version,card_version,delphes_prefix,sample_d)
-    fullsim_file='{}/fullsim_{}/{}_{}.root'.format(histo_dir,fullsim_version,fullsim_prefix,sample_f)
+    delphes_file='{}/delphes{}_{}_wenyu/{}_{}.root'.format(histo_dir,delphes_version,card_version,delphes_prefix,sample_d)
+    fullsim_file='{}/fullsim_{}_wenyu/{}_{}.root'.format(histo_dir,fullsim_version,fullsim_prefix,sample_f)
 
     #print delphes_file
     #print fullsim_file
 
-    output_dir='{}/fullsim_{}_delphes_{}_{}/{}'.format(plot_dir,fullsim_version, delphes_version, card_version, sample_d)
+    output_dir='{}/fullsim_{}_delphes_{}_{}_wenyu/{}'.format(plot_dir,fullsim_version, delphes_version, card_version, sample_d)
     #print output_dir
 
     os.system('mkdir -p {}'.format(output_dir))

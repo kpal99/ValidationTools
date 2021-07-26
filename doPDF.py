@@ -377,20 +377,20 @@ def main():
 
     # Jetpuppi
 
-    change_path(qcdpath)
-
-    tex_lines += "\n" + r"\section{Jetpuppi}" + "\n" + r"\subsection{Response}"
-    tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
-    tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
-
-    tex_lines += "\n" + r"\subsection{Resolution}"
-    tex_lines += texoutput('resolution', 'jetpuppi', 'pt', 'tightID')
-
-    tex_lines += "\n" + r"\subsection{Efficiency}"
-    tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
-    tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
-    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
-    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
+#    change_path(qcdpath)
+#
+#    tex_lines += "\n" + r"\section{Jetpuppi}" + "\n" + r"\subsection{Response}"
+#    tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
+#    tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
+#
+#    tex_lines += "\n" + r"\subsection{Resolution}"
+#    tex_lines += texoutput('resolution', 'jetpuppi', 'pt', 'tightID')
+#
+#    tex_lines += "\n" + r"\subsection{Efficiency}"
+#    tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'looseID')
+#    tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
+#    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
+#    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
     # tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'reco')
     # tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'reco')
 
@@ -470,146 +470,146 @@ def main():
 
     # Photon
 
-    change_path(gammapath)
-    tex_lines += r"\section{Photon}" + "\n" + r"\subsection{Response}"
-    tex_lines += texoutput('ptresponse', 'photon', 'eta', 'tightID')
-    tex_lines += texoutput('ptresponse', 'photon', 'pt', 'tightID')
-
-    tex_lines += "\n" + r"\subsection{Resolution}"
-    tex_lines += texoutput('resolution', 'photon', 'pt', 'tightID')
-
-    tex_lines += "\n" + r"\subsection{Efficiency}"
-    tex_lines += texoutput('efficiency', 'photon', 'eta', 'looseIDISO')
-    tex_lines += texoutput('efficiency', 'photon', 'eta', 'mediumIDISO')
-    tex_lines += texoutput('efficiency', 'photon', 'eta', 'tightIDISO')
-    tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseIDISO')
-    tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumIDISO')
-    tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightIDISO')
-
-    change_path(qcdpath)
-    tex_lines += "\n" + r"\subsection{Fakerate}"
-    tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseIDISO')
-    tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumIDISO')
-    tex_lines += texoutput('fakerate', 'photon', 'eta', 'tightIDISO')
-    tex_lines += texoutput('fakerate', 'photon', 'pt', 'looseIDISO')
-    tex_lines += texoutput('fakerate', 'photon', 'pt', 'mediumIDISO')
-    tex_lines += texoutput('fakerate', 'photon', 'pt', 'tightIDISO')
-
-    # Electron
-
-    change_path(elmupath)
-
-    tex_lines += r"\section{Electron}" + "\n" + r"\subsection{Response}"
-    tex_lines += texoutput('ptresponse', 'electron', 'eta', 'tightID')
-    tex_lines += texoutput('ptresponse', 'electron', 'pt', 'tightID')
-
-    tex_lines += "\n" + r"\subsection{Resolution}"
-    tex_lines += texoutput('resolution', 'electron', 'pt', 'tightID')
-
-    tex_lines += "\n" + r"\subsection{Efficiency}"
-    tex_lines += texoutput('efficiency', 'electron', 'eta', 'looseIDISO')
-    tex_lines += texoutput('efficiency', 'electron', 'eta', 'mediumIDISO')
-    tex_lines += texoutput('efficiency', 'electron', 'eta', 'tightIDISO')
-    tex_lines += texoutput('efficiency', 'electron', 'pt', 'looseIDISO')
-    tex_lines += texoutput('efficiency', 'electron', 'pt', 'mediumIDISO')
-    tex_lines += texoutput('efficiency', 'electron', 'pt', 'tightIDISO')
-
-    change_path(qcdpath)
-    tex_lines += "\n" + r"\subsection{Fakerate}"
-    tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseIDISO')
-    tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumIDISO')
-    tex_lines += texoutput('fakerate', 'electron', 'eta', 'tightIDISO')
-    tex_lines += texoutput('fakerate', 'electron', 'pt', 'looseIDISO')
-    tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumIDISO')
-    tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightIDISO')
-
-    # Muon
-    change_path(elmupath)
-    tex_lines += r"\section{Muon}" + "\n" + r"\subsection{Response}"
-    tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
-    tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
-
-    tex_lines += "\n" + r"\subsection{Resolution}"
-    tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
-
-    tex_lines += "\n" + r"\subsection{Efficiency}"
-    tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseIDISO')
-    tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumIDISO')
-    tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightIDISO')
-    tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseIDISO')
-    tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumIDISO')
-    tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightIDISO')
-
-    change_path(qcdpath)
-    tex_lines += "\n" + r"\subsection{Fakerate}"
-    tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseIDISO')
-    tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumIDISO')
-    tex_lines += texoutput('fakerate', 'muon', 'eta', 'tightIDISO')
-    tex_lines += texoutput('fakerate', 'muon', 'pt', 'looseIDISO')
-    tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumIDISO')
-    tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightIDISO')
-
-    # Btag
-    change_path(btagpath)
-    tex_lines += "\n" + r"\section{Btag}" + "\n" + r"\subsection{Efficiency}"
-    tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'looseID')
-    tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'mediumID')
-    tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'tightID')
-    tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'looseID')
-    tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'mediumID')
-    tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'tightID')
-
-    tex_lines += "\n" + r"\subsection{Btag Light MisTag Rate}"
-    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'looseID')
-    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'mediumID')
-    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'tightID')
-    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'looseID')
-    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'mediumID')
-    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'tightID')
-
-    tex_lines += "\n" + r"\subsection{Btag c MisTag Rate}"
-    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'looseID')
-    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'mediumID')
-    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'tightID')
-    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'looseID')
-    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'mediumID')
-    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'tightID')
-
-    # Tau
-    change_path(taupath)
-    tex_lines += r"\section{Tau}" + "\n" + r"\subsection{Efficiency}"
-    tex_lines += texoutput('tautagRate', 'tau', 'eta', 'looseID')
-    tex_lines += texoutput('tautagRate', 'tau', 'eta', 'mediumID')
-    tex_lines += texoutput('tautagRate', 'tau', 'eta', 'tightID')
-    tex_lines += texoutput('tautagRate', 'tau', 'pt', 'looseID')
-    tex_lines += texoutput('tautagRate', 'tau', 'pt', 'mediumID')
-    tex_lines += texoutput('tautagRate', 'tau', 'pt', 'tightID')
-
-    tex_lines += "\n" + r"\subsection{Tau Light MisTag Rate}"
-    tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'looseID')
-    tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'mediumID')
-    tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'tightID')
-    tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'looseID')
-    tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'mediumID')
-    tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'tightID')
-
-    change_path(elmupath)
-    tex_lines += "\n" + r"\subsection{Tau Electron MisTag Rate}"
-    tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'looseID')
-    tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'mediumID')
-    tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'tightID')
-    tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'looseID')
-    tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'mediumID')
-    tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'tightID')
-
-    change_path(taupath)
-    tex_lines += "\n" + r"\subsection{Tau Muon MisTag Rate}"
-    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'looseID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'mediumID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'tightID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'looseID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'mediumID')
-    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
+#    change_path(gammapath)
+#    tex_lines += r"\section{Photon}" + "\n" + r"\subsection{Response}"
+#    tex_lines += texoutput('ptresponse', 'photon', 'eta', 'tightID')
+#    tex_lines += texoutput('ptresponse', 'photon', 'pt', 'tightID')
+#
+#    tex_lines += "\n" + r"\subsection{Resolution}"
+#    tex_lines += texoutput('resolution', 'photon', 'pt', 'tightID')
+#
+#    tex_lines += "\n" + r"\subsection{Efficiency}"
+#    tex_lines += texoutput('efficiency', 'photon', 'eta', 'looseIDISO')
+#    tex_lines += texoutput('efficiency', 'photon', 'eta', 'mediumIDISO')
+#    tex_lines += texoutput('efficiency', 'photon', 'eta', 'tightIDISO')
+#    tex_lines += texoutput('efficiency', 'photon', 'pt', 'looseIDISO')
+#    tex_lines += texoutput('efficiency', 'photon', 'pt', 'mediumIDISO')
+#    tex_lines += texoutput('efficiency', 'photon', 'pt', 'tightIDISO')
+#
+#    change_path(qcdpath)
+#    tex_lines += "\n" + r"\subsection{Fakerate}"
+#    tex_lines += texoutput('fakerate', 'photon', 'eta', 'looseIDISO')
+#    tex_lines += texoutput('fakerate', 'photon', 'eta', 'mediumIDISO')
+#    tex_lines += texoutput('fakerate', 'photon', 'eta', 'tightIDISO')
+#    tex_lines += texoutput('fakerate', 'photon', 'pt', 'looseIDISO')
+#    tex_lines += texoutput('fakerate', 'photon', 'pt', 'mediumIDISO')
+#    tex_lines += texoutput('fakerate', 'photon', 'pt', 'tightIDISO')
+#
+#    # Electron
+#
+#    change_path(elmupath)
+#
+#    tex_lines += r"\section{Electron}" + "\n" + r"\subsection{Response}"
+#    tex_lines += texoutput('ptresponse', 'electron', 'eta', 'tightID')
+#    tex_lines += texoutput('ptresponse', 'electron', 'pt', 'tightID')
+#
+#    tex_lines += "\n" + r"\subsection{Resolution}"
+#    tex_lines += texoutput('resolution', 'electron', 'pt', 'tightID')
+#
+#    tex_lines += "\n" + r"\subsection{Efficiency}"
+#    tex_lines += texoutput('efficiency', 'electron', 'eta', 'looseIDISO')
+#    tex_lines += texoutput('efficiency', 'electron', 'eta', 'mediumIDISO')
+#    tex_lines += texoutput('efficiency', 'electron', 'eta', 'tightIDISO')
+#    tex_lines += texoutput('efficiency', 'electron', 'pt', 'looseIDISO')
+#    tex_lines += texoutput('efficiency', 'electron', 'pt', 'mediumIDISO')
+#    tex_lines += texoutput('efficiency', 'electron', 'pt', 'tightIDISO')
+#
+#    change_path(qcdpath)
+#    tex_lines += "\n" + r"\subsection{Fakerate}"
+#    tex_lines += texoutput('fakerate', 'electron', 'eta', 'looseIDISO')
+#    tex_lines += texoutput('fakerate', 'electron', 'eta', 'mediumIDISO')
+#    tex_lines += texoutput('fakerate', 'electron', 'eta', 'tightIDISO')
+#    tex_lines += texoutput('fakerate', 'electron', 'pt', 'looseIDISO')
+#    tex_lines += texoutput('fakerate', 'electron', 'pt', 'mediumIDISO')
+#    tex_lines += texoutput('fakerate', 'electron', 'pt', 'tightIDISO')
+#
+#    # Muon
+#    change_path(elmupath)
+#    tex_lines += r"\section{Muon}" + "\n" + r"\subsection{Response}"
+#    tex_lines += texoutput('ptresponse', 'muon', 'eta', 'tightID')
+#    tex_lines += texoutput('ptresponse', 'muon', 'pt', 'tightID')
+#
+#    tex_lines += "\n" + r"\subsection{Resolution}"
+#    tex_lines += texoutput('resolution', 'muon', 'pt', 'tightID')
+#
+#    tex_lines += "\n" + r"\subsection{Efficiency}"
+#    tex_lines += texoutput('efficiency', 'muon', 'eta', 'looseIDISO')
+#    tex_lines += texoutput('efficiency', 'muon', 'eta', 'mediumIDISO')
+#    tex_lines += texoutput('efficiency', 'muon', 'eta', 'tightIDISO')
+#    tex_lines += texoutput('efficiency', 'muon', 'pt', 'looseIDISO')
+#    tex_lines += texoutput('efficiency', 'muon', 'pt', 'mediumIDISO')
+#    tex_lines += texoutput('efficiency', 'muon', 'pt', 'tightIDISO')
+#
+#    change_path(qcdpath)
+#    tex_lines += "\n" + r"\subsection{Fakerate}"
+#    tex_lines += texoutput('fakerate', 'muon', 'eta', 'looseIDISO')
+#    tex_lines += texoutput('fakerate', 'muon', 'eta', 'mediumIDISO')
+#    tex_lines += texoutput('fakerate', 'muon', 'eta', 'tightIDISO')
+#    tex_lines += texoutput('fakerate', 'muon', 'pt', 'looseIDISO')
+#    tex_lines += texoutput('fakerate', 'muon', 'pt', 'mediumIDISO')
+#    tex_lines += texoutput('fakerate', 'muon', 'pt', 'tightIDISO')
+#
+#    # Btag
+#    change_path(btagpath)
+#    tex_lines += "\n" + r"\section{Btag}" + "\n" + r"\subsection{Efficiency}"
+#    tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'looseID')
+#    tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'mediumID')
+#    tex_lines += texoutput('btagRate', 'jetpuppi', 'eta', 'tightID')
+#    tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'looseID')
+#    tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'mediumID')
+#    tex_lines += texoutput('btagRate', 'jetpuppi', 'pt', 'tightID')
+#
+#    tex_lines += "\n" + r"\subsection{Btag Light MisTag Rate}"
+#    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'looseID')
+#    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'mediumID')
+#    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'eta', 'tightID')
+#    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'looseID')
+#    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'mediumID')
+#    tex_lines += texoutput('lightMistagRate', 'jetpuppi', 'pt', 'tightID')
+#
+#    tex_lines += "\n" + r"\subsection{Btag c MisTag Rate}"
+#    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'looseID')
+#    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'mediumID')
+#    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'eta', 'tightID')
+#    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'looseID')
+#    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'mediumID')
+#    tex_lines += texoutput('cMistagRate', 'jetpuppi', 'pt', 'tightID')
+#
+#    # Tau
+#    change_path(taupath)
+#    tex_lines += r"\section{Tau}" + "\n" + r"\subsection{Efficiency}"
+#    tex_lines += texoutput('tautagRate', 'tau', 'eta', 'looseID')
+#    tex_lines += texoutput('tautagRate', 'tau', 'eta', 'mediumID')
+#    tex_lines += texoutput('tautagRate', 'tau', 'eta', 'tightID')
+#    tex_lines += texoutput('tautagRate', 'tau', 'pt', 'looseID')
+#    tex_lines += texoutput('tautagRate', 'tau', 'pt', 'mediumID')
+#    tex_lines += texoutput('tautagRate', 'tau', 'pt', 'tightID')
+#
+#    tex_lines += "\n" + r"\subsection{Tau Light MisTag Rate}"
+#    tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'looseID')
+#    tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'mediumID')
+#    tex_lines += texoutput('lightMistagRate', 'tau', 'eta', 'tightID')
+#    tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'looseID')
+#    tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'mediumID')
+#    tex_lines += texoutput('lightMistagRate', 'tau', 'pt', 'tightID')
+#
+#    change_path(elmupath)
+#    tex_lines += "\n" + r"\subsection{Tau Electron MisTag Rate}"
+#    tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'looseID')
+#    tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'mediumID')
+#    tex_lines += texoutput('elecMistagRate', 'tau', 'eta', 'tightID')
+#    tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'looseID')
+#    tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'mediumID')
+#    tex_lines += texoutput('elecMistagRate', 'tau', 'pt', 'tightID')
+#
+#    change_path(taupath)
+#    tex_lines += "\n" + r"\subsection{Tau Muon MisTag Rate}"
+#    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'looseID')
+#    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'mediumID')
+#    tex_lines += texoutput('muonMistagRate', 'tau', 'eta', 'tightID')
+#    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'looseID')
+#    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'mediumID')
+#    tex_lines += texoutput('muonMistagRate', 'tau', 'pt', 'tightID')
 
     tex_lines += "\n" + r"\end{document}"
 
