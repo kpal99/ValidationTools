@@ -1284,12 +1284,12 @@ def main():
 
     for cut in ["nocut"]+params["etaSlices"]:
 
-        hname = "recoNomatchEffi_to_pt"
-        hname += "_"+ str(cut[0]) + "to" + str(cut[1])
-        hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
-        hists[obj+"_"+hname] = create2dHist(obj+"_"+hname,params,'')
+     #   hname = "recoNomatchEffi_to_pt"
+     #   hname += "_"+ str(cut[0]) + "to" + str(cut[1])
+     #   hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
+     #   hists[obj+"_"+hname] = create2dHist(obj+"_"+hname,params,'')
 
-        hnames = ["efficiency_to_pt", "ptresponse_to_pt", "fakerate_to_pt"]
+        hnames = ["recoNomatchEffi_to_pt", "efficiency_to_pt", "ptresponse_to_pt", "fakerate_to_pt"]
         for hname in hnames:
             if len(params["ids"]) == 0:
                 title = "#varepsilon(reco)"
@@ -1305,13 +1305,12 @@ def main():
 
     for cut in ["nocut"]+params["ptSlices"]:
 
-	hname = "recoNomatchEffi_to_eta"
-        hname += "_"+ str(cut[0]) + "to" + str(cut[1])
-        hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
-	print obj+"_"+hname
-        hists[obj+"_"+hname] = create2dHist(obj+"_"+hname,params,'')
+#	hname = "recoNomatchEffi_to_eta"
+#        hname += "_"+ str(cut[0]) + "to" + str(cut[1])
+#        hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
+#        hists[obj+"_"+hname] = create2dHist(obj+"_"+hname,params,'')
 
-        hnames = ["efficiency_to_eta", "ptresponse_to_eta", "fakerate_to_eta"]
+        hnames = ["recoNomatchEffi_to_eta", "efficiency_to_eta", "ptresponse_to_eta", "fakerate_to_eta"]
         for hname in hnames:
             if len(params["ids"]) == 0:
                 title = "#varepsilon(reco)"
@@ -1476,10 +1475,6 @@ def main():
             p_isopass.append(isopass)
 
 
-	## reco un-matched efficiency only for jets
-	unmatchMark = [1] * len(p_tvectors)
-	recojets = p_tvectors
-
         ## For lepton/photon only calculate efficiency, response, resolution in signal file
         if (obj != 'photon' and obj != 'electron' and obj != 'muon') or 'QCD' not in inFile:
 
@@ -1527,20 +1522,55 @@ def main():
                     
         	    ## reco jet nomatch effi
         	    if 'jet' in obj:
-        	        hists[obj+"_recoNomatchEffi_to_eta"].Fill(p_tvectors[matchindex].Eta(), 0)
-			hists[obj+"_recoNomatchEffi_to_pt"].Fill(p_tvectors[matchindex].Pt(), 0)
 
-        	        for cut in params["etaSlices"]:
-        	            cutname = str(cut[0]) + "to" + str(cut[1])
-        	            cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
-        	            if cut[0] < abs(p_tvectors[matchindex].Eta()) <= cut[1]:
-        	                hists[obj+"_recoNomatchEffi_to_pt_"+cutname].Fill(p_tvectors[matchindex].Pt(), 0)
-        	        for cut in params["ptSlices"]:
-        	            cutname = str(cut[0]) + "to" + str(cut[1])
-        	            cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
-        	            if cut[0] <= p_tvectors[matchindex].Pt() < cut[1]:
-        	                hists[obj+"_recoNomatchEffi_to_eta_"+cutname].Fill(p_tvectors[matchindex].Eta(), 0)
+                        for quality in params["ids"]:
 
+                             try: idpass = (quality[1] < 0 or bool(p_idpass[matchindex] & (1<<quality[1])))
+                             except IndexError: idpass = False
+                             try: isopass = (quality[2] < 0 or bool(p_isopass[matchindex] & (1<<quality[2])))
+                             except: isopass = False
+                             if quality[3] == 2:
+                                 if idpass:
+                                     hists[obj+"_recoNomatchEffi_to_eta_"+quality[0]].Fill(p_tvectors[matchindex].Eta(), 0*isopass) #0 if iso fails, 1 if passes
+                                     hists[obj+"_recoNomatchEffi_to_pt_"+quality[0]].Fill(p_tvectors[matchindex].Pt(), 0*isopass)
+                                   #  hists[obj+"_efficiency2D_"+quality[0]].Fill(g.pt(),g.eta(), isopass)
+                             else:
+                                 hists[obj+"_recoNomatchEffi_to_eta_"+quality[0]].Fill(p_tvectors[matchindex].Eta(), 0*idpass*isopass) #0 if either fails, 1 if both
+                                 hists[obj+"_recoNomatchEffi_to_pt_"+quality[0]].Fill(p_tvectors[matchindex].Pt(), 0*idpass*isopass)
+                                # hists[obj+"_efficiency2D_"+quality[0]].Fill(g.pt(),g.eta(), idpass*isopass)
+
+                        for cut in params["etaSlices"]:
+                            cutname = str(cut[0]) + "to" + str(cut[1])
+                            cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
+                            if cut[0] < abs(p_tvectors[matchindex].Eta()) <= cut[1]:
+                                for quality in params["ids"]:
+                                  try: idpass = (quality[1] < 0 or bool(p_idpass[matchindex] & (1<<quality[1])))
+                                  except IndexError: idpass = False
+                                  try: isopass = (quality[2] < 0 or bool(p_isopass[matchindex] & (1<<quality[2])))
+                                  except: isopass = False
+                                  if quality[3] == 2:
+                                      if idpass:
+                                          hists[obj+"_recoNomatchEffi_to_pt_"+quality[0]+"_"+cutname].Fill(p_tvectors[matchindex].Pt(), 0*isopass)
+                                  else:
+                                      hists[obj+"_recoNomatchEffi_to_pt_"+quality[0]+"_"+cutname].Fill(p_tvectors[matchindex].Pt(), 0*idpass*isopass)
+
+                        for cut in params["ptSlices"]:
+                            cutname = str(cut[0]) + "to" + str(cut[1])
+                            cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
+                            if cut[0] <= p_tvectors[matchindex].Pt() < cut[1]:
+                                for quality in params["ids"]:
+                                  try: idpass = (quality[1] < 0 or bool(p_idpass[matchindex] & (1<<quality[1])))
+                                  except IndexError: idpass = False
+                                  try: isopass = (quality[2] < 0 or bool(p_isopass[matchindex] & (1<<quality[2])))
+                                  except: isopass = False
+                                  if quality[3] == 2:
+                                      if idpass:
+                                          hists[obj+"_recoNomatchEffi_to_eta_"+quality[0]+"_"+cutname].Fill(p_tvectors[matchindex].Eta(), 0*isopass)
+                                  else:
+                                      hists[obj+"_recoNomatchEffi_to_eta_"+quality[0]+"_"+cutname].Fill(p_tvectors[matchindex].Eta(), 0*idpass*isopass)
+
+ 
+		    ## end of reco jet fake Effi
 
                     ## Fill matched reco and gen hists
                     if len(params["ids"]) > 0:
@@ -1711,19 +1741,61 @@ def main():
 	## reco jet nomatch effi
 	if 'jet' in obj:
 	    for i, pvec in enumerate(p_tvectors):
-		hists[obj+"_recoNomatchEffi_to_eta"].Fill(pvec.Eta(), 1)
-		hists[obj+"_recoNomatchEffi_to_pt"].Fill(pvec.Pt(), 1)
 
-	        for cut in params["etaSlices"]:
+        #        for cut in params["ptSlices"]:
+        #            cutname = str(cut[0]) + "to" + str(cut[1])
+        #            cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
+        #            if cut[0] <= pvec.Pt() < cut[1]: 
+	#		hists[obj+"_recoNomatchEffi_to_eta_"+cutname].Fill(pvec.Eta(), 1)
+       
+                for quality in params["ids"]:
+
+                   try: idpass = (quality[1] < 0 or bool(p_idpass[i] & (1<<quality[1])))
+                   except IndexError: idpass = False
+                   try: isopass = (quality[2] < 0 or bool(p_isopass[i] & (1<<quality[2])))
+                   except: isopass = False
+                   if quality[3] == 2:
+                       if idpass:
+                           hists[obj+"_recoNomatchEffi_to_eta_"+quality[0]].Fill(pvec.Eta(), 1*isopass) #0 if iso fails, 1 if passes
+                           hists[obj+"_recoNomatchEffi_to_pt_"+quality[0]].Fill(pvec.Pt(), 1*isopass)
+                         #  hists[obj+"_efficiency2D_"+quality[0]].Fill(g.pt(),g.eta(), isopass)
+                   else:
+                       hists[obj+"_recoNomatchEffi_to_eta_"+quality[0]].Fill(pvec.Eta(), 1*idpass*isopass) #0 if either fails, 1 if both
+                       hists[obj+"_recoNomatchEffi_to_pt_"+quality[0]].Fill(pvec.Pt(), 1*idpass*isopass)
+                          # hists[obj+"_efficiency2D_"+quality[0]].Fill(g.pt(),g.eta(), idpass*isopass)
+                     
+
+                for cut in params["etaSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
                     if cut[0] < abs(pvec.Eta()) <= cut[1]:
-                        hists[obj+"_recoNomatchEffi_to_pt_"+cutname].Fill(pvec.Pt(), 1)
+                        for quality in params["ids"]:
+                          try: idpass = (quality[1] < 0 or bool(p_idpass[i] & (1<<quality[1])))
+                          except IndexError: idpass = False
+                          try: isopass = (quality[2] < 0 or bool(p_isopass[i] & (1<<quality[2])))
+                          except: isopass = False
+                          if quality[3] == 2:
+                              if idpass:
+                                  hists[obj+"_recoNomatchEffi_to_pt_"+quality[0]+"_"+cutname].Fill(pvec.Pt(), 1*isopass)
+                          else:
+                              hists[obj+"_recoNomatchEffi_to_pt_"+quality[0]+"_"+cutname].Fill(pvec.Pt(), 1*idpass*isopass)
+
                 for cut in params["ptSlices"]:
                     cutname = str(cut[0]) + "to" + str(cut[1])
                     cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
-                    if cut[0] <= pvec.Pt() < cut[1]: 
-			hists[obj+"_recoNomatchEffi_to_eta_"+cutname].Fill(pvec.Eta(), 1)
+                    if cut[0] <= pvec.Pt() < cut[1]:
+                        for quality in params["ids"]:
+                          try: idpass = (quality[1] < 0 or bool(p_idpass[i] & (1<<quality[1])))
+                          except IndexError: idpass = False
+                          try: isopass = (quality[2] < 0 or bool(p_isopass[i] & (1<<quality[2])))
+                          except: isopass = False
+                          if quality[3] == 2:
+                              if idpass:
+                                  hists[obj+"_recoNomatchEffi_to_eta_"+quality[0]+"_"+cutname].Fill(pvec.Eta(), 1*isopass)
+                          else:
+                              hists[obj+"_recoNomatchEffi_to_eta_"+quality[0]+"_"+cutname].Fill(pvec.Eta(), 1*idpass*isopass)
+
+
 
 
         ## For lepton/photon, only calculate fake rates in QCD
@@ -1823,6 +1895,7 @@ def main():
     ## Write all histograms
     outputF.cd()
     for h in hists.keys():
+	if not 'recoNomatch' in h: continue # wz
         hists[h].Write()
 
 
