@@ -1284,11 +1284,6 @@ def main():
 
     for cut in ["nocut"]+params["etaSlices"]:
 
-     #   hname = "recoNomatchEffi_to_pt"
-     #   hname += "_"+ str(cut[0]) + "to" + str(cut[1])
-     #   hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
-     #   hists[obj+"_"+hname] = create2dHist(obj+"_"+hname,params,'')
-
         hnames = ["recoNomatchEffi_to_pt", "efficiency_to_pt", "ptresponse_to_pt", "fakerate_to_pt"]
         for hname in hnames:
             if len(params["ids"]) == 0:
@@ -1304,11 +1299,6 @@ def main():
                     hists[obj+"_"+newname] = create2dHist(obj+"_"+newname,params,quality[4])
 
     for cut in ["nocut"]+params["ptSlices"]:
-
-#	hname = "recoNomatchEffi_to_eta"
-#        hname += "_"+ str(cut[0]) + "to" + str(cut[1])
-#        hname = ((hname.replace('.', 'p')).replace('100000p0','Inf')).replace('_ntoo','')
-#        hists[obj+"_"+hname] = create2dHist(obj+"_"+hname,params,'')
 
         hnames = ["recoNomatchEffi_to_eta", "efficiency_to_eta", "ptresponse_to_eta", "fakerate_to_eta"]
         for hname in hnames:
@@ -1569,7 +1559,6 @@ def main():
                                   else:
                                       hists[obj+"_recoNomatchEffi_to_eta_"+quality[0]+"_"+cutname].Fill(p_tvectors[matchindex].Eta(), 0*idpass*isopass)
 
- 
 		    ## end of reco jet fake Effi
 
                     ## Fill matched reco and gen hists
@@ -1742,12 +1731,6 @@ def main():
 	if 'jet' in obj:
 	    for i, pvec in enumerate(p_tvectors):
 
-        #        for cut in params["ptSlices"]:
-        #            cutname = str(cut[0]) + "to" + str(cut[1])
-        #            cutname = (cutname.replace('.','p')).replace('100000p0','Inf')
-        #            if cut[0] <= pvec.Pt() < cut[1]: 
-	#		hists[obj+"_recoNomatchEffi_to_eta_"+cutname].Fill(pvec.Eta(), 1)
-       
                 for quality in params["ids"]:
 
                    try: idpass = (quality[1] < 0 or bool(p_idpass[i] & (1<<quality[1])))
@@ -1794,7 +1777,6 @@ def main():
                                   hists[obj+"_recoNomatchEffi_to_eta_"+quality[0]+"_"+cutname].Fill(pvec.Eta(), 1*isopass)
                           else:
                               hists[obj+"_recoNomatchEffi_to_eta_"+quality[0]+"_"+cutname].Fill(pvec.Eta(), 1*idpass*isopass)
-
 
 
 
@@ -1895,7 +1877,6 @@ def main():
     ## Write all histograms
     outputF.cd()
     for h in hists.keys():
-	if not 'recoNomatch' in h: continue # wz
         hists[h].Write()
 
 
