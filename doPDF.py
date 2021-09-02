@@ -377,8 +377,8 @@ def main():
 
     # Jetpuppi
 
-#    change_path(qcdpath)
-#
+    change_path(qcdpath)
+
 #    tex_lines += "\n" + r"\section{Jetpuppi}" + "\n" + r"\subsection{Response}"
 #    tex_lines += texoutput('ptresponse', 'jetpuppi', 'eta', 'tightID')
 #    tex_lines += texoutput('ptresponse', 'jetpuppi', 'pt', 'tightID')
@@ -394,79 +394,87 @@ def main():
     # tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'reco')
     # tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'reco')
 
+    tex_lines += "\n" + r"\subsection{reco no match Efficiency}"
+    tex_lines += texoutput('recoNomatchEffi', 'jetpuppi', 'eta', 'looseID')
+    tex_lines += texoutput('recoNomatchEffi', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('recoNomatchEffi', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('recoNomatchEffi', 'jetpuppi', 'pt', 'tightID')
+    tex_lines += texoutput('recoNomatchEffi', 'jetpuppi', 'eta', 'reco')
+    tex_lines += texoutput('recoNomatchEffi', 'jetpuppi', 'pt', 'reco')
+
     # MET
-    change_path(elmupath)
-    os.system("wget https://cds.cern.ch/record/2205284/files/Figure_007-a.png")
-    os.system('mv Figure_007-a.png met_figure.png'.format(printoutdir))
-    tex_lines += "\n" + r"\section{MET}" + "\n" + r"\subsection{MET}"
-
-    global met_plots
-    met_plots = [['met.pdf', 'MET'],
-                 ['met_VS_npuVtx.pdf', 'MET vs nPU Vertices'],
-                 ['met_VS_genz_pt.pdf', 'MET vs p$_{T}$(gen Z)'],
-                 ['met_VS_genht_pt30_eta5.pdf', 'MET vs H$_{T}$ gen'],
-                 ]
-    tex_lines += add_met_plots('MET')
-
-    # MET Transverse
-    met_plots = [['met_t.pdf', 'MET$_{T}$'],
-                 ['met_t_VS_npuVtx.pdf', 'MET$_{T}$ vs nPU Vertices'],
-                 ['met_t_VS_genz_pt.pdf', 'MET$_{T}$ vs p$_{T}$(gen Z)'],
-                 ['met_t_VS_genht_pt30_eta5.pdf', 'MET$_{T}$ vs H$_{T}$ gen'],
-                 ]
-    tex_lines += add_met_plots(r'MET$_{T}$')
-
-    # MET Parallel
-    met_plots = [['met_p.pdf', 'MET$_{P}$'],
-                 ['met_p_VS_npuVtx.pdf', 'MET$_{P}$ vs nPU Vertices'],
-                 ['met_p_VS_genz_pt.pdf', 'MET$_{P}$ vs p$_{T}$(gen Z)'],
-                 ['met_p_VS_genht_pt30_eta5.pdf', 'MET$_{P}$ vs H$_{T}$ gen'],
-                 ]
-    tex_lines += add_met_plots(r'MET$_{P}$')
-
-    # U_{T}
-    tex_lines += "\n" + r"\subsection{U}"
-    met_plots = [['u_t.pdf', 'u$_{T}$'],
-                 ['u_t_VS_npuVtx.pdf', 'u$_{T}$ vs nPU Vertices'],
-                 ['u_t_VS_genz_pt.pdf', 'u$_{T}$ vs p$_{T}$(gen Z)'],
-                 ['u_t_VS_genht_pt30_eta5.pdf', 'u$_{T}$ vs H$_{T}$ gen'],
-                 ]
-    tex_lines += add_met_plots(r'U$_{T}$')
-
-    # U_{P}
-    met_plots = [['u_p.pdf', 'u$_{P}$'],
-                 ['u_p_VS_npuVtx.pdf', 'u$_{P}$ vs nPU Vertices'],
-                 ['u_p_VS_genz_pt.pdf', 'u$_{P}$ vs p$_{T}$(gen Z)'],
-                 ['u_p_VS_genht_pt30_eta5.pdf', 'u$_{P}$ vs H$_{T}$ gen'],
-                 ]
-    tex_lines += add_met_plots(r'U$_{P}$')
-
-    # U_{T} (RMS)
-    met_plots = [['u_t.pdf', 'u$_{T}$'],
-                 ['ut_rms_VS_npuVtx.pdf', 'u$_{T}$(RMS) vs nPU Vertices'],
-                 ['ut_rms_VS_genz_pt.pdf', 'u$_{T}$(RMS) vs p$_{T}$(gen Z)'],
-                 ['ut_rms_VS_genht_pt30_eta5.pdf', 'u$_{T}$(RMS) vs H$_{T}$ gen']]
-    tex_lines += add_met_plots(r'U$_{T}$(RMS)')
-
-    # U_{P} (RMS)
-    met_plots = [['u_p.pdf', 'u$_{P}$'],
-                 ['up_plus_qt_rms_VS_npuVtx.pdf',
-                     'u$_{P}+$q$_{T}$(RMS) vs nPU Vertices'],
-                 ['up_plus_qt_rms_VS_genz_pt.pdf',
-                     'u$_{P}+$q$_{T}$(RMS) vs p$_{T}$(gen Z)'],
-                 ['up_plus_qt_rms_VS_genht_pt30_eta5.pdf',
-                     'u$_{P}+$q$_{T}$(RMS) vs H$_{T}$ gen']
-                 ]
-    tex_lines += add_met_plots(r'U$_{P}$(RMS)')
-
-    # Z
-    tex_lines += "\n" + r"\subsection{Z}"
-    met_plots = [['z_pt.pdf', 'p$_{T}$(Z)'],
-                 ['z_pt_VS_npuVtx.pdf', 'p$_{T}$(Z) vs nPU Vertices'],
-                 ['z_pt_VS_genz_pt.pdf', 'p$_{T}$(Z) vs p$_{T}$(gen Z)'],
-                 ['z_pt_VS_genht_pt30_eta5.pdf', 'p$_{T}$(Z) vs H$_{T}$ gen'],
-                 ]
-    tex_lines += add_met_plots('Z')
+#    change_path(elmupath)
+#    os.system("wget https://cds.cern.ch/record/2205284/files/Figure_007-a.png")
+#    os.system('mv Figure_007-a.png met_figure.png'.format(printoutdir))
+#    tex_lines += "\n" + r"\section{MET}" + "\n" + r"\subsection{MET}"
+#
+#    global met_plots
+#    met_plots = [['met.pdf', 'MET'],
+#                 ['met_VS_npuVtx.pdf', 'MET vs nPU Vertices'],
+#                 ['met_VS_genz_pt.pdf', 'MET vs p$_{T}$(gen Z)'],
+#                 ['met_VS_genht_pt30_eta5.pdf', 'MET vs H$_{T}$ gen'],
+#                 ]
+#    tex_lines += add_met_plots('MET')
+#
+#    # MET Transverse
+#    met_plots = [['met_t.pdf', 'MET$_{T}$'],
+#                 ['met_t_VS_npuVtx.pdf', 'MET$_{T}$ vs nPU Vertices'],
+#                 ['met_t_VS_genz_pt.pdf', 'MET$_{T}$ vs p$_{T}$(gen Z)'],
+#                 ['met_t_VS_genht_pt30_eta5.pdf', 'MET$_{T}$ vs H$_{T}$ gen'],
+#                 ]
+#    tex_lines += add_met_plots(r'MET$_{T}$')
+#
+#    # MET Parallel
+#    met_plots = [['met_p.pdf', 'MET$_{P}$'],
+#                 ['met_p_VS_npuVtx.pdf', 'MET$_{P}$ vs nPU Vertices'],
+#                 ['met_p_VS_genz_pt.pdf', 'MET$_{P}$ vs p$_{T}$(gen Z)'],
+#                 ['met_p_VS_genht_pt30_eta5.pdf', 'MET$_{P}$ vs H$_{T}$ gen'],
+#                 ]
+#    tex_lines += add_met_plots(r'MET$_{P}$')
+#
+#    # U_{T}
+#    tex_lines += "\n" + r"\subsection{U}"
+#    met_plots = [['u_t.pdf', 'u$_{T}$'],
+#                 ['u_t_VS_npuVtx.pdf', 'u$_{T}$ vs nPU Vertices'],
+#                 ['u_t_VS_genz_pt.pdf', 'u$_{T}$ vs p$_{T}$(gen Z)'],
+#                 ['u_t_VS_genht_pt30_eta5.pdf', 'u$_{T}$ vs H$_{T}$ gen'],
+#                 ]
+#    tex_lines += add_met_plots(r'U$_{T}$')
+#
+#    # U_{P}
+#    met_plots = [['u_p.pdf', 'u$_{P}$'],
+#                 ['u_p_VS_npuVtx.pdf', 'u$_{P}$ vs nPU Vertices'],
+#                 ['u_p_VS_genz_pt.pdf', 'u$_{P}$ vs p$_{T}$(gen Z)'],
+#                 ['u_p_VS_genht_pt30_eta5.pdf', 'u$_{P}$ vs H$_{T}$ gen'],
+#                 ]
+#    tex_lines += add_met_plots(r'U$_{P}$')
+#
+#    # U_{T} (RMS)
+#    met_plots = [['u_t.pdf', 'u$_{T}$'],
+#                 ['ut_rms_VS_npuVtx.pdf', 'u$_{T}$(RMS) vs nPU Vertices'],
+#                 ['ut_rms_VS_genz_pt.pdf', 'u$_{T}$(RMS) vs p$_{T}$(gen Z)'],
+#                 ['ut_rms_VS_genht_pt30_eta5.pdf', 'u$_{T}$(RMS) vs H$_{T}$ gen']]
+#    tex_lines += add_met_plots(r'U$_{T}$(RMS)')
+#
+#    # U_{P} (RMS)
+#    met_plots = [['u_p.pdf', 'u$_{P}$'],
+#                 ['up_plus_qt_rms_VS_npuVtx.pdf',
+#                     'u$_{P}+$q$_{T}$(RMS) vs nPU Vertices'],
+#                 ['up_plus_qt_rms_VS_genz_pt.pdf',
+#                     'u$_{P}+$q$_{T}$(RMS) vs p$_{T}$(gen Z)'],
+#                 ['up_plus_qt_rms_VS_genht_pt30_eta5.pdf',
+#                     'u$_{P}+$q$_{T}$(RMS) vs H$_{T}$ gen']
+#                 ]
+#    tex_lines += add_met_plots(r'U$_{P}$(RMS)')
+#
+#    # Z
+#    tex_lines += "\n" + r"\subsection{Z}"
+#    met_plots = [['z_pt.pdf', 'p$_{T}$(Z)'],
+#                 ['z_pt_VS_npuVtx.pdf', 'p$_{T}$(Z) vs nPU Vertices'],
+#                 ['z_pt_VS_genz_pt.pdf', 'p$_{T}$(Z) vs p$_{T}$(gen Z)'],
+#                 ['z_pt_VS_genht_pt30_eta5.pdf', 'p$_{T}$(Z) vs H$_{T}$ gen'],
+#                 ]
+#    tex_lines += add_met_plots('Z')
 
     # Photon
 
