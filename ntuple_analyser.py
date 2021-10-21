@@ -422,13 +422,19 @@ def runMETStudy(ntuple, maxEvents, outfileName, dumptcl):
     metHists['z_pt'] = createMetHist('z_pt', "p_{T}(Z) [GeV]", 40, 0, 150)
     metHists['genz_pt'] = createMetHist('genz_pt', "p_{T}(gen Z) [GeV]", 40, 0, 150)
     metHists['met'] = createMetHist('met', "p_{T,miss} [GeV]", 40, 0, 150)
+    metHists['met_reco10'] = createMetHist('met_reco10', "p_{T,miss} from puppi jets of 10 GeV [GeV]", 40, 0, 150)
+    metHists['met_reco20'] = createMetHist('met_reco20', "p_{T,miss} from puppi jets of 20 GeV [GeV]", 40, 0, 150)
+    metHists['met_reco30'] = createMetHist('met_reco30', "p_{T,miss} from puppi jets of 30 GeV [GeV]", 40, 0, 150)
+    metHists['met_recoid10'] = createMetHist('met_recoid10', "p_{T,miss} from puppi jets w/ ID of 10 GeV [GeV]", 40, 0, 150)
+    metHists['met_recoid20'] = createMetHist('met_recoid20', "p_{T,miss} from puppi jets w/ ID of 20 GeV [GeV]", 40, 0, 150)
+    metHists['met_recoid30'] = createMetHist('met_recoid30', "p_{T,miss} from puppi jets w/ ID of 30 GeV [GeV]", 40, 0, 150)
     metHists['met_p'] = createMetHist('met_p', "parallel p_{T,miss} [GeV]", 40, 0, 150)
     metHists['met_t'] = createMetHist('met_t', "transverse p_{T,miss} [GeV]", 40, 0, 150)
     metHists['u_p'] = createMetHist('u_p', "u_{p} [GeV]", 40, 0, 150)
     metHists['u_t'] = createMetHist('u_t', "u_{t} [GeV]", 40, 0, 150)
 
     twodvarList=['genz_pt','genht_pt30_eta5','npuVtx']
-    varList = ['z_pt', 'met', 'met_p', 'met_t', 'u_p', 'u_t']
+    varList = ['z_pt', 'met', 'met_p', 'met_t', 'u_p', 'u_t', 'met_reco10', 'met_reco20', 'met_reco30', 'met_recoid10', 'met_recoid20', 'met_recoid30']
     varAllList = varList +twodvarList
     for v in varList:
         for twodv in twodvarList:
@@ -449,6 +455,45 @@ def runMETStudy(ntuple, maxEvents, outfileName, dumptcl):
         mets = event.metspuppi()
         electrons = event.electrons()
         muons = event.muons()
+        jets = event.jetspuppi()
+
+        recomet10x = 0
+        recomet10y = 0
+        recoidmet10x = 0
+        recoidmet10y = 0
+        recomet20x = 0
+        recomet20y = 0
+        recoidmet20x = 0
+        recoidmet20y = 0
+        recomet30x = 0
+        recomet30y = 0
+        recoidmet30x = 0
+        recoidmet30y = 0
+        for jet in jets:
+            if jet.pt() > 10 and abs(jet.eta()) < 5:
+                recomet10x = recomet10x - jet.pt()*math.cos(jet.phi())
+                recomet10y = recomet10y - jet.pt()*math.sin(jet.phi())
+                if jet.pt() > 20:
+                    recomet20x = recomet20x - jet.pt()*math.cos(jet.phi())
+                    recomet20y = recomet20y - jet.pt()*math.sin(jet.phi())
+                if jet.pt() > 30:
+                    recomet30x = recomet30x - jet.pt()*math.cos(jet.phi())
+                    recomet30y = recomet30y - jet.pt()*math.sin(jet.phi())                    
+                if jet.idpass() > 0:
+                    recoidmet10x = recoidmet10x - jet.pt()*math.cos(jet.phi())
+                    recoidmet10y = recoidmet10y - jet.pt()*math.sin(jet.phi())
+                    if jet.pt() > 20:
+                        recoidmet20x = recoidmet20x - jet.pt()*math.cos(jet.phi())
+                        recoidmet20y = recoidmet20y - jet.pt()*math.sin(jet.phi())
+                    if jet.pt() > 30:
+                        recoidmet30x = recoidmet30x - jet.pt()*math.cos(jet.phi())
+                        recoidmet30y = recoidmet30y - jet.pt()*math.sin(jet.phi())                    
+        recomet10 = math.sqrt(recomet10x**2 + recomet10y**2)
+        recoidmet10 = math.sqrt(recoidmet10x**2 + recoidmet10y**2)
+        recomet20 = math.sqrt(recomet20x**2 + recomet20y**2)
+        recoidmet20 = math.sqrt(recoidmet20x**2 + recoidmet20y**2)
+        recomet30 = math.sqrt(recomet30x**2 + recomet30y**2)
+        recoidmet30 = math.sqrt(recoidmet30x**2 + recoidmet30y**2)
 
         if len(electrons)>1: 
             leptons = electrons
@@ -484,6 +529,12 @@ def runMETStudy(ntuple, maxEvents, outfileName, dumptcl):
         var['z_pt'] = z_pt
         var['genz_pt'] = genz_pt
         var['met'] = met
+        var['met_reco10'] = recomet10
+        var['met_recoid10'] = recoidmet10
+        var['met_reco20'] = recomet20
+        var['met_recoid20'] = recoidmet20
+        var['met_reco30'] = recomet30
+        var['met_recoid30'] = recoidmet30
         var['met_p'] = met_p
         var['met_t'] = met_t
         var['u_p']= u_p

@@ -80,6 +80,28 @@ sh postPlots.sh -i mynewplotdir/ -o delphes_validation/mynewplotdir/ -s PhotonFl
 
 4. Presentation file. If folders that contain the pdf/png files are stored inside a parent directory and are named exactly as: "TauTag", "BTag", "ELMu", "Photon" and "QCD", then pass only that parent directory along with the directory for tex output (avoid giving "../" and such for the --parentpath option):
 
+Condor submission (edit paths first):
+```
+python submitHistos.py delphes
+python submitHistos.py fullsim
+
+```
+Hadd files (edit paths first):
+
+```
+python hadd_histos.py delphes
+python hadd_histos.py fullsim
+
+```
+
+produce plots (edit paths):
+
+```
+python allPlots.py
+
+``
+
+
 ```
 python -u doPDF.py --parentpath path_to_plots/ -o output_dir/
 ```

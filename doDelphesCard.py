@@ -1,4 +1,3 @@
-
 import ROOT as rt
 import os, sys, optparse
 from collections import OrderedDict
@@ -16,47 +15,54 @@ def round_to_n(x,n):
 def get_mean_and_sigma(theHist, wmin=0.2, wmax=1.8, step=0.001, epsilon=0.007):
 
     ## rms, signal peak position
-    x0 = theHist.GetXaxis().GetBinCenter(theHist.GetMaximumBin())
-    d  = theHist.GetRMS()
 
-    # now perform gaussian fit in [x_max_sigm, x_max_sigp]
-    f = rt.TF1('gausfit', 'gaus', wmin, wmax)
+    mu = 1
+    sig = 0
+    sig_eff = 0
 
-    s = 1.0
-    theHist.Fit('gausfit', 'Q', '', x0 - s*d, x0 + s*d)
+    #print theHist.Integral()
+    if theHist.Integral() > 0:
+        x0 = theHist.GetXaxis().GetBinCenter(theHist.GetMaximumBin())
+        d  = theHist.GetRMS()
 
-    mu  = f.GetParameter(1)
-    #mu  = x0
-    sig = f.GetParameter(2)
+        # now perform gaussian fit in [x_max_sigm, x_max_sigp]
+        f = rt.TF1('gausfit', 'gaus', wmin, wmax)
 
-    #print mu, sig
+        s = 1.0
+        theHist.Fit('gausfit', 'Q', '', x0 - s*d, x0 + s*d)
 
-    point = wmin
-    weight = 0.
-    points = [] #vector<pair<double,double> > 
-    thesum = theHist.Integral()
-    for i in range(theHist.GetNbinsX()):
-      weight += theHist.GetBinContent(i)
-      if weight > epsilon:
-        points.append( [theHist.GetBinCenter(i),weight/thesum] )
-    low = wmin
-    high = wmax
+        mu  = f.GetParameter(1)
+        #mu  = x0
+        sig = f.GetParameter(2)
 
-    #print points
+        #print mu, sig
 
-    width = wmax-wmin
-    for i in range(len(points)):
-      for j in range(i,len(points)):
-        wy = points[j][1] - points[i][1]
-        if abs(wy-0.683) < epsilon:
+        point = wmin
+        weight = 0.
+        points = [] #vector<pair<double,double> > 
+        thesum = theHist.Integral()
+        for i in range(theHist.GetNbinsX()):
+          weight += theHist.GetBinContent(i)
+          if weight > epsilon:
+            points.append( [theHist.GetBinCenter(i),weight/thesum] )
+        low = wmin
+        high = wmax
 
-          wx = points[j][0] - points[i][0]
-          if wx < width:
-            low = points[i][0]
-            high = points[j][0]
-            width=wx
+        #print points
 
-    sig_eff = 0.5*(high-low)
+        width = wmax-wmin
+        for i in range(len(points)):
+          for j in range(i,len(points)):
+            wy = points[j][1] - points[i][1]
+            if abs(wy-0.683) < epsilon:
+
+              wx = points[j][0] - points[i][0]
+              if wx < width:
+                low = points[i][0]
+                high = points[j][0]
+                width=wx
+
+        sig_eff = 0.5*(high-low)
 
     #print mu,sig, sig_eff
     return mu,sig, sig_eff
@@ -79,6 +85,19 @@ def clean_dump(dump):
     #print chunk_text
     return chunk_text
 
+#_________________________________________________________________________________
+
+## THIS FUNCTION REMOVES THE SPURIOUS + SIGN AND CONVERTS THE LIST OF STRINGS INTO A STRING
+def clean_dump_jec(dump):
+
+    #print dump
+    chunk_text='\n'
+    chunk_text=chunk_text.join(dump)
+
+    #print chunk_text
+    return chunk_text
+
+
 
 #_________________________________________________________________________________
 
@@ -91,6 +110,7 @@ def replaced(base, content, starting, ending):
     partitioned_after=after.partition(ending)
     after=partitioned_after[2]
 
+    #final=before+'\n'+starting+'\n'+content+'\n'+ending+'\n'+after
     final=before+content+after
     return final 
 
@@ -113,6 +133,11 @@ def dump_efficiencies_ratio(collection, quality, lines_eff, id2D_f, id2D_d, cont
         etahigh = id2D_f.GetYaxis().GetBinUpEdge(ybin+1)
         if etahigh > 10: isetaOF = True
 
+        pt_first = id2D_f.GetXaxis().GetBinLowEdge(1)
+        string = "   (abs(eta) > "+str(etalow)+" && abs(eta) <= "+str(etahigh)+") * (pt <= "+str(pt_first)+") * (0.0) +"
+        #print string
+        lines_eff.append(string)
+        
         for xbin in range (0,id2D_f.GetNbinsX()): ##pt
             isptOF = False
 
@@ -131,12 +156,30 @@ def dump_efficiencies_ratio(collection, quality, lines_eff, id2D_f, id2D_d, cont
                     ratio = ratio * iso2D_f.GetBinContent(xbin+1,ybin+1)/delpheseff
                 else: ratio = ratio * iso2D_f.GetBinContent(xbin+1,ybin+1)
             '''
-            ratio = 0.
+            
+
             eff_d = id2D_d.GetBinContent(xbin+1,ybin+1)
             eff_f = id2D_f.GetBinContent(xbin+1,ybin+1)
-            if eff_d > 0 and eff_f > 0 and eff_f < eff_d: 
-                ratio = eff_f/eff_d
-                ratio = round_to_n(ratio,2)
+            
+            #print etalow, etahigh, ptlow, pthigh, eff_d, eff_f
+            
+            ratio = -1.0
+            
+            if eff_f == 0:
+                if ptlow > 30.:
+                    ratio = 1.
+                else:
+                    ratio = 0.
+            else:
+                if eff_d < eff_f:
+                    ratio = 1.
+                else :
+                    ratio = eff_f/eff_d
+
+            if ybin == id2D_f.GetNbinsY()-1:
+                ratio = 0.0
+
+            ratio = round_to_n(ratio,2)
             if isptOF:
                 if isetaOF: string = "   (abs(eta) > "+str(etalow)+") * (pt > "+str(ptlow)+") * ("+str(ratio)+") +"
                 else: string = "   (abs(eta) > "+str(etalow)+" && abs(eta) <= "+str(etahigh)+") * (pt > "+str(ptlow)+") * ("+str(ratio)+") +"
@@ -174,8 +217,6 @@ def dump_efficiencies(collection, quality, lines_fake, pdgcode, fake2D_f, conten
     else:
         lines_fake.append('  add EfficiencyFormula {{{}}} {{\n'.format(pdgcode))
 
-
-
     ### calculate residual efficiency
     for ybin in range(0,fake2D_f.GetNbinsY()): ## eta
         isetaOF = False
@@ -185,6 +226,14 @@ def dump_efficiencies(collection, quality, lines_fake, pdgcode, fake2D_f, conten
         etahigh = fake2D_f.GetYaxis().GetBinUpEdge(ybin+1)
         if etahigh > 10: isetaOF = True
 
+        ## have to set to 0 effciency before first bin:
+        pt_first = fake2D_f.GetXaxis().GetBinLowEdge(1)
+        pt_first = fake2D_f.GetXaxis().GetBinLowEdge(1)
+        string = "          (abs(eta) > "+str(etalow)+" && abs(eta) <= "+str(etahigh)+") * (pt <= "+str(pt_first)+") * (0.0) +"
+        #print string
+        lines_fake.append(string)
+        
+        
         for xbin in range (0,fake2D_f.GetNbinsX()): ##pt
             isptOF = False
 
@@ -245,13 +294,36 @@ parser.add_option('--card-out',
                   default='cards/out_card.tcl',                                                                                                           
                   type='string')
 
+parser.add_option('-j','--dump_jec',
+                  action="store_true",
+                  dest='dump_jec',
+                  default=False,
+                  help='true/false dump jec_correction')
 
+parser.add_option('--skip_reso',
+                  action="store_true",
+                  dest='skip_reso',
+                  default=False,
+                  help='skip dumping scale and resolution')
+
+parser.add_option('--skip_eff',
+                  action="store_true",
+                  dest='skip_eff',
+                  default=False,
+                  help='skip dumping efficiencies and fake rates')
 
 
 
 #path_delphes='/eos/cms/store/group/upgrade/RTB/ValidationHistos/delphes343pre10_v11_dummy/'
-path_delphes='/eos/cms/store/group/upgrade/RTB/ValidationHistos/delphes343pre11_v12_dummy/'
-path_fullsim='/eos/cms/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6/'
+#path_delphes='/eos/cms/store/group/upgrade/RTB/ValidationHistos/delphes343pre11_v12_dummy/'
+path_delphes='/eos/cms/store/group/upgrade/RTB/ValidationHistos/delphes343pre11_v13b/'
+path_delphes='/eos/cms/store/group/upgrade/RTB/ValidationHistos/delphes343pre11_v14a/'
+path_delphes='/eos/cms/store/group/upgrade/RTB/ValidationHistos/delphes343pre11_v14b/'
+path_delphes='/eos/cms/store/group/upgrade/RTB/ValidationHistos/delphes343pre12_v14e/'
+
+#path_fullsim='/eos/cms/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6/'
+#path_fullsim='/eos/cms/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6_JEC/'
+path_fullsim='/eos/cms/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6_JEC/'
 
 elmu_delphes=path_delphes+'/HistosDELPHES_ELMu.root'
 gamma_delphes=path_delphes+'/HistosDELPHES_Photon.root'
@@ -266,13 +338,13 @@ jets_fullsim=path_fullsim+'/HistosFS_QCD_113X.root'
 btag_fullsim=path_fullsim+'/HistosFS_BTag_112X.root'
 tautag_fullsim=path_fullsim+'/HistosFS_TauTag_112X.root'
 
-
 object_dict={
               'muon':{
                         'collection':'muon',
                         'fit_range':[0.9,1.1],
                         'scale_quality':'looseIDISO', ## collection used for momentum scale and smearing
-                        'qualities':['loose','medium','tight'], ## (will look for string "DUMMY_MUON_{quality}ID_EFFICIENCY or DUMMY_MUON_{quality}ID_FAKERATE )
+                        #'qualities':['loose','medium','tight'], ## (will look for string "DUMMY_MUON_{quality}ID_EFFICIENCY or DUMMY_MUON_{quality}ID_FAKERATE )
+                        'qualities':['tight'], ## (will look for string "DUMMY_MUON_{quality}ID_EFFICIENCY or DUMMY_MUON_{quality}ID_FAKERATE )
                         'file_prompt_F':elmu_fullsim,
                         'file_fake_F':jets_fullsim,
                         'file_prompt_D':elmu_delphes,
@@ -332,8 +404,8 @@ object_dict={
                         'qualities':['loose','medium','tight'], ## here store qualities used to produce efficiencies
                         'tag_pid':{'tautag': 15,
                                    'lightMistag': 0,
-                                   'elecMistag': 11,
-                                   'muonMistag': 13
+                                   #'elecMistag': 11,
+                                   #'muonMistag': 13
                                    }, ## here store mapping between efficiencies labels and PID
 
                         'file_prompt_F':tautag_fullsim,
@@ -362,8 +434,9 @@ for obj, params in object_dict.items():
     print obj
     #if obj != 'tautag': continue
     #if obj != 'btag': continue
-    #if obj != 'muon': continue
+    if obj != 'muon': continue
     #if obj == 'photon': continue
+    #if obj != 'electron': continue
     #if obj != 'jet': continue
 
     #obj['']
@@ -404,12 +477,15 @@ for obj, params in object_dict.items():
         canv = rt.TCanvas(canv_name, canv_name, 900, 600)
         hd = inputFile_d.Get(name)
         hf = inputFile_f.Get(name)
+        '''
         try:
             test = hf.Integral()
             if test == 0: continue
         except:
             continue
-
+        '''
+        #print name
+        
         if obj not in name: continue
 
         if 'resolution' in name:
@@ -449,7 +525,7 @@ for obj, params in object_dict.items():
     if obj != 'btag' and obj != 'tautag': 
         ## HERE IS WHERE WE COMPUTE THE VALUES AND DUMP THE RESOLUTION IN THE INPUT TCL FILE 
 
-        ntup_list = mean_and_sigmas_d.keys()
+        ntup_list = mean_and_sigmas_f.keys()
 
         ## order first by collection , then by quality, then by eta min, then by ptmin 
         sorted_ntup_list = sorted(ntup_list, key=lambda v: (v[0], v[1], v[4], v[2]))
@@ -463,6 +539,9 @@ for obj, params in object_dict.items():
 
         lines_scale = dict()
         lines_reso = dict()
+
+        lines_jec = dict()
+
 
         scale = 1.
         for ntup_in in sorted_ntup_list:
@@ -491,17 +570,25 @@ for obj, params in object_dict.items():
                 lines_reso[(coll,quality)].append('  ### {} {} momentum resolution'.format(coll, quality))
                 lines_reso[(coll,quality)].append('  set ResolutionFormula {')
 
+                lines_jec[(coll,quality)] = []
+                lines_jec[(coll,quality)].append('float jec(float pt, float eta)')
+                lines_jec[(coll,quality)].append('{')
+                lines_jec[(coll,quality)].append('  float scale = 1.;')
 
             ## compute values to write in delphes card
 
-            mu_d = mean_and_sigmas_d[ntup_in][0]
+            if opt.dump_jec: mu_d = 1
+            else: mu_d = mean_and_sigmas_d[ntup_in][0]
+            
             mu_f = mean_and_sigmas_f[ntup_in][0]
 
             ## 1 - is gaussian width and 2 - is effective width
             sigma_d = mean_and_sigmas_d[ntup_in][2]
+            if opt.dump_jec: sigma_d = 0.2
             sigma_f = mean_and_sigmas_f[ntup_in][2]
 
-            sigma0_d = mean_and_sigmas_d[ntup_in][1]
+            if opt.dump_jec: sigma0_d = 0.2
+            else: sigma0_d = mean_and_sigmas_d[ntup_in][1]
             sigma0_f = mean_and_sigmas_f[ntup_in][1]
 
             scale_f = 1.
@@ -514,40 +601,49 @@ for obj, params in object_dict.items():
 
             ## delphes resolution when morphed to full sim scale
 
-            print scale_d, scale_f
+            #print scale_d, scale_f
             sigmap_d = sigma_d *scale_d
             sigmap_d0 = sigma0_d*scale_d
             
-	    print sigma_d, sigma_f
+            #print sigma_d, sigma_f
 
             sigmap_f = sigma_f *scale_f
             sigmap_f0 = sigma0_f*scale_f
 
-            print sigmap_d, sigmap_f
+            #print sigmap_d, sigmap_f
 
             sigma_smear = 1.e-06
             sigma_smear0 = 1.e-06
-            if sigma_f**2 > sigmap_d**2: 
+            if sigmap_f**2 > sigmap_d**2: 
                 sigma_smear = math.sqrt(sigmap_f**2 - sigmap_d**2)
+                #print sigma_smear, sigmap_f, sigmap_d
 
-            if sigma0_f**2 > sigmap_d0**2: 
+            if sigmap_f0**2 > sigmap_d0**2: 
                 sigma_smear0 = math.sqrt(sigmap_f0**2 - sigmap_d0**2)
 
-            sigma_smear = round_to_n(sigma_smear,2)
-            sigma_smear0 = round_to_n(sigma_smear0,2)
+            sigma_smear = round_to_n(sigma_smear,3)
+            sigma_smear0 = round_to_n(sigma_smear0,3)
             scale = round_to_n(scale,2)
 
             print ' --- new pt bin ',  ptmin, ptmax, etamin, etamax, '------'
+            print ''
             print 'muf: ', round_to_n(mu_f,3), ', mud', round_to_n(mu_d,3)
-            print 'sigma_f: ', round_to_n(sigma_f,3), ', sigma_d',round_to_n(sigma_d,3)
-            print 'sigma_f_r: ', round_to_n(sigmap_f,3), ', sigma_d_r',round_to_n(sigmap_d,3)
-	    #print 'sigmaeff_f: ', round_to_n(sigma_f,3), ', sigmaeff_d',round_to_n(sigma_d,3)
-	    #print 'sigmaeff_f0: ', round_to_n(sigma0_f,3), ', sigmaeff_d0',round_to_n(sigma0_d,3)
-	    #print 'sigma_smear0 ', sigma_smear0, ', sigma_smear', sigma_smear
-	    print 'sigma_smear', sigma_smear
+            print 'sigma_f: ', round_to_n(sigmap_f,3), ', sigma_d',round_to_n(sigmap_d,3)
+            print 'sigma_f0: ', round_to_n(sigmap_f0,3), ', sigma_d0',round_to_n(sigmap_d0,3)
+            #print 'sigmaeff_f: ', round_to_n(sigma_f,3), ', sigmaeff_d',round_to_n(sigma_d,3)
+            #print 'sigmaeff_f0: ', round_to_n(sigma0_f,3), ', sigmaeff_d0',round_to_n(sigma0_d,3)
+            print 'sigma_smear0 ', sigma_smear0, ', sigma_smear', sigma_smear
+            #print 'sigma_smear', sigma_smear
+            print ''
 
             lines_scale[(coll,quality)].append('   (abs(eta) > {:.1f} && abs(eta) <= {:.1f}) * (pt > {:.1f} && pt <= {:.1f}) * ({:.3f}) +'.format(etamin, etamax, ptmin, ptmax, scale_d))
             lines_reso[(coll,quality)].append('   (abs(eta) > {:.1f} && abs(eta) <= {:.1f}) * (pt > {:.1f} && pt <= {:.1f}) * ({:.2f}) +'.format(etamin, etamax, ptmin, ptmax, sigma_smear))
+            
+            print (coll,quality)
+            lines_jec[(coll,quality)].append('  if (fabs(eta) > {:.1f} && fabs(eta) <= {:.1f} && pt > {:.1f} && pt <= {:.1f}) scale = {:.2f};'.format(etamin, etamax, ptmin, ptmax, scale_f))
+
+        lines_jec[(collection,quality)].append('  return scale;')
+        lines_jec[(collection,quality)].append('}')
 
         dump_scale=lines_scale[(collection,scale_quality)]
         dump_reso=lines_reso[(collection,scale_quality)]
@@ -555,13 +651,19 @@ for obj, params in object_dict.items():
         dump_scale=clean_dump(dump_scale)
         dump_reso=clean_dump(dump_reso)
 
+        if coll == 'jetpuppi' and opt.dump_jec:
+            dump_jec=lines_jec[(coll,scale_quality)]
+            dump_jec = clean_dump_jec(dump_jec)
+            out_jec = open('jec.txt', "w")
+            n = out_jec.write(dump_jec)
+            out_jec.close()
 
         print dump_scale    
         print dump_reso
 
         ## HERE REPLACE CONTENT OF THE CARD BETWEEN CONTROL STRINGS 
 
-        if not flat:
+        if not flat and not opt.skip_reso:
             ## scale parametrisation
             content=replaced(content, dump_scale, starting_scale, ending_scale)
 
@@ -570,81 +672,82 @@ for obj, params in object_dict.items():
 
     ## ADD HERE VARIOUS EFFICIENCIES AND FAKE RATES
 
-    for quality in params['qualities']:
+    if not opt.skip_eff:
+        for quality in params['qualities']:
 
-        if obj != 'btag' and obj != 'tautag' :
+            if obj != 'btag' and obj != 'tautag' :
 
-            dumpname='efficiency2D_'+quality+'IDISO'
-            if collection == 'jetpuppi':
-                dumpname='efficiency2D_'+quality+'ID'
-
-            name=collection+'_'+dumpname
-
-            print quality, name
-
-            id2D_f = inputFile_f.Get(name).ProjectionXY("id_"+name+"_f")
-            id2D_d = inputFile_d.Get(name).ProjectionXY("id_"+name+"_d")
-
-            lines_eff = []
-            if not flat:
-                content = dump_efficiencies_ratio(collection, quality, lines_eff, id2D_f, id2D_d, content)
-
-
-        if obj == 'btag' or obj == 'tautag' :
-            for tag, pid in params['tag_pid'].items():
-                print tag, pid
-                
-                dumpname=tag+'Rate_2D_'+quality+'ID'
-                if obj == 'tautag' :
-                    dumpname=tag+'Rate_efficiency2D_'+quality+'ID'
+                dumpname='efficiency2D_'+quality+'IDISO'
+                if collection == 'jetpuppi':
+                    dumpname='efficiency2D_'+quality+'ID'
 
                 name=collection+'_'+dumpname
 
-                print name
-                pdgcode=pid
-                ### extract 2D map from full sim 
-                if pdgcode!=11:
-                    eff2D_f = inputFile_f.Get(name)
-                else:
-                    file_fake_F=params['file_fake_F']
-                    inputFile_fake_f = rt.TFile.Open(file_fake_F)
-                    eff2D_f = inputFile_fake_f.Get(name)
+                print quality, name
+
+                id2D_f = inputFile_f.Get(name).ProjectionXY("id_"+name+"_f")
+                id2D_d = inputFile_d.Get(name).ProjectionXY("id_"+name+"_d")
 
                 lines_eff = []
-
-                print obj, tag+'_'+quality,pdgcode
-                
                 if not flat:
-                    content = dump_efficiencies(obj, tag+'_'+quality, lines_eff, pdgcode, eff2D_f, content)
+                    content = dump_efficiencies_ratio(collection, quality, lines_eff, id2D_f, id2D_d, content)
 
 
-        #if 'file_fake_F' in params: ## exclude jets
-        ## dump fake rates here
-        if collection=='electron' or collection=='muon' or collection=='photon': ## exclude jets
+            if obj == 'btag' or obj == 'tautag' :
+                for tag, pid in params['tag_pid'].items():
+                    print tag, pid
 
-            file_fake_F=params['file_fake_F']
-            fakeFile_f = rt.TFile.Open(file_fake_F)
-            
-            pdgcode=-1
-            if collection=='electron': pdgcode=11
-            elif collection=='muon': pdgcode=13
-            elif collection=='photon': pdgcode=22
+                    dumpname=tag+'Rate_2D_'+quality+'ID'
+                    if obj == 'tautag' :
+                        dumpname=tag+'Rate_efficiency2D_'+quality+'ID'
 
-            ### extract fakerate
-            name_fake=collection+'_fakerate2D_'+quality+'IDISO'
-            fake2D_f = fakeFile_f.Get(name_fake)
+                    name=collection+'_'+dumpname
 
-            print name_fake
+                    print name
+                    pdgcode=pid
+                    ### extract 2D map from full sim 
+                    if pdgcode!=11:
+                        eff2D_f = inputFile_f.Get(name)
+                    else:
+                        file_fake_F=params['file_fake_F']
+                        inputFile_fake_f = rt.TFile.Open(file_fake_F)
+                        eff2D_f = inputFile_fake_f.Get(name)
 
-            lines_fake = []
+                    lines_eff = []
 
-            if not flat:
-                content = dump_efficiencies(collection, quality, lines_fake, pdgcode, fake2D_f, content)
-            else:
-                flat_param='  {{{}}} {{0.0001}}\n'.format(pdgcode)
-                starting_fake = '## DUMMY_' + collection.upper() + '_'+ quality.upper() + 'ID_DUMP'
-                ending_fake = starting_fake.replace('DUMMY','ENDDUMMY')
-                content=replaced(content, flat_param, starting_fake, ending_fake)
+                    print obj, tag+'_'+quality,pdgcode
+
+                    if not flat:
+                        content = dump_efficiencies(obj, tag+'_'+quality, lines_eff, pdgcode, eff2D_f, content)
+
+
+            #if 'file_fake_F' in params: ## exclude jets
+            ## dump fake rates here
+            if collection=='electron' or collection=='muon' or collection=='photon': ## exclude jets
+
+                file_fake_F=params['file_fake_F']
+                fakeFile_f = rt.TFile.Open(file_fake_F)
+
+                pdgcode=-1
+                if collection=='electron': pdgcode=11
+                elif collection=='muon': pdgcode=13
+                elif collection=='photon': pdgcode=22
+
+                ### extract fakerate
+                name_fake=collection+'_fakerate2D_'+quality+'IDISO'
+                fake2D_f = fakeFile_f.Get(name_fake)
+
+                print name_fake
+
+                lines_fake = []
+
+                if not flat:
+                    content = dump_efficiencies(collection, quality, lines_fake, pdgcode, fake2D_f, content)
+                else:
+                    flat_param='  {{{}}} {{0.0001}}\n'.format(pdgcode)
+                    starting_fake = '## DUMMY_' + collection.upper() + '_'+ quality.upper() + 'ID_DUMP'
+                    ending_fake = starting_fake.replace('DUMMY','ENDDUMMY')
+                    content=replaced(content, flat_param, starting_fake, ending_fake)
 
 ## dump new content into new delphes card
 
@@ -652,5 +755,3 @@ for obj, params in object_dict.items():
 out_card = open(opt.card_out, "w")
 n = out_card.write(content)
 out_card.close()
-
-

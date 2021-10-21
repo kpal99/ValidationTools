@@ -4,15 +4,25 @@ import multiprocessing as mp
 def run_cmd(plot_cmd):
     os.system(plot_cmd)
 
-delphes_version='343pre10'
-card_version='v11_dummy'
+delphes_version='343pre11'
+delphes_version='343pre12'
+card_version='v12a'
+card_version='v13b'
+card_version='v13c'
+card_version='v14a'
+card_version='v14b'
+card_version='v14c'
+card_version='v14d'
+card_version='v14e'
+card_version='v14f'
 
 #delphes_version='343pre07'
 #card_version='v09'
 
-fullsim_version='Iter6'
+fullsim_version='Iter6_JEC'
 
 debug=False
+debug=True
 
 eospath='/eos/cms/store/group/upgrade/RTB/'
 
@@ -41,7 +51,9 @@ for sample in samples:
     
     sample_d=sample.split(':')[0]
     sample_f=sample.split(':')[1]
-    
+   
+    #if sample_d != 'BTag': continue
+ 
     delphes_file='{}/delphes{}_{}/{}_{}.root'.format(histo_dir,delphes_version,card_version,delphes_prefix,sample_d)
     fullsim_file='{}/fullsim_{}/{}_{}.root'.format(histo_dir,fullsim_version,fullsim_prefix,sample_f)
 
