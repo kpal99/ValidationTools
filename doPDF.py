@@ -165,13 +165,22 @@ def reversebins(plot_name):  # easily sort the plot list according to eta bins
 
 def beginFrame(extra=''):
     """Return the beginning lines for a new page."""
-    tex_line = "\n" r"\begin{frame}" + "\n" + \
-        r"\frametitle{" + object_ + " " + plt
+    if object_ == 'fat':
+        tex_line = "\n" r"\begin{frame}" + "\n" + \
+            r"\frametitle{Fat jet " + plt
+    else:
+        tex_line = "\n" r"\begin{frame}" + "\n" + \
+            r"\frametitle{" + object_ + " " + plt
     if plt == 'resolution':
         tex_line += r" vs pt and eta"
+    elif plt == 'multiplicity' and object_ == 'fat':
+        tex_line += variable
     else:
         tex_line += " vs " + variable
-    tex_line += " " + workingp + extra + r"}" + "\n" + r"\begin{figure}"
+    if object_ == "fat":
+        tex_line += " " + extra + r"}" + "\n" + r"\begin{figure}"
+    else:
+        tex_line += " " + workingp + extra + r"}" + "\n" + r"\begin{figure}"
     # remove the numbering under the subfigures
     tex_line += "\n" + r"\captionsetup[subfigure]{labelformat=empty}"
     return tex_line
@@ -391,8 +400,28 @@ def main():
     tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'tightID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'looseID')
     tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'tightID')
-    # tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'reco')
-    # tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'reco')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'eta', 'reco')
+    tex_lines += texoutput('efficiency', 'jetpuppi', 'pt', 'reco')
+
+    # Fatjet
+    tex_lines += "\n" + r"\section{Fat Jet}" + "\n" + r"\subsection{Response}"
+    tex_lines += texoutput('ptresponse', 'fat', 'eta', 'eta')
+    tex_lines += texoutput('ptresponse', 'fat', 'pt', 'pt')
+
+    tex_lines += "\n" + r"\subsection{Resolution}"
+    tex_lines += texoutput('resolution', 'fat', 'pt', 'pt')
+
+    tex_lines += "\n" + r"\subsection{Efficiency}"
+    tex_lines += texoutput('efficiency', 'fat', 'eta', 'eta')
+    tex_lines += texoutput('efficiency', 'fat', 'pt', 'pt')
+
+    tex_lines += "\n" + r"\subsection{Fakerate}"
+    tex_lines += texoutput('fakerate', 'fat', 'eta', 'eta')
+    tex_lines += texoutput('fakerate', 'fat', 'pt', 'pt')
+
+    tex_lines += "\n" + r"\subsection{Multiplicity}"
+    tex_lines += texoutput('multiplicity', 'fat', 'eta', 'eta')
+    tex_lines += texoutput('multiplicity', 'fat', 'pt', 'pt')
 
     # MET
     change_path(elmupath)
