@@ -423,6 +423,15 @@ def main():
     tex_lines += texoutput('multiplicity', 'fat', 'eta', 'eta')
     tex_lines += texoutput('multiplicity', 'fat', 'pt', 'pt')
 
+    tex_lines += "\n" + r"\subsection{reco no match Efficiency}"
+    tex_lines += texoutput('recoNomatchEffi', 'jetpuppi', 'eta', 'looseID')
+    tex_lines += texoutput('recoNomatchEffi', 'jetpuppi', 'eta', 'tightID')
+    tex_lines += texoutput('recoNomatchEffi', 'jetpuppi', 'pt', 'looseID')
+    tex_lines += texoutput('recoNomatchEffi', 'jetpuppi', 'pt', 'tightID')
+    tex_lines += texoutput('recoNomatchEffi', 'jetpuppi', 'eta', 'reco')
+    tex_lines += texoutput('recoNomatchEffi', 'jetpuppi', 'pt', 'reco')
+
+
     # MET
     change_path(elmupath)
     os.system("wget https://cds.cern.ch/record/2205284/files/Figure_007-a.png")

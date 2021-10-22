@@ -12,7 +12,7 @@ def main():
     inFile = sys.argv[1]
     ntuple = Ntuple(inFile)
 
-    maxEvents = 10
+    maxEvents = 100
 
     tot_nevents = 0
     tot_genpart = 0
@@ -56,16 +56,16 @@ def main():
             i+=1
 
 
-        print ''
-        print '  -- muons  --'
-        print ''
-
-        muons = event.muons()
-        i=0
-        for p in muons:
-
-
-            print 'N: {:<5}, PT: {:<5.2f}, Eta: {:<5.2f}, Phi: {:<5.2f}, M: {:<5.2f},  Charge: {:<5}, IdVar: {:<5.2f}, IsoVar: {:<5.2f}, IdPass: {:08b}, IsoPass: {:08b}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.reliso(), p.idpass(), p.isopass() )
+#        print ''
+#        print '  -- muons  --'
+#        print ''
+#
+#        muons = event.muons()
+#        i=0
+#        for p in muons:
+#
+#
+#            print 'N: {:<5}, PT: {:<5.2f}, Eta: {:<5.2f}, Phi: {:<5.2f}, M: {:<5.2f},  Charge: {:<5}, IdVar: {:<5.2f}, IsoVar: {:<5.2f}, IdPass: {:08b}, IsoPass: {:08b}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.reliso(), p.idpass(), p.isopass() )
 
 
         tot_nevents += 1
@@ -74,9 +74,9 @@ def main():
         tot_electron += len(event.electrons()) 
         tot_gamma += len(event.gammas())   
         tot_muon += len(event.muons())   
-        tot_jet += len(event.jets())   
+        tot_jet += len(event.jetspuppi())   
         tot_tau += len(event.taus())   
-        tot_met += len(event.mets())   
+        tot_met += len(event.metspuppi())   
 
 
 

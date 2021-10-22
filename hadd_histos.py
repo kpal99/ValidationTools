@@ -9,24 +9,24 @@ debug=False
 sim = sys.argv[1]
 
 macro_samples_fullsim={
-    'ELMu_113X':'113X_DYToLL:Zprime',
-    'Photon_113X':'113X_GluGluToHHTo2B2G:113X_GluGluHToGG',
-    'QCD_112X':'112X_QCD',
-    'QCD_113X':'113X_QCD',
-    'TauTag_112X':'112X_GluGluToHHTo2B2Tau:112X_VBFHToTauTau:112X_GluGluHToTauTau:112X_TT_TuneCP5:112X_QCD',
-    #'TauTag':'VBFHToTauTau',
-    'BTag_112X':'112X_TT_TuneCP5:112X_GluGluToHHTo2B2Tau:112X_QCD',
+    'DYToLL_113X':'113X_DYToLL',
+#    'Photon_113X':'113X_GluGluToHHTo2B2G:113X_GluGluHToGG',
+#    'QCD_112X':'112X_QCD',
+#    'QCD_113X':'113X_QCD',
+#    'TauTag_112X':'112X_GluGluToHHTo2B2Tau:112X_VBFHToTauTau:112X_GluGluHToTauTau:112X_TT_TuneCP5:112X_QCD',
+#    #'TauTag':'VBFHToTauTau',
+#    'BTag_112X':'112X_TT_TuneCP5:112X_GluGluToHHTo2B2Tau:112X_QCD',
     #'BTag_112X':'112X_TT_TuneCP5',
 }
 
 macro_samples_delphes={
-    'ELMu':'DYToLL:Zprime',
-    'Photon':'GluGluToHHTo2B2G:GluGluHToGG',
-    'QCD':'QCD',
-    #'TauTag':'GluGluToHHTo2B2Tau:VBFHToTauTau:GluGluHToTauTau:TT_TuneCP5:112X_QCD',
-    'TauTag':'VBFHToTauTau:GluGluToHHTo2B2Tau:VBFHToTauTau:GluGluHToTauTau:TT_TuneCP5:QCD:Zprime',
-    'BTag':'TT_TuneCP5:GluGluToHHTo2B2Tau:QCD',
-    #'BTag':'TT_TuneCP5',
+    'DYToLL':'DYToLL',
+#    'Photon':'GluGluToHHTo2B2G:GluGluHToGG',
+#    'QCD':'QCD',
+#    #'TauTag':'GluGluToHHTo2B2Tau:VBFHToTauTau:GluGluHToTauTau:TT_TuneCP5:112X_QCD',
+#    'TauTag':'VBFHToTauTau:GluGluToHHTo2B2Tau:VBFHToTauTau:GluGluHToTauTau:TT_TuneCP5:QCD:Zprime',
+#    'BTag':'TT_TuneCP5:GluGluToHHTo2B2Tau:QCD',
+#    #'BTag':'TT_TuneCP5',
 }
 
 
@@ -35,7 +35,7 @@ macro_samples=macro_samples_fullsim
 
 #eospath='/eos/cms/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6/'
 #eospath='/eos/cms/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6_JEC/'
-eospath='/eos/cms/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6_JEC/'
+eospath='/eos/cms/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6_wenyu/'
 name='HistosFS'
 
 delphes_version='343pre11'
@@ -53,7 +53,7 @@ card_version='v14f'
 
 if 'delphes' in sim:
     #eospath='/eos/cms/store/group/upgrade/RTB/ValidationHistos/delphes343pre07_v09/'
-    eospath='/eos/cms/store/group/upgrade/RTB/ValidationHistos/delphes{}_{}/'.format(delphes_version,card_version)
+    eospath='/eos/cms/store/group/upgrade/RTB/ValidationHistos/delphes{}_{}_wenyu/'.format(delphes_version,card_version)
     name='HistosDELPHES'
     macro_samples=macro_samples_delphes
 

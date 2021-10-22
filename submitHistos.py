@@ -32,14 +32,14 @@ url = 'root://eoscms.cern.ch/'
 ###
 delphes_version='343pre11'
 delphes_version='343pre12'
-card_version='v13a'
-card_version='v13b'
-card_version='v13c'
-card_version='v14a'
-card_version='v14b'
-card_version='v14c'
-card_version='v14d'
-card_version='v14e'
+#card_version='v13a'
+#card_version='v13b'
+#card_version='v13c'
+#card_version='v14a'
+#card_version='v14b'
+#card_version='v14c'
+#card_version='v14d'
+#card_version='v14e'
 card_version='v14f'
 ####
 
@@ -52,12 +52,12 @@ FullsimDir2 = '/store/group/upgrade/RTB/Iter6/11_3/FlatTrees/'
 FullsimDir3 = '/store/group/upgrade/RTB/Iter6JEC/11_3/FlatTrees/'
 
 #HistoDir = '/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6/'
-HistoDir = '/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6_JEC/'
+HistoDir = '/store/group/upgrade/RTB/ValidationHistos/fullsim_Iter6_wenyu/'
 if not doFullsim:
-    HistoDir = '/store/group/upgrade/RTB/ValidationHistos/delphes{}_{}/'.format(delphes_version,card_version)
+    HistoDir = '/store/group/upgrade/RTB/ValidationHistos/delphes{}_{}_wenyu/'.format(delphes_version,card_version)
 
 ## TBC
-LogDir = '/afs/cern.ch/work/s/selvaggi/private/RTB/ValidationTools/logs/'
+LogDir = '/afs/cern.ch/user/w/wenyu/afswork/work/delphes19/ValidationTools/logs/'
 
 if not os.path.exists(HistoDir):
     os.system('mkdir -p /eos/cms'+HistoDir)
@@ -76,27 +76,27 @@ DelphesPaths = [
         # DelphesDir+'DoublePhoton_FlatPt-1To100_200PU_flat',
         # DelphesDir+'MultiTau_PT15to500_200PU_flat',        
         
-	DelphesDir+'VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5_200PU_flat',
+#	DelphesDir+'VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5_200PU_flat',
         DelphesDir+'DYToLL_M-50_TuneCP5_14TeV-pythia8_200PU_flat',
-        DelphesDir+'DYJetsToLL_M-10to50_TuneCP5_14TeV-madgraphMLM-pythia8_200PU_flat',
-        DelphesDir+'GluGluHToTauTau_M125_14TeV_powheg_pythia8_TuneCP5_200PU_flat',
-        DelphesDir+'GluGluHToGG_M125_14TeV_powheg_pythia8_TuneCP5_200PU_flat',
-        DelphesDir+'GluGluToHHTo2B2G_node_SM_TuneCP5_14TeV-madgraph_pythia8_200PU_flat',
-        DelphesDir+'GluGluToHHTo2B2Tau_node_SM_TuneCP5_14TeV-madgraph-pythia8_200PU_flat',
-        DelphesDir+'QCD_Pt_120to170_TuneCP5_14TeV_pythia8_200PU_flat',
-        
-	DelphesDir+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8_200PU_flat',
-        DelphesDir+'QCD_Pt_170to300_TuneCP5_14TeV_pythia8_200PU_flat',
-        DelphesDir+'QCD_Pt_20to30_TuneCP5_14TeV_pythia8_200PU_flat',
-        DelphesDir+'QCD_Pt_300to470_TuneCP5_14TeV_pythia8_200PU_flat',
-        DelphesDir+'QCD_Pt_30to50_TuneCP5_14TeV_pythia8_200PU_flat',
-        DelphesDir+'QCD_Pt_470to600_TuneCP5_14TeV_pythia8_200PU_flat',
-        DelphesDir+'QCD_Pt_50to80_TuneCP5_14TeV_pythia8_200PU_flat',
-        DelphesDir+'QCD_Pt_600oInf_TuneCP5_14TeV_pythia8_200PU_flat',
-        DelphesDir+'QCD_Pt_80to120_TuneCP5_14TeV_pythia8_200PU_flat',
-        DelphesDir+'TT_TuneCP5_14TeV-powheg-pythia8_200PU_flat',
-        DelphesDir+'ZprimeToEE_M-6000_TuneCP5_14TeV-pythia8_200PU_flat',
-        DelphesDir+'ZprimeToMuMu_M-6000_TuneCP5_14TeV-pythia8_200PU_flat',
+#        DelphesDir+'DYJetsToLL_M-10to50_TuneCP5_14TeV-madgraphMLM-pythia8_200PU_flat',
+#        DelphesDir+'GluGluHToTauTau_M125_14TeV_powheg_pythia8_TuneCP5_200PU_flat',
+#        DelphesDir+'GluGluHToGG_M125_14TeV_powheg_pythia8_TuneCP5_200PU_flat',
+#        DelphesDir+'GluGluToHHTo2B2G_node_SM_TuneCP5_14TeV-madgraph_pythia8_200PU_flat',
+#        DelphesDir+'GluGluToHHTo2B2Tau_node_SM_TuneCP5_14TeV-madgraph-pythia8_200PU_flat',
+#        DelphesDir+'QCD_Pt_120to170_TuneCP5_14TeV_pythia8_200PU_flat',
+#        
+#	DelphesDir+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8_200PU_flat',
+#        DelphesDir+'QCD_Pt_170to300_TuneCP5_14TeV_pythia8_200PU_flat',
+#        DelphesDir+'QCD_Pt_20to30_TuneCP5_14TeV_pythia8_200PU_flat',
+#        DelphesDir+'QCD_Pt_300to470_TuneCP5_14TeV_pythia8_200PU_flat',
+#        DelphesDir+'QCD_Pt_30to50_TuneCP5_14TeV_pythia8_200PU_flat',
+#        DelphesDir+'QCD_Pt_470to600_TuneCP5_14TeV_pythia8_200PU_flat',
+#        DelphesDir+'QCD_Pt_50to80_TuneCP5_14TeV_pythia8_200PU_flat',
+#        DelphesDir+'QCD_Pt_600oInf_TuneCP5_14TeV_pythia8_200PU_flat',
+#        DelphesDir+'QCD_Pt_80to120_TuneCP5_14TeV_pythia8_200PU_flat',
+#        DelphesDir+'TT_TuneCP5_14TeV-powheg-pythia8_200PU_flat',
+#        DelphesDir+'ZprimeToEE_M-6000_TuneCP5_14TeV-pythia8_200PU_flat',
+#        DelphesDir+'ZprimeToMuMu_M-6000_TuneCP5_14TeV-pythia8_200PU_flat',
 ]
 
 FullsimPaths = [
@@ -128,39 +128,39 @@ FullsimPaths = [
         # FullsimDir+'MultiTau_PT15to500/crab_MultiTau_PT15to500_v3/210320_211709/0000',
         #FullsimDir+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8/crab_QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8/210319_144916/0000',
 
-        FullsimDir2+'DYJetsToLL_M-10to50_TuneCP5_14TeV-madgraphMLM-pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir2+'DYJetsToLL_M-10to50_TuneCP5_14TeV-madgraphMLM-pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
         FullsimDir2+'DYToLL_M-50_TuneCP5_14TeV-pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_pilot_111X_mcRun4_realistic_T15_v1-v1_FEVT',
-        FullsimDir2+'GluGluToHHTo2B2G_node_SM_TuneCP5_14TeV-madgraph_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_FEVT',        
-        FullsimDir2+'GluGluHToGG_M125_14TeV_powheg_pythia8_TuneCP5_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir2+'VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_FEVT',
-        FullsimDir2+'ZprimeToEE_M-6000_TuneCP5_14TeV-pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir2+'ZprimeToMuMu_M-6000_TuneCP5_14TeV-pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        
-        FullsimDir3+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_castor_111X_mcRun4_realistic_T15_v1-v1_FEVT',
-        FullsimDir3+'QCD_Pt_20to30_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1-v2_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_30to50_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_470to600_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_300to470_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_600oInf_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_120to170_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_castor_111X_mcRun4_realistic_T15_v1-v1_FEVT',
-        FullsimDir3+'QCD_Pt_170to300_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_20to30_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1-v2_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_300to470_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_30to50_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_30to50_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1_ext1-v2_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_470to600_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_50to80_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_50to80_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1_ext1-v3_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_600oInf_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-        FullsimDir3+'QCD_Pt_80to120_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
-
-        FullsimDir+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8/crab_QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8/210409_154415/0000',
-        FullsimDir+'GluGluToHHTo2B2Tau_node_SM_TuneCP5_14TeV-madgraph-pythia8/crab_GluGluToHHTo2B2Tau_node_SM_TuneCP5_14TeV-madgraph-pythia8/210409_154130/0000',
-        FullsimDir+'GluGluHToTauTau_M125_14TeV_powheg_pythia8_TuneCP5/crab_GluGluHToTauTau_M125_14TeV_powheg_pythia8_TuneCP5/210409_153925/0000',
-        FullsimDir+'VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5/crab_VBFHToTauTau_M125_14TeV_powheg_pythia8/210409_154016/0000',
-        FullsimDir+'TT_TuneCP5_14TeV-powheg-pythia8/crab_TT_TuneCP5_14TeV-powheg-pythia8/210409_153831/0000',
-        FullsimDir+'DYToLL_M-50_TuneCP5_14TeV-pythia8/crab_DYToLL_M-50_TuneCP5_14TeV_pythia8/210415_154206/0000/',
+#        FullsimDir2+'GluGluToHHTo2B2G_node_SM_TuneCP5_14TeV-madgraph_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_FEVT',        
+#        FullsimDir2+'GluGluHToGG_M125_14TeV_powheg_pythia8_TuneCP5_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir2+'VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_FEVT',
+#        FullsimDir2+'ZprimeToEE_M-6000_TuneCP5_14TeV-pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir2+'ZprimeToMuMu_M-6000_TuneCP5_14TeV-pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        
+#        FullsimDir3+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_castor_111X_mcRun4_realistic_T15_v1-v1_FEVT',
+#        FullsimDir3+'QCD_Pt_20to30_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1-v2_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_30to50_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_470to600_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_300to470_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_600oInf_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_120to170_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_castor_111X_mcRun4_realistic_T15_v1-v1_FEVT',
+#        FullsimDir3+'QCD_Pt_170to300_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_20to30_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1-v2_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_300to470_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_30to50_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_30to50_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1_ext1-v2_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_470to600_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_50to80_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_50to80_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1_ext1-v3_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_600oInf_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#        FullsimDir3+'QCD_Pt_80to120_TuneCP5_14TeV_pythia8_Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1_GEN-SIM-DIGI-RAW-MINIAOD',
+#
+#        FullsimDir+'QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8/crab_QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8/210409_154415/0000',
+#        FullsimDir+'GluGluToHHTo2B2Tau_node_SM_TuneCP5_14TeV-madgraph-pythia8/crab_GluGluToHHTo2B2Tau_node_SM_TuneCP5_14TeV-madgraph-pythia8/210409_154130/0000',
+#        FullsimDir+'GluGluHToTauTau_M125_14TeV_powheg_pythia8_TuneCP5/crab_GluGluHToTauTau_M125_14TeV_powheg_pythia8_TuneCP5/210409_153925/0000',
+#        FullsimDir+'VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5/crab_VBFHToTauTau_M125_14TeV_powheg_pythia8/210409_154016/0000',
+#        FullsimDir+'TT_TuneCP5_14TeV-powheg-pythia8/crab_TT_TuneCP5_14TeV-powheg-pythia8/210409_153831/0000',
+#        FullsimDir+'DYToLL_M-50_TuneCP5_14TeV-pythia8/crab_DYToLL_M-50_TuneCP5_14TeV_pythia8/210415_154206/0000/',
 ]
 
 start_time = time.time()

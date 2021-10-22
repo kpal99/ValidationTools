@@ -91,6 +91,11 @@ parser.add_option('--outFormat',
                   dest='outFormat',
                   default="png",
                   help='file format for output plots')
+parser.add_option('--doLogy',
+                  dest='doLogy',
+                  default=False,
+                  help='true/false do logy for 1d plots')
+
 
 (opt, args) = parser.parse_args()
 
@@ -100,6 +105,7 @@ printoutdir = opt.printoutdir
 dumptcl = opt.dumptcl
 useIso = opt.useIso
 outFormat = opt.outFormat
+doLogy = opt.doLogy
 
 if not os.path.exists(printoutdir):
     os.system('mkdir -p %s' % printoutdir)
@@ -203,8 +209,10 @@ for name in hist_names:
         hf.Draw("colz texte")
         canv.Print(printoutdir+"/"+canv_name+"_fullsim."+outFormat)
     else:
-        if "fakerate" in name or "MistagRate" in name:
-            canv.SetLogy()  # 1d plot logy -wz
+	if doLogy: 
+	    canv.SetLogy()
+       # if "fakerate" in name or "MistagRate" in name:
+       #     canv.SetLogy() 
         hf.SetLineColor(rt.kBlue)
         hf.SetMarkerStyle(21)
         hf.SetMarkerColor(rt.kBlue)
@@ -214,18 +222,23 @@ for name in hist_names:
         hd.SetMarkerColor(rt.kRed)
         hd.SetStats(rt.kFALSE)
 
-        if 'Rate' not in name and 'efficiency' not in name and 'fake' not in name and 'nonprompt' not in name and 'ptresponse' not in name:
+        if 'Effi' not in name and 'Rate' not in name and 'efficiency' not in name and 'fake' not in name and 'nonprompt' not in name and 'ptresponse' not in name:
             if hf.Integral() > 0:
                 hf.Scale(1.0/hf.Integral())
             if hd.Integral() > 0:
                 hd.Scale(1.0/hd.Integral())
 
-        if 'efficiency' in name or 'fake' in name or 'nonprompt' in name or 'Rate' in name:
+        if 'Effi' in name or 'efficiency' in name or 'fake' in name or 'nonprompt' in name or 'Rate' in name:
             hf.SetMaximum(1)
         else:
             hf.SetMaximum(max(hd.GetMaximum(), hf.GetMaximum())*1.1)
         hf.SetMinimum(0)
-        hf.SetMinimum(1e-6)  # 1d plot logy wz
+	if doLogy:
+	    miny = min(hd.GetMinimum(), hf.GetMinimum())*0.01 
+	    if miny == 0:
+	     	miny = 1e-6
+            hf.SetMinimum(miny)
+            hf.SetMaximum(max(hd.GetMaximum(), hf.GetMaximum())*10) 
 
         if '2D' not in name:
             if 'Profile' in hf.ClassName() or 'Profile' in hd.ClassName():
@@ -271,14 +284,15 @@ for name in hist_names:
             hf.Draw()
             hd.Draw("same")
 
-#	canv.cd() # wz
+
         legend = rt.TLegend(.9, .9, .99, .99)
         legend.SetTextSize(0.03)
         legend.SetBorderSize(0)
         legend.AddEntry(hd, "Delphes", "l")
         legend.AddEntry(hf, "FullSim", "l")
         legend.Draw()
-        canv.Print(printoutdir + "/" + canv_name + "." + outFormat)
+	ext = "_logy" if doLogy else ""
+        canv.Print(printoutdir + "/" + canv_name + ext + "." + outFormat)
 
 if dumptcl:
 
