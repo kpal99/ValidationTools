@@ -174,7 +174,7 @@ def beginFrame(extra=''):
     if plt == 'resolution':
         tex_line += r" vs pt and eta"
     elif plt == 'multiplicity' and object_ == 'fat':
-        tex_line += variable
+        tex_line += " " + variable
     else:
         tex_line += " vs " + variable
     if object_ == "fat":
