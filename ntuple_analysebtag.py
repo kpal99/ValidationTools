@@ -46,7 +46,7 @@ def findPartonFlav(genparts, jet, dR):
         return 5
     if iscPar:
         return 4
-    return 1 # any not 4 or 5 case
+    return 1
 
 
 def doSum(objs, ptCut, etaCut):
