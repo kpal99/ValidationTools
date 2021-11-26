@@ -29,10 +29,10 @@ def findHadronFlav(genparts, jet, dR):
     return 1 # any not 4 or 5 case  
 
 def findPartonFlav(genparts, jet, dR):
-
+    """Return the PDG ID of gen particles"""
     isbPar = False
     iscPar = False
-    for g in genparts: # check if there exists one b-hadron
+    for g in genparts:
         gVec = ROOT.TLorentzVector()
         gVec.SetPtEtaPhiM(g.pt(), g.eta(), g.phi(), g.mass())
         if jet.DeltaR(gVec) >= dR:
@@ -42,12 +42,11 @@ def findPartonFlav(genparts, jet, dR):
             break
         if abs(g.pid()) == 4:
             iscPar = True
-
     if isbPar:
         return 5
     if iscPar:
         return 4
-    return 1 # any not 4 or 5 case
+    return 1
 
 
 def doSum(objs, ptCut, etaCut):

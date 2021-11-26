@@ -468,7 +468,6 @@ def main():
                     ['fat_jet_matched_idpass.pdf', 'Fat jet matched idpass'],
                     ['fat_jet_matched_isopass.pdf', 'Fat jet matched isopass'],
                     ['fat_jet_matched_mass.pdf', 'Fat jet matched mass']]
-
     tex_lines += add_fatjet_plots('Fat Jet Matched')
 
     tex_lines += "\n" + r"\subsection{Fat Jet vs Matched Soft Drop Mass}"
@@ -478,7 +477,6 @@ def main():
                     ['fat_jet_matched_msoftdrop_delphes.pdf', 'Fat jet matched Msoftdrop delphes'],
                     ['fat_jet_matched_msoftdrop_fullsim.pdf', 'Fat jet matched Msoftdrop fullsim'],
                     ['fat_jet_matched_msoftdrop.pdf', 'Fat jet matched Msoftdrop']]
-
     tex_lines += add_fatjet_plots('Fat Jet vs Matched Soft Drop Mass')
 
     tex_lines += "\n" + r"\subsection{Fat Jet Matched Tau}"
@@ -486,7 +484,6 @@ def main():
                     ['fat_jet_tau2.pdf', 'Fat jet Tau2'],
                     ['fat_jet_tau3.pdf', 'Fat jet Tau3'],
                     ['fat_jet_tau4.pdf', 'Fat jet Tau4']]
-
     tex_lines += add_fatjet_plots('Fat Jet Tau')
     
     tex_lines += "\n" + r"\subsection{Fat Jet Tau}"
@@ -494,7 +491,6 @@ def main():
                     ['fat_jet_matched_tau2.pdf', 'Fat jet matched Tau2'],
                     ['fat_jet_matched_tau3.pdf', 'Fat jet matched Tau3'],
                     ['fat_jet_matched_tau4.pdf', 'Fat jet matched Tau4']]
-
     tex_lines += add_fatjet_plots('Fat Jet Matched Tau')
     
     global fatjet_plots
@@ -504,45 +500,40 @@ def main():
                     ['genfat_jet_phi.pdf', 'Gen Fat jet phi'],
                     ['genfat_jet_isopass.pdf', 'Gen Fat jet isopass'],
                     ['genfat_jet_mass.pdf', 'Gen Fat jet mass']]
-
     tex_lines += add_fatjet_plots('Gen Fat Jet')
 
-    tex_lines += "\n" + r"\subsection{Gen Fat Jet Matched}"
-    fatjet_plots = [['genfat_jet_matched_pt.pdf', 'Gen Fat jet matched pt'],
-                    ['genfat_jet_matched_eta.pdf', 'Gen Fat jet matched eta'],
-                    ['genfat_jet_matched_phi.pdf', 'Gen Fat jet matched phi'],
-                    ['genfat_jet_matched_isopass.pdf', 'Gen Fat jet matched isopass'],
-                    ['genfat_jet_matched_mass.pdf', 'Gen Fat jet matched mass']]
+    # tex_lines += "\n" + r"\subsection{Gen Fat Jet Matched}"
+    # fatjet_plots = [['genfat_jet_matched_pt.pdf', 'Gen Fat jet matched pt'],
+    #                 ['genfat_jet_matched_eta.pdf', 'Gen Fat jet matched eta'],
+    #                 ['genfat_jet_matched_phi.pdf', 'Gen Fat jet matched phi'],
+    #                 ['genfat_jet_matched_isopass.pdf', 'Gen Fat jet matched isopass'],
+    #                 ['genfat_jet_matched_mass.pdf', 'Gen Fat jet matched mass']]
+    # tex_lines += add_fatjet_plots('Gen Fat Jet Matched')
 
-    tex_lines += add_fatjet_plots('Gen Fat Jet Matched')
+    # tex_lines += "\n" + r"\subsection{Gen Fat Jet vs Matched Soft Drop Mass}"
+    # fatjet_plots = [['genfat_jet_msoftdrop_delphes.pdf', 'Gen Fat jet Msoftdrop delphes'],
+    #                 ['genfat_jet_msoftdrop_fullsim.pdf', 'Gen Fat jet Msoftdrop fullsim'],
+    #                 ['genfat_jet_msoftdrop.pdf', 'Gen Fat jet Msoftdrop'],
+    #                 ['genfat_jet_matched_msoftdrop_delphes.pdf',
+    #                     'Gen Fat jet matched Msoftdrop delphes'],
+    #                 ['genfat_jet_matched_msoftdrop_fullsim.pdf',
+    #                     'Gen Fat jet matched Msoftdrop fullsim'],
+    #                 ['genfat_jet_matched_msoftdrop.pdf', 'Gen Fat jet matched Msoftdrop']]
+    # tex_lines += add_fatjet_plots('Gen Fat Jet vs Matched Soft Drop Mass')
 
-    tex_lines += "\n" + r"\subsection{Gen Fat Jet vs Matched Soft Drop Mass}"
-    fatjet_plots = [['genfat_jet_msoftdrop_delphes.pdf', 'Gen Fat jet Msoftdrop delphes'],
-                    ['genfat_jet_msoftdrop_fullsim.pdf', 'Gen Fat jet Msoftdrop fullsim'],
-                    ['genfat_jet_msoftdrop.pdf', 'Gen Fat jet Msoftdrop'],
-                    ['genfat_jet_matched_msoftdrop_delphes.pdf',
-                        'Gen Fat jet matched Msoftdrop delphes'],
-                    ['genfat_jet_matched_msoftdrop_fullsim.pdf',
-                        'Gen Fat jet matched Msoftdrop fullsim'],
-                    ['genfat_jet_matched_msoftdrop.pdf', 'Gen Fat jet matched Msoftdrop']]
-
-    tex_lines += add_fatjet_plots('Gen Fat Jet vs Matched Soft Drop Mass')
-
-    tex_lines += "\n" + r"\subsection{Gen Fat Jet Matched Tau}"
+    tex_lines += "\n" + r"\subsection{Gen Fat Jet Tau}"
     fatjet_plots = [['genfat_jet_tau1.pdf', 'Gen Fat jet Tau1'],
                     ['genfat_jet_tau2.pdf', 'Gen Fat jet Tau2'],
                     ['genfat_jet_tau3.pdf', 'Gen Fat jet Tau3'],
                     ['genfat_jet_tau4.pdf', 'Gen Fat jet Tau4']]
-
     tex_lines += add_fatjet_plots('Gen Fat Jet Tau')
-
-    tex_lines += "\n" + r"\subsection{Gen Fat Jet Tau}"
-    fatjet_plots = [['genfat_jet_matched_tau1.pdf', 'Gen Fat jet matched Tau1'],
-                    ['genfat_jet_matched_tau2.pdf', 'Gen Fat jet matched Tau2'],
-                    ['genfat_jet_matched_tau3.pdf', 'Gen Fat jet matched Tau3'],
-                    ['genfat_jet_matched_tau4.pdf', 'Gen Fat jet matched Tau4']]
-
-    tex_lines += add_fatjet_plots('Gen Fat Jet Matched Tau')
+    
+    # tex_lines += "\n" + r"\subsection{Gen Fat Jet Matched Tau}"
+    # fatjet_plots = [['genfat_jet_matched_tau1.pdf', 'Gen Fat jet matched Tau1'],
+    #                 ['genfat_jet_matched_tau2.pdf', 'Gen Fat jet matched Tau2'],
+    #                 ['genfat_jet_matched_tau3.pdf', 'Gen Fat jet matched Tau3'],
+    #                 ['genfat_jet_matched_tau4.pdf', 'Gen Fat jet matched Tau4']]
+    # tex_lines += add_fatjet_plots('Gen Fat Jet Matched Tau')
     
     # MET
 
