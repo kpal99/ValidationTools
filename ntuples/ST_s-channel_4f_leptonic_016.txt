@@ -1,0 +1,2 @@
+root://cmseos.fnal.gov//store/user/snowmass/Snowmass2021/DelphesNtuplizer/ST_s-channel_4f_leptonic_14TeV-amcatnlo-pythia8_200PU/ST_s-channel_4f_leptonic_14TeV-amcatnlo-pythia8_ntuple_9_2.root
+root://cmseos.fnal.gov//store/user/snowmass/Snowmass2021/DelphesNtuplizer/ST_s-channel_4f_leptonic_14TeV-amcatnlo-pythia8_200PU/ST_s-channel_4f_leptonic_14TeV-amcatnlo-pythia8_ntuple_9_3.root

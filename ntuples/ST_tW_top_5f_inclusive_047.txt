@@ -1,0 +1,1 @@
+root://cmseos.fnal.gov//store/user/snowmass/Snowmass2021/DelphesNtuplizer/ST_tW_top_5f_inclusiveDecays_14TeV-powheg-pythia8_TuneCUETP8M1_200PU/ST_tW_top_5f_inclusiveDecays_14TeV-powheg-pythia8_TuneCUETP8M1_ntuple_9_0.root

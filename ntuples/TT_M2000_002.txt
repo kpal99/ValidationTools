@@ -1,0 +1,5 @@
+root://cmseosmgm01.fnal.gov:1094//store/user/snowmass/Snowmass2021/DelphesNtuplizer/TprimeTprime_M-2000_TuneCP5_14TeV-madgraph-pythia8_200PU/TprimeTprime_M-2000_TuneCP5_14TeV-madgraph-pythia8_ntuple_7_1.root
+root://cmseosmgm01.fnal.gov:1094//store/user/snowmass/Snowmass2021/DelphesNtuplizer/TprimeTprime_M-2000_TuneCP5_14TeV-madgraph-pythia8_200PU/TprimeTprime_M-2000_TuneCP5_14TeV-madgraph-pythia8_ntuple_7_2.root
+root://cmseosmgm01.fnal.gov:1094//store/user/snowmass/Snowmass2021/DelphesNtuplizer/TprimeTprime_M-2000_TuneCP5_14TeV-madgraph-pythia8_200PU/TprimeTprime_M-2000_TuneCP5_14TeV-madgraph-pythia8_ntuple_7_3.root
+root://cmseosmgm01.fnal.gov:1094//store/user/snowmass/Snowmass2021/DelphesNtuplizer/TprimeTprime_M-2000_TuneCP5_14TeV-madgraph-pythia8_200PU/TprimeTprime_M-2000_TuneCP5_14TeV-madgraph-pythia8_ntuple_7_4.root
+root://cmseosmgm01.fnal.gov:1094//store/user/snowmass/Snowmass2021/DelphesNtuplizer/TprimeTprime_M-2000_TuneCP5_14TeV-madgraph-pythia8_200PU/TprimeTprime_M-2000_TuneCP5_14TeV-madgraph-pythia8_ntuple_7_5.root

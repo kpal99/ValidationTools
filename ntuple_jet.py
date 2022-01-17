@@ -13,21 +13,25 @@ outputDir = "histo_delp"
 
 def createHist(varname):
     if "pt" in varname:
-      h = ROOT.TH1D(varname, varname, 100, 0, 1500)
+        h = ROOT.TH1D(varname, varname, 100, 0, 1500)
       h.GetXaxis().SetTitle("pT[GeV]")
-      h.GetYaxis().SetTitle("N_{jet}")
+      var = varname.split('_')
+      h.GetYaxis().SetTitle("N_{"+var[0]+"}")
     if "eta" in varname:
-      h = ROOT.TH1D(varname, varname, 100, -5, -5)
+        h = ROOT.TH1D(varname, varname, 100, -2.5, 2.5)
       h.GetXaxis().SetTitle("eta")
-      h.GetYaxis().SetTitle("N_{jet}")
+      var = varname.split('_')
+      h.GetYaxis().SetTitle("N_{"+var[0]+"}")
     if "phi" in varname:
-      h = ROOT.TH1D(varname, varname, 100, -5, -5)
+        h = ROOT.TH1D(varname, varname, 100, -5, -5)
       h.GetXaxis().SetTitle("phi")
-      h.GetYaxis().SetTitle("N_{jet}")
+      var = varname.split('_')
+      h.GetYaxis().SetTitle("N_{"+var[0]+"}")
     if "mass" in varname:
-      h = ROOT.TH1D(varname, varname, 100, 0, 500)
+        h = ROOT.TH1D(varname, varname, 100, 0, 500)
       h.GetXaxis().SetTitle("mass[GeV]")
-      h.GetYaxis().SetTitle("N_{jet}")
+      var = varname.split('_')
+      h.GetYaxis().SetTitle("N_{"+var[0]+"}")
 
     h.Sumw2()
 
@@ -35,11 +39,11 @@ def createHist(varname):
 
 def create2dHist(varname):
     if "to_pt" in varname:
-      h = ROOT.TProfile(varname, varname, 100, 0, 1500)
+        h = ROOT.TProfile(varname, varname, 100, 0, 1500)
       h.GetXaxis().SetTitle("pT[GeV]")
       h.GetYaxis().SetTitle("Jet.pt/GenJet.pt")
     if "to_eta" in varname:
-      h = ROOT.TProfile(varname, varname, 100, -5, 5)
+        h = ROOT.TProfile(varname, varname, 100, -5, 5)
       h.GetXaxis().SetTitle("eta")
       h.GetYaxis().SetTitle("Jet.pt/GenJet.pt")
 
@@ -84,52 +88,52 @@ def main():
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
         if (tot_nevents %100) == 0 :
-          print '... processed {} events ...'.format(event.entry()+1)
+            print '... processed {} events ...'.format(event.entry()+1)
 
-	jets = event.jets()
-	genjets = event.genjets()
+    jets = event.jets()
+    genjets = event.genjets()
 
-	for p in jets:
-	  jet = ROOT.TVector3()
+    for p in jets:
+        jet = ROOT.TVector3()
           jet.SetPtEtaPhi(p.pt(), p.eta(), p.phi())
-	  if p.eta() > 5 : continue
+      if p.eta() > 5 : continue
 
-	  for g in genjets:
-            gjet = ROOT.TVector3()
-  	    gjet.SetPtEtaPhi(g.pt(), g.eta(), g.phi()) 
-	    if g.eta() > 5 : continue
+      for g in genjets:
+          gjet = ROOT.TVector3()
+        gjet.SetPtEtaPhi(g.pt(), g.eta(), g.phi())
+        if g.eta() > 5 : continue
 
-	    if jet.DeltaR(gjet) < 0.2:
-	      hists["jet_ptresponse_to_eta"].Fill(g.eta(), p.pt()/g.pt())
+        if jet.DeltaR(gjet) < 0.2:
+            hists["jet_ptresponse_to_eta"].Fill(g.eta(), p.pt()/g.pt())
               hists["jet_ptresponse_to_pt"].Fill(g.pt(), p.pt()/g.pt())
               for ptcut1, ptcut2 in [[0, 50], [50, 100], [100, 200], [200,400]]:
-		if ( g.pt() >= ptcut1 and g.pt() < ptcut2 ): 
-		  hists["jet_ptresponse_to_eta_" + str(ptcut1) + "to" +str(ptcut2)].Fill(g.eta(), p.pt()/g.pt())
+                  if ( g.pt() >= ptcut1 and g.pt() < ptcut2 ):
+                      hists["jet_ptresponse_to_eta_" + str(ptcut1) + "to" +str(ptcut2)].Fill(g.eta(), p.pt()/g.pt())
               if g.pt() >= 400 :
-		  hists["jet_ptresponse_to_eta_400up"].Fill(g.eta(), p.pt()/g.pt())              
+                  hists["jet_ptresponse_to_eta_400up"].Fill(g.eta(), p.pt()/g.pt())
 
-	      hists["jet_pt"].Fill(p.pt())
+          hists["jet_pt"].Fill(p.pt())
               hists["jet_eta"].Fill(p.eta())
               hists["jet_phi"].Fill(p.phi())
               hists["jet_mass"].Fill(p.mass())
 
-            
+
         tot_nevents += 1
         tot_genpart += len(event.genparticles())
-        tot_genjet += len(event.genjets()) 
-        tot_electron += len(event.electrons()) 
-        tot_gamma += len(event.gammas())   
-        tot_muon += len(event.muons())   
-        tot_jet += len(event.jets())   
-        tot_tau += len(event.taus())   
-        tot_met += len(event.mets())   
-	tot_genjetAK8 += len(event.genjetsAK8())
+        tot_genjet += len(event.genjets())
+        tot_electron += len(event.electrons())
+        tot_gamma += len(event.gammas())
+        tot_muon += len(event.muons())
+        tot_jet += len(event.jets())
+        tot_tau += len(event.taus())
+        tot_met += len(event.mets())
+        tot_genjetAK8 += len(event.genjetsAK8())
         tot_jetAK8 += len(event.jetsAK8())
         # end of one event
 
     outputF.cd()
     for h in hists.keys():
-      hists[h].Write()
+        hists[h].Write()
 
 
     print("Processed %d events" % tot_nevents)

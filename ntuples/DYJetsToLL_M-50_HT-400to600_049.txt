@@ -1,0 +1,1 @@
+root://cmseos.fnal.gov//store/user/snowmass/Snowmass2021/DelphesNtuplizer/DYJetsToLL_M-50_HT-400to600_TuneCUETP8M1_14TeV-madgraphMLM-pythia8_200PU/DYJetsToLL_M-50_HT-400to600_TuneCUETP8M1_14TeV-madgraphMLM-pythia8_ntuple_9_1.root

@@ -1,0 +1,21 @@
+.DS_Store;
+.vs
+#backup-specific files
+*~
+
+#vim specific files
+*.swp
+*.swo
+*.swn
+
+#not root files
+*.root
+*.gif
+*.png
+
+# Python Tools for Visual Studio (PTVS)
+__pycache__/
+*.pyc
+
+**/.archives_txt/
+**/archive/

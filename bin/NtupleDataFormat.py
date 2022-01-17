@@ -207,10 +207,14 @@ class Event(object):
         """Returns 'run:lumi:event' string."""
         return "%d:%d:%d" % self.eventId()
 
+    def genweight(self):
+        """Returns gen weight"""
+        return self._tree.genweight
+
     def genparticles(self, prefix="genpart"):
         """Returns generator particles object."""
         return GenParticles(self._tree, prefix)
-  
+
     def genjets(self, prefix="genjet"):
         """Returns GenJet object."""
         return GenJets(self._tree, prefix)
@@ -230,7 +234,7 @@ class Event(object):
     def muons(self, prefix="muon"):
         """Returns muon object."""
         return Muons(self._tree, prefix)
-    
+
     def jetspuppi(self, prefix="jetpuppi"):
         """Returns Jet object."""
         return Jets(self._tree, prefix)
@@ -239,9 +243,17 @@ class Event(object):
         """Returns Jet object."""
         return Jets(self._tree, prefix)
 
+    def fatjets(self, prefix="fatjet"):
+        """Returns fatjet object."""""
+        return FatJets(self._tree, prefix)
+
     def jetsAK8(self, prefix="jetAK8"):
         """Returns JetAK8 object."""
         return JetsAK8(self._tree, prefix)
+
+    def jets(self, prefix="jet"):   #added
+        """Returns JetAK8 object."""
+        return Jets(self._tree, prefix)
 
     def taus(self, prefix="tau"):
         """Returns Tau object."""
@@ -255,6 +267,9 @@ class Event(object):
         """Returns MET object."""
         return Mets(self._tree, prefix)
 
+    def mets(self, prefix="met"):     #added
+        """Returns MET object."""
+        return Mets(self._tree, prefix)
 
     def getDataFrame(self, prefix):
         branches = [br.GetName() for br in self._tree.GetListOfBranches() if br.GetName().startswith(prefix+'_')]
@@ -490,6 +505,31 @@ class Jets(_Collection):
         # self.prefix = prefix
         super(Jets, self).__init__(tree, prefix + "_pt", Jet, prefix)
 
+class FatJet(_Object):
+    """Class representing a JetAK8."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the JetAK8
+        prefix -- TBranch prefix
+        """
+        super(FatJet, self).__init__(tree, index, prefix)
+
+class FatJets(_Collection):
+    """Class presenting a collection of JetsAK8."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(FatJets, self).__init__(tree, prefix + "_pt", FatJet, prefix)
 
 class JetAK8(_Object):
     """Class representing a JetAK8."""
@@ -517,6 +557,7 @@ class JetsAK8(_Collection):
         """
         # self.prefix = prefix
         super(JetsAK8, self).__init__(tree, prefix + "_pt", JetAK8, prefix)
+
 
 
 ##########
