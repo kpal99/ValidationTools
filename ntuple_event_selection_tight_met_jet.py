@@ -32,21 +32,14 @@ def main():
 # Jet selection cut
 # pt of jets are descendingly sorted already for each event. So, checking if first jet has pt>200, then second jet has pt>100, at last third jet has pt>50
         sum_pt = 0
-        first = 0
-        second = 0
-        third = 0
+        pt_array = []
         multiplicity = 0
-        btag_multiplicity = 0
         for j in event.jetspuppi():
-            if first == 0 and j.pt() > 200 and abs(j.eta()) < 2.4:
-                first += 1
-            elif second == 0 and j.pt() > 100 and abs(j.eta()) < 2.4:
-                second += 1
-            elif third == 0 and j.pt() > 50 and abs(j.eta()) < 2.4:
-                third += 1
             if j.pt() > 30 and abs(j.eta()) < 2.4:
+                pt_array.append(j.pt())
                 sum_pt += j.pt()
-        if first == 1 and second == 1 and third == 1 and sum_pt > 400:
+                multiplicity += 1
+        if multiplicty > 2 and pt_array[0] > 200 and pt_array[1] > 100 and pt_array[2] > 50 and sum_pt > 400:
             j_counter += 1
         else:
             continue

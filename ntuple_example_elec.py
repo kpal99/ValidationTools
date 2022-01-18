@@ -39,7 +39,7 @@ def main():
     inFile = sys.argv[1]
     phy_obj_str=sys.argv[2]
     ntuple = Ntuple(inFile)
-    maxEvents = 0
+    maxEvents = 10
 
     tot_nevents = 0
     tot_genpart = 0
@@ -53,14 +53,13 @@ def main():
     tot_tau = 0
     tot_metspf = 0
     tot_metspuppi = 0
-    counter = 0
     print(ntuple.__dict__)
     for event in ntuple:
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
 
-        #print '... processing event {} ...'.format(event.entry()+1)
+        print '... processing event {} ...'.format(event.entry()+1)
 
         #print ''
         #print '  -- {}  --'.format(phy_obj_str)
@@ -73,12 +72,14 @@ def main():
             i += 1
             if phy_obj_str == "fatjets":
                 print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, Tau1: {:<6.2f}, Tau2: {:<6.2f}, Tau3: {:<6.2f}, Tau4: {:<6.2f}, m-SD: {:<6.2f}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.tau1(), p.tau2(), p.tau3(), p.tau4(), p.msoftdrop())
+            elif phy_obj_str == "gammas":
+                print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, idvar: {:<6}, isopass: {:<6}'.format(i, p.pt(), p.eta() , p.phi(), p.idvar(), p.isopass())
+            elif phy_obj_str == "jetspuppi":
+                print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, Btag: {:<6.2f}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.btag())
             elif phy_obj_str == "jetspuppi":
                 print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, Btag: {:<6.2f}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.btag())
             elif phy_obj_str == "electrons" or phy_obj_str == "muons":
-                if p.idpass()>4 and p.isopass() == 0:
-                    counter += 1
-                    print 'event: {:<12}, N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, : Charge: {:<6}, idvar: {:<6}, idpass: {:<6}, reliso: {:<6.2f}, isopass: {:<6}'.format(event.entry()+1, i, p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.idpass(), p.reliso(), p.isopass())
+                print 'event: {:<12}, N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, : Charge: {:<6}, idvar: {:<6}, idpass: {:<6}, reliso: {:<6.2f}, isopass: {:<6}'.format(event.entry()+1, i, p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.idpass(), p.reliso(), p.isopass())
             else:
                 print 'N: {:<7}, PT: {:<6.2f}, Phi: {:<6.2f}'.format(i, p.pt(), p.phi())
 
@@ -99,7 +100,6 @@ def main():
         # for genPart in genParts:
         #     print(tot_nevents, "genPart pt:", genPart.pt()
 
-    print("Found %d counting" % counter)
     print("Processed %d events" % tot_nevents)
 #    print("On average %f generator particles" % (float(tot_genpart) / tot_nevents))
 #    print("On average %f generated jets" % (float(tot_genjet) / tot_nevents))

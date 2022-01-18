@@ -5,7 +5,7 @@ def breakfile(arg):
     f = open(filename, "r")
     print f
     count = 0
-    count_break=20
+    count_break=2
     filename_temp = filename.split('/')
     filename1 = filename_temp[1].split('.txt')
     for line in f.readlines():

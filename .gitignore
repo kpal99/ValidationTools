@@ -16,6 +16,7 @@
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+ntuples/*.txt
 
 **/.archives_txt/
 **/archive/
