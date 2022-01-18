@@ -1,1 +1,0 @@
-root://cmseos.fnal.gov//store/user/snowmass/Snowmass2021/DelphesNtuplizer/QCD_HT2000toInf_BGenFilter_TuneCUEP8M2T4_14TeV-madgraphMLM-pythia8_200PU/QCD_HT2000toInf_BGenFilter_TuneCUEP8M2T4_14TeV-madgraphMLM-pythia8_ntuple_9_1.root
