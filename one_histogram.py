@@ -29,9 +29,9 @@ def createHist(varname,minval=0, maxval=501):
     elif "msoftdrop" in varname:
         h = ROOT.TH1D(varname, varname, 25, minval, maxval)
     elif "-multiplicity" in varname:
-        h = ROOT.TH1D(varname, varname, 6, -1, 5)
+        h = ROOT.TH1D(varname, varname, 6, -0.5, 5.5)
     elif "multiplicity" in varname:
-        h = ROOT.TH1D(varname, varname, 13, -1, 12)
+        h = ROOT.TH1D(varname, varname, 13, -0.5, 12.5)
     else:
         h = ROOT.TH1D(varname,varname,25,minval,maxval)
 
@@ -50,7 +50,8 @@ def main():
     #outputFile = sys.argv[1]
     #out_str = outputFile.split('.root')
     out_str = os.path.basename(sys.argv[1]).split('.root')
-    outDir = '/eos/uscms/store/user/kpal/trimmed_files_v2/smallBins/'
+    #outDir = '/eos/uscms/store/user/kpal/trimmed_files_v2/smallBins/'
+    outDir = os.path.dirname(sys.argv[1]) + '/'
 # using last part of out_str to creating a root file
     outFile = ROOT.TFile(outDir + out_str[0] + '_plot.root',"RECREATE")
 

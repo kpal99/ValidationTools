@@ -19,10 +19,10 @@ hist_g = g.Get("St")
 hist_h = h.Get("St")
 hist_i = i.Get("St")
 #hist_j = ROOT.TH1D("data_obs","data_obs",100,0,7000)
-hist_j = ROOT.TH1D("data_obs","data_obs",50,500,7500)
+hist_j = ROOT.TH1D("data_obs","data_obs",100,0,10000)
 
 #outputDir = os.path.dirname(sys.argv[4]) + '/'
-outputDir = os.path.dirname(sys.argv[4]) + '/plotsNewQCDsamples/'
+outputDir = os.path.dirname(sys.argv[4]) + '/'
 a=sys.argv[1].split('TT')
 outFile = ROOT.TFile(outputDir + 'St' + a[1] ,"RECREATE")
 hist_j.Add(hist_f)
@@ -35,6 +35,7 @@ hist_h.SetName("St_ew"); hist_h.Write("St_ew",ROOT.TObject.kWriteDelete)
 hist_i.SetName("St_qcd"); hist_i.Write("St_qcd",ROOT.TObject.kWriteDelete)
 hist_j.SetName("data_obs"); hist_j.Write("data_obs",ROOT.TObject.kWriteDelete)
 outFile.Write()
+print "OutFile written at {}".format(outFile)
 
 outFile.Close()
 f.Close()

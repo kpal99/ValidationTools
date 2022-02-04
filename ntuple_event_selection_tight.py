@@ -36,20 +36,23 @@ def main():
             e_tight_count = 0
             u_tight_count = 0
             for e in event.electrons():
-                if e.idpass() > 4 and e.pt() > 60 and abs(e.eta()) < 3.0:
+                if e.idpass() > 4 and e.pt() > 60 and abs(e.eta()) < 2.5:
                     e_tight_count += 1
+                    lepton_eta = e.eta()
+                    lepton_phi = e.phi()
             for u in event.muons():
-                if u.idpass() > 4 and u.pt() > 60 and abs(u.eta()) < 2.8:
+                if u.idpass() > 4 and u.pt() > 60 and abs(u.eta()) < 2.4:
                     u_tight_count += 1
+                    lepton_eta = u.eta()
+                    lepton_phi = u.phi()
             if e_tight_count == 0 and u_tight_count == 1:
-                tight_counter += 1
                 tight_muon_found = True
             elif e_tight_count == 1 and u_tight_count == 0:
-                tight_counter += 1
                 tight_electron_found = True
             else:
                 continue
 
+            tight_counter += 1
             treeProducer.processEvent(event.entry())
             treeProducer.processWeights(event.genweight())
             treeProducer.processElectrons(event.electrons())

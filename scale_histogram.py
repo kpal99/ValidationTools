@@ -9,13 +9,15 @@ keys = ['jetspuppi_btagmultiplicity', 'metspuppi_pt', 'TightElectrons_pt', 'Tigh
 hists = {}
 outputDir = '/eos/uscms/store/user/kpal/trimmed_files_v2/'
 filename = os.path.basename(sys.argv[1])
-intLumi = {300, 500, 1000, 2000}
+#intLumi = {300, 500, 1000, 2000}
+intLumi = {35.9}
 
 for lumi in intLumi:
     f = ROOT.TFile.Open(sys.argv[1], 'read')
     outFile = ROOT.TFile(outputDir + str(lumi) + '/' + filename,"RECREATE")
 
-    scale_factor = lumi / 3000.0
+    #scale_factor = lumi / 3000.0
+    scale_factor = lumi / 300.0
     for key in keys:
         hists[key] = f.Get(key)
         hists[key].Scale(scale_factor)

@@ -85,23 +85,9 @@ for key in keys:
     hists_m[key] = m.Get(key)
 
 #outputDir = '/eos/user/k/kpal/www/i4DAPNVShN/all_signal_v2.1/'
-outputDir = '/eos/uscms/store/user/kpal/trimmed_files_v2/smallBins/plots/'
-#outputDir = os.path.dirname(sys.argv[8]) +'/plots/'
+#outputDir = '/eos/uscms/store/user/kpal/trimmed_files_v2/smallBins/plots/'
+outputDir = os.path.dirname(sys.argv[8]) +'/plots/'
 #outputDir = os.path.dirname(sys.argv[8]) +'/plotsNewQCDsamples/'
-
-tex1 = ROOT.TLatex(0.13, 0.95, "#bf{CMS} #it{Phase-2 Simulation Premilinary}")
-tex1.SetNDC()
-tex1.SetTextAlign(13)
-tex1.SetTextFont(42)
-tex1.SetTextSize(0.04)
-tex1.SetLineWidth(2)
-
-tex2 = ROOT.TLatex(0.71, 0.95, "3000 fb^{-1} (14 TeV)")
-tex2.SetNDC()
-tex2.SetTextAlign(13)
-tex2.SetTextFont(42)
-tex2.SetTextSize(0.04)
-tex2.SetLineWidth(2)
 
 for key in hists_f.keys():
     canvas = ROOT.TCanvas('canvas','',600,400)
@@ -119,9 +105,26 @@ for key in hists_f.keys():
     stack[key].Draw("pfc hist")
     setTitle(stack[key],key)
 
-    if key == "St" or "H2b" in key or "H1b" in key or "_pt_" in key or "_Ht" in key or "metspuppi_pt" in key :
+    if key == "St" or "H2b" in key or "H1b" in key or "_pt" in key or "_Ht" in key or "metspuppi_pt" in key :
     #if key == "St" or "H2b" in key or "H1b" in key or key == "metspuppi_pt":
         canvas.SetLogy()
+        tex1 = ROOT.TLatex(0.10, 0.95, "#bf{CMS} #it{Phase-2 Simulation Premilinary}")
+    else:
+        tex1 = ROOT.TLatex(0.15, 0.95, "#bf{CMS} #it{Phase-2 Simulation Premilinary}")
+
+    tex1.SetNDC()
+    tex1.SetTextAlign(13)
+    tex1.SetTextFont(42)
+    tex1.SetTextSize(0.04)
+    tex1.SetLineWidth(2)
+
+    tex2 = ROOT.TLatex(0.71, 0.95, "3000 fb^{-1} (14 TeV)")
+    tex2.SetNDC()
+    tex2.SetTextAlign(13)
+    tex2.SetTextFont(42)
+    tex2.SetTextSize(0.04)
+    tex2.SetLineWidth(2)
+
     hists_f[key].Scale(200)
     hists_g[key].Scale(2000)
     hists_h[key].Scale(20000)
@@ -145,22 +148,23 @@ for key in hists_f.keys():
 
     if "eta" in key:
         legend = ROOT.TLegend(0.65,0.89,0.99,0.67)
-        legend1 = ROOT.TLegend(0.65,0.67,0.99,0.55)
-    elif "St" in key:
+        legend1 = ROOT.TLegend(0.13,0.89,0.28,0.71)
+    elif "St" in key or "Ht" in key:
+        legend = ROOT.TLegend(0.59,0.89,0.89,0.70)
+        legend1 = ROOT.TLegend(0.45,0.89,0.59,0.71)
+    else:
         legend = ROOT.TLegend(0.55,0.89,0.89,0.67)
-        legend1 = ROOT.TLegend(0.35,0.89,0.55,0.76)
-    legend = ROOT.TLegend(0.55,0.89,0.89,0.67)
-    legend1 = ROOT.TLegend(0.55,0.67,0.89,0.55)
+        legend1 = ROOT.TLegend(0.55,0.67,0.89,0.55)
     legend.SetBorderSize(0)
     legend1.SetBorderSize(0)
-    legend.AddEntry(hists_f[key],"T'#bar{T'} (1.0 TeV) x 200", "f")
-    legend.AddEntry(hists_g[key],"T'#bar{T'} (1.5 TeV) x 2000", "f")
-    legend.AddEntry(hists_h[key],"T'#bar{T'} (2.0 TeV) x 20000", "f")
-    legend.AddEntry(hists_i[key],"T'#bar{T'} (2.5 TeV) x 200000", "f")
-    legend.AddEntry(hists_j[key],"T'#bar{T'} (3.0 TeV) x 2000000", "f")
-    legend1.AddEntry(hists_k[key],"TOP", "f")
-    legend1.AddEntry(hists_l[key],"EW", "f")
+    legend.AddEntry(hists_f[key],"T'#bar{T'} (1.0 TeV) x 200", "l")
+    legend.AddEntry(hists_g[key],"T'#bar{T'} (1.5 TeV) x 2000", "l")
+    legend.AddEntry(hists_h[key],"T'#bar{T'} (2.0 TeV) x 20000", "l")
+    legend.AddEntry(hists_i[key],"T'#bar{T'} (2.5 TeV) x 200000", "l")
+    legend.AddEntry(hists_j[key],"T'#bar{T'} (3.0 TeV) x 2000000", "l")
     legend1.AddEntry(hists_m[key],"QCD", "f")
+    legend1.AddEntry(hists_l[key],"EW", "f")
+    legend1.AddEntry(hists_k[key],"TOP", "f")
     tex1.Draw()
     tex2.Draw()
     legend.Draw()
@@ -170,6 +174,8 @@ for key in hists_f.keys():
     canvas.Close()
     legend.Clear()
     legend1.Clear()
+    tex1.Clear()
+    tex2.Clear()
 
 
 f.Close()

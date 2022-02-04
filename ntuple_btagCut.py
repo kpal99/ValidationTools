@@ -4,6 +4,7 @@ import ROOT
 from bin.NtupleDataFormat import Ntuple
 from mytree import TreeProducer
 import sys
+import os
 
 def main():
     if len(sys.argv) != 2:
@@ -14,12 +15,10 @@ def main():
     hists = {}
     maxEvents = 0
 
-    outputFile = sys.argv[1]
-    out_str = outputFile.split('.root')
-    filename = out_str[0].split('/')
-    dir_str = "/eos/uscms/store/user/kpal/trimmed_files_v3/QCD_Pt/"
+    filename = os.path.basename(sys.argv[1]).split('.root')
+    dir_str = "/eos/uscms/store/user/kpal/trimmed_files_v5/"
 # using last part of out_str to creating a root file
-    out_root = ROOT.TFile(dir_str + filename[ len(filename) - 1 ] + '_btag.root',"RECREATE")
+    out_root = ROOT.TFile(dir_str + filename[0] + '_btag.root',"RECREATE")
     out_root.mkdir("myana")
     out_root.cd("myana")
     treeProducer = TreeProducer()
