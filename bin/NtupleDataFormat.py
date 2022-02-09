@@ -191,6 +191,10 @@ class Event(object):
         """Returns lumisection number."""
         return self._tree.vtx_size
 
+    def vtxs(self, prefix="vtx"):     #kpal added
+        """Returns MET object."""
+        return Vtxs(self._tree, prefix)
+
     def npuVertices(self):
         """Returns lumisection number."""
         return self._tree.npuVertices
@@ -588,3 +592,30 @@ class Mets(_Collection):
         # self.prefix = prefix
         super(Mets, self).__init__(tree, prefix + "_pt", Met, prefix)
 
+##########
+class Vtx(_Object):
+    """Class representing a Vtx."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the Vtx
+        prefix -- TBranch prefix
+        """
+        super(Vtx, self).__init__(tree, index, prefix)
+
+
+class Vtxs(_Collection):
+    """Class presenting a collection of Vtxs."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(Vtxs, self).__init__(tree, prefix + "_pt2", Vtx, prefix)

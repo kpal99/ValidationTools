@@ -38,20 +38,34 @@ def createHist(varname,minval=0, maxval=501):
     h.Sumw2()
     return h
 
+def globalWeight(inDir, in_str):
+    inFile1 = inDir + "genweight/" + in_str
+
+    ntuple1 = Ntuple(inFile1)
+    gw = 0
+    for event in ntuple1:
+        gw += event.genweight()
+    return gw
+
 def main():
     if len(sys.argv) != 4:
         print "USAGE: {} <ntuple> <cross-section(fb)> <total event>".format(sys.argv[0])
-        sys.exit(0)
+        sys.exit(1)
+
     inFile = sys.argv[1]
     ntuple = Ntuple(inFile)
     hists = {}
     maxEvents = 0
+    local_weight = 0
 
     #outputFile = sys.argv[1]
     #out_str = outputFile.split('.root')
     out_str = os.path.basename(sys.argv[1]).split('.root')
     #outDir = '/eos/uscms/store/user/kpal/trimmed_files_v2/smallBins/'
     outDir = os.path.dirname(sys.argv[1]) + '/'
+    inDir = outDir
+
+    global_weight = float(sys.argv[3]) #globalWeight(inDir, os.path.basename(sys.argv[1]))
 # using last part of out_str to creating a root file
     outFile = ROOT.TFile(outDir + out_str[0] + '_plot.root',"RECREATE")
 
@@ -102,9 +116,11 @@ def main():
             break
 
 
+        gen_weight = event.genweight()
+        #local_weight += gen_weight
         for item in event.metspuppi():
-            hists["metspuppi_pt"].Fill(item.pt())
-            hists["metspuppi_phi"].Fill(item.phi())
+            hists["metspuppi_pt"].Fill(item.pt(), gen_weight)
+            hists["metspuppi_phi"].Fill(item.phi(), gen_weight)
             St = item.pt()
 
 
@@ -114,10 +130,10 @@ def main():
         multiplicity = 0
         btag_multiplicity = 0
         for item in event.jetspuppi():
-            hists["jetspuppi_pt"].Fill(item.pt())
-            hists["jetspuppi_eta"].Fill(item.eta())
-            hists["jetspuppi_phi"].Fill(item.phi())
-            hists["jetspuppi_mass"].Fill(item.mass())
+            hists["jetspuppi_pt"].Fill(item.pt(), gen_weight)
+            hists["jetspuppi_eta"].Fill(item.eta(), gen_weight)
+            hists["jetspuppi_phi"].Fill(item.phi(), gen_weight)
+            hists["jetspuppi_mass"].Fill(item.mass(), gen_weight)
             multiplicity += 1
             ak4_jet.append([item.pt(), item.eta()])
             sum_pt += item.pt()
@@ -129,40 +145,39 @@ def main():
 #            else:
 #                A.SetPtEtaPhiM(item.pt(), item.eta(), item.phi(), item.mass())
 #                ak4_jet.append(A)
-        ak4_jet = sorted(ak4_jet,reverse=True)     #sorting with respect to pt
-        hists["jetspuppi_pt_1"].Fill(ak4_jet[0][0])     #filling highest pt jet
-        hists["jetspuppi_eta_1"].Fill(ak4_jet[0][1])    #filling highest pt jet's eta
-        hists["jetspuppi_pt_2"].Fill(ak4_jet[1][0])
-        hists["jetspuppi_eta_2"].Fill(ak4_jet[1][1])
-        hists["jetspuppi_pt_3"].Fill(ak4_jet[2][0])
-        hists["jetspuppi_eta_3"].Fill(ak4_jet[2][1])
-        hists["jetspuppi_multiplicity"].Fill(multiplicity)
-        hists["jetspuppi_btagmultiplicity"].Fill(btag_multiplicity)
-        hists["jetspuppi_Ht"].Fill(sum_pt)
+        hists["jetspuppi_pt_1"].Fill(ak4_jet[0][0], gen_weight)     #filling highest pt jet
+        hists["jetspuppi_eta_1"].Fill(ak4_jet[0][1], gen_weight)    #filling highest pt jet's eta
+        hists["jetspuppi_pt_2"].Fill(ak4_jet[1][0], gen_weight)
+        hists["jetspuppi_eta_2"].Fill(ak4_jet[1][1], gen_weight)
+        hists["jetspuppi_pt_3"].Fill(ak4_jet[2][0], gen_weight)
+        hists["jetspuppi_eta_3"].Fill(ak4_jet[2][1], gen_weight)
+        hists["jetspuppi_multiplicity"].Fill(multiplicity, gen_weight)
+        hists["jetspuppi_btagmultiplicity"].Fill(btag_multiplicity, gen_weight)
+        hists["jetspuppi_Ht"].Fill(sum_pt, gen_weight)
         St += sum_pt
 
 #tight lepton selection. Only single lepton is required.
         for item in event.electrons():
             if item.idpass() > 4 and item.pt() > 60 and abs(item.eta()) < 2.5:
-                hists["TightElectrons_pt"].Fill(item.pt())
-                hists["TightElectrons_eta"].Fill(item.eta())
-                hists["TightElectrons_phi"].Fill(item.phi())
-                hists["TightElectrons_mass"].Fill(item.mass())
+                hists["TightElectrons_pt"].Fill(item.pt(), gen_weight)
+                hists["TightElectrons_eta"].Fill(item.eta(), gen_weight)
+                hists["TightElectrons_phi"].Fill(item.phi(), gen_weight)
+                hists["TightElectrons_mass"].Fill(item.mass(), gen_weight)
                 St += item.pt()
 #                lepton = ROOT.TLorentzVector()
 #                lepton.SetPtEtaPhiM(item.pt(), item.eta(), item.phi(), item.mass())
                 break
         for item in event.muons():
             if item.idpass() > 4 and item.pt() > 60 and abs(item.eta()) < 2.4:
-                hists["TightMuons_pt"].Fill(item.pt())
-                hists["TightMuons_eta"].Fill(item.eta())
-                hists["TightMuons_phi"].Fill(item.phi())
-                hists["TightMuons_mass"].Fill(item.mass())
+                hists["TightMuons_pt"].Fill(item.pt(), gen_weight)
+                hists["TightMuons_eta"].Fill(item.eta(), gen_weight)
+                hists["TightMuons_phi"].Fill(item.phi(), gen_weight)
+                hists["TightMuons_mass"].Fill(item.mass(), gen_weight)
                 St += item.pt()
 #                lepton = ROOT.TLorentzVector()
 #                lepton.SetPtEtaPhiM(item.pt(), item.eta(), item.phi(), item.mass())
                 break
-        hists["St"].Fill(St)
+        hists["St"].Fill(St, gen_weight)
 
 #        T = ROOT.TLorentzVector()
 #        T_min = ROOT.TLorentzVector()
@@ -191,9 +206,9 @@ def main():
         w_count = 0
         for item in event.fatjets():
             if abs(item.eta()) < 2.4:
-                hists["fatjets_pt"].Fill(item.pt())
-                hists["fatjets_eta"].Fill(item.eta())
-                hists["fatjets_phi"].Fill(item.phi())
+                hists["fatjets_pt"].Fill(item.pt(), gen_weight)
+                hists["fatjets_eta"].Fill(item.eta(), gen_weight)
+                hists["fatjets_phi"].Fill(item.phi(), gen_weight)
                 fatjet_count += 1
                 if item.pt() > 300 and 60 <= item.msoftdrop() <= 160:
                     b_count = 0
@@ -210,21 +225,23 @@ def main():
                     if item.pt() > 200 and abs(item.eta()) < 2.4 and 60 <= item.msoftdrop() <= 110 and item.tau2() / item.tau1() < 0.55 and h2b_count == 0 and h1b_count == 0:
                         w_count += 1
                     if item.tau2() / item.tau1() < 0.55:
-                        hists["fatjets_msoftdrop[tau21]"].Fill(item.msoftdrop())
+                        hists["fatjets_msoftdrop[tau21]"].Fill(item.msoftdrop(), gen_weight)
                     if 60 <= item.msoftdrop() <= 110:
-                        hists["fatjets_tau21[m-softdrop]"].Fill( item.tau2() / item.tau1() )
+                        hists["fatjets_tau21[m-softdrop]"].Fill( item.tau2() / item.tau1() , gen_weight)
 
         if h2b_count > 0:
             h1b_count = 0
             w_count = 0
         if h1b_count > 0:
             w_count = 0
-        hists["fatjets_multiplicity"].Fill(fatjet_count)
-        hists["fatjets_H2b-multiplicity"].Fill(h2b_count)
-        hists["fatjets_H1b-multiplicity"].Fill(h1b_count)
-        hists["fatjets_Wtag-multiplicity"].Fill(w_count)
+        hists["fatjets_multiplicity"].Fill(fatjet_count, gen_weight)
+        hists["fatjets_H2b-multiplicity"].Fill(h2b_count, gen_weight)
+        hists["fatjets_H1b-multiplicity"].Fill(h1b_count, gen_weight)
+        hists["fatjets_Wtag-multiplicity"].Fill(w_count, gen_weight)
 
-    scale_factor = 3000 * float(sys.argv[2]) / int(sys.argv[3])
+    eff = 1.0 / global_weight
+    #print(out_str[0],local_weight, global_weight, eff)
+    scale_factor = 3000 * eff * float(sys.argv[2])
     for h in hists.keys():
         hists[h].Scale(scale_factor)
     outFile.Write()

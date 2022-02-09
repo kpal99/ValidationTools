@@ -8,6 +8,8 @@ import sys
 # The purpose of this file is to demonstrate mainly the objects
 # that are in the HGCalNtuple
 def get_phy_obj(event,phy_obj_str):
+    if phy_obj_str == 'vtxs':
+        return event.vtxs()
     if phy_obj_str == 'muons':
         return event.muons()
     if phy_obj_str == 'electrons':
@@ -39,7 +41,7 @@ def main():
     inFile = sys.argv[1]
     phy_obj_str=sys.argv[2]
     ntuple = Ntuple(inFile)
-    maxEvents = 10
+    maxEvents = 5
 
     tot_nevents = 0
     tot_genpart = 0
@@ -59,7 +61,7 @@ def main():
             break
 
 
-        print '... processing event {} ...'.format(event.entry()+1)
+        print '... processing event {} ... with genweight {}'.format(event.entry()+1, event.genweight())
 
         #print ''
         #print '  -- {}  --'.format(phy_obj_str)
@@ -72,6 +74,10 @@ def main():
             i += 1
             if phy_obj_str == "fatjets":
                 print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, Tau1: {:<6.2f}, Tau2: {:<6.2f}, Tau3: {:<6.2f}, Tau4: {:<6.2f}, m-SD: {:<6.2f}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.tau1(), p.tau2(), p.tau3(), p.tau4(), p.msoftdrop())
+            elif phy_obj_str == "vtxs":
+                print 'N: {:<6}, Pt2: {:<6.2f}, z: {:<6.2f}, x: {:<6}, y: {:<6}'.format(i, p.pt2() , p.z(), p.x(), p.y())
+                if i == 1:
+                    break
             elif phy_obj_str == "gammas":
                 print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, idvar: {:<6}, isopass: {:<6}'.format(i, p.pt(), p.eta() , p.phi(), p.idvar(), p.isopass())
             elif phy_obj_str == "jetspuppi":
