@@ -85,7 +85,7 @@ def main():
 #                lepton = ROOT.TLorentzVector()
 #                lepton.SetPtEtaPhiM(item.pt(), item.eta(), item.phi(), item.mass())
                 break
-        hists["St"].Fill(St,event.genweight())
+        hists["St"].Fill(St)
 
     scale_factor = 3000 * float(sys.argv[2]) / float(sys.argv[3])
     for h in hists.keys():

@@ -41,7 +41,7 @@ def main():
     inFile = sys.argv[1]
     phy_obj_str=sys.argv[2]
     ntuple = Ntuple(inFile)
-    maxEvents = 5
+    maxEvents = 3
 
     tot_nevents = 0
     tot_genpart = 0
@@ -84,8 +84,12 @@ def main():
                 print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, Btag: {:<6.2f}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.btag())
             elif phy_obj_str == "jetspuppi":
                 print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, Btag: {:<6.2f}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.btag())
-            elif phy_obj_str == "electrons" or phy_obj_str == "muons":
-                print 'event: {:<12}, N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, : Charge: {:<6}, idvar: {:<6}, idpass: {:<6}, reliso: {:<6.2f}, isopass: {:<6}'.format(event.entry()+1, i, p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.idpass(), p.reliso(), p.isopass())
+            elif phy_obj_str == "electrons":
+                #if p.idpass() == 1 and p.pt() > 10 and abs(p.eta) < 2.5:
+                print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, : Charge: {:<6}, idvar: {:<6}, idpass: {:<6}, reliso: {:<6.2f}, isopass: {:<6}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.idpass(), p.reliso(), p.isopass())
+            elif phy_obj_str == "muons":
+                #if p.idpass() == 1 and p.pt() > 10 and abs(p.eta) < 2.4:
+                print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, : Charge: {:<6}, idvar: {:<6}, idpass: {:<6}, reliso: {:<6.2f}, isopass: {:<6}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.idpass(), p.reliso(), p.isopass())
             else:
                 print 'N: {:<7}, PT: {:<6.2f}, Phi: {:<6.2f}'.format(i, p.pt(), p.phi())
 

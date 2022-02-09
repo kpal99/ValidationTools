@@ -6,7 +6,7 @@ def breakfile(arg):
     f = open(filename, "r")
     print f
     count = 0
-    count_break=1
+    count_break=7
     filename1 = os.path.basename(filename).split('.txt')
     for line in f.readlines():
         if count % count_break == 0:

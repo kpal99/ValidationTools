@@ -179,26 +179,6 @@ def main():
                 break
         hists["St"].Fill(St, gen_weight)
 
-#        T = ROOT.TLorentzVector()
-#        T_min = ROOT.TLorentzVector()
-#        mass_min = 99999
-#        if btag_multiplicity != 0:
-#            for item in b_jet:
-#                T = lepton + item
-#                T_mass = T.M()
-#                if T_mass < mass_min:
-#                    mass_min = T_mass
-#                    T_min = T
-#            hists["min_M_l+b"].Fill(T_min.M())
-#        else:
-#            for item in ak4_jet:
-#                T = lepton + item
-#                T_mass = T.M()
-#                if T_mass < mass_min:
-#                    mass_min = T_mass
-#                    T_min = T
-#            hists["min_M_l+jet"].Fill(T_min.M())
-
 # multiplicity of fatjet
         fatjet_count = 0
         h2b_count = 0
