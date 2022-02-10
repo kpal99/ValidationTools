@@ -191,6 +191,33 @@ class Event(object):
         """Returns lumisection number."""
         return self._tree.vtx_size
 
+    def jetM(self):
+        """Returns lumisection number."""
+        return self._tree.jetM
+
+    def jetBtag(self):
+        """Returns lumisection number."""
+        return self._tree.jetBtag
+
+    def jetHt(self):
+        """Returns lumisection number."""
+        return self._tree.jetHt
+
+    def jetSt(self):
+        return self._tree.jetSt
+
+    def fatjetM(self):
+        return self._tree.fatjetM
+
+    def fatjetH2b(self):
+        return self._tree.fatjetH2b
+
+    def fatjetH1b(self):
+        return self._tree.fatjetH1b
+
+    def fatjetW(self):
+        return self._tree.fatjetW
+
     def vtxs(self, prefix="vtx"):     #kpal added
         """Returns MET object."""
         return Vtxs(self._tree, prefix)
@@ -231,6 +258,10 @@ class Event(object):
         """Returns electron object."""
         return Electrons(self._tree, prefix)
 
+    def tightElectrons(self, prefix="tightElec"):
+        """Returns electron object."""
+        return TightElectrons(self._tree, prefix)
+
     def gammas(self, prefix="gamma"):
         """Returns photon object."""
         return Gammas(self._tree, prefix)
@@ -238,6 +269,10 @@ class Event(object):
     def muons(self, prefix="muon"):
         """Returns muon object."""
         return Muons(self._tree, prefix)
+
+    def tightMuons(self, prefix="tightMuon"):
+        """Returns electron object."""
+        return TightMuons(self._tree, prefix)
 
     def jetspuppi(self, prefix="jetpuppi"):
         """Returns Jet object."""
@@ -619,3 +654,59 @@ class Vtxs(_Collection):
         """
         # self.prefix = prefix
         super(Vtxs, self).__init__(tree, prefix + "_pt2", Vtx, prefix)
+
+##########
+class TightMuon(_Object):
+    """Class representing a TightMuon."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the TightMuon
+        prefix -- TBranch prefix
+        """
+        super(TightMuon, self).__init__(tree, index, prefix)
+
+
+class TightMuons(_Collection):
+    """Class presenting a collection of TightMuons."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(TightMuons, self).__init__(tree, prefix + "_pt", TightMuon, prefix)
+
+##########
+class TightElectron(_Object):
+    """Class representing a TightElectron."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the TightElectron
+        prefix -- TBranch prefix
+        """
+        super(TightElectron, self).__init__(tree, index, prefix)
+
+
+class TightElectrons(_Collection):
+    """Class presenting a collection of TightElectrons."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(TightElectrons, self).__init__(tree, prefix + "_pt", TightElectron, prefix)

@@ -23,9 +23,11 @@ def main():
     inFile = sys.argv[1]
     ntuple = Ntuple(inFile)
 # using last part of out_str to creating a root file
-    out_str = '/eos/uscms/store/user/kpal/trimmed_files_v2.2.2/'
-    filename = os.path.basename(inFile)
-    out_root = ROOT.TFile(out_str + filename,"RECREATE")   #outfile is created
+    #out_str = '/eos/uscms/store/user/kpal/trimmed_files_v2.2.2/'
+    #filename = os.path.basename(inFile)
+    #out_root = ROOT.TFile(out_str + filename,"RECREATE")   #outfile is created
+    outputFile = sys.argv[1].split('_tight_met_jet.root')
+    out_root = ROOT.TFile(outputFile[0] + '_moreCut.root',"RECREATE")   #outfile is created
     out_root.mkdir("myana")
     out_root.cd("myana")
 
@@ -38,17 +40,14 @@ def main():
 
 # Jet selection cut
 # pt of jets are descendingly sorted already for each event. So, checking if first jet has pt>200, then second jet has pt>100, at last third jet has pt>50
-        sum_pt = 0
+        counter = 0
         pt_array = []
-        multiplicity = 0
-        btag_multiplicity = 0
         for j in event.jetspuppi():
-            if j.pt() > 30 and abs(j.eta()) < 2.4:
-                pt_array.append(j.pt())
-                multiplicity += 1
-            if j.btag() > 0:
-                btag_multiplicity += 1
-        if multiplicity > 2 and pt_array[0] > 300 and pt_array[1] > 150 and pt_array[2] > 100:
+            pt_array.append(j.pt())
+            counter += 1
+            if counter == 3:
+                break
+        if pt_array[0] > 300 and pt_array[1] > 150 and pt_array[2] > 100:
             j_counter += 1
         else:
             continue
@@ -58,7 +57,6 @@ def main():
         h2b_count = 0
         h1b_count = 0
         w_count = 0
-        b_out = 0
         lead_jet_eta = 0
         lead_jet_phi = 0
         jet_eta = []
@@ -93,13 +91,13 @@ def main():
             w_count = 0
 
         if h2b_count == 0 and h1b_count == 0 and w_count == 0:
-            if multiplicity > 3:
+            if event.jetM() > 3:
                 pass
             else:
                 continue
         additional_ak4 += 1
 
-        if btag_multiplicity > 0:
+        if event.jetBtag() > 0:
             btag1 += 1
         else:
             continue
@@ -130,10 +128,15 @@ def main():
 
         #tree is being written
         treeProducer.processEvent(event.entry())
-        #treeProducer.processWeights(event.genweight())
+        treeProducer.processWeights(event.genweight())
+        treeProducer.processVtxs(event.vtxs())
         treeProducer.processElectrons(event.electrons())
         treeProducer.processMuons(event.muons())
+        treeProducer.processTightElectrons(event.tightElectrons())
+        treeProducer.processTightMuons(event.tightMuons())
         treeProducer.processPuppiJets(event.jetspuppi())
+        treeProducer.processJetsMul_(event.jetM(), event.jetBtag(), event.jetHt(), event.jetSt())
+        treeProducer.processFatjetsMul_(fatjet_count, h2b_count, h1b_count, w_count)
         treeProducer.processFatJets(event.fatjets())
         treeProducer.processPuppiMissingET(event.metspuppi())
 

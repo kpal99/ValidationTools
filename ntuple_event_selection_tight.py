@@ -9,7 +9,7 @@ import os
 
 def main():
     ntuple_array = ntuple_chain(sys.argv[1])
-    maxEvents = 0
+    maxEvents = 00
 
     m_counter = 0
     j_counter = 0
@@ -18,9 +18,9 @@ def main():
     total_events  = 0
     gen_weight = 0
 
-    outputFile = sys.argv[1].split('.txt')
 # using last part of out_str to creating a root file
-    out_root = ROOT.TFile(outputFile[0] + '_tight.root',"RECREATE")
+    outputFile = sys.argv[1]
+    out_root = ROOT.TFile(outputFile + '_tight.root',"RECREATE")
     out_root.mkdir("myana")
     out_root.cd("myana")
 
@@ -46,11 +46,29 @@ def main():
                     e_loose_count +=1
                 if e.idpass() >= 4 and e.pt() > 60 and abs(e.eta()) < 2.5:
                     e_tight_count += 1
+                    lepton_pt = e.pt()
+                    lepton_eta = e.eta()
+                    lepton_phi = e.phi()
+                    lepton_mass = e.mass()
+                    lepton_charge = e.charge()
+                    lepton_idvar = e.idvar()
+                    lepton_reliso = e.reliso()
+                    lepton_idpass = e.idpass()
+                    lepton_isopass = e.isopass()
             for u in event.muons():
                 if u.idpass() == 1 and u.pt() > 10 and abs(u.eta()) < 2.4:
                     u_loose_count +=1
                 if u.idpass() >= 4 and u.pt() > 60 and abs(u.eta()) < 2.4:
                     u_tight_count += 1
+                    lepton_pt = u.pt()
+                    lepton_eta = u.eta()
+                    lepton_phi = u.phi()
+                    lepton_mass = u.mass()
+                    lepton_charge = u.charge()
+                    lepton_idvar = u.idvar()
+                    lepton_reliso = u.reliso()
+                    lepton_idpass = u.idpass()
+                    lepton_isopass = u.isopass()
             if e_tight_count == 0 and u_tight_count == 1:
                 tight_muon_found = True
             elif e_tight_count == 1 and u_tight_count == 0:
@@ -63,8 +81,13 @@ def main():
                 continue
             loose_counter += 1
 
+            if tight_electron_found == True:
+                treeProducer.processTightElectrons_(lepton_pt, lepton_eta, lepton_phi, lepton_mass, lepton_charge, lepton_idvar, lepton_reliso, lepton_idpass, lepton_isopass)
+            if tight_muon_found == True:
+                treeProducer.processTightMuons_(lepton_pt, lepton_eta, lepton_phi, lepton_mass, lepton_charge, lepton_idvar, lepton_reliso, lepton_idpass, lepton_isopass)
             treeProducer.processEvent(event.entry())
             treeProducer.processWeights(event.genweight())
+            treeProducer.processVtxs(event.vtxs())
             treeProducer.processElectrons(event.electrons())
             treeProducer.processMuons(event.muons())
             treeProducer.processPuppiJets(event.jetspuppi())
@@ -78,7 +101,8 @@ def main():
 
     print "Total Events                                 : {}".format(total_events)
     print "Total genweight                              : {}".format(gen_weight)
-    print "Events after tight-lepton-looseVeto selection: {}".format(tight_counter)
+    print "Events after tight-lepton selection          : {}".format(tight_counter)
+    print "Events after tight-lepton-looseVeto selection: {}".format(loose_counter)
 
 if __name__ == "__main__":
     main()

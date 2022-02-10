@@ -20,6 +20,12 @@ class TreeProducer:
          ## main MC weight
          self.genweight         = array( 'f', [ 0 ] )
 
+         self.vtx_size        = array( 'i', [ 0 ] )
+         self.vtx_pt2         = array( 'f', self.maxn*[ 0. ] )
+         self.vtx_z         = array( 'f', self.maxn*[ 0. ] )
+         self.vtx_x         = array( 'f', self.maxn*[ 0. ] )
+         self.vtx_y        = array( 'f', self.maxn*[ 0. ] )
+
          self.elec_size        = array( 'i', [ 0 ] )
          self.elec_pt          = array( 'f', self.maxn*[ 0. ] )
          self.elec_eta         = array( 'f', self.maxn*[ 0. ] )
@@ -30,6 +36,17 @@ class TreeProducer:
          self.elec_reliso      = array( 'f', self.maxn*[ 0. ] )
          self.elec_idpass      = array( 'i', self.maxn*[ 0 ] )
          self.elec_isopass     = array( 'i', self.maxn*[ 0 ] )
+
+         self.tightElec_size        = array( 'i', [ 0 ] )
+         self.tightElec_pt          = array( 'f', self.maxn*[ 0 ] )
+         self.tightElec_eta         = array( 'f', self.maxn*[ 0 ] )
+         self.tightElec_phi         = array( 'f', self.maxn*[ 0 ] )
+         self.tightElec_mass        = array( 'f', self.maxn*[ 0 ] )
+         self.tightElec_charge      = array( 'i', self.maxn*[ 0 ] )
+         self.tightElec_idvar       = array( 'f', self.maxn*[ 0 ] )
+         self.tightElec_reliso      = array( 'f', self.maxn*[ 0 ] )
+         self.tightElec_idpass      = array( 'i', self.maxn*[ 0 ] )
+         self.tightElec_isopass     = array( 'i', self.maxn*[ 0 ] )
 
          self.muon_size        = array( 'i', [ 0 ] )
          self.muon_pt          = array( 'f', self.maxn*[ 0. ] )
@@ -42,6 +59,17 @@ class TreeProducer:
          self.muon_idpass      = array( 'i', self.maxn*[ 0 ] )
          self.muon_isopass     = array( 'i', self.maxn*[ 0 ] )
 
+         self.tightMuon_size        = array( 'i', [ 0 ] )
+         self.tightMuon_pt          = array( 'f', self.maxn*[ 0 ] )
+         self.tightMuon_eta         = array( 'f', self.maxn*[ 0 ] )
+         self.tightMuon_phi         = array( 'f', self.maxn*[ 0 ] )
+         self.tightMuon_mass        = array( 'f', self.maxn*[ 0 ] )
+         self.tightMuon_charge      = array( 'i', self.maxn*[ 0 ] )
+         self.tightMuon_idvar       = array( 'f', self.maxn*[ 0 ] )
+         self.tightMuon_reliso      = array( 'f', self.maxn*[ 0 ] )
+         self.tightMuon_idpass      = array( 'i', self.maxn*[ 0 ] )
+         self.tightMuon_isopass     = array( 'i', self.maxn*[ 0 ] )
+
          self.jetpuppi_size         = array( 'i', [ 0 ] )
          self.jetpuppi_pt           = array( 'f', self.maxn*[ 0. ] )
          self.jetpuppi_eta          = array( 'f', self.maxn*[ 0. ] )
@@ -50,6 +78,11 @@ class TreeProducer:
          self.jetpuppi_idpass       = array( 'i', self.maxn*[ 0 ] )
          self.jetpuppi_DeepJET      = array( 'f', self.maxn*[ 0. ] )
          self.jetpuppi_btag         = array( 'i', self.maxn*[ 0 ] )
+
+         self.jetM          = array( 'i', [ 0 ] )
+         self.jetBtag       = array( 'i', [ 0 ] )
+         self.jetHt         = array( 'f', [ 0 ] )
+         self.jetSt         = array( 'f', [ 0 ] )
 
          self.fatjet_size                   = array('i', [0 ])
          self.fatjet_pt                     = array('f', self.maxn*[0. ])
@@ -62,6 +95,11 @@ class TreeProducer:
          self.fatjet_tau4                   = array('f', self.maxn*[0. ])
          self.fatjet_msoftdrop              = array('f', self.maxn*[0. ])
 
+         self.fatjetM          = array( 'i', [ 0 ] )
+         self.fatjetH2b        = array( 'i', [ 0 ] )
+         self.fatjetH1b        = array( 'i', [ 0 ] )
+         self.fatjetW          = array( 'i', [ 0 ] )
+
          self.metpuppi_size         = array( 'i', [ 0 ] )
          self.metpuppi_pt           = array( 'f', self.maxn*[ 0. ] )
          self.metpuppi_phi          = array( 'f', self.maxn*[ 0. ] )
@@ -70,6 +108,12 @@ class TreeProducer:
          self.t.Branch( "evt_size",self.evt_size, "evt_size/I")
 
          self.t.Branch( "genweight",self.genweight, "genweight/F")
+
+         self.t.Branch( "vtx_size",self.vtx_size, "vtx_size/I")
+         self.t.Branch( "vtx_pt2",self.vtx_pt2, "vtx_pt2[vtx_size]/F")
+         self.t.Branch( "vtx_z",self.vtx_z, "vtx_x[vtx_size]/F")
+         self.t.Branch( "vtx_x",self.vtx_x, "vtx_x[vtx_size]/F")
+         self.t.Branch( "vtx_y",self.vtx_y, "vtx_y[vtx_size]/F")
 
          self.t.Branch( "elec_size",self.elec_size, "elec_size/I")
          self.t.Branch( "elec_pt",self.elec_pt, "elec_pt[elec_size]/F")
@@ -82,6 +126,17 @@ class TreeProducer:
          self.t.Branch( "elec_idpass",self.elec_idpass, "elec_idpass[elec_size]/i")
          self.t.Branch( "elec_isopass",self. elec_isopass, "elec_isopass[elec_size]/i")
 
+         self.t.Branch( "tightElec_size",self.tightElec_size, "tightElec_size/I")
+         self.t.Branch( "tightElec_pt",self.tightElec_pt, "tightElec_pt[tightElec_size]/F")
+         self.t.Branch( "tightElec_eta",self.tightElec_eta, "tightElec_eta[tightElec_size]/F")
+         self.t.Branch( "tightElec_phi",self.tightElec_phi, "tightElec_phi[tightElec_size]/F")
+         self.t.Branch( "tightElec_mass",self.tightElec_mass, "tightElec_mass[tightElec_size]/F")
+         self.t.Branch( "tightElec_charge",self.tightElec_charge, "tightElec_charge[tightElec_size]/I")
+         self.t.Branch( "tightElec_idvar",self.tightElec_idvar, "tightElec_idvar[tightElec_size]/F")
+         self.t.Branch( "tightElec_reliso",self.tightElec_reliso, "tightElec_reliso[tightElec_size]/F")
+         self.t.Branch( "tightElec_idpass",self.tightElec_idpass, "tightElec_idpass[tightElec_size]/i")
+         self.t.Branch( "tightElec_isopass",self. tightElec_isopass, "tightElec_isopass[tightElec_size]/i")
+
          self.t.Branch( "muon_size",self.muon_size, "muon_size/I")
          self.t.Branch( "muon_pt",self.muon_pt, "muon_pt[muon_size]/F")
          self.t.Branch( "muon_eta",self.muon_eta, "muon_eta[muon_size]/F")
@@ -93,6 +148,17 @@ class TreeProducer:
          self.t.Branch( "muon_idpass",self. muon_idpass, "muon_idpass[muon_size]/i")
          self.t.Branch( "muon_isopass",self. muon_isopass, "muon_isopass[muon_size]/i")
 
+         self.t.Branch( "tightMuon_size",self.tightMuon_size, "tightMuon_size/I")
+         self.t.Branch( "tightMuon_pt",self.tightMuon_pt, "tightMuon_pt[tightMuon_size]/F")
+         self.t.Branch( "tightMuon_eta",self.tightMuon_eta, "tightMuon_eta[tightMuon_size]/F")
+         self.t.Branch( "tightMuon_phi",self.tightMuon_phi, "tightMuon_phi[tightMuon_size]/F")
+         self.t.Branch( "tightMuon_mass",self.tightMuon_mass, "tightMuon_mass[tightMuon_size]/F")
+         self.t.Branch( "tightMuon_charge",self.tightMuon_charge, "tightMuon_charge[tightMuon_size]/I")
+         self.t.Branch( "tightMuon_idvar",self.tightMuon_idvar, "tightMuon_idvar[tightMuon_size]/F")
+         self.t.Branch( "tightMuon_reliso",self.tightMuon_reliso, "tightMuon_reliso[tightMuon_size]/F")
+         self.t.Branch( "tightMuon_idpass",self.tightMuon_idpass, "tightMuon_idpass[tightMuon_size]/i")
+         self.t.Branch( "tightMuon_isopass",self. tightMuon_isopass, "tightMuon_isopass[tightMuon_size]/i")
+
          self.t.Branch( "jetpuppi_size",self.jetpuppi_size, "jetpuppi_size/I")
          self.t.Branch( "jetpuppi_pt",self.jetpuppi_pt, "jetpuppi_pt[jetpuppi_size]/F")
          self.t.Branch( "jetpuppi_eta",self.jetpuppi_eta, "jetpuppi_eta[jetpuppi_size]/F")
@@ -101,6 +167,11 @@ class TreeProducer:
          self.t.Branch( "jetpuppi_idpass",self. jetpuppi_idpass, "jetpuppi_idpass[jetpuppi_size]/i")
          self.t.Branch( "jetpuppi_DeepJET",self.jetpuppi_DeepJET,"jetpuppi_DeepJET[jetpuppi_size]/F")
          self.t.Branch( "jetpuppi_btag",self.jetpuppi_btag,"jetpuppi_btag[jetpuppi_size]/I")
+
+         self.t.Branch( "jetM",self.jetM, "jetM/I")
+         self.t.Branch( "jetBtag",self.jetBtag, "jetBtag/I")
+         self.t.Branch( "jetHt",self.jetHt, "jetHt/F")
+         self.t.Branch( "jetSt",self.jetSt, "jetSt/F")
 
          self.t.Branch("fatjet_size", self.fatjet_size, "fatjet_size/I")
          self.t.Branch("fatjet_pt", self.fatjet_pt, "fatjet_pt[fatjet_size]/F")
@@ -114,6 +185,11 @@ class TreeProducer:
          self.t.Branch("fatjet_tau4", self.fatjet_tau4, "fatjet_tau4[fatjet_size]/F")
          self.t.Branch("fatjet_msoftdrop", self.fatjet_msoftdrop, "fatjet_msoftdrop[fatjet_size]/F")
 
+         self.t.Branch( "fatjetM",self.fatjetM, "fatjetM/I")
+         self.t.Branch( "fatjetH2b",self.fatjetH2b, "fatjetH2b/I")
+         self.t.Branch( "fatjetH1b",self.fatjetH1b, "fatjetH1b/I")
+         self.t.Branch( "fatjetW",self.fatjetW, "fatjetW/I")
+
          self.t.Branch( "metpuppi_size",self.metpuppi_size, "metpuppi_size/I")
          self.t.Branch( "metpuppi_pt",self. metpuppi_pt, "metpuppi_pt[metpuppi_size]/F")
          self.t.Branch( "metpuppi_phi",self.metpuppi_phi, "metpuppi_phi[metpuppi_size]/F")
@@ -126,6 +202,18 @@ class TreeProducer:
     #___________________________________________
     def processWeights(self, genweight):
         self.genweight[0] = genweight
+
+    #___________________________________________
+    def processVtxs(self, vtxs):
+        i = 0
+        for item in vtxs:
+            if i == 0:
+                self.vtx_pt2   [i] = item.pt2()
+                self.vtx_x     [i] = item.x()
+                self.vtx_y     [i] = item.y()
+                self.vtx_z     [i] = item.z()
+            i += 1
+        self.vtx_size[0] = i
 
     #___________________________________________
     def processElectrons(self, electrons):
@@ -144,6 +232,33 @@ class TreeProducer:
         self.elec_size[0] = i
 
     #___________________________________________
+    def processTightElectrons_(self, pt, eta, phi, mass, charge, idvar, reliso, idpass, isopass):
+        self.tightElec_pt      [0] = pt
+        self.tightElec_eta     [0] = eta
+        self.tightElec_phi     [0] = phi
+        self.tightElec_mass    [0] = mass
+        self.tightElec_charge  [0] = charge
+        self.tightElec_idvar   [0] = idvar
+        self.tightElec_reliso  [0] = reliso
+        self.tightElec_idpass  [0] = idpass
+        self.tightElec_isopass [0] = isopass
+        self.tightElec_size    [0] = 1
+    #___________________________________________
+    def processTightElectrons(self, tightElectrons):
+        i = 0
+        for item in tightElectrons:
+            self.tightElec_pt      [i] = item.pt()
+            self.tightElec_eta     [i] = item.eta()
+            self.tightElec_phi     [i] = item.phi()
+            self.tightElec_mass    [i] = item.mass()
+            self.tightElec_charge  [i] = item.charge()
+            self.tightElec_idvar   [i] = item.idvar()  #
+            self.tightElec_reliso  [i] = item.reliso()
+            self.tightElec_idpass  [i] = item.idpass() #
+            self.tightElec_isopass [i] = item.isopass()#
+            i += 1
+        self.tightElec_size[0] = i
+    #___________________________________________
     def processMuons(self, muons):
         i = 0
         for item in muons:
@@ -160,6 +275,33 @@ class TreeProducer:
         self.muon_size[0] = i
 
     #___________________________________________
+    def processTightMuons_(self, pt, eta, phi, mass, charge, idvar, reliso, idpass, isopass):
+        self.tightMuon_pt      [0] = pt
+        self.tightMuon_eta     [0] = eta
+        self.tightMuon_phi     [0] = phi
+        self.tightMuon_mass    [0] = mass
+        self.tightMuon_charge  [0] = charge
+        self.tightMuon_idvar   [0] = idvar
+        self.tightMuon_reliso  [0] = reliso
+        self.tightMuon_idpass  [0] = idpass
+        self.tightMuon_isopass [0] = isopass
+        self.tightMuon_size    [0] = 1
+    #___________________________________________
+    def processTightMuons(self, tightMuons):
+        i = 0
+        for item in tightMuons:
+            self.tightMuon_pt      [i] = item.pt()
+            self.tightMuon_eta     [i] = item.eta()
+            self.tightMuon_phi     [i] = item.phi()
+            self.tightMuon_mass    [i] = item.mass()
+            self.tightMuon_charge  [i] = item.charge()
+            self.tightMuon_idvar   [i] = item.idvar()  #
+            self.tightMuon_reliso  [i] = item.reliso()
+            self.tightMuon_idpass  [i] = item.idpass() #
+            self.tightMuon_isopass [i] = item.isopass()#
+            i += 1
+        self.tightMuon_size[0] = i
+
     def processPuppiJets(self, jets):
         i = 0
         for item in jets:
@@ -174,6 +316,12 @@ class TreeProducer:
                 i += 1
         self.jetpuppi_size[0] = i
     #-------------------------------------------
+    #___________________________________________
+    def processJetsMul_(self, M, Btag, Ht, St):
+        self.jetM[0] = M
+        self.jetBtag[0] = Btag
+        self.jetHt[0] = Ht
+        self.jetSt[0] = St
 
     def processFatJets(self, jets):
         i = 0
@@ -190,6 +338,12 @@ class TreeProducer:
             i += 1
         self.fatjet_size[0] = i
 
+    #___________________________________________
+    def processFatjetsMul_(self, M, H2b, H1b, W):
+        self.fatjetM[0] = M
+        self.fatjetH2b[0] = H2b
+        self.fatjetH1b[0] = H1b
+        self.fatjetW[0] = W
     #___________________________________________
     def processPuppiMissingET(self, met):
         i = 0

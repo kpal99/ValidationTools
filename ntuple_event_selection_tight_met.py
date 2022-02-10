@@ -42,8 +42,11 @@ def main():
 
         treeProducer.processEvent(event.entry())
         treeProducer.processWeights(event.genweight())
+        treeProducer.processVtxs(event.vtxs())
         treeProducer.processElectrons(event.electrons())
         treeProducer.processMuons(event.muons())
+        treeProducer.processTightElectrons(event.tightElectrons())
+        treeProducer.processTightMuons(event.tightMuons())
         treeProducer.processPuppiJets(event.jetspuppi())
         treeProducer.processFatJets(event.fatjets())
         treeProducer.processPuppiMissingET(event.metspuppi())
