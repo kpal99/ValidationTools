@@ -41,7 +41,7 @@ def main():
     inFile = sys.argv[1]
     phy_obj_str=sys.argv[2]
     ntuple = Ntuple(inFile)
-    maxEvents = 3
+    maxEvents = 0
 
     tot_nevents = 0
     tot_genpart = 0
@@ -61,7 +61,7 @@ def main():
             break
 
 
-        print '... processing event {} ... with genweight {}'.format(event.entry()+1, event.genweight())
+        #print '... processing event {} ... with genweight {}'.format(event.entry(), event.genweight())
 
         #print ''
         #print '  -- {}  --'.format(phy_obj_str)
@@ -91,7 +91,8 @@ def main():
                 #if p.idpass() == 1 and p.pt() > 10 and abs(p.eta) < 2.4:
                 print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, : Charge: {:<6}, idvar: {:<6}, idpass: {:<6}, reliso: {:<6.2f}, isopass: {:<6}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.idpass(), p.reliso(), p.isopass())
             else:
-                print 'N: {:<7}, PT: {:<6.2f}, Phi: {:<6.2f}'.format(i, p.pt(), p.phi())
+                if 800 < p.pt() < 900:
+                    print 'N: {:<7}, genweight: {:<6.2f}, PT: {:<6.2f}, Phi: {:<6.2f}'.format(event.entry(), event.genweight(), p.pt(), p.phi())
 
 
     tot_nevents += ntuple.nevents() + 1
@@ -110,7 +111,7 @@ def main():
         # for genPart in genParts:
         #     print(tot_nevents, "genPart pt:", genPart.pt()
 
-    print("Processed %d events" % tot_nevents)
+    #print("Processed %d events" % tot_nevents)
 #    print("On average %f generator particles" % (float(tot_genpart) / tot_nevents))
 #    print("On average %f generated jets" % (float(tot_genjet) / tot_nevents))
 #    print("On average %f electrons" % (float(tot_electron) / tot_nevents))

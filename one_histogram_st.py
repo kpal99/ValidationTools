@@ -55,6 +55,8 @@ def main():
 # using last part of out_str to creating a root file
     outFile = ROOT.TFile(outDir + out_str[0] + '_plot.root',"RECREATE")
 
+    local_weight = 0
+    global_weight = float(sys.argv[3]) #globalWeight(inDir, os.path.basename(sys.argv[1]))
 # creating very many histrograms
     hists["St"] = createHist("St")
 # iterating through the all events; if value of maxEvents is zero.
@@ -62,15 +64,12 @@ def main():
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
+        gen_weight = event.genweight()
+        local_weight += gen_weight
+        gen_weight /= abs(gen_weight)
 
         for item in event.metspuppi():
             St = item.pt()
-
-
-        sum_pt = 0
-        for item in event.jetspuppi():
-            sum_pt += item.pt()
-        St += sum_pt
 
 #tight lepton selection. Only single lepton is required.
         for item in event.electrons():
@@ -85,9 +84,9 @@ def main():
 #                lepton = ROOT.TLorentzVector()
 #                lepton.SetPtEtaPhiM(item.pt(), item.eta(), item.phi(), item.mass())
                 break
-        hists["St"].Fill(St)
+        hists["St"].Fill(St + event.jetHt(), gen_weight)
 
-    scale_factor = 3000 * float(sys.argv[2]) / float(sys.argv[3])
+    scale_factor = 3000  * float(sys.argv[2]) / float(sys.argv[3]) * local_weight / float(sys.argv[4])
     for h in hists.keys():
         hists[h].Scale(scale_factor)
     outFile.Write()

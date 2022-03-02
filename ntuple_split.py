@@ -6,9 +6,8 @@ from mytree import TreeProducer
 import sys
 import os
 
-maxEvents = 0
-
-def tagging(event):
+maxEvents = 0000
+def tagging_(event): #required in old version
 # multiplicity of fatjet
     btag_multiplicity = 0
     for item in event.jetspuppi():
@@ -59,14 +58,19 @@ def h2bTuple(ntuple, dir_str, filename):
             break
         total_count += 1
 
-        [h2b, h1b, w, btag] = tagging(event)
 #tight lepton selection. Only single lepton is required.
-        if h2b > 0:
+        if event.fatjetH2b() > 0:
             h2bTuple_size += 1
             treeProducer.processEvent(event.entry())
+            treeProducer.processWeights(event.genweight())
+            treeProducer.processVtxs(event.vtxs())
             treeProducer.processElectrons(event.electrons())
             treeProducer.processMuons(event.muons())
+            treeProducer.processTightElectrons(event.tightElectrons())
+            treeProducer.processTightMuons(event.tightMuons())
             treeProducer.processPuppiJets(event.jetspuppi())
+            treeProducer.processJetsMul_(event.jetM(), event.jetBtag(), event.jetHt(), event.jetSt())
+            treeProducer.processFatjetsMul_(event.fatjetM(), event.fatjetH2b(), event.fatjetH1b(), event.fatjetW())
             treeProducer.processFatJets(event.fatjets())
             treeProducer.processPuppiMissingET(event.metspuppi())
             treeProducer.fill()
@@ -89,14 +93,19 @@ def h1bTuple(ntuple, dir_str, filename):
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
-        [h2b, h1b, w, btag] = tagging(event)
 #tight lepton selection. Only single lepton is required.
-        if h1b > 0 and h2b == 0:
+        if event.fatjetH1b() > 0:
             h1bTuple_size += 1
             treeProducer.processEvent(event.entry())
+            treeProducer.processWeights(event.genweight())
+            treeProducer.processVtxs(event.vtxs())
             treeProducer.processElectrons(event.electrons())
             treeProducer.processMuons(event.muons())
+            treeProducer.processTightElectrons(event.tightElectrons())
+            treeProducer.processTightMuons(event.tightMuons())
             treeProducer.processPuppiJets(event.jetspuppi())
+            treeProducer.processJetsMul_(event.jetM(), event.jetBtag(), event.jetHt(), event.jetSt())
+            treeProducer.processFatjetsMul_(event.fatjetM(), event.fatjetH2b(), event.fatjetH1b(), event.fatjetW())
             treeProducer.processFatJets(event.fatjets())
             treeProducer.processPuppiMissingET(event.metspuppi())
             treeProducer.fill()
@@ -118,14 +127,18 @@ def w3bTuple(ntuple, dir_str, filename):
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
-        [h2b, h1b, w, btag] = tagging(event)
-#tight lepton selection. Only single lepton is required.
-        if w > 0 and btag >= 3:
+        if event.fatjetW() > 0 and event.jetBtag() >= 3:
             w3bTuple_size += 1
             treeProducer.processEvent(event.entry())
+            treeProducer.processWeights(event.genweight())
+            treeProducer.processVtxs(event.vtxs())
             treeProducer.processElectrons(event.electrons())
             treeProducer.processMuons(event.muons())
+            treeProducer.processTightElectrons(event.tightElectrons())
+            treeProducer.processTightMuons(event.tightMuons())
             treeProducer.processPuppiJets(event.jetspuppi())
+            treeProducer.processJetsMul_(event.jetM(), event.jetBtag(), event.jetHt(), event.jetSt())
+            treeProducer.processFatjetsMul_(event.fatjetM(), event.fatjetH2b(), event.fatjetH1b(), event.fatjetW())
             treeProducer.processFatJets(event.fatjets())
             treeProducer.processPuppiMissingET(event.metspuppi())
             treeProducer.fill()
@@ -147,14 +160,18 @@ def w2bTuple(ntuple, dir_str, filename):
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
-        [h2b, h1b, w, btag] = tagging(event)
-#tight lepton selection. Only single lepton is required.
-        if w > 0 and btag == 2:
+        if event.fatjetW() > 0 and event.jetBtag() == 2:
             w2bTuple_size += 1
             treeProducer.processEvent(event.entry())
+            treeProducer.processWeights(event.genweight())
+            treeProducer.processVtxs(event.vtxs())
             treeProducer.processElectrons(event.electrons())
             treeProducer.processMuons(event.muons())
+            treeProducer.processTightElectrons(event.tightElectrons())
+            treeProducer.processTightMuons(event.tightMuons())
             treeProducer.processPuppiJets(event.jetspuppi())
+            treeProducer.processJetsMul_(event.jetM(), event.jetBtag(), event.jetHt(), event.jetSt())
+            treeProducer.processFatjetsMul_(event.fatjetM(), event.fatjetH2b(), event.fatjetH1b(), event.fatjetW())
             treeProducer.processFatJets(event.fatjets())
             treeProducer.processPuppiMissingET(event.metspuppi())
             treeProducer.fill()
@@ -176,14 +193,18 @@ def w1bTuple(ntuple, dir_str, filename):
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
-        [h2b, h1b, w, btag] = tagging(event)
-#tight lepton selection. Only single lepton is required.
-        if w > 0 and btag == 1:
+        if event.fatjetW() > 0 and event.jetBtag() == 1:
             w1bTuple_size += 1
             treeProducer.processEvent(event.entry())
+            treeProducer.processWeights(event.genweight())
+            treeProducer.processVtxs(event.vtxs())
             treeProducer.processElectrons(event.electrons())
             treeProducer.processMuons(event.muons())
+            treeProducer.processTightElectrons(event.tightElectrons())
+            treeProducer.processTightMuons(event.tightMuons())
             treeProducer.processPuppiJets(event.jetspuppi())
+            treeProducer.processJetsMul_(event.jetM(), event.jetBtag(), event.jetHt(), event.jetSt())
+            treeProducer.processFatjetsMul_(event.fatjetM(), event.fatjetH2b(), event.fatjetH1b(), event.fatjetW())
             treeProducer.processFatJets(event.fatjets())
             treeProducer.processPuppiMissingET(event.metspuppi())
             treeProducer.fill()
@@ -205,14 +226,18 @@ def w0bTuple(ntuple, dir_str, filename):
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
-        [h2b, h1b, w, btag] = tagging(event)
-#tight lepton selection. Only single lepton is required.
-        if w > 0 and btag == 0:
+        if event.fatjetW() > 0 and event.jetBtag() == 0:
             w0bTuple_size += 1
             treeProducer.processEvent(event.entry())
+            treeProducer.processWeights(event.genweight())
+            treeProducer.processVtxs(event.vtxs())
             treeProducer.processElectrons(event.electrons())
             treeProducer.processMuons(event.muons())
+            treeProducer.processTightElectrons(event.tightElectrons())
+            treeProducer.processTightMuons(event.tightMuons())
             treeProducer.processPuppiJets(event.jetspuppi())
+            treeProducer.processJetsMul_(event.jetM(), event.jetBtag(), event.jetHt(), event.jetSt())
+            treeProducer.processFatjetsMul_(event.fatjetM(), event.fatjetH2b(), event.fatjetH1b(), event.fatjetW())
             treeProducer.processFatJets(event.fatjets())
             treeProducer.processPuppiMissingET(event.metspuppi())
             treeProducer.fill()
@@ -234,14 +259,18 @@ def _3bTuple(ntuple, dir_str, filename):
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
-        [h2b, h1b, w, btag] = tagging(event)
-#tight lepton selection. Only single lepton is required.
-        if h2b == 0 and h1b == 0 and w == 0 and btag >= 3:
+        if event.fatjetH2b() == 0 and event.fatjetH1b() == 0 and event.fatjetW() == 0 and event.jetBtag() >= 3:
             _3bTuple_size += 1
             treeProducer.processEvent(event.entry())
+            treeProducer.processWeights(event.genweight())
+            treeProducer.processVtxs(event.vtxs())
             treeProducer.processElectrons(event.electrons())
             treeProducer.processMuons(event.muons())
+            treeProducer.processTightElectrons(event.tightElectrons())
+            treeProducer.processTightMuons(event.tightMuons())
             treeProducer.processPuppiJets(event.jetspuppi())
+            treeProducer.processJetsMul_(event.jetM(), event.jetBtag(), event.jetHt(), event.jetSt())
+            treeProducer.processFatjetsMul_(event.fatjetM(), event.fatjetH2b(), event.fatjetH1b(), event.fatjetW())
             treeProducer.processFatJets(event.fatjets())
             treeProducer.processPuppiMissingET(event.metspuppi())
             treeProducer.fill()
@@ -263,14 +292,18 @@ def _2bTuple(ntuple, dir_str, filename):
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
-        [h2b, h1b, w, btag] = tagging(event)
-#tight lepton selection. Only single lepton is required.
-        if h2b == 0 and h1b == 0 and w == 0 and btag == 2:
+        if event.fatjetH2b() == 0 and event.fatjetH1b() == 0 and event.fatjetW() == 0 and event.jetBtag() == 2:
             _2bTuple_size += 1
             treeProducer.processEvent(event.entry())
+            treeProducer.processWeights(event.genweight())
+            treeProducer.processVtxs(event.vtxs())
             treeProducer.processElectrons(event.electrons())
             treeProducer.processMuons(event.muons())
+            treeProducer.processTightElectrons(event.tightElectrons())
+            treeProducer.processTightMuons(event.tightMuons())
             treeProducer.processPuppiJets(event.jetspuppi())
+            treeProducer.processJetsMul_(event.jetM(), event.jetBtag(), event.jetHt(), event.jetSt())
+            treeProducer.processFatjetsMul_(event.fatjetM(), event.fatjetH2b(), event.fatjetH1b(), event.fatjetW())
             treeProducer.processFatJets(event.fatjets())
             treeProducer.processPuppiMissingET(event.metspuppi())
             treeProducer.fill()
@@ -292,14 +325,18 @@ def _1bTuple(ntuple, dir_str, filename):
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
-        [h2b, h1b, w, btag] = tagging(event)
-#tight lepton selection. Only single lepton is required.
-        if h2b == 0 and h1b == 0 and w == 0 and btag == 1:
+        if event.fatjetH2b() == 0 and event.fatjetH1b() == 0 and event.fatjetW() == 0 and event.jetBtag() == 1:
             _1bTuple_size += 1
             treeProducer.processEvent(event.entry())
+            treeProducer.processWeights(event.genweight())
+            treeProducer.processVtxs(event.vtxs())
             treeProducer.processElectrons(event.electrons())
             treeProducer.processMuons(event.muons())
+            treeProducer.processTightElectrons(event.tightElectrons())
+            treeProducer.processTightMuons(event.tightMuons())
             treeProducer.processPuppiJets(event.jetspuppi())
+            treeProducer.processJetsMul_(event.jetM(), event.jetBtag(), event.jetHt(), event.jetSt())
+            treeProducer.processFatjetsMul_(event.fatjetM(), event.fatjetH2b(), event.fatjetH1b(), event.fatjetW())
             treeProducer.processFatJets(event.fatjets())
             treeProducer.processPuppiMissingET(event.metspuppi())
             treeProducer.fill()
@@ -321,14 +358,18 @@ def _0bTuple(ntuple, dir_str, filename):
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
-        [h2b, h1b, w, btag] = tagging(event)
-#tight lepton selection. Only single lepton is required.
-        if h2b == 0 and h1b == 0 and w == 0 and btag == 0:
+        if event.fatjetH2b() == 0 and event.fatjetH1b() == 0 and event.fatjetW() == 0 and event.jetBtag() == 0:
             _0bTuple_size += 1
             treeProducer.processEvent(event.entry())
+            treeProducer.processWeights(event.genweight())
+            treeProducer.processVtxs(event.vtxs())
             treeProducer.processElectrons(event.electrons())
             treeProducer.processMuons(event.muons())
+            treeProducer.processTightElectrons(event.tightElectrons())
+            treeProducer.processTightMuons(event.tightMuons())
             treeProducer.processPuppiJets(event.jetspuppi())
+            treeProducer.processJetsMul_(event.jetM(), event.jetBtag(), event.jetHt(), event.jetSt())
+            treeProducer.processFatjetsMul_(event.fatjetM(), event.fatjetH2b(), event.fatjetH1b(), event.fatjetW())
             treeProducer.processFatJets(event.fatjets())
             treeProducer.processPuppiMissingET(event.metspuppi())
             treeProducer.fill()

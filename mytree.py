@@ -232,17 +232,20 @@ class TreeProducer:
         self.elec_size[0] = i
 
     #___________________________________________
-    def processTightElectrons_(self, pt, eta, phi, mass, charge, idvar, reliso, idpass, isopass):
-        self.tightElec_pt      [0] = pt
-        self.tightElec_eta     [0] = eta
-        self.tightElec_phi     [0] = phi
-        self.tightElec_mass    [0] = mass
-        self.tightElec_charge  [0] = charge
-        self.tightElec_idvar   [0] = idvar
-        self.tightElec_reliso  [0] = reliso
-        self.tightElec_idpass  [0] = idpass
-        self.tightElec_isopass [0] = isopass
-        self.tightElec_size    [0] = 1
+    def processTightElectrons_(self, value, pt, eta, phi, mass, charge, idvar, reliso, idpass, isopass):
+        if value == True:
+            self.tightElec_pt      [0] = pt
+            self.tightElec_eta     [0] = eta
+            self.tightElec_phi     [0] = phi
+            self.tightElec_mass    [0] = mass
+            self.tightElec_charge  [0] = charge
+            self.tightElec_idvar   [0] = idvar
+            self.tightElec_reliso  [0] = reliso
+            self.tightElec_idpass  [0] = idpass
+            self.tightElec_isopass [0] = isopass
+            self.tightElec_size    [0] = 1
+        else:
+            self.tightElec_size    [0] = 0
     #___________________________________________
     def processTightElectrons(self, tightElectrons):
         i = 0
@@ -275,17 +278,20 @@ class TreeProducer:
         self.muon_size[0] = i
 
     #___________________________________________
-    def processTightMuons_(self, pt, eta, phi, mass, charge, idvar, reliso, idpass, isopass):
-        self.tightMuon_pt      [0] = pt
-        self.tightMuon_eta     [0] = eta
-        self.tightMuon_phi     [0] = phi
-        self.tightMuon_mass    [0] = mass
-        self.tightMuon_charge  [0] = charge
-        self.tightMuon_idvar   [0] = idvar
-        self.tightMuon_reliso  [0] = reliso
-        self.tightMuon_idpass  [0] = idpass
-        self.tightMuon_isopass [0] = isopass
-        self.tightMuon_size    [0] = 1
+    def processTightMuons_(self, value, pt, eta, phi, mass, charge, idvar, reliso, idpass, isopass):
+        if value == True:
+            self.tightMuon_pt      [0] = pt
+            self.tightMuon_eta     [0] = eta
+            self.tightMuon_phi     [0] = phi
+            self.tightMuon_mass    [0] = mass
+            self.tightMuon_charge  [0] = charge
+            self.tightMuon_idvar   [0] = idvar
+            self.tightMuon_reliso  [0] = reliso
+            self.tightMuon_idpass  [0] = idpass
+            self.tightMuon_isopass [0] = isopass
+            self.tightMuon_size    [0] = 1
+        else:
+            self.tightMuon_size    [0] = 0
     #___________________________________________
     def processTightMuons(self, tightMuons):
         i = 0

@@ -71,7 +71,7 @@ hists_l = {}
 hists_m = {}
 stack = {}
 
-keys = ['jetspuppi_btagmultiplicity', 'metspuppi_pt', 'TightElectrons_pt', 'TightMuons_eta', 'jetspuppi_eta', 'jetspuppi_eta_1', 'jetspuppi_eta_2', 'jetspuppi_eta_3', 'fatjets_tau21[m-softdrop]', 'fatjets_multiplicity', 'jetspuppi_multiplicity', 'TightElectrons_phi', 'TightElectrons_eta', 'fatjets_phi', 'jetspuppi_pt', 'jetspuppi_pt_1','jetspuppi_pt_2','jetspuppi_pt_3','TightMuons_phi', 'jetspuppi_mass', 'fatjets_H2b-multiplicity', 'St', 'TightMuons_mass', 'fatjets_Wtag-multiplicity', 'jetspuppi_phi', 'metspuppi_phi', 'fatjets_pt', 'fatjets_H1b-multiplicity', 'TightMuons_pt', 'fatjets_eta', 'fatjets_msoftdrop[tau21]', 'jetspuppi_Ht', 'TightElectrons_mass']
+keys = ['jetspuppi_btagmultiplicity', 'metspuppi_pt', 'TightElectrons_pt', 'TightMuons_eta', 'jetspuppi_eta', 'jetspuppi_eta_1', 'jetspuppi_eta_2', 'jetspuppi_eta_3', 'fatjets_tau21[m-softdrop]', 'fatjets_multiplicity', 'jetspuppi_multiplicity', 'TightElectrons_phi', 'TightElectrons_eta', 'fatjets_phi', 'jetspuppi_pt', 'jetspuppi_pt_1','jetspuppi_pt_2','jetspuppi_pt_3','TightMuons_phi', 'jetspuppi_mass', 'fatjets_H2b-multiplicity', 'St', 'TightMuons_mass', 'fatjets_Wtag-multiplicity', 'jetspuppi_phi', 'metspuppi_phi', 'fatjets_pt', 'fatjets_H1b-multiplicity', 'TightMuons_pt', 'fatjets_eta', 'fatjets_msoftdrop[tau21]', 'jetspuppi_Ht', 'TightElectrons_mass', 'deltaR','deltaRmin']
 
 #reading very many histrograms
 for key in keys:
@@ -86,10 +86,12 @@ for key in keys:
 
 #outputDir = '/eos/user/k/kpal/www/i4DAPNVShN/all_signal_v2.1/'
 #outputDir = '/eos/uscms/store/user/kpal/trimmed_files_v2/smallBins/plots/'
-outputDir = os.path.dirname(sys.argv[8]) +'/plots/'
+outputDir = os.path.dirname(sys.argv[8]) +'/plots' + os.path.basename(sys.argv[8]).split(".root")[0].split("qcd")[1] + '/'
 #outputDir = os.path.dirname(sys.argv[8]) +'/plotsNewQCDsamples/'
 
+scale_factor = 20
 for key in hists_f.keys():
+    #print(key)
     canvas = ROOT.TCanvas('canvas','',600,400)
     stack[key] = createStack(key)
 
@@ -103,14 +105,17 @@ for key in hists_f.keys():
     hists_m[key].SetLineWidth(0)
     stack[key].Add(hists_m[key])
     stack[key].Draw("pfc hist")
+    if key == "St":
+        stack[key].SetMinimum(20.)
+        #stack[key].SetMaximum(10000000.)
     setTitle(stack[key],key)
 
-    if key == "St" or "H2b" in key or "H1b" in key or "_pt" in key or "_Ht" in key or "metspuppi_pt" in key :
+    if key == "St" or "multiplicity" in key or "deltaR" in key or "_pt" in key or "_Ht" in key or "metspuppi_pt" in key :
     #if key == "St" or "H2b" in key or "H1b" in key or key == "metspuppi_pt":
         canvas.SetLogy()
         tex1 = ROOT.TLatex(0.10, 0.95, "#bf{CMS} #it{Phase-2 Simulation Premilinary}")
     else:
-        tex1 = ROOT.TLatex(0.15, 0.95, "#bf{CMS} #it{Phase-2 Simulation Premilinary}")
+        tex1 = ROOT.TLatex(0.155555, 0.95, "#bf{CMS} #it{Phase-2 Simulation Premilinary}")
 
     tex1.SetNDC()
     tex1.SetTextAlign(13)
@@ -125,11 +130,11 @@ for key in hists_f.keys():
     tex2.SetTextSize(0.04)
     tex2.SetLineWidth(2)
 
-    hists_f[key].Scale(200)
-    hists_g[key].Scale(2000)
-    hists_h[key].Scale(20000)
-    hists_i[key].Scale(200000)
-    hists_j[key].Scale(2000000)
+    hists_f[key].Scale(scale_factor)
+    hists_g[key].Scale(scale_factor * 10)
+    hists_h[key].Scale(scale_factor * 100)
+    hists_i[key].Scale(scale_factor * 1000)
+    hists_j[key].Scale(scale_factor * 10000)
 
     hists_f[key].SetLineColor(1)
     hists_f[key].SetLineStyle(2)
@@ -147,21 +152,26 @@ for key in hists_f.keys():
 
 
     if "eta" in key:
-        legend = ROOT.TLegend(0.65,0.89,0.99,0.67)
+        legend = ROOT.TLegend(0.70,0.89,0.99,0.67)
         legend1 = ROOT.TLegend(0.13,0.89,0.28,0.71)
     elif "St" in key or "Ht" in key:
-        legend = ROOT.TLegend(0.59,0.89,0.89,0.70)
-        legend1 = ROOT.TLegend(0.45,0.89,0.59,0.71)
+        legend = ROOT.TLegend(0.70,0.89,0.99,0.67)
+        legend1 = ROOT.TLegend(0.91,0.67,0.99,0.55)
+        #legend = ROOT.TLegend(0.59,0.89,0.89,0.70)
+        #legend1 = ROOT.TLegend(0.45,0.89,0.59,0.71)
+    elif "deltaR" in key:
+        legend = ROOT.TLegend(0.12,0.89,0.42,0.67)
+        legend1 = ROOT.TLegend(0.12,0.67,0.26,0.55)
     else:
         legend = ROOT.TLegend(0.55,0.89,0.89,0.67)
-        legend1 = ROOT.TLegend(0.55,0.67,0.89,0.55)
+        legend1 = ROOT.TLegend(0.75,0.67,0.89,0.55)
     legend.SetBorderSize(0)
     legend1.SetBorderSize(0)
-    legend.AddEntry(hists_f[key],"T'#bar{T'} (1.0 TeV) x 200", "l")
-    legend.AddEntry(hists_g[key],"T'#bar{T'} (1.5 TeV) x 2000", "l")
-    legend.AddEntry(hists_h[key],"T'#bar{T'} (2.0 TeV) x 20000", "l")
-    legend.AddEntry(hists_i[key],"T'#bar{T'} (2.5 TeV) x 200000", "l")
-    legend.AddEntry(hists_j[key],"T'#bar{T'} (3.0 TeV) x 2000000", "l")
+    legend.AddEntry(hists_f[key],"T'#bar{T'} (1.0 TeV) x " + str(scale_factor), "l")
+    legend.AddEntry(hists_g[key],"T'#bar{T'} (1.5 TeV) x " + str(scale_factor * 10), "l")
+    legend.AddEntry(hists_h[key],"T'#bar{T'} (2.0 TeV) x " + str(scale_factor * 100), "l")
+    legend.AddEntry(hists_i[key],"T'#bar{T'} (2.5 TeV) x " + str(scale_factor * 1000), "l")
+    legend.AddEntry(hists_j[key],"T'#bar{T'} (3.0 TeV) x " + str(scale_factor * 10000), "l")
     legend1.AddEntry(hists_m[key],"QCD", "f")
     legend1.AddEntry(hists_l[key],"EW", "f")
     legend1.AddEntry(hists_k[key],"TOP", "f")

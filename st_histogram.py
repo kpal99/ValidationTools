@@ -18,8 +18,8 @@ hist_f = f.Get("St")
 hist_g = g.Get("St")
 hist_h = h.Get("St")
 hist_i = i.Get("St")
-#hist_j = ROOT.TH1D("data_obs","data_obs",100,0,7000)
-hist_j = ROOT.TH1D("data_obs","data_obs",100,0,10000)
+hist_j = ROOT.TH1D("data_obs","data_obs",25,500,8000)
+#hist_j = ROOT.TH1D("data_obs","data_obs",100,0,10000)
 
 #outputDir = os.path.dirname(sys.argv[4]) + '/'
 outputDir = os.path.dirname(sys.argv[4]) + '/'

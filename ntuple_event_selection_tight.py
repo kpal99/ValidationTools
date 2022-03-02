@@ -9,14 +9,14 @@ import os
 
 def main():
     ntuple_array = ntuple_chain(sys.argv[1])
-    maxEvents = 00
+    maxEvents = 100
 
     m_counter = 0
     j_counter = 0
     tight_counter = 0
     loose_counter = 0
     total_events  = 0
-    gen_weight = 0
+    gen_weight = 0.
 
 # using last part of out_str to creating a root file
     outputFile = sys.argv[1]
@@ -81,10 +81,9 @@ def main():
                 continue
             loose_counter += 1
 
-            if tight_electron_found == True:
-                treeProducer.processTightElectrons_(lepton_pt, lepton_eta, lepton_phi, lepton_mass, lepton_charge, lepton_idvar, lepton_reliso, lepton_idpass, lepton_isopass)
-            if tight_muon_found == True:
-                treeProducer.processTightMuons_(lepton_pt, lepton_eta, lepton_phi, lepton_mass, lepton_charge, lepton_idvar, lepton_reliso, lepton_idpass, lepton_isopass)
+            print(tight_electron_found, tight_muon_found)
+            treeProducer.processTightElectrons_(tight_electron_found, lepton_pt, lepton_eta, lepton_phi, lepton_mass, lepton_charge, lepton_idvar, lepton_reliso, lepton_idpass, lepton_isopass)
+            treeProducer.processTightMuons_(tight_muon_found, lepton_pt, lepton_eta, lepton_phi, lepton_mass, lepton_charge, lepton_idvar, lepton_reliso, lepton_idpass, lepton_isopass)
             treeProducer.processEvent(event.entry())
             treeProducer.processWeights(event.genweight())
             treeProducer.processVtxs(event.vtxs())
