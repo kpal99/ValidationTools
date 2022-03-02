@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "ntuple_significance_st.py", line 95, in <module>
-    main()
-  File "ntuple_significance_st.py", line 81, in main
-    significance = sig_count[file_num][i] / (sig_count[file_num][i] + bkg_count[i])**0.5
-ZeroDivisionError: float division by zero
