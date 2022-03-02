@@ -137,8 +137,8 @@ def main():
         treeProducer.processTightMuons(event.tightMuons())
         treeProducer.processPuppiJets(event.jetspuppi())
         treeProducer.processJetsMul_(event.jetM(), event.jetBtag(), event.jetHt(), event.jetSt())
-        treeProducer.processFatjetsMul_(fatjet_count, h2b_count, h1b_count, w_count)
         treeProducer.processFatJets(event.fatjets())
+        treeProducer.processFatjetsMul_(fatjet_count, h2b_count, h1b_count, w_count)
         treeProducer.processPuppiMissingET(event.metspuppi())
 
         treeProducer.fill()

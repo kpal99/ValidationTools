@@ -15,7 +15,6 @@ def main():
     total_events  = 0
 
     inFile = sys.argv[1]
-    outputFile = sys.argv[1].split('.root')
     ntuple = Ntuple(inFile)
 # using last part of out_str to creating a root file
     out_root = ROOT.TFile(outputFile[0] + '_jet.root',"RECREATE")   #outfile is created
