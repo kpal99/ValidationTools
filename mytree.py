@@ -359,6 +359,12 @@ class TreeProducer:
             i += 1
         self.metpuppi_size  [0] = i
 
+    #___________________________________________
+    def processPuppiMissingET_(self, pt, phi):
+        self.metpuppi_pt    [0] = pt
+        self.metpuppi_phi   [0] = phi
+        self.metpuppi_size  [0] = 1
+
 
     def fill(self):
         self.t.Fill()
