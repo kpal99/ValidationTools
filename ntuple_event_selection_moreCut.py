@@ -22,7 +22,8 @@ def main():
 
     inFile = sys.argv[1]
     ntuple = Ntuple(inFile)
-    out_root= ROOT.TFile('/eos/uscms/store/user/kpal/trimmed_files_v7.2/' + os.path.basename(sys.argv[1]), "RECREATE")
+    #out_root= ROOT.TFile('/eos/uscms/store/user/kpal/trimmed_files_v7.2/' + os.path.basename(sys.argv[1]), "RECREATE")
+    out_root= ROOT.TFile(sys.argv[1].split("_preSelected.root")[0] + "_moreCut.root", "RECREATE")
     out_root.mkdir("myana")
     out_root.cd("myana")
 
@@ -33,7 +34,7 @@ def main():
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
-        total_events += 1
+#        total_events += 1
 # Jet selection cut
 # pt of jets are descendingly sorted already for each event. So, checking if first jet has pt>300, then second jet has pt>150, at last third jet has pt>100
         counter = 0
@@ -122,7 +123,7 @@ def main():
     treeProducer.write()
     out_root.Close()
 
-    print "Total Events                         : {}".format(total_events)
+    #print "Total Events                         : {}".format(total_events)
     print "Events after 3Jet selection          : {}".format(j_counter)
     print "Events after additional ak4 selection: {}".format(additional_ak4)
     print "Events after btag 1 selection        : {}".format(btag1)
