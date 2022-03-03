@@ -9,7 +9,7 @@ import os
 
 def main():
     ntuple_array = ntuple_chain(sys.argv[1])
-    maxEvents = 100
+    maxEvents = 0
 
     m_counter = 0
     j_counter = 0
