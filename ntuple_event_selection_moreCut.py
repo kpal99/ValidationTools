@@ -106,7 +106,7 @@ def main():
 
         #tree is being written
         treeProducer.processEvent(event.entry())
-        treeProducer.processWeights(event.genweight())
+        treeProducer.processWeights(event.genweight(),event.lheweights())
         treeProducer.processVtxs(event.vtxs())
         treeProducer.processElectrons(event.electrons())
         treeProducer.processMuons(event.muons())

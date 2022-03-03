@@ -9,7 +9,7 @@ import os
 
 def main():
     ntuple_array = ntuple_chain(sys.argv[1])
-    maxEvents = 0
+    maxEvents = 100
 
     m_counter = 0
     j_counter = 0
@@ -154,7 +154,7 @@ def main():
             treeProducer.processTightElectrons_(tight_electron_found, lepton_pt, lepton_eta, lepton_phi, lepton_mass, lepton_charge, lepton_idvar, lepton_reliso, lepton_idpass, lepton_isopass)
             treeProducer.processTightMuons_(tight_muon_found, lepton_pt, lepton_eta, lepton_phi, lepton_mass, lepton_charge, lepton_idvar, lepton_reliso, lepton_idpass, lepton_isopass)
             treeProducer.processEvent(event.entry())
-            treeProducer.processWeights(event.genweight())
+            treeProducer.processWeights(event.genweight(),event.lheweights())
             treeProducer.processVtxs(event.vtxs())
             treeProducer.processElectrons(event.electrons())
             treeProducer.processMuons(event.muons())

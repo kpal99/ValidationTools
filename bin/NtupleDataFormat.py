@@ -222,6 +222,10 @@ class Event(object):
         """Returns MET object."""
         return Vtxs(self._tree, prefix)
 
+    def lheweights(self, prefix="lheweight"):     #kpal added
+        """Returns MET object."""
+        return Lheweights(self._tree, prefix)
+
     def npuVertices(self):
         """Returns lumisection number."""
         return self._tree.npuVertices
@@ -655,6 +659,33 @@ class Vtxs(_Collection):
         # self.prefix = prefix
         super(Vtxs, self).__init__(tree, prefix + "_pt2", Vtx, prefix)
 
+##########
+class Lheweight(_Object):
+    """Class representing a Lheweight."""
+
+    def __init__(self, tree, index, prefix):
+        """Constructor.
+
+        Arguments:
+        tree  -- TTree object
+        index -- Index of the Lheweight
+        prefix -- TBranch prefix
+        """
+        super(Lheweight, self).__init__(tree, index, prefix)
+
+
+class Lheweights(_Collection):
+    """Class presenting a collection of Lheweights."""
+
+    def __init__(self, tree, prefix):
+        """Constructor.
+
+        Arguments:
+        tree -- TTree object
+        prefix -- TBranch prefix
+        """
+        # self.prefix = prefix
+        super(Lheweights, self).__init__(tree, prefix + "_val", Lheweight, prefix)
 ##########
 class TightMuon(_Object):
     """Class representing a TightMuon."""

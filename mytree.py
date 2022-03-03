@@ -19,6 +19,8 @@ class TreeProducer:
 
          ## main MC weight
          self.genweight         = array( 'f', [ 0 ] )
+         self.lheweight_size        = array( 'i', [ 0 ] )
+         self.lheweight_val         = array( 'f', self.maxn*[ 0. ] )
 
          self.vtx_size        = array( 'i', [ 0 ] )
          self.vtx_pt2         = array( 'f', self.maxn*[ 0. ] )
@@ -108,6 +110,8 @@ class TreeProducer:
          self.t.Branch( "evt_size",self.evt_size, "evt_size/I")
 
          self.t.Branch( "genweight",self.genweight, "genweight/F")
+         self.t.Branch( "lheweight_size",self.lheweight_size, "lheweight_size/I")
+         self.t.Branch( "lheweight_val",self.lheweight_val, "lheweight_val[lheweight_size]/F")
 
          self.t.Branch( "vtx_size",self.vtx_size, "vtx_size/I")
          self.t.Branch( "vtx_pt2",self.vtx_pt2, "vtx_pt2[vtx_size]/F")
@@ -200,8 +204,13 @@ class TreeProducer:
 
 
     #___________________________________________
-    def processWeights(self, genweight):
+    def processWeights(self, genweight, lheweights):
         self.genweight[0] = genweight
+        i = 0
+        for item in lheweights:
+            self.lheweight_val[i] = item.val()
+            i += 1
+        self.lheweight_size[0] = i
 
     #___________________________________________
     def processVtxs(self, vtxs):
