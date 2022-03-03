@@ -62,7 +62,7 @@ hists_l = ROOT.TH1D("","",8,-0.5,7.5)
 hists_m = ROOT.TH1D("","",8,-0.5,7.5)
 
 categories = ["_1b", "_2b", "_3b", "w1b", "w2b", "w3b", "h1b", "h2b"]
-Categories = ["0H0W1b", "0H0W2b", "0H0W3b", "0H1W1b", "0H1W2b", "0H1W3b", "1H1b", "1H2b"]
+Categories = ["H0W0b1", "H0W0b2", "H0W0b3", "H0W1b1", "H0W1b2", "H0W1b3", "H1b1", "H1b2"]
 iCount = 1
 for category in categories:
     f = ROOT.TFile.Open(sys.argv[1] + "/" + category + "/rootPlots/TT_M1000.root", 'read')

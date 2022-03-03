@@ -8,7 +8,7 @@ import sys
 import os
 
 def main():
-    maxEvents = 500
+    maxEvents = 0
 
     m_counter = 0
     j_counter = 0

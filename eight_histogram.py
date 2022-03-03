@@ -106,7 +106,7 @@ for key in hists_f.keys():
     stack[key].Add(hists_m[key])
     stack[key].Draw("pfc hist")
     if key == "St":
-        stack[key].SetMinimum(20.)
+        stack[key].SetMinimum(.01)
         #stack[key].SetMaximum(10000000.)
     setTitle(stack[key],key)
 

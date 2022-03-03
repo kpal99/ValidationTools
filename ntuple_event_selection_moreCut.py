@@ -8,7 +8,7 @@ import sys
 import os
 
 def main():
-    maxEvents = 00
+    maxEvents = 0
 
     m_counter = 0
     j_counter = 0
@@ -22,13 +22,7 @@ def main():
 
     inFile = sys.argv[1]
     ntuple = Ntuple(inFile)
-# using last part of out_str to creating a root file
-    #out_str = '/eos/uscms/store/user/kpal/trimmed_files_v2.2.2/'
-    #filename = os.path.basename(inFile)
-    #out_root = ROOT.TFile(out_str + filename,"RECREATE")   #outfile is created
-    #outputFile = sys.argv[1].split('.root')
-    #out_root = ROOT.TFile(outputFile[0] + '_moreCut.root',"RECREATE")   #outfile is created
-    out_root= ROOT.TFile('/eos/uscms/store/user/kpal/trimmed_files_v6.2/' + os.path.basename(sys.argv[1]), "RECREATE")
+    out_root= ROOT.TFile('/eos/uscms/store/user/kpal/trimmed_files_v7.2/' + os.path.basename(sys.argv[1]), "RECREATE")
     out_root.mkdir("myana")
     out_root.cd("myana")
 
@@ -39,8 +33,9 @@ def main():
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
+        total_events += 1
 # Jet selection cut
-# pt of jets are descendingly sorted already for each event. So, checking if first jet has pt>200, then second jet has pt>100, at last third jet has pt>50
+# pt of jets are descendingly sorted already for each event. So, checking if first jet has pt>300, then second jet has pt>150, at last third jet has pt>100
         counter = 0
         pt_array = []
         for j in event.jetspuppi():
@@ -71,27 +66,8 @@ def main():
                 else:
                     jet_eta.append(item.eta())
                     jet_phi.append(item.phi())
-                if item.pt() > 300 and 60 <= item.msoftdrop() <= 160:
-                    b_count = 0
-                    for jtem in event.jetspuppi():
-                        if jtem.btag() > 0:
-                            deltaR =  ((item.eta() - jtem.eta())**2 + (item.phi() - jtem.phi())**2)**0.5
-                            if deltaR < 0.8:
-                                b_count += 1
-                    if b_count >= 2:
-                        h2b_count += 1
-                    elif b_count == 1:
-                        h1b_count += 1
-                if item.tau1() != 0:
-                    if item.pt() > 200 and abs(item.eta()) < 2.4 and 60 <= item.msoftdrop() <= 110 and item.tau2() / item.tau1() < 0.55 and h2b_count == 0 and h1b_count == 0:
-                        w_count += 1
-        if h2b_count > 0:
-            h1b_count = 0
-            w_count = 0
-        if h1b_count > 0:
-            w_count = 0
 
-        if h2b_count == 0 and h1b_count == 0 and w_count == 0:
+        if event.fatjetH2b() == 0 and event.fatjetH1b() == 0 and event.fatjetW() == 0:
             if event.jetM() > 3:
                 pass
             else:
@@ -138,7 +114,7 @@ def main():
         treeProducer.processPuppiJets(event.jetspuppi())
         treeProducer.processJetsMul_(event.jetM(), event.jetBtag(), event.jetHt(), event.jetSt())
         treeProducer.processFatJets(event.fatjets())
-        treeProducer.processFatjetsMul_(fatjet_count, h2b_count, h1b_count, w_count)
+        treeProducer.processFatjetsMul_(event.fatjetM(), event.fatjetH2b(), event.fatjetH1b(), event.fatjetW())
         treeProducer.processPuppiMissingET(event.metspuppi())
 
         treeProducer.fill()
@@ -146,6 +122,7 @@ def main():
     treeProducer.write()
     out_root.Close()
 
+    print "Total Events                         : {}".format(total_events)
     print "Events after 3Jet selection          : {}".format(j_counter)
     print "Events after additional ak4 selection: {}".format(additional_ak4)
     print "Events after btag 1 selection        : {}".format(btag1)

@@ -2,6 +2,7 @@
 import ROOT
 #from __future__ import print_function
 from bin.NtupleDataFormat import Ntuple
+from array import array
 import sys
 import os
 
@@ -14,10 +15,8 @@ def createHist(varname,minval=0, maxval=501):
         h = ROOT.TH1D(varname, varname, binval, minval, maxval)
     elif "Ht" in varname:
         h = ROOT.TH1D(varname, varname, binval, 400, 7900)
-        #h = ROOT.TH1D(varname, varname, binval, 500, 8000)
     elif "St" in varname:
         h = ROOT.TH1D(varname, varname, binval, 500, 8000)
-        #h = ROOT.TH1D(varname, varname, binval, 2000, 9000)
     elif "eta" in varname:
         h = ROOT.TH1D(varname, varname, binval, -3, 3)
     elif "phi" in varname:
@@ -41,15 +40,6 @@ def createHist(varname,minval=0, maxval=501):
     h.Sumw2()
     return h
 
-def globalWeight(inDir, in_str):
-    inFile1 = inDir + "genweight/" + in_str
-
-    ntuple1 = Ntuple(inFile1)
-    gw = 0
-    for event in ntuple1:
-        gw += event.genweight()
-    return gw
-
 def main():
     if len(sys.argv) != 5:
         print("USAGE: {} <ntuple> <cross-section(fb)> <total event> <Initial genweight>".format(sys.argv[0]))
@@ -60,14 +50,8 @@ def main():
     hists = {}
     maxEvents = 0
 
-    #outputFile = sys.argv[1]
-    #out_str = outputFile.split('.root')
-    #outDir = '/eos/uscms/store/user/kpal/trimmed_files_v2/smallBins/'
     outDir = os.path.dirname(sys.argv[1]) + '/rootPlots/'
     out_str = os.path.basename(sys.argv[1])
-    inDir = outDir
-
-#    global_weight = float(sys.argv[3]) #globalWeight(inDir, os.path.basename(sys.argv[1]))
 # using last part of out_str to creating a root file
     outFile = ROOT.TFile(outDir + out_str,"RECREATE")
 
@@ -92,7 +76,7 @@ def main():
     hists["jetspuppi_eta_2"] = createHist("jetspuppi_eta_2")
     hists["jetspuppi_eta_3"] = createHist("jetspuppi_eta_3")
     hists["jetspuppi_phi"] = createHist("jetspuppi_phi")
-    hists["jetspuppi_mass"] = createHist("jetspuppi_mass",0,200)
+    hists["jetspuppi_mass"] = createHist("jetspuppi_mass",0,100)
     hists["jetspuppi_multiplicity"] = createHist("jetspuppi_multiplicity")
     hists["jetspuppi_btagmultiplicity"] = createHist("jetspuppi_btagmultiplicity")
     hists["jetspuppi_Ht"] = createHist("jetspuppi_Ht")
@@ -102,7 +86,7 @@ def main():
     hists["fatjets_eta"] = createHist("fatjets_eta")
     hists["fatjets_phi"] = createHist("fatjets_phi")
     #hists["fatjets_msoftdrop[tau21]"] = createHist("fatjets_msoftdrop[tau21]",400)
-    hists["fatjets_msoftdrop[tau21]"] = createHist("fatjets_msoftdrop[tau21]",0,375)
+    hists["fatjets_msoftdrop[tau21]"] = createHist("fatjets_msoftdrop[tau21]",0,300)
     hists["fatjets_tau21[m-softdrop]"] = createHist("fatjets_tau21[m-softdrop]",0,1)
     hists["fatjets_multiplicity"] = createHist("fatjets_multiplicity")
     hists["fatjets_H2b-multiplicity"] = createHist("fatjets_H2b-multiplicity")
@@ -126,7 +110,6 @@ def main():
         for item in event.metspuppi():
             hists["metspuppi_pt"].Fill(item.pt(), gen_weight)
             hists["metspuppi_phi"].Fill(item.phi(), gen_weight)
-            St = item.pt()
 
         ak4_jet = []
         for item in event.jetspuppi():
@@ -145,31 +128,22 @@ def main():
         hists["jetspuppi_multiplicity"].Fill(event.jetM(), gen_weight)
         hists["jetspuppi_btagmultiplicity"].Fill(event.jetBtag(), gen_weight)
         hists["jetspuppi_Ht"].Fill(event.jetHt(), gen_weight)
+        hists["St"].Fill(event.jetSt(), gen_weight)
 
 #tight lepton selection. Only single lepton is required.
-        for item in event.electrons():
-            if item.idpass() >= 4 and item.pt() > 60 and abs(item.eta()) < 2.5:
-                hists["TightElectrons_pt"].Fill(item.pt(), gen_weight)
-                hists["TightElectrons_eta"].Fill(item.eta(), gen_weight)
-                hists["TightElectrons_phi"].Fill(item.phi(), gen_weight)
-                hists["TightElectrons_mass"].Fill(item.mass(), gen_weight)
-                St += item.pt()
-                break
-        for item in event.muons():
-            if item.idpass() >= 4 and item.pt() > 60 and abs(item.eta()) < 2.4:
-                hists["TightMuons_pt"].Fill(item.pt(), gen_weight)
-                hists["TightMuons_eta"].Fill(item.eta(), gen_weight)
-                hists["TightMuons_phi"].Fill(item.phi(), gen_weight)
-                hists["TightMuons_mass"].Fill(item.mass(), gen_weight)
-                St += item.pt()
-                break
-        hists["St"].Fill(St + event.jetHt(), gen_weight)
+        for item in event.tightElectrons():
+            hists["TightElectrons_pt"].Fill(item.pt(), gen_weight)
+            hists["TightElectrons_eta"].Fill(item.eta(), gen_weight)
+            hists["TightElectrons_phi"].Fill(item.phi(), gen_weight)
+            hists["TightElectrons_mass"].Fill(item.mass(), gen_weight)
+        for item in event.tightMuons():
+            hists["TightMuons_pt"].Fill(item.pt(), gen_weight)
+            hists["TightMuons_eta"].Fill(item.eta(), gen_weight)
+            hists["TightMuons_phi"].Fill(item.phi(), gen_weight)
+            hists["TightMuons_mass"].Fill(item.mass(), gen_weight)
 
 # multiplicity of fatjet
         fatjet_count = 0
-        h2b_count = 0
-        h1b_count = 0
-        w_count = 0
         jet_eta = []
         jet_phi = []
         for item in event.fatjets():
@@ -184,38 +158,16 @@ def main():
                 hists["fatjets_pt"].Fill(item.pt(), gen_weight)
                 hists["fatjets_eta"].Fill(item.eta(), gen_weight)
                 hists["fatjets_phi"].Fill(item.phi(), gen_weight)
-                if item.pt() > 300 and 60 <= item.msoftdrop() <= 160:
-                    b_count = 0
-                    for jtem in event.jetspuppi():
-                        if jtem.btag() > 0:
-                            deltaR =  ((item.eta() - jtem.eta())**2 + (item.phi() - jtem.phi())**2)**0.5
-                            if deltaR < 0.8:
-                                b_count += 1
-                    if b_count >= 2:
-                        h2b_count += 1
-                    elif b_count == 1:
-                        h1b_count += 1
                 if item.tau1() != 0:
                     if item.tau2() / item.tau1() < 0.55:
                         hists["fatjets_msoftdrop[tau21]"].Fill(item.msoftdrop(), gen_weight)
                     if 60 <= item.msoftdrop() <= 110:
                         hists["fatjets_tau21[m-softdrop]"].Fill( item.tau2() / item.tau1() , gen_weight)
-                    if item.pt() > 200 and abs(item.eta()) < 2.4 and 60 <= item.msoftdrop() <= 110 and item.tau2() / item.tau1() < 0.55 and h2b_count == 0 and h1b_count == 0:
-                        w_count += 1
-        if h2b_count > 0:
-            h1b_count = 0
-            w_count = 0
-        if h1b_count > 0:
-            w_count = 0
 
-        #hists["fatjets_multiplicity"].Fill(event.fatjetM(), gen_weight)
-        #hists["fatjets_H2b-multiplicity"].Fill(event.fatjetH2b(), gen_weight)
-        #hists["fatjets_H1b-multiplicity"].Fill(event.fatjetH1b(), gen_weight)
-        #hists["fatjets_Wtag-multiplicity"].Fill(event.fatjetW(), gen_weight)
-        hists["fatjets_multiplicity"].Fill(fatjet_count, gen_weight)
-        hists["fatjets_H2b-multiplicity"].Fill(h2b_count, gen_weight)
-        hists["fatjets_H1b-multiplicity"].Fill(h1b_count, gen_weight)
-        hists["fatjets_Wtag-multiplicity"].Fill(w_count, gen_weight)
+        hists["fatjets_multiplicity"].Fill(event.fatjetM(), gen_weight)
+        hists["fatjets_H2b-multiplicity"].Fill(event.fatjetH2b(), gen_weight)
+        hists["fatjets_H1b-multiplicity"].Fill(event.fatjetH1b(), gen_weight)
+        hists["fatjets_Wtag-multiplicity"].Fill(event.fatjetW(), gen_weight)
 
         delRmin = []
         if fatjet_count > 1:
@@ -225,10 +177,8 @@ def main():
                 hists["deltaR"].Fill(deltaR, gen_weight)
             delRmin.sort()
             hists["deltaRmin"].Fill(delRmin[0], gen_weight)
-            #print("deltaRmin",delRmin,"fatjet Multiplicity", event.fatjetM())
 
     scale_factor = 3000  * float(sys.argv[2]) / float(sys.argv[4])
-#    print(out_str[0],negative, positive, scale_factor)
     for h in hists.keys():
         hists[h].Scale(scale_factor)
     outFile.Write()
