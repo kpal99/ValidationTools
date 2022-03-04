@@ -166,8 +166,8 @@ def main():
 
             treeProducer.fill()
 
-        treeProducer.write()
-        out_root.Close()
+    treeProducer.write()
+    out_root.Close()
 
     print "Total Events                         : {}".format(total_events)
     print "Total genweight                      : {}".format(gen_weight)
