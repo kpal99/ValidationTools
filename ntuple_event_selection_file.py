@@ -19,7 +19,7 @@ def main():
     inFile = sys.argv[1]
     ntuple = Ntuple(inFile)
 # using last part of out_str to creating a root file
-    out_root= ROOT.TFile('/eos/uscms/store/user/kpal/trimmed_files_v7/' + os.path.basename(sys.argv[1]), "RECREATE")
+    out_root= ROOT.TFile('/eos/uscms/store/user/kpal/trimmed_files_v6_bugFree/' + os.path.basename(sys.argv[1]), "RECREATE")
     out_root.mkdir("myana")
     out_root.cd("myana")
 
@@ -41,7 +41,7 @@ def main():
         for e in event.electrons():
             if e.idpass() == 1 and e.pt() > 10 and abs(e.eta()) < 2.5:
                 e_loose_count +=1
-            if e.idpass() >= 4 and e.isopass() >= 4 and e.pt() > 60 and abs(e.eta()) < 2.5:
+            if e.idpass() >= 4 and e.pt() > 60 and abs(e.eta()) < 2.5:
                 e_tight_count += 1
                 lepton_pt = e.pt()
                 lepton_eta = e.eta()
@@ -55,7 +55,7 @@ def main():
         for u in event.muons():
             if u.idpass() == 1 and u.pt() > 10 and abs(u.eta()) < 2.4:
                 u_loose_count +=1
-            if u.idpass() >= 4 and u.isopass() >= 4 and u.pt() > 60 and abs(u.eta()) < 2.4:
+            if u.idpass() >= 4 and u.pt() > 60 and abs(u.eta()) < 2.4:
                 u_tight_count += 1
                 lepton_pt = u.pt()
                 lepton_eta = u.eta()
@@ -101,7 +101,7 @@ def main():
                 pt_array.append(j.pt())
                 sum_pt += j.pt()
                 multiplicity += 1
-            if j.btag() == 2 or j.btag() == 3:
+            if j.btag() >= 2:
                 btag_multiplicity += 1
         if multiplicity > 2 and pt_array[0] > 200 and pt_array[1] > 100 and pt_array[2] > 50 and sum_pt > 400:
             j_counter += 1
