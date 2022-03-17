@@ -20,3 +20,5 @@ ntuples/*.txt
 
 **/.archives_txt/
 **/archive/
+
+untracked/

@@ -1,6 +1,7 @@
 import ROOT
 import sys
 import os
+import math
 ROOT.gROOT.SetBatch()
 ROOT.gStyle.SetOptStat(0)
 
@@ -14,8 +15,8 @@ hists["TightMuons_pt"] = f.Get("TightMuons_pt")
 hists["jetspuppi_pt"] = f.Get("jetspuppi_pt")
 hists["Elec_reliso_met"] = f.Get("Elec_reliso_met")
 hists["Muon_reliso_met"] = f.Get("Muon_reliso_met")
-hists["Elec_reliso_pt"] = f.Get("Elec_reliso_pt")
-hists["Muon_reliso_pt"] = f.Get("Muon_reliso_pt")
+hists["Elec_reliso_pT"] = f.Get("Elec_reliso_pt")
+hists["Muon_reliso_pT"] = f.Get("Muon_reliso_pt")
 
 hists["TightElectrons_pt_cut"] = f.Get("TightElectrons_pt_cut")
 hists["TightMuons_pt_cut"] = f.Get("TightMuons_pt_cut")
@@ -43,7 +44,10 @@ for key in hists.keys():
     if "reliso" in key:
         canvas = ROOT.TCanvas('canvas','',600,400)
         hists[key].SetTitle("")
-        hists[key].GetXaxis().SetTitle("E_{T}^{miss} [GeV]")
+        if "met" in key:
+            hists[key].GetXaxis().SetTitle("E_{T}^{miss} [GeV]")
+        elif "pT" in key:
+            hists[key].GetXaxis().SetTitle("p_{T} [GeV]")
         hists[key].GetYaxis().SetTitle("reliso")
         hists[key].Draw("COLZ")
         tex1.Draw()
@@ -57,12 +61,22 @@ for key in hists.keys():
 for key in hists.keys():
     if "_pt_cut" in key:
         canvas = ROOT.TCanvas('canvas','',600,400)
-        hists[key].SetLineColor(1)
-        hists[key].SetTitle("")
-        hists[key].GetXaxis().SetTitle("P_{T} [GeV]")
-        hists[key].GetYaxis().SetTitle("Efficiency")
-        hists[key].Divide(hists[key.split("_cut")[0]])
-        hists[key].Draw("E")
+        hists_eff = hists[key].Clone()
+        hists_eff.Reset()
+        for i in range(hists_eff.GetNbinsX() + 1):
+            try:
+                eff = hists[key].GetBinContent(i) / hists[key.split("_cut")[0]].GetBinContent(i)
+                eff_err = math.sqrt(hists[key].GetBinContent(i) * eff * (1 - eff))
+            except ZeroDivisionError:
+                eff = 0
+                eff_err = 0
+            hists_eff.SetBinContent(i,eff)
+            hists_eff.SetBinError(i,eff_err)
+        hists_eff.SetLineColor(1)
+        hists_eff.SetTitle("")
+        hists_eff.GetXaxis().SetTitle("P_{T} [GeV]")
+        hists_eff.GetYaxis().SetTitle("Efficiency")
+        hists_eff.Draw("E")
         tex1.Draw()
         tex2.Draw()
         if "Elec" in key:
@@ -74,6 +88,21 @@ for key in hists.keys():
         elif "jetspuppi" in key:
             canvas.SaveAs(outputDir + "_" + "btag" + ".png")
             canvas.SaveAs(outputDir + "_" + "btag" + ".pdf")
+        canvas.Close()
+        tex1.Clear()
+        tex2.Clear()
+
+    elif "_pt" in key:
+        canvas = ROOT.TCanvas('canvas','',600,400)
+        hists[key].SetLineColor(1)
+        hists[key].SetTitle("")
+        hists[key].GetXaxis().SetTitle("P_{T} [GeV]")
+        hists[key].GetYaxis().SetTitle("events/bin")
+        hists[key].Draw("E")
+        tex1.Draw()
+        tex2.Draw()
+        canvas.SaveAs(outputDir + "_" + key + ".png")
+        canvas.SaveAs(outputDir + "_" + key + ".pdf")
         canvas.Close()
         tex1.Clear()
         tex2.Clear()
