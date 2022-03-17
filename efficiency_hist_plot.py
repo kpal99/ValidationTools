@@ -55,28 +55,16 @@ for key in hists.keys():
         canvas.SaveAs(outputDir + "_" + key + ".png")
         canvas.SaveAs(outputDir + "_" + key + ".pdf")
         canvas.Close()
-        tex1.Clear()
-        tex2.Clear()
 
 for key in hists.keys():
     if "_pt_cut" in key:
         canvas = ROOT.TCanvas('canvas','',600,400)
-        hists_eff = hists[key].Clone()
-        hists_eff.Reset()
-        for i in range(hists_eff.GetNbinsX() + 1):
-            try:
-                eff = hists[key].GetBinContent(i) / hists[key.split("_cut")[0]].GetBinContent(i)
-                eff_err = math.sqrt(hists[key].GetBinContent(i) * eff * (1 - eff))
-            except ZeroDivisionError:
-                eff = 0
-                eff_err = 0
-            hists_eff.SetBinContent(i,eff)
-            hists_eff.SetBinError(i,eff_err)
-        hists_eff.SetLineColor(1)
-        hists_eff.SetTitle("")
-        hists_eff.GetXaxis().SetTitle("P_{T} [GeV]")
-        hists_eff.GetYaxis().SetTitle("Efficiency")
-        hists_eff.Draw("E")
+        hists[key].SetLineColor(1)
+        hists[key].SetTitle("")
+        hists[key].GetXaxis().SetTitle("P_{T} [GeV]")
+        hists[key].GetYaxis().SetTitle("Efficiency")
+        hists[key].Divide(hists[key.split("_cut")[0]])
+        hists[key].Draw("E")
         tex1.Draw()
         tex2.Draw()
         if "Elec" in key:
@@ -89,11 +77,10 @@ for key in hists.keys():
             canvas.SaveAs(outputDir + "_" + "btag" + ".png")
             canvas.SaveAs(outputDir + "_" + "btag" + ".pdf")
         canvas.Close()
-        tex1.Clear()
-        tex2.Clear()
 
     elif "_pt" in key:
         canvas = ROOT.TCanvas('canvas','',600,400)
+        canvas.SetLogy()
         hists[key].SetLineColor(1)
         hists[key].SetTitle("")
         hists[key].GetXaxis().SetTitle("P_{T} [GeV]")
@@ -104,5 +91,3 @@ for key in hists.keys():
         canvas.SaveAs(outputDir + "_" + key + ".png")
         canvas.SaveAs(outputDir + "_" + key + ".pdf")
         canvas.Close()
-        tex1.Clear()
-        tex2.Clear()
