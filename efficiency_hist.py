@@ -84,8 +84,8 @@ def main():
     hists["Muon_reliso_pt"] = ROOT.TH2D("Muon_reliso_pt","Muon_reliso_pt", 40, 50., 500., 40, 0, 2.)
     hists["Elec_reliso_met_cut"] = ROOT.TH2D("Elec_reliso_met_cut","Elec_reliso_met_cut", 40, 50., 500., 40, 0, 2.)
     hists["Muon_reliso_met_cut"] = ROOT.TH2D("Muon_reliso_met_cut","Muon_reliso_met_cut", 40, 50., 500., 40, 0, 2.)
-    hists["Elec_reliso_pt_cut"] = ROOT.TH2D("Elec_reliso_pt_cut","Elec_reliso_pt_cut", 40, 50., 500., 40, 0, 0.2)
-    hists["Muon_reliso_pt_cut"] = ROOT.TH2D("Muon_reliso_pt_cut","Muon_reliso_pt_cut", 40, 50., 500., 40, 0, 0.2)
+    hists["Elec_reliso_pt_cut"] = ROOT.TH2D("Elec_reliso_pt_cut","Elec_reliso_pt_cut", 40, 50., 500., 40, 0, 2.)
+    hists["Muon_reliso_pt_cut"] = ROOT.TH2D("Muon_reliso_pt_cut","Muon_reliso_pt_cut", 40, 50., 500., 40, 0, 2.)
 
 # iterating through the all events; if value of maxEvents is zero.
     for event in ntuple:
