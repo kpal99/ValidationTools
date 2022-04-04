@@ -98,7 +98,7 @@ def main():
 
         for item in event.jetspuppi():
             hists["jetspuppi_pt"].Fill(item.pt())
-            if item.btag() >= 2:
+            if item.btag() == 2 or item.btag() == 3:
                 hists["jetspuppi_pt_cut"].Fill(item.pt())
 
 #tight lepton selection. Only single lepton is required.
