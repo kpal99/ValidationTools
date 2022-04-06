@@ -23,6 +23,8 @@ def createHist(varname,minval=0, maxval=501):
         h = ROOT.TH1D(varname, varname, binval, -3, 3)
     elif "phi" in varname:
         h = ROOT.TH1D(varname, varname, binval, -3.5, 3.5)
+    elif "idpass" in varname:
+        h = ROOT.TH1D(varname, varname, 8, -0.5, 7.5)
     elif "mass" in varname:
         if 'electron' in str.lower(varname) or 'muon' in str.lower(varname):
             h = ROOT.TH1D(varname, varname, binval, -1 * maxval, maxval)
@@ -64,7 +66,7 @@ def main():
     ntuple = Ntuple(inFile)
     hists = {}
     maxEvents = 0
-    outDir = os.path.dirname(sys.argv[1]) + '/rootPlots/'
+    outDir = os.path.dirname(sys.argv[1]) + '/rootPlots/test/'
     out_str = "efficiency_" + os.path.basename(sys.argv[1])
     outFile = ROOT.TFile(outDir + out_str ,"RECREATE")
     #outputDir = os.path.dirname(inFile) + "/efficiency_plot/" + os.path.basename(inFile).split(".root")[0]
@@ -72,20 +74,24 @@ def main():
 
 # creating very many histrograms
     hists["TightElectrons_pt"] = createHistVarBin("TightElectrons_pt",50,1050)
-    hists["TightMuons_pt"] = createHistVarBin("TightMuons_pt",50,1050)
-    hists["jetspuppi_pt"] = createHistVarBin("jetspuppi_pt",0,2000)
     hists["TightElectrons_pt_cut"] = createHistVarBin("TightElectrons_pt_cut",50,1050)
-    hists["TightMuons_pt_cut"] = createHistVarBin("TightMuons_pt_cut",50,1050)
-    hists["jetspuppi_pt_cut"] = createHistVarBin("jetspuppi_pt_cut",0,2000)
+    hists["TightElectrons_eta"] = createHist("TightElectrons_eta")
+    hists["TightElectrons_idpass"] = createHist("TightElectrons_idpass")
 
-    hists["Elec_reliso_met"] = ROOT.TH2D("Elec_reliso_met","Elec_reliso_met", 40, 50., 500., 40, 0, 2.)
-    hists["Muon_reliso_met"] = ROOT.TH2D("Muon_reliso_met","Muon_reliso_met", 40, 50., 500., 40, 0, 2.)
-    hists["Elec_reliso_pt"] = ROOT.TH2D("Elec_reliso_pt","Elec_reliso_pt", 40, 50., 500., 40, 0, 2.)
-    hists["Muon_reliso_pt"] = ROOT.TH2D("Muon_reliso_pt","Muon_reliso_pt", 40, 50., 500., 40, 0, 2.)
-    hists["Elec_reliso_met_cut"] = ROOT.TH2D("Elec_reliso_met_cut","Elec_reliso_met_cut", 40, 50., 500., 40, 0, 2.)
-    hists["Muon_reliso_met_cut"] = ROOT.TH2D("Muon_reliso_met_cut","Muon_reliso_met_cut", 40, 50., 500., 40, 0, 2.)
-    hists["Elec_reliso_pt_cut"] = ROOT.TH2D("Elec_reliso_pt_cut","Elec_reliso_pt_cut", 40, 50., 500., 40, 0, 2.)
-    hists["Muon_reliso_pt_cut"] = ROOT.TH2D("Muon_reliso_pt_cut","Muon_reliso_pt_cut", 40, 50., 500., 40, 0, 2.)
+    hists["TightMuons_pt"] = createHistVarBin("TightMuons_pt",50,1050)
+    hists["TightMuons_pt_cut"] = createHistVarBin("TightMuons_pt_cut",50,1050)
+    hists["TightMuons_eta"] = createHist("TightMuons_eta")
+    hists["TightMuons_idpass"] = createHist("TightMuons_idpass")
+
+    hists["TightMuons_count"] = ROOT.TH1D("TightMuons_count","TightMuons_count",3,-0.5,2.5)
+    hists["TightElectrons_count"] = ROOT.TH1D("TightElectrons_count","TightElectrons_count",3,-0.5,2.5)
+    hists["TightLeptons_count"] = ROOT.TH1D("TightLeptons_count","TightLeptons_count",3,-0.5,2.5)
+
+    hists["jetspuppi_pt"] = createHistVarBin("jetspuppi_pt",0,2000)
+    hists["jetspuppi_pt_cut"] = createHistVarBin("jetspuppi_pt_cut",0,2000)
+    hists["jetspuppi_eta"] = createHist("jetspuppi_eta")
+    hists["jetspuppi_idpass"] = createHist("jetspuppi_idpass")
+    hists["jetspuppi_multiplicity"] = createHist("jetspuppi_multiplicity")
 
 # iterating through the all events; if value of maxEvents is zero.
     for event in ntuple:
@@ -93,35 +99,46 @@ def main():
             break
 
         #local_weight += gen_weight
-        for item in event.metspuppi():
-            met = item.pt()
-
+        multiplicity = 0
         for item in event.jetspuppi():
             hists["jetspuppi_pt"].Fill(item.pt())
+            hists["jetspuppi_eta"].Fill(item.eta())
+            hists["jetspuppi_idpass"].Fill(item.idpass())
+            multiplicity += 1
             if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
                 hists["jetspuppi_pt_cut"].Fill(item.pt())
+        hists["jetspuppi_multiplicity"].Fill(multiplicity)
 
 #tight lepton selection. Only single lepton is required.
+
+        elec_mul = 0
+        muon_mul = 0
         for item in event.electrons():
             if item.idpass() >= 4 and item.pt() > 60 and abs(item.eta()) < 2.5:
                 hists["TightElectrons_pt"].Fill(item.pt())
-                hists["Elec_reliso_met"].Fill(met, item.reliso())
-                hists["Elec_reliso_pt"].Fill(item.pt(), item.reliso())
+                hists["TightElectrons_eta"].Fill(item.eta())
+                hists["TightElectrons_idpass"].Fill(item.idpass())
                 if item.isopass() >= 4:
                     hists["TightElectrons_pt_cut"].Fill(item.pt())
-                    hists["Elec_reliso_met_cut"].Fill(met, item.reliso())
-                    hists["Elec_reliso_pt_cut"].Fill(item.pt(), item.reliso())
-                break
+                elec_mul += 1
         for item in event.muons():
             if item.idpass() >= 4 and item.pt() > 60 and abs(item.eta()) < 2.4:
                 hists["TightMuons_pt"].Fill(item.pt())
-                hists["Muon_reliso_met"].Fill(met, item.reliso())
-                hists["Muon_reliso_pt"].Fill(item.pt(), item.reliso())
+                hists["TightMuons_eta"].Fill(item.eta())
+                hists["TightMuons_idpass"].Fill(item.idpass())
                 if item.isopass() >= 4:
                     hists["TightMuons_pt_cut"].Fill(item.pt())
-                    hists["Muon_reliso_met_cut"].Fill(met, item.reliso())
-                    hists["Muon_reliso_pt_cut"].Fill(item.pt(), item.reliso())
-                break
+                muon_mul += 1
+
+        hists["TightElectrons_count"].Fill(elec_mul)
+        hists["TightMuons_count"].Fill(muon_mul)
+        hists["TightLeptons_count"].Fill(muon_mul + elec_mul)
+
+#        print "no. of electrons in original tuple: {}".format(len(event.electrons()))
+#        print "no. of muons in original tuple: {}".format(len(event.muons()))
+#        print "no. of selected electrons in original tuple: {}".format(elec_mul)
+#        print "no. of selected muons in original tuple: {}".format(muon_mul)
+#        print ""
 
     outFile.Write()
     print("OutFile written at {}".format(outFile))
