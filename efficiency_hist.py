@@ -92,6 +92,22 @@ def main():
     hists["jetspuppi_eta"] = createHist("jetspuppi_eta")
     hists["jetspuppi_idpass"] = createHist("jetspuppi_idpass")
     hists["jetspuppi_multiplicity"] = createHist("jetspuppi_multiplicity")
+    hists["jetspuppi_btagmultiplicity"] = createHist("jetspuppi_btagmultiplicity")
+
+    hists["jetspuppi_pt_1"] = createHistVarBin("jetspuppi_pt_1",0,2000)
+    hists["jetspuppi_pt_cut_1"] = createHistVarBin("jetspuppi_pt_cut_1",0,2000)
+    hists["jetspuppi_eta_1"] = createHist("jetspuppi_eta_1")
+    hists["jetspuppi_idpass_1"] = createHist("jetspuppi_idpass_1")
+
+    hists["jetspuppi_pt_2"] = createHistVarBin("jetspuppi_pt_2",0,2000)
+    hists["jetspuppi_pt_cut_2"] = createHistVarBin("jetspuppi_pt_cut_2",0,2000)
+    hists["jetspuppi_eta_2"] = createHist("jetspuppi_eta_2")
+    hists["jetspuppi_idpass_2"] = createHist("jetspuppi_idpass_2")
+
+    hists["jetspuppi_pt_3"] = createHistVarBin("jetspuppi_pt_3",0,2000)
+    hists["jetspuppi_pt_cut_3"] = createHistVarBin("jetspuppi_pt_cut_3",0,2000)
+    hists["jetspuppi_eta_3"] = createHist("jetspuppi_eta_3")
+    hists["jetspuppi_idpass_3"] = createHist("jetspuppi_idpass_3")
 
 # iterating through the all events; if value of maxEvents is zero.
     for event in ntuple:
@@ -105,12 +121,30 @@ def main():
             hists["jetspuppi_eta"].Fill(item.eta())
             hists["jetspuppi_idpass"].Fill(item.idpass())
             multiplicity += 1
+            if multiplicity == 1:
+                hists["jetspuppi_pt_1"].Fill(item.pt())
+                hists["jetspuppi_eta_1"].Fill(item.eta())
+                hists["jetspuppi_idpass_1"].Fill(item.idpass())
+            elif multiplicity == 2:
+                hists["jetspuppi_pt_2"].Fill(item.pt())
+                hists["jetspuppi_eta_2"].Fill(item.eta())
+                hists["jetspuppi_idpass_2"].Fill(item.idpass())
+            elif multiplicity == 3:
+                hists["jetspuppi_pt_3"].Fill(item.pt())
+                hists["jetspuppi_eta_3"].Fill(item.eta())
+                hists["jetspuppi_idpass_3"].Fill(item.idpass())
+
             if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
                 hists["jetspuppi_pt_cut"].Fill(item.pt())
+                if multiplicity == 1:
+                    hists["jetspuppi_pt_cut_1"].Fill(item.pt())
+                elif multiplicity == 2:
+                    hists["jetspuppi_pt_cut_2"].Fill(item.pt())
+                elif multiplicity == 3:
+                    hists["jetspuppi_pt_cut_3"].Fill(item.pt())
+
         hists["jetspuppi_multiplicity"].Fill(multiplicity)
-
 #tight lepton selection. Only single lepton is required.
-
         elec_mul = 0
         muon_mul = 0
         for item in event.electrons():
