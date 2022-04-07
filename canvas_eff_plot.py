@@ -67,6 +67,7 @@ for key in hists_qcd500.keys():
         hist_qcd500.SetLineColor(1)
         hist_qcd500.SetLineWidth(2)
         hist_qcd500.SetTitle("")
+        hist_qcd500.SetMaximum(1.3)
         hist_qcd500.GetXaxis().SetTitle("P_{T} [GeV]")
         hist_qcd500.GetYaxis().SetTitle("Efficiency")
         hist_qcd500.Draw("E")
@@ -113,7 +114,8 @@ for key in hists_qcd500.keys():
         hist_wjets.SetLineWidth(2)
         hist_wjets.Draw("E SAME")
 
-        legend1 = ROOT.TLegend(0.75,0.5,0.95,0.15)
+        legend1 = ROOT.TLegend(0.13,0.89,0.89,0.75)
+        legend1.SetNColumns(4)
         legend1.SetBorderSize(0)
         legend1.AddEntry(hist_qcd500,"QCD H_{T} 500-700", "l")
         legend1.AddEntry(hist_qcd700,"QCD H_{T} 700-1000", "l")
@@ -141,11 +143,13 @@ for key in hists_qcd500.keys():
         canvas = ROOT.TCanvas('canvas','',600,400)
 
         key_divide = key.split("_cut")[0] + key.split("_cut")[1]
+
         hist_qcd500 = hists_qcd500[key].Clone()
         hist_qcd500.Reset()
         hist_qcd500.Divide(hists_qcd500[key],hists_qcd500[key_divide],1,1,"B")
         hist_qcd500.SetLineColor(1)
         hist_qcd500.SetLineWidth(2)
+        hist_qcd500.SetMaximum(1.3)
         hist_qcd500.SetTitle("")
         hist_qcd500.GetXaxis().SetTitle("P_{T} [GeV]")
         hist_qcd500.GetYaxis().SetTitle("Efficiency")
@@ -193,7 +197,8 @@ for key in hists_qcd500.keys():
         hist_wjets.SetLineWidth(2)
         hist_wjets.Draw("E SAME")
 
-        legend1 = ROOT.TLegend(0.75,0.5,0.95,0.15)
+        legend1 = ROOT.TLegend(0.13,0.89,0.89,0.75)
+        legend1.SetNColumns(4)
         legend1.SetBorderSize(0)
         legend1.AddEntry(hist_qcd500,"QCD H_{T} 500-700", "l")
         legend1.AddEntry(hist_qcd700,"QCD H_{T} 700-1000", "l")
@@ -210,26 +215,3 @@ for key in hists_qcd500.keys():
             canvas.SaveAs(outputDir + "_" + key + ".png")
             canvas.SaveAs(outputDir + "_" + key + ".pdf")
         canvas.Close()
-#    else:
-#        canvas = ROOT.TCanvas('canvas','',600,400)
-#        canvas.SetLogy()
-#        hists[key].SetLineColor(1)
-#        hists[key].SetTitle("")
-#        if "pt" in key:
-#            hists[key].GetXaxis().SetTitle("P_{T} [GeV]")
-#            hists[key].GetYaxis().SetTitle("events/bin")
-#        elif "eta" in key:
-#            hists[key].GetXaxis().SetTitle("#eta")
-#            hists[key].GetYaxis().SetTitle("events/bin")
-#        if "idpass" in key:
-#            hists[key].GetXaxis().SetTitle("idpass")
-#            hists[key].GetYaxis().SetTitle("events/bin")
-#        if "multi" in key:
-#            hists[key].GetXaxis().SetTitle("multiplicity")
-#            hists[key].GetYaxis().SetTitle("events/bin")
-#        hists[key].Draw("hist")
-#        tex1.Draw()
-#        tex2.Draw()
-#        canvas.SaveAs(outputDir + "_" + key + ".png")
-#        canvas.SaveAs(outputDir + "_" + key + ".pdf")
-#        canvas.Close()
