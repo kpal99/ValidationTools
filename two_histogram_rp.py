@@ -14,6 +14,7 @@ f = ROOT.TFile.Open(sys.argv[1], 'read')
 
 keys = ['TightElectrons_pt','TightElectrons_pt_cut',
         'TightMuons_pt','TightMuons_pt_cut',
+        'jetspuppi_pt','jetspuppi_pt_cut',
         'jetspuppi_pt_1','jetspuppi_pt_cut_1',
         'jetspuppi_pt_2','jetspuppi_pt_cut_2',
         'jetspuppi_pt_3','jetspuppi_pt_cut_3']
@@ -58,13 +59,7 @@ for key in hists.keys():
         hists[key].GetYaxis().SetTitleSize(0.05)
         hists[key].GetYaxis().SetTitle("events/bin")
 
-        maximum = 0
-        for i in range(hists[key].GetNbinsX()):
-            binContent = hists[key_divide].GetBinContent(i)
-            if maximum < binContent:
-                maximum = binContent
-
-        hists[key].SetMaximum(5 * maximum)
+        hists[key].SetMaximum(100000000)
         hists[key].SetMinimum(1)
         hists[key].Draw("hist")
         hists[key_divide].Draw("E same")
@@ -91,11 +86,10 @@ for key in hists.keys():
 
         canvas.cd()
 
-        legend1 = ROOT.TLegend(0.15,0.92,0.9,0.89)
-        legend1.SetNColumns(2)
+        legend1 = ROOT.TLegend(0.5,0.92,0.86,0.85)
         legend1.SetBorderSize(0)
-        legend1.AddEntry(hists[key],"w/o reliso cut", "l")
-        legend1.AddEntry(hists[key_divide],"w reliso 0.1(0.15) cut", "l")
+        legend1.AddEntry(hists[key_divide],"w/o reliso cut", "l")
+        legend1.AddEntry(hists[key],"w reliso 0.1(0.15) cut", "l")
         legend1.Draw()
 
         tex1.Draw()
@@ -104,7 +98,7 @@ for key in hists.keys():
         canvas.SaveAs(outputDir + "_" + key + ".pdf")
         canvas.Close()
 
-    if "jetspuppi_pt_cut_" in key:
+    if "jetspuppi_pt_cut" in key:
         canvas = ROOT.TCanvas('canvas','',600,600)
 
         key_divide = key.split("_cut")[0] + key.split("_cut")[1]
@@ -123,13 +117,7 @@ for key in hists.keys():
         hists[key].GetYaxis().SetTitleSize(0.05)
         hists[key].GetYaxis().SetTitle("events/bin")
 
-        maximum = 0
-        for i in range(hists[key].GetNbinsX()):
-            binContent = hists[key_divide].GetBinContent(i)
-            if maximum < binContent:
-                maximum = binContent
-
-        hists[key].SetMaximum(5 * maximum)
+        hists[key].SetMaximum(100000000)
         hists[key].SetMinimum(1)
         hists[key].Draw("hist")
         hists[key_divide].Draw("E same")
@@ -156,11 +144,10 @@ for key in hists.keys():
 
         canvas.cd()
 
-        legend1 = ROOT.TLegend(0.15,0.92,0.9,0.89)
-        legend1.SetNColumns(2)
+        legend1 = ROOT.TLegend(0.5,0.92,0.86,0.85)
         legend1.SetBorderSize(0)
-        legend1.AddEntry(hists[key],"w/o reliso cut", "l")
-        legend1.AddEntry(hists[key_divide],"w reliso 0.1(0.15) cut", "l")
+        legend1.AddEntry(hists[key_divide],"jet", "l")
+        legend1.AddEntry(hists[key],"b-tagged jet", "l")
         legend1.Draw()
 
         tex1.Draw()
