@@ -58,8 +58,8 @@ def createHistVarBin(varname,minval=0, maxval=501):
     return h
 
 def main():
-    if len(sys.argv) != 2:
-        print("USAGE: {} <ntuple>".format(sys.argv[0]))
+    if len(sys.argv) != 5:
+        print("USAGE: {} <ntuple> <cross-section(fb)> <total event> <Initial genweight>".format(sys.argv[0]))
         sys.exit(1)
 
     inFile = sys.argv[1]
@@ -67,7 +67,7 @@ def main():
     hists = {}
     maxEvents = 0
     outDir = os.path.dirname(sys.argv[1]) + '/rootPlots/test/'
-    out_str = "efficiency_" + os.path.basename(sys.argv[1])
+    out_str = "efficiency_scaled_" + os.path.basename(sys.argv[1])
     outFile = ROOT.TFile(outDir + out_str ,"RECREATE")
     #outputDir = os.path.dirname(inFile) + "/efficiency_plot/" + os.path.basename(inFile).split(".root")[0]
 
@@ -114,65 +114,70 @@ def main():
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
-        #local_weight += gen_weight
+        gen_weight = event.genweight()
+
         multiplicity = 0
         for item in event.jetspuppi():
-            hists["jetspuppi_pt"].Fill(item.pt())
-            hists["jetspuppi_eta"].Fill(item.eta())
-            hists["jetspuppi_idpass"].Fill(item.idpass())
+            hists["jetspuppi_pt"].Fill(item.pt(), gen_weight)
+            hists["jetspuppi_eta"].Fill(item.eta(), gen_weight)
+            hists["jetspuppi_idpass"].Fill(item.idpass(), gen_weight)
             multiplicity += 1
             if multiplicity == 1:
-                hists["jetspuppi_pt_1"].Fill(item.pt())
-                hists["jetspuppi_eta_1"].Fill(item.eta())
-                hists["jetspuppi_idpass_1"].Fill(item.idpass())
+                hists["jetspuppi_pt_1"].Fill(item.pt(), gen_weight)
+                hists["jetspuppi_eta_1"].Fill(item.eta(), gen_weight)
+                hists["jetspuppi_idpass_1"].Fill(item.idpass(), gen_weight)
             elif multiplicity == 2:
-                hists["jetspuppi_pt_2"].Fill(item.pt())
-                hists["jetspuppi_eta_2"].Fill(item.eta())
-                hists["jetspuppi_idpass_2"].Fill(item.idpass())
+                hists["jetspuppi_pt_2"].Fill(item.pt(), gen_weight)
+                hists["jetspuppi_eta_2"].Fill(item.eta(), gen_weight)
+                hists["jetspuppi_idpass_2"].Fill(item.idpass(), gen_weight)
             elif multiplicity == 3:
-                hists["jetspuppi_pt_3"].Fill(item.pt())
-                hists["jetspuppi_eta_3"].Fill(item.eta())
-                hists["jetspuppi_idpass_3"].Fill(item.idpass())
+                hists["jetspuppi_pt_3"].Fill(item.pt(), gen_weight)
+                hists["jetspuppi_eta_3"].Fill(item.eta(), gen_weight)
+                hists["jetspuppi_idpass_3"].Fill(item.idpass(), gen_weight)
 
             if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
-                hists["jetspuppi_pt_cut"].Fill(item.pt())
+                hists["jetspuppi_pt_cut"].Fill(item.pt(), gen_weight)
                 if multiplicity == 1:
-                    hists["jetspuppi_pt_cut_1"].Fill(item.pt())
+                    hists["jetspuppi_pt_cut_1"].Fill(item.pt(), gen_weight)
                 elif multiplicity == 2:
-                    hists["jetspuppi_pt_cut_2"].Fill(item.pt())
+                    hists["jetspuppi_pt_cut_2"].Fill(item.pt(), gen_weight)
                 elif multiplicity == 3:
-                    hists["jetspuppi_pt_cut_3"].Fill(item.pt())
+                    hists["jetspuppi_pt_cut_3"].Fill(item.pt(), gen_weight)
 
-        hists["jetspuppi_multiplicity"].Fill(multiplicity)
+        hists["jetspuppi_multiplicity"].Fill(multiplicity, gen_weight)
 #tight lepton selection. Only single lepton is required.
         elec_mul = 0
         muon_mul = 0
         for item in event.electrons():
             if item.idpass() >= 4 and item.pt() > 60 and abs(item.eta()) < 2.5:
-                hists["TightElectrons_pt"].Fill(item.pt())
-                hists["TightElectrons_eta"].Fill(item.eta())
-                hists["TightElectrons_idpass"].Fill(item.idpass())
+                hists["TightElectrons_pt"].Fill(item.pt(), gen_weight)
+                hists["TightElectrons_eta"].Fill(item.eta(), gen_weight)
+                hists["TightElectrons_idpass"].Fill(item.idpass(), gen_weight)
                 if item.isopass() >= 4:
-                    hists["TightElectrons_pt_cut"].Fill(item.pt())
+                    hists["TightElectrons_pt_cut"].Fill(item.pt(), gen_weight)
                 elec_mul += 1
         for item in event.muons():
             if item.idpass() >= 4 and item.pt() > 60 and abs(item.eta()) < 2.4:
-                hists["TightMuons_pt"].Fill(item.pt())
-                hists["TightMuons_eta"].Fill(item.eta())
-                hists["TightMuons_idpass"].Fill(item.idpass())
+                hists["TightMuons_pt"].Fill(item.pt(), gen_weight)
+                hists["TightMuons_eta"].Fill(item.eta(), gen_weight)
+                hists["TightMuons_idpass"].Fill(item.idpass(), gen_weight)
                 if item.isopass() >= 4:
-                    hists["TightMuons_pt_cut"].Fill(item.pt())
+                    hists["TightMuons_pt_cut"].Fill(item.pt(), gen_weight)
                 muon_mul += 1
 
-        hists["TightElectrons_count"].Fill(elec_mul)
-        hists["TightMuons_count"].Fill(muon_mul)
-        hists["TightLeptons_count"].Fill(muon_mul + elec_mul)
+        hists["TightElectrons_count"].Fill(elec_mul, gen_weight)
+        hists["TightMuons_count"].Fill(muon_mul, gen_weight)
+        hists["TightLeptons_count"].Fill(muon_mul + elec_mul, gen_weight)
 
 #        print "no. of electrons in original tuple: {}".format(len(event.electrons()))
 #        print "no. of muons in original tuple: {}".format(len(event.muons()))
 #        print "no. of selected electrons in original tuple: {}".format(elec_mul)
 #        print "no. of selected muons in original tuple: {}".format(muon_mul)
 #        print ""
+
+    scale_factor = 3000  * float(sys.argv[2]) / float(sys.argv[4])
+    for h in hists.keys():
+        hists[h].Scale(scale_factor)
 
     outFile.Write()
     print("OutFile written at {}".format(outFile))
