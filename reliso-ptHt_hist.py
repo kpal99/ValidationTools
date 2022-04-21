@@ -54,7 +54,7 @@ def main():
     hists = {}
     maxEvents = 0
     outDir = os.path.dirname(sys.argv[1]) + '/rootPlots/test/'
-    out_str = "qcdplot_" + os.path.basename(sys.argv[1])
+    out_str = "reliso-ptHt_" + os.path.basename(sys.argv[1])
     outFile = ROOT.TFile(outDir + out_str ,"RECREATE")
     #outputDir = os.path.dirname(inFile) + "/efficiency_plot/" + os.path.basename(inFile).split(".root")[0]
 
