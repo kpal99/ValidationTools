@@ -60,8 +60,8 @@ def main():
 
 
 # creating very many histrograms
-    hists["TightElectrons_reliso-pt_Ht"] = ROOT.TH2D("TightElectrons_reliso-pt_Ht","TightElectrons_reliso-pt_Ht", 25, 0., 150., 25, 400., 7900.)
-    hists["TightMuons_reliso-pt_Ht"] = ROOT.TH2D("TightMuons_reliso-pt_Ht","TightMuons_reliso-pt_Ht", 25, 0., 150., 25, 400., 7900.)
+    hists["TightElectrons_reliso-pt_Ht"] = ROOT.TH2D("TightElectrons_reliso-pt_Ht","TightElectrons_reliso-pt_Ht", 25, 400., 5400., 25, 0., 50.)
+    hists["TightMuons_reliso-pt_Ht"] = ROOT.TH2D("TightMuons_reliso-pt_Ht","TightMuons_reliso-pt_Ht", 25, 400., 5400., 25, 0., 50.)
 
     hists["jetspuppi_Ht"] = createHist("jetspuppi_Ht")
     hists["jetspuppi_Ht_1"] = createHist("jetspuppi_Ht_1")
@@ -105,11 +105,11 @@ def main():
         for item in event.electrons():
             if item.idpass() >= 4 and item.pt() > 60 and abs(item.eta()) < 2.5:
                 if item.isopass() >= 4:
-                    hists["TightElectrons_reliso-pt_Ht"].Fill(item.reliso() * item.pt(), ht, gen_weight)
+                    hists["TightElectrons_reliso-pt_Ht"].Fill(ht, item.reliso() * item.pt(), gen_weight)
         for item in event.muons():
             if item.idpass() >= 4 and item.pt() > 60 and abs(item.eta()) < 2.4:
                 if item.isopass() >= 4:
-                    hists["TightMuons_reliso-pt_Ht"].Fill(item.reliso() * item.pt(), ht, gen_weight)
+                    hists["TightMuons_reliso-pt_Ht"].Fill(ht, item.reliso() * item.pt(), gen_weight)
 
     scale_factor = 3000  * float(sys.argv[2]) / float(sys.argv[4])
     for h in hists.keys():
