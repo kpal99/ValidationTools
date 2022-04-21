@@ -14,7 +14,7 @@ def createHist(varname,minval=0, maxval=501):
             maxval = 800
         h = ROOT.TH1D(varname, varname, binval, minval, maxval)
     elif "Ht" in varname:
-        h = ROOT.TH1D(varname, varname, binval, 400, 7900)
+        h = ROOT.TH1D(varname, varname, binval, 400, 5400)
         #h = ROOT.TH1D(varname, varname, binval, 500, 8000)
     elif "St" in varname:
         h = ROOT.TH1D(varname, varname, binval, 500, 8000)

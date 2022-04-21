@@ -12,12 +12,10 @@ if len(sys.argv) != 2:
 
 f = ROOT.TFile.Open(sys.argv[1], 'read')
 
-keys = ['TightElectrons_pt','TightElectrons_pt_cut',
-        'TightMuons_pt','TightMuons_pt_cut',
-        'jetspuppi_pt','jetspuppi_pt_cut',
-        'jetspuppi_pt_1','jetspuppi_pt_cut_1',
-        'jetspuppi_pt_2','jetspuppi_pt_cut_2',
-        'jetspuppi_pt_3','jetspuppi_pt_cut_3']
+keys = ['jetspuppi_Ht','jetspuppi_Ht_cut',
+        'jetspuppi_Ht_1','jetspuppi_Ht_cut_1',
+        'jetspuppi_Ht_2','jetspuppi_Ht_cut_2',
+        'jetspuppi_Ht_3','jetspuppi_Ht_cut_3']
 
 hists = {}
 for key in keys:
@@ -156,4 +154,61 @@ for key in hists.keys():
         canvas.SaveAs(outputDir + "_" + key + ".pdf")
         canvas.Close()
 
+    if "Ht_cut" in key:
+        canvas = ROOT.TCanvas('canvas','',600,600)
+
+        key_divide = key.split("_cut")[0] + key.split("_cut")[1]
+
+        canvas.cd()
+        pad1 = ROOT.TPad("pad1","pad1",0,0.4,1,1)
+        pad1.SetLogy()
+        pad1.SetBottomMargin(0)
+        pad1.Draw()
+        pad1.cd()
+        hists[key].SetLineColor(1)
+        hists[key].SetLineWidth(2)
+        hists[key].SetTitle("")
+        hists[key].GetXaxis().SetLabelSize(0.05)
+        hists[key].GetYaxis().SetLabelSize(0.05)
+        hists[key].GetYaxis().SetTitleSize(0.05)
+        hists[key].GetYaxis().SetTitle("events/bin")
+
+        hists[key].SetMaximum(100000000)
+        hists[key].SetMinimum(1)
+        hists[key].Draw("hist")
+        hists[key_divide].Draw("E same")
+
+        canvas.cd()
+        pad2 = ROOT.TPad("pad2","pad2",0,0,1,0.4)
+        pad2.SetTopMargin(0.0)
+        pad2.SetBottomMargin(0.3)
+        pad2.SetGrid()
+        pad2.Draw()
+        pad2.cd()
+        hist = hists[key].Clone()
+        hist.Reset()
+        hist.Divide(hists[key],hists[key_divide],1,1,"B")
+        hist.SetMinimum(0)
+        hist.SetMaximum(1.1)
+        hist.GetXaxis().SetLabelSize(0.07)
+        hist.GetYaxis().SetLabelSize(0.07)
+        hist.GetXaxis().SetTitleSize(0.07)
+        hist.SetTitle("")
+        hist.GetXaxis().SetTitle("H_{T} [GeV]")
+        hist.GetYaxis().SetTitle("")
+        hist.Draw("E")
+
+        canvas.cd()
+
+        legend1 = ROOT.TLegend(0.5,0.92,0.86,0.85)
+        legend1.SetBorderSize(0)
+        legend1.AddEntry(hists[key_divide],"jet", "l")
+        legend1.AddEntry(hists[key],"b-tagged jet", "l")
+        legend1.Draw()
+
+        tex1.Draw()
+        tex2.Draw()
+        canvas.SaveAs(outputDir + "_" + key + ".png")
+        canvas.SaveAs(outputDir + "_" + key + ".pdf")
+        canvas.Close()
 f.Close()
