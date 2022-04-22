@@ -10,28 +10,32 @@ import sys
 def get_phy_obj(event,phy_obj_str):
     if phy_obj_str == 'vtxs':
         return event.vtxs()
-    if phy_obj_str == 'muons':
+    elif phy_obj_str == 'muons':
         return event.muons()
-    if phy_obj_str == 'electrons':
+    elif phy_obj_str == 'electrons':
         return event.electrons()
-    if phy_obj_str == 'taus':
+    elif phy_obj_str == 'taus':
         return event.taus()
-    if phy_obj_str == 'gammas':
+    elif phy_obj_str == 'gammas':
         return event.gammas()
-    if phy_obj_str == 'genjets':
+    elif phy_obj_str == 'genjets':
         return event.genjets()
-    if phy_obj_str == 'jetschs':
+    elif phy_obj_str == 'jetschs':
         return event.jetschs()
-    if phy_obj_str == 'jetspuppi':
+    elif phy_obj_str == 'jetspuppi':
         return event.jetspuppi()
-    if phy_obj_str == 'jetsAK8':
+    elif phy_obj_str == 'jetsAK8':
         return event.jetsAK8()
-    if phy_obj_str == 'fatjets':
+    elif phy_obj_str == 'fatjets':
         return event.fatjets()
-    if phy_obj_str == 'metspuppi':
+    elif phy_obj_str == 'metspuppi':
         return event.metspuppi()
-    if phy_obj_str == 'metspf':
+    elif phy_obj_str == 'metspf':
         return event.metspf()
+    elif phy_obj_str == 'lheweights':
+        return event.lheweights()
+    elif phy_obj_str == 'genparts':
+        return event.genparticles()
     sys.exit("-- {} -- not implemented yet".format(phy_obj_str))
 
 def main():
@@ -41,37 +45,47 @@ def main():
     inFile = sys.argv[1]
     phy_obj_str=sys.argv[2]
     ntuple = Ntuple(inFile)
-    maxEvents = 0
+    maxEvents = 5
 
-    tot_nevents = 0
-    tot_genpart = 0
-    tot_genjet = 0
-    tot_electron = 0
-    tot_gamma = 0
-    tot_muon = 0
-    tot_jetschs = 0
-    tot_jetspuppi = 0
-    tot_fatjets = 0
-    tot_tau = 0
-    tot_metspf = 0
-    tot_metspuppi = 0
-    print(ntuple.__dict__)
     for event in ntuple:
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
+        if event.entry() > 0:
+            print ""
+        print '... processing event {} ... with genweight {}'.format(event.entry(), event.genweight())
 
-        #print '... processing event {} ... with genweight {}'.format(event.entry(), event.genweight())
+        if phy_obj_str == "fatjets":
+            print 'fatjetM: {:<6}, fatjetH2b: {:<6}, fatjetH1b: {:<6}, fatjetW: {:<6}'.format(event.fatjetM(), event.fatjetH2b() , event.fatjetH1b(), event.fatjetW())
 
-        #print ''
-        #print '  -- {}  --'.format(phy_obj_str)
-        #print ''
+        if phy_obj_str == "jetspuppi":
+            print 'jetM: {:<6}, jetBtag: {:<6}, jetHt: {:<6}, jetSt: {:<6}'.format(event.jetM(), event.jetBtag() , event.jetHt(), event.jetSt())
+
+        if phy_obj_str == "St":
+            i=0
+            for p in event.metspuppi():
+                print 'MET.............. PT: {:<6.2f}, Phi: {:<6.2f}'.format(p.pt(), p.phi())
+            for p in event.tightElectrons():
+                print 'Tight Electron... PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, : Charge: {:<6}, idvar: {:<6}, idpass: {:<6}, reliso: {:<6.2f}, isopass: {:<6}'.format(p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.idpass(), p.reliso(), p.isopass())
+            for p in event.tightMuons():
+                print 'Tight Muon....... PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, : Charge: {:<6}, idvar: {:<6}, idpass: {:<6}, reliso: {:<6.2f}, isopass: {:<6}'.format(p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.idpass(), p.reliso(), p.isopass())
+            print 'jetM: {:<6}, jetBtag: {:<6}, jetHt: {:<6}, jetSt: {:<6}'.format(event.jetM(), event.jetBtag() , event.jetHt(), event.jetSt())
+            for p in event.jetspuppi():
+                i += 1
+                print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, Btag: {:<6.2f}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.btag())
+            continue
+
+        if phy_obj_str == "tight":
+            i=0
+            for p in event.tightElectrons():
+                print 'Tight Electron... PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, : Charge: {:<6}, idvar: {:<6}, idpass: {:<6}, reliso: {:<6.2f}, isopass: {:<6}'.format(p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.idpass(), p.reliso(), p.isopass())
+            for p in event.tightMuons():
+                print 'Tight Muon....... PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, : Charge: {:<6}, idvar: {:<6}, idpass: {:<6}, reliso: {:<6.2f}, isopass: {:<6}'.format(p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.idpass(), p.reliso(), p.isopass())
+            continue
 
         phy_obj=get_phy_obj(event,phy_obj_str)
-        i=0;
-#print(phy_obj.__dict__)
+        i=0
         for p in phy_obj:
-            i += 1
             if phy_obj_str == "fatjets":
                 print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, Tau1: {:<6.2f}, Tau2: {:<6.2f}, Tau3: {:<6.2f}, Tau4: {:<6.2f}, m-SD: {:<6.2f}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.tau1(), p.tau2(), p.tau3(), p.tau4(), p.msoftdrop())
             elif phy_obj_str == "vtxs":
@@ -82,47 +96,20 @@ def main():
                 print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, idvar: {:<6}, isopass: {:<6}'.format(i, p.pt(), p.eta() , p.phi(), p.idvar(), p.isopass())
             elif phy_obj_str == "jetspuppi":
                 print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, Btag: {:<6.2f}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.btag())
-            elif phy_obj_str == "jetspuppi":
-                print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, Btag: {:<6.2f}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.btag())
             elif phy_obj_str == "electrons":
-                #if p.idpass() == 1 and p.pt() > 10 and abs(p.eta) < 2.5:
                 print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, : Charge: {:<6}, idvar: {:<6}, idpass: {:<6}, reliso: {:<6.2f}, isopass: {:<6}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.idpass(), p.reliso(), p.isopass())
             elif phy_obj_str == "muons":
-                #if p.idpass() == 1 and p.pt() > 10 and abs(p.eta) < 2.4:
                 print 'N: {:<6}, PT: {:<6.2f}, Eta: {:<6.2f}, Phi: {:<6.2f}, M: {:<6.2f}, : Charge: {:<6}, idvar: {:<6}, idpass: {:<6}, reliso: {:<6.2f}, isopass: {:<6}'.format(i, p.pt(), p.eta() , p.phi(), p.mass(), p.charge(), p.idvar(), p.idpass(), p.reliso(), p.isopass())
+            elif phy_obj_str == "lheweights":
+                if i < 10:
+                    print 'N: :{:<6}, val: {:<6.2f}'.format(i, p.val())
+            elif phy_obj_str == "genparts":
+                if (p.pid()) == 3 or abs(p.pid()) == 4 or abs(p.pid()) == 5:
+                    print 'N: {:<6}, pid: {:<6}, status: {:<6}, Pt: {:<6.2f}, eta: {:<6.2f}, Phi: {:<6.2f}, mass: {:<6.2f}'.format(i, p.pid(), p.status() , p.pt(), p.eta(), p.phi(), p.mass())
             else:
-                if 800 < p.pt() < 900:
-                    print 'N: {:<7}, genweight: {:<6.2f}, PT: {:<6.2f}, Phi: {:<6.2f}'.format(event.entry(), event.genweight(), p.pt(), p.phi())
+                print 'N: {:<7}, PT: {:<6.2f}, Phi: {:<6.2f}'.format(event.entry(), p.pt(), p.phi())
+            i += 1
 
-
-    tot_nevents += ntuple.nevents() + 1
-#        tot_genpart += len(event.genparticles())
-#        tot_genjet += len(event.genjets())
-#        tot_electron += len(event.electrons())
-#        tot_gamma += len(event.gammas())
-#        tot_muon += len(event.muons())
-#        tot_jetschs += len(event.jetschs())
-#        tot_jetspuppi += len(event.jetspuppi())
-#        tot_fatjets += len(event.fatjets())
-#        tot_tau += len(event.taus())
-#        tot_metspf += len(event.metspf())
-#        tot_metspuppi += len(event.metspuppi())
-
-        # for genPart in genParts:
-        #     print(tot_nevents, "genPart pt:", genPart.pt()
-
-    #print("Processed %d events" % tot_nevents)
-#    print("On average %f generator particles" % (float(tot_genpart) / tot_nevents))
-#    print("On average %f generated jets" % (float(tot_genjet) / tot_nevents))
-#    print("On average %f electrons" % (float(tot_electron) / tot_nevents))
-#    print("On average %f photons" % (float(tot_gamma) / tot_nevents))
-#    print("On average %f muons" % (float(tot_muon) / tot_nevents))
-#    print("On average %f jetschs" % (float(tot_jetschs) / tot_nevents))
-#    print("On average %f jetspuppi" % (float(tot_jetspuppi) / tot_nevents))
-#    print("On average %f fatjets" % (float(tot_fatjets) / tot_nevents))
-#    print("On average %f taus" % (float(tot_tau) / tot_nevents))
-#    print("On average %f metspf" % (float(tot_metspf) / tot_nevents))
-#    print("On average %f metspuppi" % (float(tot_metspuppi) / tot_nevents))
 
 if __name__ == "__main__":
     main()
