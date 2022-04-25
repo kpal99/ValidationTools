@@ -170,50 +170,48 @@ def main():
                 if dRmin < 0.4:
                     if multiplicity == 1:
                         if abs(dRmin_pid) == 3:
-                            hists["pid3_pt_1"].Fill(item.pt())
-                            hists["pid3_jetM_1"].Fill(jetM)
+                            hists["pid3_pt_1"].Fill(item.pt(), gen_weight)
+                            hists["pid3_jetM_1"].Fill(jetM, gen_weight)
                         elif abs(dRmin_pid) == 4:
-                            hists["pid4_pt_1"].Fill(item.pt())
-                            hists["pid4_jetM_1"].Fill(jetM)
+                            hists["pid4_pt_1"].Fill(item.pt(), gen_weight)
+                            hists["pid4_jetM_1"].Fill(jetM, gen_weight)
                         elif abs(dRmin_pid) == 5:
-                            hists["pid5_pt_1"].Fill(item.pt())
-                            hists["pid5_jetM_1"].Fill(jetM)
+                            hists["pid5_pt_1"].Fill(item.pt(), gen_weight)
+                            hists["pid5_jetM_1"].Fill(jetM, gen_weight)
 
                         if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
-                            hists["pidBtag_pt_1"].Fill(item.pt())
-                            hists["pidBtag_jetM_1"].Fill(jetM)
+                            hists["pidBtag_pt_1"].Fill(item.pt(), gen_weight)
+                            hists["pidBtag_jetM_1"].Fill(jetM, gen_weight)
 
                     elif multiplicity == 2:
                         if abs(dRmin_pid) == 3:
-                            hists["pid3_pt_2"].Fill(item.pt())
-                            hists["pid3_jetM_2"].Fill(jetM)
+                            hists["pid3_pt_2"].Fill(item.pt(), gen_weight)
+                            hists["pid3_jetM_2"].Fill(jetM, gen_weight)
                         elif abs(dRmin_pid) == 4:
-                            hists["pid4_pt_2"].Fill(item.pt())
-                            hists["pid4_jetM_2"].Fill(jetM)
+                            hists["pid4_pt_2"].Fill(item.pt(), gen_weight)
+                            hists["pid4_jetM_2"].Fill(jetM, gen_weight)
                         elif abs(dRmin_pid) == 5:
-                            hists["pid5_pt_2"].Fill(item.pt())
-                            hists["pid5_jetM_2"].Fill(jetM)
+                            hists["pid5_pt_2"].Fill(item.pt(), gen_weight)
+                            hists["pid5_jetM_2"].Fill(jetM, gen_weight)
 
                         if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
-                            hists["pidBtag_pt_2"].Fill(item.pt())
-                            hists["pidBtag_jetM_2"].Fill(jetM)
+                            hists["pidBtag_pt_2"].Fill(item.pt(), gen_weight)
+                            hists["pidBtag_jetM_2"].Fill(jetM, gen_weight)
 
                     elif multiplicity == 3:
                         if abs(dRmin_pid) == 3:
-                            hists["pid3_pt_3"].Fill(item.pt())
-                            hists["pid3_jetM_3"].Fill(jetM)
+                            hists["pid3_pt_3"].Fill(item.pt(), gen_weight)
+                            hists["pid3_jetM_3"].Fill(jetM, gen_weight)
                         elif abs(dRmin_pid) == 4:
-                            hists["pid4_pt_3"].Fill(item.pt())
-                            hists["pid4_jetM_3"].Fill(jetM)
+                            hists["pid4_pt_3"].Fill(item.pt(), gen_weight)
+                            hists["pid4_jetM_3"].Fill(jetM, gen_weight)
                         elif abs(dRmin_pid) == 5:
-                            hists["pid5_pt_3"].Fill(item.pt())
-                            hists["pid5_jetM_3"].Fill(jetM)
+                            hists["pid5_pt_3"].Fill(item.pt(), gen_weight)
+                            hists["pid5_jetM_3"].Fill(jetM, gen_weight)
 
                         if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
-                            hists["pidBtag_pt_3"].Fill(item.pt())
-                            hists["pidBtag_jetM_3"].Fill(jetM)
-
-
+                            hists["pidBtag_pt_3"].Fill(item.pt(), gen_weight)
+                            hists["pidBtag_jetM_3"].Fill(jetM, gen_weight)
 
             if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
                 hists["jetspuppi_Ht_cut"].Fill(ht, gen_weight)
