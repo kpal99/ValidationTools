@@ -103,31 +103,43 @@ def main():
     hists["jetM_cut_2"] = createHist("jetM_cut_2")
     hists["jetM_cut_3"] = createHist("jetM_cut_3")
 
+    hists["pid1_pt_1"] = createHistVarBin("pid1_pt_1")
+    hists["pid2_pt_1"] = createHistVarBin("pid2_pt_1")
     hists["pid3_pt_1"] = createHistVarBin("pid3_pt_1")
     hists["pid4_pt_1"] = createHistVarBin("pid4_pt_1")
     hists["pid5_pt_1"] = createHistVarBin("pid5_pt_1")
     hists["pidBtag_pt_1"] = createHistVarBin("pidBtag_pt_1")
 
+    hists["pid1_jetM_1"] = createHist("pid1_jetM_1")
+    hists["pid2_jetM_1"] = createHist("pid2_jetM_1")
     hists["pid3_jetM_1"] = createHist("pid3_jetM_1")
     hists["pid4_jetM_1"] = createHist("pid4_jetM_1")
     hists["pid5_jetM_1"] = createHist("pid5_jetM_1")
     hists["pidBtag_jetM_1"] = createHist("pidBtag_jetM_1")
 
+    hists["pid1_pt_2"] = createHistVarBin("pid1_pt_2")
+    hists["pid2_pt_2"] = createHistVarBin("pid2_pt_2")
     hists["pid3_pt_2"] = createHistVarBin("pid3_pt_2")
     hists["pid4_pt_2"] = createHistVarBin("pid4_pt_2")
     hists["pid5_pt_2"] = createHistVarBin("pid5_pt_2")
     hists["pidBtag_pt_2"] = createHistVarBin("pidBtag_pt_2")
 
+    hists["pid1_jetM_2"] = createHist("pid1_jetM_2")
+    hists["pid2_jetM_2"] = createHist("pid2_jetM_2")
     hists["pid3_jetM_2"] = createHist("pid3_jetM_2")
     hists["pid4_jetM_2"] = createHist("pid4_jetM_2")
     hists["pid5_jetM_2"] = createHist("pid5_jetM_2")
     hists["pidBtag_jetM_2"] = createHist("pidBtag_jetM_2")
 
+    hists["pid1_pt_3"] = createHistVarBin("pid1_pt_3")
+    hists["pid2_pt_3"] = createHistVarBin("pid2_pt_3")
     hists["pid3_pt_3"] = createHistVarBin("pid3_pt_3")
     hists["pid4_pt_3"] = createHistVarBin("pid4_pt_3")
     hists["pid5_pt_3"] = createHistVarBin("pid5_pt_3")
     hists["pidBtag_pt_3"] = createHistVarBin("pidBtag_pt_3")
 
+    hists["pid1_jetM_3"] = createHist("pid1_jetM_3")
+    hists["pid2_jetM_3"] = createHist("pid2_jetM_3")
     hists["pid3_jetM_3"] = createHist("pid3_jetM_3")
     hists["pid4_jetM_3"] = createHist("pid4_jetM_3")
     hists["pid5_jetM_3"] = createHist("pid5_jetM_3")
@@ -160,7 +172,7 @@ def main():
                 dRmin_pt = 0
                 dRmin_pid = 0
                 for p in event.genparticles():
-                    if abs(p.pid()) == 3 or abs(p.pid()) == 4 or abs(p.pid()) == 5:
+                    if abs(p.pid()) == 1 or abs(p.pid()) == 2 or abs(p.pid()) == 3 or abs(p.pid()) == 4 or abs(p.pid()) == 5:
                         deltaR = ((p.eta() - item.eta()) ** 2 + (delPhi(p.phi(), item.phi())) ** 2) ** 0.5
                         if (deltaR < dRmin) and ( item.pt() / 4 < p.pt() ):
                             dRmin = deltaR
@@ -169,7 +181,13 @@ def main():
 
                 if dRmin < 0.4:
                     if multiplicity == 1:
-                        if abs(dRmin_pid) == 3:
+                        if abs(dRmin_pid) == 1:
+                            hists["pid1_pt_1"].Fill(item.pt(), gen_weight)
+                            hists["pid1_jetM_1"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 2:
+                            hists["pid2_pt_1"].Fill(item.pt(), gen_weight)
+                            hists["pid2_jetM_1"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 3:
                             hists["pid3_pt_1"].Fill(item.pt(), gen_weight)
                             hists["pid3_jetM_1"].Fill(jetM, gen_weight)
                         elif abs(dRmin_pid) == 4:
@@ -184,7 +202,13 @@ def main():
                             hists["pidBtag_jetM_1"].Fill(jetM, gen_weight)
 
                     elif multiplicity == 2:
-                        if abs(dRmin_pid) == 3:
+                        if abs(dRmin_pid) == 1:
+                            hists["pid1_pt_2"].Fill(item.pt(), gen_weight)
+                            hists["pid1_jetM_2"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 2:
+                            hists["pid2_pt_2"].Fill(item.pt(), gen_weight)
+                            hists["pid2_jetM_2"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 3:
                             hists["pid3_pt_2"].Fill(item.pt(), gen_weight)
                             hists["pid3_jetM_2"].Fill(jetM, gen_weight)
                         elif abs(dRmin_pid) == 4:
@@ -199,7 +223,13 @@ def main():
                             hists["pidBtag_jetM_2"].Fill(jetM, gen_weight)
 
                     elif multiplicity == 3:
-                        if abs(dRmin_pid) == 3:
+                        if abs(dRmin_pid) == 1:
+                            hists["pid1_pt_3"].Fill(item.pt(), gen_weight)
+                            hists["pid1_jetM_3"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 2:
+                            hists["pid2_pt_3"].Fill(item.pt(), gen_weight)
+                            hists["pid2_jetM_3"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 3:
                             hists["pid3_pt_3"].Fill(item.pt(), gen_weight)
                             hists["pid3_jetM_3"].Fill(jetM, gen_weight)
                         elif abs(dRmin_pid) == 4:
