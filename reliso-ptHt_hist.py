@@ -61,10 +61,6 @@ def createHistVarBin(varname,minval=0, maxval=501):
     return h
 
 def main():
-    if len(sys.argv) != 5:
-        print("USAGE: {} <ntuple> <cross-section(fb)> <total event> <Initial genweight>".format(sys.argv[0]))
-        sys.exit(1)
-
     inFile = sys.argv[1]
     ntuple = Ntuple(inFile)
     hists = {}
@@ -278,5 +274,93 @@ def main():
     outFile.Write()
     print("OutFile written at {}".format(outFile))
 
+def gluon():
+    inFile = sys.argv[1]
+    ntuple = Ntuple(inFile)
+    hists = {}
+    maxEvents = 0
+    outDir = os.path.dirname(sys.argv[1]) + '/rootPlots/test/'
+    out_str = "reliso-gluon_" + os.path.basename(sys.argv[1])
+    outFile = ROOT.TFile(outDir + out_str ,"RECREATE")
+    #outputDir = os.path.dirname(inFile) + "/efficiency_plot/" + os.path.basename(inFile).split(".root")[0]
+
+# creating very many histrograms
+    hists["pid21_pt_1"] = createHistVarBin("pid21_pt_1")
+    hists["pidBtag_pt_1"] = createHistVarBin("pidBtag_pt_1")
+
+    hists["pid21_jetM_1"] = createHist("pid21_jetM_1")
+    hists["pidBtag_jetM_1"] = createHist("pidBtag_jetM_1")
+
+    hists["pid21_pt_2"] = createHistVarBin("pid21_pt_2")
+    hists["pidBtag_pt_2"] = createHistVarBin("pidBtag_pt_2")
+
+    hists["pid21_jetM_2"] = createHist("pid21_jetM_2")
+    hists["pidBtag_jetM_2"] = createHist("pidBtag_jetM_2")
+
+    hists["pid21_pt_3"] = createHistVarBin("pid21_pt_3")
+    hists["pidBtag_pt_3"] = createHistVarBin("pidBtag_pt_3")
+
+    hists["pid21_jetM_3"] = createHist("pid21_jetM_3")
+    hists["pidBtag_jetM_3"] = createHist("pidBtag_jetM_3")
+# iterating through the all events; if value of maxEvents is zero.
+    for event in ntuple:
+        if maxEvents > 0 and event.entry() >= maxEvents:
+            break
+
+        gen_weight = event.genweight()
+
+        multiplicity = 0
+        jetM = event.jetM()
+        for item in event.jetspuppi():
+            multiplicity += 1
+            if multiplicity < 4:
+                dRmin = 9999
+                dRmin_pt = 0
+                dRmin_pid = 0
+                for p in event.genparticles():
+                    if abs(p.pid()) == 21:
+                        deltaR = ((p.eta() - item.eta()) ** 2 + (delPhi(p.phi(), item.phi())) ** 2) ** 0.5
+                        if (deltaR < dRmin) and ( item.pt() / 4 < p.pt() ):
+                            dRmin = deltaR
+                            dRmin_pt = p.pt()
+                            dRmin_pid = p.pid()
+
+                if dRmin < 0.4:
+                    if multiplicity == 1:
+                        hists["pid21_pt_1"].Fill(item.pt(), gen_weight)
+                        hists["pid21_jetM_1"].Fill(jetM, gen_weight)
+
+                        if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                            hists["pidBtag_pt_1"].Fill(item.pt(), gen_weight)
+                            hists["pidBtag_jetM_1"].Fill(jetM, gen_weight)
+
+                    elif multiplicity == 2:
+                        hists["pid21_pt_2"].Fill(item.pt(), gen_weight)
+                        hists["pid21_jetM_2"].Fill(jetM, gen_weight)
+
+                        if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                            hists["pidBtag_pt_2"].Fill(item.pt(), gen_weight)
+                            hists["pidBtag_jetM_2"].Fill(jetM, gen_weight)
+
+                    elif multiplicity == 3:
+                        hists["pid21_pt_3"].Fill(item.pt(), gen_weight)
+                        hists["pid21_jetM_3"].Fill(jetM, gen_weight)
+
+                        if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                            hists["pidBtag_pt_3"].Fill(item.pt(), gen_weight)
+                            hists["pidBtag_jetM_3"].Fill(jetM, gen_weight)
+
+    scale_factor = 3000  * float(sys.argv[2]) / float(sys.argv[4])
+    for h in hists.keys():
+        hists[h].Scale(scale_factor)
+
+    outFile.Write()
+    print("OutFile written at {}".format(outFile))
+
+if len(sys.argv) != 5:
+    print("USAGE: {} <ntuple> <cross-section(fb)> <total event> <Initial genweight>".format(sys.argv[0]))
+    sys.exit(1)
+
 if __name__ == "__main__":
-    main()
+    #main()
+    gluon()
