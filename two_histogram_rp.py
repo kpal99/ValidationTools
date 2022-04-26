@@ -255,7 +255,7 @@ for key in hists.keys():
         hist.GetYaxis().SetLabelSize(0.07)
         hist.GetXaxis().SetTitleSize(0.07)
         hist.SetTitle("")
-        hist.GetXaxis().SetTitle("H_{T} [GeV]")
+        hist.GetXaxis().SetTitle("AK4 jet multiplicity")
         hist.GetYaxis().SetTitle("")
         hist.Draw("E")
 
