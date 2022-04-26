@@ -1,0 +1,137 @@
+#import contextlib2
+import ROOT
+import sys
+import os
+
+ROOT.gROOT.SetBatch()
+ROOT.gStyle.SetOptStat(0)
+
+if len(sys.argv) != 2:
+    print "USAGE: {} <plot_file>".format(sys.argv[0])
+    sys.exit(1)
+
+f = ROOT.TFile.Open(sys.argv[1], 'read')
+
+keys = ['pid1_pt_1',   'pid2_pt_1',   'pid3_pt_1',   'pid4_pt_1',   'pid5_pt_1',   'pidBtag_pt_1',
+        'pid1_jetM_1', 'pid2_jetM_1', 'pid3_jetM_1', 'pid4_jetM_1', 'pid5_jetM_1', 'pidBtag_jetM_1',
+        'pid1_pt_2',   'pid2_pt_2',   'pid3_pt_2',   'pid4_pt_2',   'pid5_pt_2',   'pidBtag_pt_2',
+        'pid1_jetM_2', 'pid2_jetM_2', 'pid3_jetM_2', 'pid4_jetM_2', 'pid5_jetM_2', 'pidBtag_jetM_2',
+        'pid1_pt_3',   'pid2_pt_3',   'pid3_pt_3',   'pid4_pt_3',   'pid5_pt_3',   'pidBtag_pt_3',
+        'pid1_jetM_3', 'pid2_jetM_3', 'pid3_jetM_3', 'pid4_jetM_3', 'pid5_jetM_3', 'pidBtag_jetM_3']
+
+hists = {}
+for key in keys:
+    hists[key] = f.Get(key)
+
+outputDir = sys.argv[1].split('.root')[0]
+
+tex1 = ROOT.TLatex(0.10, 0.97, "#bf{CMS} #it{Phase-2 Simulation Premilinary}")
+tex1.SetNDC()
+tex1.SetTextAlign(13)
+tex1.SetTextFont(42)
+tex1.SetTextSize(0.03)
+tex1.SetLineWidth(2)
+
+tex2 = ROOT.TLatex(0.69, 0.97, "3000 fb^{-1} (14 TeV)")
+tex2.SetNDC()
+tex2.SetTextAlign(13)
+tex2.SetTextFont(42)
+tex2.SetTextSize(0.03)
+tex2.SetLineWidth(2)
+
+for key in hists.keys():
+    if "Btag" in key:
+        canvas = ROOT.TCanvas('canvas','',600,600)
+
+        key_divide = key.split("Btag")
+        pid1_key = key_divide[0] + '1' + key_divide[1]
+        pid2_key = key_divide[0] + '2' + key_divide[1]
+        pid3_key = key_divide[0] + '3' + key_divide[1]
+        pid4_key = key_divide[0] + '4' + key_divide[1]
+        pid5_key = key_divide[0] + '5' + key_divide[1]
+
+        canvas.cd()
+        pad1 = ROOT.TPad("pad1","pad1",0,0.4,1,1)
+        pad1.SetLogy()
+        pad1.SetBottomMargin(0)
+        pad1.Draw()
+        pad1.cd()
+        hists[key].SetLineColor(1)
+        hists[key].SetLineWidth(2)
+        hists[key].SetTitle("")
+        hists[key].GetXaxis().SetLabelSize(0.05)
+        hists[key].GetYaxis().SetLabelSize(0.05)
+        hists[key].GetYaxis().SetTitleSize(0.05)
+        hists[key].GetYaxis().SetTitle("events/bin")
+
+        hists[key].SetMaximum(100000000)
+        hists[key].SetMinimum(1)
+        hists[key].Draw("hist")
+
+        hists[pid1_key].SetLineColor(7)
+        hists[pid1_key].Draw("E same")
+        pidAll = hists[pid1_key].Clone()
+
+        hists[pid2_key].SetLineColor(2)
+        hists[pid2_key].Draw("E same")
+        pidAll = hists[pid2_key].Clone()
+
+        hists[pid3_key].SetLineColor(3)
+        hists[pid3_key].Draw("E same")
+        pidAll = hists[pid3_key].Clone()
+
+        hists[pid4_key].SetLineColor(4)
+        hists[pid4_key].Draw("E same")
+        pidAll.Add(hists[pid4_key])
+
+        hists[pid5_key].SetLineColor(5)
+        hists[pid5_key].Draw("E same")
+        pidAll.Add(hists[pid5_key])
+
+        pidAll.SetLineWidth(2)
+        pidAll.SetLineColor(6)
+        pidAll.Draw("hist same")
+
+        canvas.cd()
+        pad2 = ROOT.TPad("pad2","pad2",0,0,1,0.4)
+        pad2.SetTopMargin(0.0)
+        pad2.SetBottomMargin(0.3)
+        pad2.SetGrid()
+        pad2.Draw()
+        pad2.cd()
+        hist = hists[key].Clone()
+        hist.Reset()
+        hist.Divide(hists[key],pidAll,1,1,"B")
+        hist.SetMinimum(0)
+        hist.SetMaximum(1.1)
+        hist.GetXaxis().SetLabelSize(0.07)
+        hist.GetYaxis().SetLabelSize(0.07)
+        hist.GetXaxis().SetTitleSize(0.07)
+        hist.SetTitle("")
+        if 'pt' in key:
+            hist.GetXaxis().SetTitle("p_{T} [GeV]")
+        elif 'jetM' in key:
+            hist.GetXaxis().SetTitle("AK4 jet multiplicity")
+        hist.GetYaxis().SetTitle("")
+        hist.Draw("E")
+
+        canvas.cd()
+
+        legend1 = ROOT.TLegend(0.7,0.92,0.86,0.75)
+        legend1.SetBorderSize(0)
+        legend1.AddEntry(pidAll,         "PID 1-5 genpart", "l")
+        legend1.AddEntry(hists[pid1_key],"PID 1 genpart", "l")
+        legend1.AddEntry(hists[pid2_key],"PID 2 genpart", "l")
+        legend1.AddEntry(hists[pid3_key],"PID 3 genpart", "l")
+        legend1.AddEntry(hists[pid4_key],"PID 4 genpart", "l")
+        legend1.AddEntry(hists[pid5_key],"PID 5 genpart", "l")
+        legend1.AddEntry(hists[key],     "b-tagged jet", "l")
+        legend1.Draw()
+
+        tex1.Draw()
+        tex2.Draw()
+        canvas.SaveAs(outputDir + "_" + key + ".png")
+        canvas.SaveAs(outputDir + "_" + key + ".pdf")
+        canvas.Close()
+
+f.Close()
