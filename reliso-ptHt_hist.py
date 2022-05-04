@@ -357,10 +357,55 @@ def gluon():
     outFile.Write()
     print("OutFile written at {}".format(outFile))
 
+def ptHt_lepton_eff_QCD():
+    inFile = sys.argv[1]
+    ntuple = Ntuple(inFile)
+    hists = {}
+    maxEvents = 00
+    outDir = os.path.dirname(sys.argv[1]) + '/rootPlots/test/'
+    out_str = "pt_Ht_" + os.path.basename(sys.argv[1])
+    outFile = ROOT.TFile(outDir + out_str ,"RECREATE")
+    #outputDir = os.path.dirname(inFile) + "/efficiency_plot/" + os.path.basename(inFile).split(".root")[0]
+
+# creating very many histrograms
+    varBin = [50, 100, 150, 200, 250, 300, 400, 500, 650, 800]
+    hists["TightElectrons_pt_Ht"] = ROOT.TH2D("TightElectrons_pt_Ht","TightElectrons_pt_Ht", 25, 400., 5400., len(varBin)-1, array('d',varBin))
+    hists["TightMuons_pt_Ht"] = ROOT.TH2D("TightMuons_pt_Ht","TightMuons_pt_Ht", 25, 400., 5400., len(varBin)-1, array('d',varBin))
+    hists["TightElectrons_pt_Ht_cut"] = ROOT.TH2D("TightElectrons_pt_Ht_cut","TightElectrons_pt_Ht_cut", 25, 400., 5400., len(varBin)-1, array('d',varBin))
+    hists["TightMuons_pt_Ht_cut"] = ROOT.TH2D("TightMuons_pt_Ht_cut","TightMuons_pt_Ht_cut", 25, 400., 5400., len(varBin)-1, array('d',varBin))
+
+    for h in hists.keys():
+        hists[h].Sumw2()
+# iterating through the all events; if value of maxEvents is zero.
+    for event in ntuple:
+        if maxEvents > 0 and event.entry() >= maxEvents:
+            break
+
+        gen_weight = event.genweight()
+        ht = event.jetHt()
+
+#tight lepton selection. Only single lepton is required.
+        for item in event.tightElectrons():
+            hists["TightElectrons_pt_Ht"].Fill(ht, item.pt(), gen_weight)
+            if item.isopass() >= 4:
+                hists["TightElectrons_pt_Ht_cut"].Fill(ht, item.pt(), gen_weight)
+        for item in event.tightMuons():
+            hists["TightMuons_pt_Ht"].Fill(ht, item.pt(), gen_weight)
+            if item.isopass() >= 4:
+                hists["TightMuons_pt_Ht_cut"].Fill(ht, item.pt(), gen_weight)
+
+    scale_factor = 3000  * float(sys.argv[2]) / float(sys.argv[4])
+    for h in hists.keys():
+        hists[h].Scale(scale_factor)
+
+    outFile.Write()
+    print("OutFile written at {}".format(outFile))
+
 if len(sys.argv) != 5:
     print("USAGE: {} <ntuple> <cross-section(fb)> <total event> <Initial genweight>".format(sys.argv[0]))
     sys.exit(1)
 
 if __name__ == "__main__":
     #main()
-    gluon()
+    #gluon()
+    ptHt_lepton_eff_QCD()
