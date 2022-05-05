@@ -8,12 +8,12 @@ This package requires python, ROOT and pandas:
 
 ```
 source /cvmfs/sft.cern.ch/lcg/views/LCG_92/x86_64-centos7-gcc7-opt/setup.(c)sh
-./init.sh
 ```
 
 RelevantCode
 ============
 
-The code for making histogram from ntuple is stored in [efficiency_hist.py](efficiency_hist.py)
+required root files in stored in [rootfiles](rootfiles) directory
 <br>
-The code for making efficiency plot is stored in [efficiency_hist_plot.py](efficiency_hist_plot.py)
+The code to plot the histogram is [jetpid_histogram_rp.py](jetpid_histogram_rp.py)
+which require name of the rootfiles as an argument.
