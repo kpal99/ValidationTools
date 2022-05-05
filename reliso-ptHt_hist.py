@@ -274,6 +274,215 @@ def main():
     outFile.Write()
     print("OutFile written at {}".format(outFile))
 
+def btageff_per_quark():
+    inFile = sys.argv[1]
+    ntuple = Ntuple(inFile)
+    hists = {}
+    maxEvents = 0
+    outDir = os.path.dirname(sys.argv[1]) + '/rootPlots/test/'
+    out_str = "btagEffPerQuark_" + os.path.basename(sys.argv[1])
+    outFile = ROOT.TFile(outDir + out_str ,"RECREATE")
+    #outputDir = os.path.dirname(inFile) + "/efficiency_plot/" + os.path.basename(inFile).split(".root")[0]
+
+    hists["pid1_pt_1"] = createHistVarBin("pid1_pt_1")
+    hists["pid2_pt_1"] = createHistVarBin("pid2_pt_1")
+    hists["pid3_pt_1"] = createHistVarBin("pid3_pt_1")
+    hists["pid4_pt_1"] = createHistVarBin("pid4_pt_1")
+    hists["pid5_pt_1"] = createHistVarBin("pid5_pt_1")
+    hists["pid1Btag_pt_1"] = createHistVarBin("pid1Btag_pt_1")
+    hists["pid2Btag_pt_1"] = createHistVarBin("pid2Btag_pt_1")
+    hists["pid3Btag_pt_1"] = createHistVarBin("pid3Btag_pt_1")
+    hists["pid4Btag_pt_1"] = createHistVarBin("pid4Btag_pt_1")
+    hists["pid5Btag_pt_1"] = createHistVarBin("pid5Btag_pt_1")
+
+    hists["pid1_jetM_1"] = createHist("pid1_jetM_1")
+    hists["pid2_jetM_1"] = createHist("pid2_jetM_1")
+    hists["pid3_jetM_1"] = createHist("pid3_jetM_1")
+    hists["pid4_jetM_1"] = createHist("pid4_jetM_1")
+    hists["pid5_jetM_1"] = createHist("pid5_jetM_1")
+    hists["pid1Btag_jetM_1"] = createHist("pid1Btag_jetM_1")
+    hists["pid2Btag_jetM_1"] = createHist("pid2Btag_jetM_1")
+    hists["pid3Btag_jetM_1"] = createHist("pid3Btag_jetM_1")
+    hists["pid4Btag_jetM_1"] = createHist("pid4Btag_jetM_1")
+    hists["pid5Btag_jetM_1"] = createHist("pid5Btag_jetM_1")
+
+    hists["pid1_pt_2"] = createHistVarBin("pid1_pt_2")
+    hists["pid2_pt_2"] = createHistVarBin("pid2_pt_2")
+    hists["pid3_pt_2"] = createHistVarBin("pid3_pt_2")
+    hists["pid4_pt_2"] = createHistVarBin("pid4_pt_2")
+    hists["pid5_pt_2"] = createHistVarBin("pid5_pt_2")
+    hists["pid1Btag_pt_2"] = createHistVarBin("pid1Btag_pt_2")
+    hists["pid2Btag_pt_2"] = createHistVarBin("pid2Btag_pt_2")
+    hists["pid3Btag_pt_2"] = createHistVarBin("pid3Btag_pt_2")
+    hists["pid4Btag_pt_2"] = createHistVarBin("pid4Btag_pt_2")
+    hists["pid5Btag_pt_2"] = createHistVarBin("pid5Btag_pt_2")
+
+    hists["pid1_jetM_2"] = createHist("pid1_jetM_2")
+    hists["pid2_jetM_2"] = createHist("pid2_jetM_2")
+    hists["pid3_jetM_2"] = createHist("pid3_jetM_2")
+    hists["pid4_jetM_2"] = createHist("pid4_jetM_2")
+    hists["pid5_jetM_2"] = createHist("pid5_jetM_2")
+    hists["pid1Btag_jetM_2"] = createHist("pid1Btag_jetM_2")
+    hists["pid2Btag_jetM_2"] = createHist("pid2Btag_jetM_2")
+    hists["pid3Btag_jetM_2"] = createHist("pid3Btag_jetM_2")
+    hists["pid4Btag_jetM_2"] = createHist("pid4Btag_jetM_2")
+    hists["pid5Btag_jetM_2"] = createHist("pid5Btag_jetM_2")
+
+    hists["pid1_pt_3"] = createHistVarBin("pid1_pt_3")
+    hists["pid2_pt_3"] = createHistVarBin("pid2_pt_3")
+    hists["pid3_pt_3"] = createHistVarBin("pid3_pt_3")
+    hists["pid4_pt_3"] = createHistVarBin("pid4_pt_3")
+    hists["pid5_pt_3"] = createHistVarBin("pid5_pt_3")
+    hists["pid1Btag_pt_3"] = createHistVarBin("pid1Btag_pt_3")
+    hists["pid2Btag_pt_3"] = createHistVarBin("pid2Btag_pt_3")
+    hists["pid3Btag_pt_3"] = createHistVarBin("pid3Btag_pt_3")
+    hists["pid4Btag_pt_3"] = createHistVarBin("pid4Btag_pt_3")
+    hists["pid5Btag_pt_3"] = createHistVarBin("pid5Btag_pt_3")
+
+    hists["pid1_jetM_3"] = createHist("pid1_jetM_3")
+    hists["pid2_jetM_3"] = createHist("pid2_jetM_3")
+    hists["pid3_jetM_3"] = createHist("pid3_jetM_3")
+    hists["pid4_jetM_3"] = createHist("pid4_jetM_3")
+    hists["pid5_jetM_3"] = createHist("pid5_jetM_3")
+    hists["pid1Btag_jetM_3"] = createHist("pid1Btag_jetM_3")
+    hists["pid2Btag_jetM_3"] = createHist("pid2Btag_jetM_3")
+    hists["pid3Btag_jetM_3"] = createHist("pid3Btag_jetM_3")
+    hists["pid4Btag_jetM_3"] = createHist("pid4Btag_jetM_3")
+    hists["pid5Btag_jetM_3"] = createHist("pid5Btag_jetM_3")
+# iterating through the all events; if value of maxEvents is zero.
+    for event in ntuple:
+        if maxEvents > 0 and event.entry() >= maxEvents:
+            break
+
+        gen_weight = event.genweight()
+        ht = event.jetHt()
+
+        multiplicity = 0
+        jetM = event.jetM()
+        for item in event.jetspuppi():
+            multiplicity += 1
+            if multiplicity < 4:
+                dRmin = 9999
+                dRmin_pt = 0
+                dRmin_pid = 0
+                for p in event.genparticles():
+                    if abs(p.pid()) == 1 or abs(p.pid()) == 2 or abs(p.pid()) == 3 or abs(p.pid()) == 4 or abs(p.pid()) == 5:
+                        deltaR = ((p.eta() - item.eta()) ** 2 + (delPhi(p.phi(), item.phi())) ** 2) ** 0.5
+                        if (deltaR < dRmin) and ( item.pt() / 4 < p.pt() ):
+                            dRmin = deltaR
+                            dRmin_pt = p.pt()
+                            dRmin_pid = p.pid()
+
+                if dRmin < 0.4:
+                    if multiplicity == 1:
+                        if abs(dRmin_pid) == 1:
+                            hists["pid1_pt_1"].Fill(item.pt(), gen_weight)
+                            hists["pid1_jetM_1"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid1Btag_pt_1"].Fill(item.pt(), gen_weight)
+                                hists["pid1Btag_jetM_1"].Fill(jetM, gen_weight)
+
+                        elif abs(dRmin_pid) == 2:
+                            hists["pid2_pt_1"].Fill(item.pt(), gen_weight)
+                            hists["pid2_jetM_1"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid2Btag_pt_1"].Fill(item.pt(), gen_weight)
+                                hists["pid2Btag_jetM_1"].Fill(jetM, gen_weight)
+
+                        elif abs(dRmin_pid) == 3:
+                            hists["pid3_pt_1"].Fill(item.pt(), gen_weight)
+                            hists["pid3_jetM_1"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid3Btag_pt_1"].Fill(item.pt(), gen_weight)
+                                hists["pid3Btag_jetM_1"].Fill(jetM, gen_weight)
+
+                        elif abs(dRmin_pid) == 4:
+                            hists["pid4_pt_1"].Fill(item.pt(), gen_weight)
+                            hists["pid4_jetM_1"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid4Btag_pt_1"].Fill(item.pt(), gen_weight)
+                                hists["pid4Btag_jetM_1"].Fill(jetM, gen_weight)
+
+                        elif abs(dRmin_pid) == 5:
+                            hists["pid5_pt_1"].Fill(item.pt(), gen_weight)
+                            hists["pid5_jetM_1"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid5Btag_pt_1"].Fill(item.pt(), gen_weight)
+                                hists["pid5Btag_jetM_1"].Fill(jetM, gen_weight)
+
+
+                    elif multiplicity == 2:
+                        if abs(dRmin_pid) == 1:
+                            hists["pid1_pt_2"].Fill(item.pt(), gen_weight)
+                            hists["pid1_jetM_2"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid1Btag_pt_2"].Fill(item.pt(), gen_weight)
+                                hists["pid1Btag_jetM_2"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 2:
+                            hists["pid2_pt_2"].Fill(item.pt(), gen_weight)
+                            hists["pid2_jetM_2"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid2Btag_pt_2"].Fill(item.pt(), gen_weight)
+                                hists["pid2Btag_jetM_2"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 3:
+                            hists["pid3_pt_2"].Fill(item.pt(), gen_weight)
+                            hists["pid3_jetM_2"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid3Btag_pt_2"].Fill(item.pt(), gen_weight)
+                                hists["pid3Btag_jetM_2"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 4:
+                            hists["pid4_pt_2"].Fill(item.pt(), gen_weight)
+                            hists["pid4_jetM_2"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid4Btag_pt_2"].Fill(item.pt(), gen_weight)
+                                hists["pid4Btag_jetM_2"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 5:
+                            hists["pid5_pt_2"].Fill(item.pt(), gen_weight)
+                            hists["pid5_jetM_2"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid5Btag_pt_2"].Fill(item.pt(), gen_weight)
+                                hists["pid5Btag_jetM_2"].Fill(jetM, gen_weight)
+
+
+                    elif multiplicity == 3:
+                        if abs(dRmin_pid) == 1:
+                            hists["pid1_pt_3"].Fill(item.pt(), gen_weight)
+                            hists["pid1_jetM_3"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid1Btag_pt_3"].Fill(item.pt(), gen_weight)
+                                hists["pid1Btag_jetM_3"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 2:
+                            hists["pid2_pt_3"].Fill(item.pt(), gen_weight)
+                            hists["pid2_jetM_3"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid2Btag_pt_3"].Fill(item.pt(), gen_weight)
+                                hists["pid2Btag_jetM_3"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 3:
+                            hists["pid3_pt_3"].Fill(item.pt(), gen_weight)
+                            hists["pid3_jetM_3"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid3Btag_pt_3"].Fill(item.pt(), gen_weight)
+                                hists["pid3Btag_jetM_3"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 4:
+                            hists["pid4_pt_3"].Fill(item.pt(), gen_weight)
+                            hists["pid4_jetM_3"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid4Btag_pt_3"].Fill(item.pt(), gen_weight)
+                                hists["pid4Btag_jetM_3"].Fill(jetM, gen_weight)
+                        elif abs(dRmin_pid) == 5:
+                            hists["pid5_pt_3"].Fill(item.pt(), gen_weight)
+                            hists["pid5_jetM_3"].Fill(jetM, gen_weight)
+                            if item.btag() == 2 or item.btag() == 3 or item.btag() == 6 or item.btag() == 7:
+                                hists["pid5Btag_pt_3"].Fill(item.pt(), gen_weight)
+                                hists["pid5Btag_jetM_3"].Fill(jetM, gen_weight)
+
+    scale_factor = 3000  * float(sys.argv[2]) / float(sys.argv[4])
+    for h in hists.keys():
+        hists[h].Scale(scale_factor)
+
+    outFile.Write()
+    print("OutFile written at {}".format(outFile))
+
 def gluon():
     inFile = sys.argv[1]
     ntuple = Ntuple(inFile)
@@ -408,4 +617,5 @@ if len(sys.argv) != 5:
 if __name__ == "__main__":
     #main()
     #gluon()
-    ptHt_lepton_eff_QCD()
+    #ptHt_lepton_eff_QCD()
+    btageff_per_quark()
