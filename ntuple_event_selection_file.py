@@ -19,7 +19,7 @@ def main():
     inFile = sys.argv[1]
     ntuple = Ntuple(inFile)
 # using last part of out_str to creating a root file
-    out_root= ROOT.TFile('/eos/uscms/store/user/kpal/trimmed_files_v6_bugFree/' + os.path.basename(sys.argv[1]), "RECREATE")
+    out_root= ROOT.TFile('/eos/uscms/store/user/kpal/trimmed_files_v6_bugFix/' + os.path.basename(sys.argv[1]), "RECREATE")
     out_root.mkdir("myana")
     out_root.cd("myana")
 
