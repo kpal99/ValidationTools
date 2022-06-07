@@ -22,7 +22,7 @@ def main():
 
     inFile = sys.argv[1]
     ntuple = Ntuple(inFile)
-    out_root= ROOT.TFile('/eos/uscms/store/user/kpal/trimmed_files_v7.2/' + os.path.basename(sys.argv[1]), "RECREATE")
+    out_root= ROOT.TFile('/eos/uscms/store/user/kpal/trimmed_files_v20.2/' + os.path.basename(sys.argv[1]), "RECREATE")
     out_root.mkdir("myana")
     out_root.cd("myana")
 

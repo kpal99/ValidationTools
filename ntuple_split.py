@@ -391,11 +391,11 @@ def main():
     w3bTuple(ntuple, dir_str, filename)
     w2bTuple(ntuple, dir_str, filename)
     w1bTuple(ntuple, dir_str, filename)
-    w0bTuple(ntuple, dir_str, filename)
+    #w0bTuple(ntuple, dir_str, filename)
     _3bTuple(ntuple, dir_str, filename)
     _2bTuple(ntuple, dir_str, filename)
     _1bTuple(ntuple, dir_str, filename)
-    _0bTuple(ntuple, dir_str, filename)
+    #_0bTuple(ntuple, dir_str, filename)
 
 
 if __name__ == "__main__":
