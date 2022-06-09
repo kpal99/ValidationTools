@@ -2,15 +2,51 @@
 import ROOT
 #from __future__ import print_function
 from bin.NtupleDataFormat import Ntuple
+from array import array
 import sys
 import os
 
 # create and return histrogram automatically
 def createHist(varname,minval=0, maxval=501):
     binval = 25
-    elif "St" in varname:
-        h = ROOT.TH1D(varname, varname, binval, 500, 8000)
-        #h = ROOT.THD(varname, varname, binval, 2000, 9000)
+    if "St" in varname:
+        varBin = []
+        minval = 500
+        increment = 200
+        add2 = 7000
+        if "h1b" in sys.argv[1]:
+            compare = 5000
+            add1 = 6000
+        elif "h2b" in sys.argv[1]:
+            compare = 4400
+            add1 = 5000
+        elif "w3b" in sys.argv[1]:
+            compare = 3600
+            add1 = 4800
+        elif "w2b" in sys.argv[1]:
+            compare = 3600
+            add1 = 5000
+        elif "w1b" in sys.argv[1]:
+            compare = 3000
+            add1 = 4600
+        elif "_3b" in sys.argv[1]:
+            compare = 4200
+            add1 = 4900
+        elif "_2b" in sys.argv[1]:
+            compare = 4200
+            add1 = 4900
+        elif "_1b" in sys.argv[1]:
+            compare = 3800
+            add1 = 4300
+        else:
+            compare = 5400
+            add1 = 6000
+        while minval < compare:
+            varBin.append(minval)
+            minval += increment
+        varBin.append(add1)
+        varBin.append(add2)
+        h = ROOT.TH1D(varname, varname, len(varBin)-1, array('d',varBin))
     else:
         h = ROOT.TH1D(varname,varname,binval,minval,maxval)
     h.Sumw2()
@@ -26,7 +62,7 @@ def main():
     hists = {}
     maxEvents = 0
 
-    outDir = os.path.dirname(sys.argv[2]) + '/rootPlots_st/'
+    outDir = os.path.dirname(sys.argv[1]) + '/rootPlots_st/'
     out_str = os.path.basename(sys.argv[1])
     outFile = ROOT.TFile(outDir + out_str,"RECREATE")
 
