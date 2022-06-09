@@ -106,8 +106,12 @@ for key in hists_f.keys():
     stack[key].Add(hists_m[key])
     stack[key].Draw("pfc hist")
     if key == "St":
-        stack[key].SetMinimum(.01)
+        stack[key].GetXaxis().SetRangeUser(500,6000)
+        stack[key].SetMinimum(1)
         #stack[key].SetMaximum(10000000.)
+    if "Ht" in key:
+        stack[key].GetXaxis().SetRangeUser(400,5000)
+        stack[key].SetMinimum(1)
     setTitle(stack[key],key)
 
     if key == "St" or "multiplicity" in key or "deltaR" in key or "_pt" in key or "_Ht" in key or "metspuppi_pt" in key :
