@@ -1,5 +1,6 @@
 #import contextlib2
 import ROOT
+from array import array
 import sys
 import os
 
@@ -14,21 +15,23 @@ h = ROOT.TFile.Open(sys.argv[3], 'read')
 i = ROOT.TFile.Open(sys.argv[4], 'read')
 
 #reading very many histrograms
-hist_f = f.Get("St")
-hist_g = g.Get("St")
-hist_h = h.Get("St")
-hist_i = i.Get("St")
-hist_j = ROOT.TH1D("data_obs","data_obs",25,500,8000)
-#hist_j = ROOT.TH1D("data_obs","data_obs",100,0,10000)
+hist_f        = f.Get("St")
+hist_g        = g.Get("St")
+hist_h        = h.Get("St")
+hist_i        = i.Get("St")
+hist_j        = hist_i.Clone()
+hist_j.Reset()
 
 #outputDir = os.path.dirname(sys.argv[4]) + '/'
 outputDir = os.path.dirname(sys.argv[4]) + '/'
 a=sys.argv[1].split('TT')
 outFile = ROOT.TFile(outputDir + 'St' + a[1] ,"RECREATE")
+
 hist_j.Add(hist_f)
 hist_j.Add(hist_g)
 hist_j.Add(hist_h)
 hist_j.Add(hist_i)
+
 hist_f.SetName("St_signal"); hist_f.Write("St_signal",ROOT.TObject.kWriteDelete)
 hist_g.SetName("St_top"); hist_g.Write("St_top",ROOT.TObject.kWriteDelete)
 hist_h.SetName("St_ew"); hist_h.Write("St_ew",ROOT.TObject.kWriteDelete)

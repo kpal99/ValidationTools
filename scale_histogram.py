@@ -11,11 +11,12 @@ def scale_hist(sys1):
     hists = {}
     #outputDir = os.path.dirname(sys1) + "/"
     #filename = os.path.basename(sys1)
-    outputDir = "/eos/uscms/store/user/kpal/trimmed_files_v6.2/"
-    filename = sys1.split("_v6.2")[1]
+    outputDir = "/eos/uscms/store/user/kpal/trimmed_files_v20.2/"
+    filename = sys1.split("_v20.2")[1]
 
-    intLumi = {300, 500, 1000, 2000}
-    #intLumi = {35.9}
+    #intLumi = {10, 35.9 ,300, 500, 1000, 2000, 3000, 10000, 30000, 100000, 300000, 1000000, 3000000, 10000000, 30000000}
+    intLumi = {100000000, 300000000}
+    #intLumi = {10}
 
     for lumi in intLumi:
         f = ROOT.TFile.Open(sys.argv[1], 'read')

@@ -103,7 +103,7 @@ for key in hists_f.keys():
     stack[key].Draw("pfc hist")
     if "St" in key:
         stack[key].SetMinimum(1.)
-        #stack[key].SetMaximum(1000000.)
+        stack[key].SetMaximum(2000000.)
     setTitle(stack[key],key)
 
     if "St" in key or "multiplicity" in key or "deltaR" in key or "_pt" in key or "_Ht" in key or "metspuppi_pt" in key :

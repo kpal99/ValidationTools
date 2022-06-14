@@ -1,0 +1,8 @@
+/eos/uscms/store/user/kpal/trimmed_files_v20.2/rootPlots/TT_M1000.root
+/eos/uscms/store/user/kpal/trimmed_files_v20.2/rootPlots/TT_M1500.root
+/eos/uscms/store/user/kpal/trimmed_files_v20.2/rootPlots/TT_M2000.root
+/eos/uscms/store/user/kpal/trimmed_files_v20.2/rootPlots/TT_M2500.root
+/eos/uscms/store/user/kpal/trimmed_files_v20.2/rootPlots/TT_M3000.root
+/eos/uscms/store/user/kpal/trimmed_files_v20.2/rootPlots/ew.root
+/eos/uscms/store/user/kpal/trimmed_files_v20.2/rootPlots/top.root
+/eos/uscms/store/user/kpal/trimmed_files_v20.2/rootPlots/qcd.root
