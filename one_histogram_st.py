@@ -97,13 +97,21 @@ def main():
 
 # creating very many histrograms
     hists["St"] = createHist("St")
+    hists["TightElectrons_eta"] = createHist("TightElectrons_eta")
+    hists["TightMuons_eta"] = createHist("TightMuons_eta")
 
 # iterating through the all events; if value of maxEvents is zero.
     for event in ntuple:
         if maxEvents > 0 and event.entry() >= maxEvents:
             break
 
-        hists["St"].Fill(event.jetSt(), event.genweight())
+        gen_weight = event.genweight()
+        hists["St"].Fill(event.jetSt(), gen_weight)
+#tight lepton selection. Only single lepton is required.
+        for item in event.tightElectrons():
+            hists["TightElectrons_eta"].Fill(item.eta(), gen_weight)
+        for item in event.tightMuons():
+            hists["TightMuons_eta"].Fill(item.eta(), gen_weight)
 
     hists["St"].SetBinContent(hists["St"].GetNbinsX(), hists["St"].GetBinContent(hists["St"].GetNbinsX()) + hists["St"].GetBinContent(hists["St"].GetNbinsX() + 1))
     hists["St"].SetBinContent(hists["St"].GetNbinsX() + 1, 0.)
